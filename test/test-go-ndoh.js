@@ -28,6 +28,11 @@ describe('NDOH', function () {
     tester = new vumigo.test_utils.ImTester(app.api, {
       custom_setup: function (api) {
         api.config_store.config = JSON.stringify({
+          jembi: {
+            username: 'foo',
+            password: 'bar',
+            url: 'http://test/'
+          }
         });
         fixtures.forEach(function (f) {
           api.load_http_fixture(f);

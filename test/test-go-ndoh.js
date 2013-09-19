@@ -22,12 +22,18 @@ describe('NDOH', function () {
 
   var tester;
   var fixtures = [
+    'test/fixtures/identification-message.json'
   ];
 
   beforeEach(function () {
     tester = new vumigo.test_utils.ImTester(app.api, {
       custom_setup: function (api) {
         api.config_store.config = JSON.stringify({
+          jembi: {
+            username: 'foo',
+            password: 'bar',
+            url: 'http://test/'
+          }
         });
         fixtures.forEach(function (f) {
           api.load_http_fixture(f);
@@ -35,6 +41,9 @@ describe('NDOH', function () {
 
         // mock methods for testing
         var state_creator = tester.api.im.state_creator;
+        state_creator.get_timestamp = function() {
+          return '20130819144811';
+        };
       },
       async: true
     });

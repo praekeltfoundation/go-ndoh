@@ -141,8 +141,12 @@ describe('NDOH', function () {
       var contact = app.api.find_contact('ussd', '+27761234567');
       assert.equal(contact.name, 'Simon');
       assert.equal(contact.surname, 'de Haan');
-      assert.equal(contact.dob, '1980-07-30');
-      assert.equal(contact['extras-last-menstruation'], '2013-09-19');
+      assert.equal(
+        contact.dob,
+        '1980-07-30T00:00:00.000Z');
+      assert.equal(
+        contact['extras-last-menstruation'],
+        '2013-09-19T00:00:00.000Z');
       assert.equal(contact['extras-pregnancy-status'], 'suspected');
     }).then(done, done);
   });

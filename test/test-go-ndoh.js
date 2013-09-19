@@ -22,6 +22,7 @@ describe('NDOH', function () {
 
   var tester;
   var fixtures = [
+    'test/fixtures/identification-message.json'
   ];
 
   beforeEach(function () {
@@ -40,6 +41,9 @@ describe('NDOH', function () {
 
         // mock methods for testing
         var state_creator = tester.api.im.state_creator;
+        state_creator.get_timestamp = function() {
+          return '20130819144811';
+        };
       },
       async: true
     });

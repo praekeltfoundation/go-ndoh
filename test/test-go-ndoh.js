@@ -120,15 +120,30 @@ describe('NDOH', function () {
     }).then(done, done);
   });
 
-  it('should end the menu', function(done) {
+  it('should end the menu and store the contact', function(done) {
     tester.check_state({
       user: {
-        current_state: 'pregnancy_status'
+        current_state: 'pregnancy_status',
+        answers: {
+          name: 'Simon',
+          surname: 'de Haan',
+          dob: '1980-07-30',
+          last_menstruation: '2013-09-19',
+          pregnancy_status: 'suspected'
+        }
       },
       content: '1',
       next_state: 'end',
       response: 'Thank you! Your details have been captured.',
-      continue_session: false
+      continue_session: false,
+      from_addr: '+27761234567',
+    }).then(function() {
+      var contact = app.api.find_contact('ussd', '+27761234567');
+      assert.equal(contact.name, 'Simon');
+      assert.equal(contact.surname, 'de Haan');
+      assert.equal(contact.dob, '1980-07-30');
+      assert.equal(contact['extras-last-menstruation'], '2013-09-19');
+      assert.equal(contact['extras-pregnancy-status'], 'suspected');
     }).then(done, done);
   });
 });

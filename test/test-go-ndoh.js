@@ -84,14 +84,101 @@ describe('NDOH', function () {
     }).then(done, done);
   });
 
-  it('should capture the last menstruation date', function(done) {
+  it('should capture the dob and ask for the NID', function(done) {
     tester.check_state({
       user: {
         current_state: 'dob'
       },
+      next_state: 'nid_1',
+      response: 'Please enter the first 4 digits of your National ID:',
       content: '1980-7-30',
+    }).then(done, done);
+  });
+
+  it('should capture the first 4 digits of the NID', function(done) {
+    tester.check_state({
+      user: {
+        current_state: 'nid_1'
+      },
+      next_state: 'nid_2',
+      response: 'Please enter the next 4 digits of your National ID:',
+      content: '1234'
+    }).then(done, done);
+  });
+
+  it('should capture the second 4 digits of the NID', function(done) {
+    tester.check_state({
+      user: {
+        current_state: 'nid_2'
+      },
+      next_state: 'nid_3',
+      response: 'Please enter the next 4 digits of your National ID:',
+      content: '1234'
+    }).then(done, done);
+  });
+
+  it('should capture the third 4 digits of the NID', function(done) {
+    tester.check_state({
+      user: {
+        current_state: 'nid_3'
+      },
+      next_state: 'nid_4',
+      response: 'Please enter the last 4 digits of your National ID:',
+      content: '1234'
+    }).then(done, done);
+  });
+
+  it('should capture the last 4 digits of the NID', function(done) {
+    tester.check_state({
+      user: {
+        current_state: 'nid_4',
+        answers: {
+          nid_1: '1234',
+          nid_2: '5678',
+          nid_3: '1234',
+        }
+      },
+      next_state: 'nid_confirm',
+      response: (
+        'Please confirm your National ID:[^]' +
+        '1234567812345678[^]' +
+        '[^]' +
+        '1. This is correct.[^]' +
+        '2. This is incorrect.$'),
+      content: '5678'
+    }).then(done, done);
+  });
+
+  it('show allow for correcting of the NID', function(done) {
+    tester.check_state({
+      user: {
+        current_state: 'nid_confirm',
+      },
+      next_state: 'nid_1',
+      response: 'Please enter the first 4 digits of your National ID:',
+      content: '2'
+    }).then(done, done);
+  });
+
+  it('show allow for correcting of the NID', function(done) {
+    tester.check_state({
+      user: {
+        current_state: 'nid_confirm',
+      },
+      next_state: 'nid_1',
+      response: 'Please enter the first 4 digits of your National ID:',
+      content: '2'
+    }).then(done, done);
+  });
+
+  it('show ask for the date of the last menstruation', function(done) {
+    tester.check_state({
+      user: {
+        current_state: 'nid_confirm',
+      },
       next_state: 'last_menstruation',
-      response: 'When was your last menstruation\\? \\(YYYY-MM-DD\\)'
+      response: 'When was your last menstruation\\? \\(YYYY-MM-DD\\)',
+      content: '1'
     }).then(done, done);
   });
 

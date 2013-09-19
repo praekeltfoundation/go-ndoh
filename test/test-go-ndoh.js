@@ -22,7 +22,8 @@ describe('NDOH', function () {
 
   var tester;
   var fixtures = [
-    'test/fixtures/identification-message.json'
+    'test/fixtures/identification-message.json',
+    'test/fixtures/encounter-message.json'
   ];
 
   beforeEach(function () {

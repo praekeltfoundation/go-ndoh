@@ -216,7 +216,11 @@ describe('NDOH', function () {
           surname: 'de Haan',
           dob: '1980-07-30',
           last_menstruation: '2013-09-19',
-          pregnancy_status: 'suspected'
+          pregnancy_status: 'suspected',
+          nid_1: '1234',
+          nid_2: '5678',
+          nid_3: '90AB',
+          nid_4: 'CDEF'
         }
       },
       content: '1',
@@ -228,13 +232,12 @@ describe('NDOH', function () {
       var contact = app.api.find_contact('ussd', '+27761234567');
       assert.equal(contact.name, 'Simon');
       assert.equal(contact.surname, 'de Haan');
-      assert.equal(
-        contact.dob,
-        '1980-07-30T00:00:00.000Z');
-      assert.equal(
-        contact['extras-last-menstruation'],
-        '2013-09-19T00:00:00.000Z');
+      assert.equal(contact.dob, '1980-07-30T00:00:00.000Z');
+      assert.equal(contact['extras-last-menstruation'],
+                   '2013-09-19T00:00:00.000Z');
       assert.equal(contact['extras-pregnancy-status'], 'suspected');
+      assert.equal(contact['extras-nid'],
+                   '1234567890ABCDEF');
     }).then(done, done);
   });
 });

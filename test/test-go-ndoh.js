@@ -33,7 +33,7 @@ describe('NDOH', function () {
           jembi: {
             username: 'foo',
             password: 'bar',
-            url: 'http://test/'
+            url: 'http://test'
           }
         });
         fixtures.forEach(function (f) {

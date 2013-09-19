@@ -22,7 +22,8 @@ describe('NDOH', function () {
 
   var tester;
   var fixtures = [
-    'test/fixtures/identification-message.json'
+    'test/fixtures/identification-message.json',
+    'test/fixtures/encounter-message.json'
   ];
 
   beforeEach(function () {
@@ -32,7 +33,7 @@ describe('NDOH', function () {
           jembi: {
             username: 'foo',
             password: 'bar',
-            url: 'http://test/'
+            url: 'http://test'
           }
         });
         fixtures.forEach(function (f) {

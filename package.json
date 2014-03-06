@@ -1,21 +1,23 @@
 {
   "name": "go-ndoh",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A Vumi Go application for the NDOH connectathon.",
   "main": "index.js",
   "directories": {
     "test": "test"
   },
   "dependencies": {
-    "vumigo_v01": "0.1.x",
-    "jed": "0.5.x",
-    "libxmljs": "0.8.x"
+    "vumigo_v02": "~0.2",
+    "libxmljs": "0.8.x",
+    "q": "~0.9"
   },
   "devDependencies": {
-    "mocha": "~1.7.1"
+    "mocha-as-promised": "~2.0.0",
+    "mocha": "~1.17.1",
+    "jshint": "~2.4.4"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "mocha test"
   },
   "repository": {
     "type": "git",

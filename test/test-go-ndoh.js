@@ -21,7 +21,12 @@ describe('app', function () {
   beforeEach(function () {
     app = new GoNDOH();
     // mock out the time
-    app.get_timestamp = function() { return '20130819144811'; };
+    app.get_timestamp = function() {
+      return '20130819144811';
+    };
+    app.get_uuid = function() {
+      return 'b18c62b4-828e-4b52-25c9-725a1f43fb37';
+    };
     tester = new AppTester(app);
 
     tester
@@ -29,7 +34,7 @@ describe('app', function () {
         jembi: {
           username: 'foo',
           password: 'bar',
-          url: 'http://test'
+          url: 'http://test/'
         }
       })
       .setup.user({addr: 'user_default'})
@@ -200,37 +205,29 @@ describe('app', function () {
         assert.equal(contact.extra.nid, '1234567890ABCDEF');
       })
       .run();
+  });
 
-    // tester.check_state({
-    //   user: {
-    //     current_state: 'pregnancy_status',
-    //     answers: {
-    //       name: 'Simon',
-    //       surname: 'de Haan',
-    //       dob: '1980-07-30',
-    //       last_menstruation: '2013-09-19',
-    //       pregnancy_status: 'suspected',
-    //       nid_1: '1234',
-    //       nid_2: '5678',
-    //       nid_3: '90AB',
-    //       nid_4: 'CDEF'
-    //     }
-    //   },
-    //   content: '1',
-    //   next_state: 'end',
-    //   response: 'Thank you! Your details have been captured.',
-    //   continue_session: false,
-    //   from_addr: '+27761234567',
-    // }).then(function() {
-    //   var contact = app.api.find_contact('ussd', '+27761234567');
-    //   assert.equal(contact.name, 'Simon');
-    //   assert.equal(contact.surname, 'de Haan');
-    //   assert.equal(contact.dob, '1980-07-30T00:00:00.000Z');
-    //   assert.equal(contact['extras-last-menstruation'],
-    //                '2013-09-19T00:00:00.000Z');
-    //   assert.equal(contact['extras-pregnancy-status'], 'suspected');
-    //   assert.equal(contact['extras-nid'],
-    //                '1234567890ABCDEF');
-    // }).then(done, done);
+  it('should allow building of the CDA doc', function () {
+    return tester
+      .setup.user.answers({
+        'states:name': 'Simon',
+        'states:surname': 'de Haan',
+        'states:dob': '1980-07-30',
+        'states:last_menstruation': '2013-09-19',
+        'states:pregnancy_status': 'suspected',
+        'states:nid_1': '1234',
+        'states:nid_2': '5678',
+        'states:nid_3': '90AB',
+        'states:nid_4': 'CDEF'
+      })
+      .check(function(api) {
+        var doc = app.build_cda_doc();
+        var doc_str = doc.toString();
+        metadata = app.build_metadata(doc_str);
+        assert.equal(metadata.documentEntry.size, doc_str.length);
+        assert.equal(metadata.documentEntry.hash,
+          '607b5e4a22f1a5fc75ef61b490de68e7f76323ac');
+      })
+      .run();
   });
 });

@@ -148,9 +148,7 @@ module.exports = function() {
                 ' </component>',
                 '  </structuredBody>',
                 '</component>',
-                '</ClinicalDocument>',
-                '',
-                '--yolo'
+                '</ClinicalDocument>'
             ].join('\n')
         },
         'response': {

@@ -6,7 +6,7 @@ module.exports = function() {
                 'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
                 'Content-Type': ['multipart/formdata; boundary=yolo']
             },
-            'url': 'http://test/',
+            'url': 'http://test/v1/',
             'body': [
                 '--yolo',
                 'Content-Disposition: form-data; name="ihe-mhd-metadata"; filename="MHDMetadata.json"',

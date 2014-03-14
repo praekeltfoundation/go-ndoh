@@ -30,7 +30,7 @@ describe('app', function () {
         jembi: {
           username: 'foo',
           password: 'bar',
-          url: 'http://test/'
+          url: 'http://test/v1/'
         }
       })
       .setup.user({addr: 'user_default'})

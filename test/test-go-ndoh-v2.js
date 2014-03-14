@@ -8,7 +8,7 @@ var _ = require('lodash');
 var GoNDOH = app.GoNDOH;
 var AppTester = vumigo.AppTester;
 
-fixtures = require('./fixtures');
+fixtures = require('./fixtures-v2');
 
 var make_month_menu = function (preamble) {
   return preamble + '\n' + [
@@ -28,27 +28,27 @@ describe('GoNDOH version 2', function () {
       app = new GoNDOH();
       // mock out the time
       app.get_timestamp = function() {
-      return '20130819144811';
+        return '20130819144811';
       };
       app.get_uuid = function() {
-      return 'b18c62b4-828e-4b52-25c9-725a1f43fb37';
+        return 'b18c62b4-828e-4b52-25c9-725a1f43fb37';
       };
       tester = new AppTester(app);
 
       tester
-      .setup.config.app({
-        jembi: {
-          username: 'foo',
-          password: 'bar',
-          url: 'http://test/'
-        },
-        confirmation_sms_copy: 'You\'ve been registered',
-        timeout_sms_copy: 'You\'ve timed out. Dial in again'
-      })
-      .setup.user({addr: '+27749927190'})
-      .setup(function(api) {
-        fixtures().forEach(api.http.fixtures.add);
-      });
+        .setup.config.app({
+          jembi: {
+            username: 'foo',
+            password: 'bar',
+            url: 'http://test/v2/'
+          },
+          confirmation_sms_copy: 'You\'ve been registered',
+          timeout_sms_copy: 'You\'ve timed out. Dial in again'
+        })
+        .setup.user({addr: '+27749927190'})
+        .setup(function(api) {
+          fixtures().forEach(api.http.fixtures.add);
+        });
     });
 
     it('should show the welcome screen', function () {
@@ -61,13 +61,13 @@ describe('GoNDOH version 2', function () {
           '\n\n' +
           '1. Yes\n' +
           '2. No'))
-        .check.user.state('states:welcome')
+        .check.user.state('states:self_opt_in')
         .run();
     });
 
     it('should allow for self-optin', function () {
       return tester
-        .setup.user.state('states:welcome')
+        .setup.user.state('states:self_opt_in')
         .input('1')
         .check.reply([
           'What form of identification will you be using?',
@@ -81,7 +81,7 @@ describe('GoNDOH version 2', function () {
 
     it('should allow for opting someone else in', function () {
       return tester
-        .setup.user.state('states:welcome')
+        .setup.user.state('states:self_opt_in')
         .input('2')
         .check.reply((
           'Please input the mobile number of the pregnant woman ' +
@@ -188,8 +188,16 @@ describe('GoNDOH version 2', function () {
 
     it('should show the registration complete screen', function () {
       return tester
+        .setup.user.answers({
+          'states:opt_in': 'za_id',
+          'states:last_menstruation_day': '1',
+          'states:last_menstruation_month': '1',
+          'states:guided_opt_in': '1234567890',
+          'states:self_opt_in': 'yes',
+          'states:identity_number': '1234567890ABCDEF'
+        })
         .setup.user.state('states:facility_code')
-        .input('foo')
+        .input('facility_code')
         .check.reply(
           'Thank you, registration is complete. The pregnant woman should ' +
           'receive a confirmation SMS on her mobile phone. ' +
@@ -200,8 +208,16 @@ describe('GoNDOH version 2', function () {
 
     it('should send an SMS on completion of the menu', function() {
       return tester
+        .setup.user.answers({
+          'states:opt_in': 'za_id',
+          'states:last_menstruation_day': '1',
+          'states:last_menstruation_month': '1',
+          'states:guided_opt_in': '1234567890',
+          'states:self_opt_in': 'yes',
+          'states:identity_number': '1234567890ABCDEF'
+        })
         .setup.user.state('states:facility_code')
-        .input('foo')
+        .input('facility_code')
         .check.user.state('states:end')
         .check(function (api) {
           var smses = _.where(api.outbound.store, {
@@ -217,7 +233,6 @@ describe('GoNDOH version 2', function () {
     });
 
     it('should send an SMS if the client\'s session times out', function () {
-      //
       return tester
         .setup.user.state('states:facility_code')
         .input.session_event('close')
@@ -230,6 +245,57 @@ describe('GoNDOH version 2', function () {
           assert.equal(smses.length,1);
           assert.equal(sms.content, 'You\'ve timed out. Dial in again');
           assert.equal(sms.to_addr,'+27749927190');
+        })
+        .run();
+    });
+
+    it('should send the data to Jembi\'s API');
+
+    it('should store the contact record for a self opt-in', function () {
+      return tester
+        .setup.user.answers({
+          'states:opt_in': 'za_id',
+          'states:last_menstruation_day': '1',
+          'states:last_menstruation_month': '1',
+          'states:self_opt_in': 'yes',
+          'states:identity_number': '1234567890ABCDEF'
+        })
+        .setup.user.state('states:facility_code')
+        .input('facility_code')
+        .check.user.state('states:end')
+        .check(function (api) {
+          var contact = api.contacts.store[0];
+
+          assert.equal(contact.extra.last_menstruation_day, '1');
+          assert.equal(contact.extra.last_menstruation_month, '1');
+          assert.equal(contact.extra.self_opt_in, 'yes');
+          assert.equal(contact.extra.identity_number, '1234567890ABCDEF');
+        })
+        .run();
+    });
+
+    it('should store the contact record for a guided opt-in', function () {
+      return tester
+        .setup.user.answers({
+          'states:opt_in': 'za_id',
+          'states:last_menstruation_day': '1',
+          'states:last_menstruation_month': '1',
+          'states:self_opt_in': 'no',
+          'states:guided_opt_in': '1234567890',
+          'states:identity_number': '1234567890ABCDEF'
+        })
+        .setup.user.state('states:facility_code')
+        .input('facility_code')
+        .check.user.state('states:end')
+        .check(function (api) {
+          var contact = _.where(api.contacts.store, {
+              msisdn: '+1234567890'
+          })[0];
+
+          assert.equal(contact.extra.last_menstruation_day, '1');
+          assert.equal(contact.extra.last_menstruation_month, '1');
+          assert.equal(contact.extra.self_opt_in, 'no');
+          assert.equal(contact.extra.identity_number, '1234567890ABCDEF');
         })
         .run();
     });

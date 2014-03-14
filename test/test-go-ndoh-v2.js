@@ -38,11 +38,12 @@ describe('GoNDOH version 2', function () {
       tester
       .setup.config.app({
         jembi: {
-        username: 'foo',
-        password: 'bar',
-        url: 'http://test/'
+          username: 'foo',
+          password: 'bar',
+          url: 'http://test/'
         },
-        confirmation_sms_copy: 'You\'ve been registered'
+        confirmation_sms_copy: 'You\'ve been registered',
+        timeout_sms_copy: 'You\'ve timed out. Dial in again'
       })
       .setup.user({addr: '+27749927190'})
       .setup(function(api) {
@@ -215,7 +216,23 @@ describe('GoNDOH version 2', function () {
         .run();
     });
 
-    it('should send an SMS if the client\'s session times out');
+    it('should send an SMS if the client\'s session times out', function () {
+      //
+      return tester
+        .setup.user.state('states:facility_code')
+        .input.session_event('close')
+        .check(function (api) {
+          var smses = _.where(api.outbound.store, {
+              endpoint: 'sms'
+          });
+
+          var sms = smses[0];
+          assert.equal(smses.length,1);
+          assert.equal(sms.content, 'You\'ve timed out. Dial in again');
+          assert.equal(sms.to_addr,'+27749927190');
+        })
+        .run();
+    });
 
   });
 });

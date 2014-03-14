@@ -9,6 +9,7 @@
   "dependencies": {
     "vumigo_v02": "~0.2",
     "libxmljs": "0.8.x",
+    "lodash": "~2.4.1",
     "q": "~0.9"
   },
   "devDependencies": {

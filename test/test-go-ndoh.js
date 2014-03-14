@@ -13,10 +13,6 @@ describe('app', function () {
 
   var app;
   var tester;
-  // var fixtures = [
-  //   'test/fixtures/identification-message.json',
-  //   'test/fixtures/encounter-message.json'
-  // ];
 
   beforeEach(function () {
     app = new GoNDOH();

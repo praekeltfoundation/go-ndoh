@@ -119,7 +119,7 @@ describe('GoNDOH version 2 part2', function () {
         assert.equal(contact.name, 'Simon');
         assert.equal(contact.surname, 'de Haan');
         assert.equal(contact.extra.language, 'english');
-        assert.equal(contact.dob, '1980-7-30');
+        assert.equal(contact.dob, '1980-7-30 00:00:00');
       })
       .run();
   });

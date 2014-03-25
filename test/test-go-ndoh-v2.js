@@ -55,7 +55,7 @@ describe('GoNDOH version 2', function () {
       return tester
         .start()
         .check.reply((
-          'Welcome to MAMA & the DOH Pregnancy Registry. ' +
+          'Welcome to the DOH Pregnancy Registry. ' +
           'Is this no. (+27749927190) the mobile no. ' +
           'of the pregnant woman to be registered?' +
           '\n\n' +
@@ -72,8 +72,8 @@ describe('GoNDOH version 2', function () {
         .check.reply([
           'What form of identification will you be using?',
           '1. South African ID',
-          '2. Facility ID',
-          '3. Western Cape ID'
+          '2. File Number',
+          '3. WC Health Number'
           ].join('\n'))
         .check.user.state('states:opt_in')
         .run();
@@ -97,8 +97,8 @@ describe('GoNDOH version 2', function () {
         .check.reply([
           'What form of identification will you be using?',
           '1. South African ID',
-          '2. Facility ID',
-          '3. Western Cape ID'
+          '2. File Number',
+          '3. WC Health Number'
           ].join('\n'))
         .check.user.state('states:opt_in')
         .run();

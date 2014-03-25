@@ -13,10 +13,6 @@ describe('app', function () {
 
   var app;
   var tester;
-  // var fixtures = [
-  //   'test/fixtures/identification-message.json',
-  //   'test/fixtures/encounter-message.json'
-  // ];
 
   beforeEach(function () {
     app = new GoNDOH();
@@ -34,7 +30,7 @@ describe('app', function () {
         jembi: {
           username: 'foo',
           password: 'bar',
-          url: 'http://test/'
+          url: 'http://test/v1/'
         }
       })
       .setup.user({addr: 'user_default'})

@@ -3,8 +3,8 @@ Go Hack App for mHealth Connectathon
 
 |travis|_
 
-.. |travis| image:: https://travis-ci.org/smn/go-ndoh.png?branch=develop
-.. _travis: https://travis-ci.org/smn/go-ndoh
+.. |travis| image:: https://travis-ci.org/praekelt/go-ndoh.png?branch=develop
+.. _travis: https://travis-ci.org/praekelt/go-ndoh
 
 General idea is:
 

@@ -5,16 +5,16 @@ go.app = function() {
     var ChoiceState = vumigo.states.ChoiceState;
     var EndState = vumigo.states.EndState;
 
-    var GoApp = App.extend(function(self) {
+    var GoNDOH = App.extend(function(self) {
         App.call(self, 'states:start');
 
         self.states.add('states:start', function(name) {
             return new ChoiceState(name, {
-                question: 'Hi there! What do you want to do?',
+                question: 'Welcome to The Department of Health\'s MomConnect programme.\nIs this no. (MSISDN) the mobile no. of the pregnant woman to be registered?',
 
                 choices: [
-                    new Choice('states:start', 'Show this menu again'),
-                    new Choice('states:end', 'Exit')],
+                    new Choice('states:start', 'Yes'),
+                    new Choice('states:end', 'No')],
 
                 next: function(choice) {
                     return choice.value;
@@ -31,6 +31,6 @@ go.app = function() {
     });
 
     return {
-        GoApp: GoApp
+        GoNDOH: GoNDOH
     };
 }();

@@ -4,12 +4,12 @@ var AppTester = vumigo.AppTester;
 
 
 describe("app", function() {
-    describe("GoApp", function() {
+    describe("GoNDOH", function() {
         var app;
         var tester;
 
         beforeEach(function() {
-            app = new go.app.GoApp();
+            app = new go.app.GoNDOH();
 
             tester = new AppTester(app);
 
@@ -23,15 +23,18 @@ describe("app", function() {
         });
 
         describe("when the user starts a session", function() {
-            it("should ask them want they want to do", function() {
+            it("should ask if the dial-in number is the mom's", function() {
                 return tester
                     .start()
                     .check.interaction({
                         state: 'states:start',
                         reply: [
-                            'Hi there! What do you want to do?',
-                            '1. Show this menu again',
-                            '2. Exit'
+                            'Welcome to The Department of Health\'s ' +
+                            'MomConnect programme.\nIs this no. (MSISDN) ' +
+                            'the mobile no. of the pregnant woman to be ' +
+                            'registered?',
+                            '1. Yes',
+                            '2. No'
                         ].join('\n')
                     })
                     .run();
@@ -46,9 +49,12 @@ describe("app", function() {
                     .check.interaction({
                         state: 'states:start',
                         reply: [
-                            'Hi there! What do you want to do?',
-                            '1. Show this menu again',
-                            '2. Exit'
+                            'Welcome to The Department of Health\'s ' +
+                            'MomConnect programme.\nIs this no. (MSISDN) ' +
+                            'the mobile no. of the pregnant woman to be ' +
+                            'registered?',
+                            '1. Yes',
+                            '2. No'
                         ].join('\n')
                     })
                     .run();

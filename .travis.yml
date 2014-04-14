@@ -1,8 +1,0 @@
-# Faking this because `npm test` fails for unknown reasons
-language: python
-    - "2.6"
-node_js:
-    - "0.10"
-install:
-    - npm install .
-script: ./run-tests.sh

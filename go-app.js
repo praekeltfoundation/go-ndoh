@@ -13,11 +13,17 @@ go.app = function() {
 
         self.states.add('states:start', function(name) {
             return new ChoiceState(name, {
-                question: 'Welcome to The Department of Health\'s MomConnect programme.\nIs this no. (MSISDN) the mobile no. of the pregnant woman to be registered?',
+                question: ('Welcome to The Department of Health\'s ' +
+                'MomConnect programme. Please select your preferred ' +
+                'language:'),
 
                 choices: [
-                    new Choice('states:start', 'Yes'),
-                    new Choice('states:end', 'No')],
+                    new Choice('states:start', 'English'),
+                    new Choice('states:end', 'Afrikaans'),
+                    new Choice('states:end', 'Zulu'),
+                    new Choice('states:end', 'Xhosa'),
+                    new Choice('states:end', 'Sotho'),
+                    ],
 
                 next: function(choice) {
                     return choice.value;

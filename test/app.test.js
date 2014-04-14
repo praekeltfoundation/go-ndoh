@@ -23,26 +23,28 @@ describe("app", function() {
         });
 
         describe("when the user starts a session", function() {
-            it("should ask if the dial-in number is the mom's", function() {
+            it("should ask for their preferred language", function() {
                 return tester
                     .start()
                     .check.interaction({
                         state: 'states:start',
                         reply: [
                             'Welcome to The Department of Health\'s ' +
-                            'MomConnect programme.\nIs this no. (MSISDN) ' +
-                            'the mobile no. of the pregnant woman to be ' +
-                            'registered?',
-                            '1. Yes',
-                            '2. No'
+                            'MomConnect programme. Please select your ' +
+                            'preferred language:',
+                            '1. English',
+                            '2. Afrikaans',
+                            '3. Zulu',
+                            '4. Xhosa',
+                            '5. Sotho'
                         ].join('\n')
                     })
                     .run();
             });
         });
 
-        describe("when the user asks to see the menu again", function() {
-            it("should show the menu again", function() {
+        describe("when the user selects English", function() {
+            it("should show the first screen again", function() {
                 return tester
                     .setup.user.state('states:start')
                     .input('1')
@@ -50,18 +52,20 @@ describe("app", function() {
                         state: 'states:start',
                         reply: [
                             'Welcome to The Department of Health\'s ' +
-                            'MomConnect programme.\nIs this no. (MSISDN) ' +
-                            'the mobile no. of the pregnant woman to be ' +
-                            'registered?',
-                            '1. Yes',
-                            '2. No'
+                            'MomConnect programme. Please select your ' +
+                            'preferred language:',
+                            '1. English',
+                            '2. Afrikaans',
+                            '3. Zulu',
+                            '4. Xhosa',
+                            '5. Sotho'
                         ].join('\n')
                     })
                     .run();
             });
         });
 
-        describe("when the user asks to exit", function() {
+        describe("when the user asks for another language", function() {
             it("should say thank you and end the session", function() {
                 return tester
                     .setup.user.state('states:start')

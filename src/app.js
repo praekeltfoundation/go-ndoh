@@ -21,7 +21,7 @@ go.app = function() {
                     new Choice('states:suspect_pregnancy', 'Zulu'),
                     new Choice('states:suspect_pregnancy', 'Xhosa'),
                     new Choice('states:suspect_pregnancy', 'Sotho'),
-                    ],
+                ],
 
                 next: function(choice) {
                     return choice.value;
@@ -38,7 +38,7 @@ go.app = function() {
                 choices: [
                     new Choice('states:id_type', $('Yes')),
                     new Choice('states:end', $('No')),
-                    ],
+                ],
 
                 next: function(choice) {
                     return choice.value;
@@ -48,12 +48,15 @@ go.app = function() {
 
         self.states.add('states:id_type', function(name) {
             return new ChoiceState(name, {
-                question: $(''),
+                question: $('We need some info to message you. This ' +
+                    'is private and will only be used to help you at a ' +
+                    'clinic. What kind of ID do you have?'),
 
                 choices: [
-                    new Choice('states:id_type', $('Yes')),
-                    new Choice('states:end', $('No')),
-                    ],
+                    new Choice('states:sa_id', $('SA ID')),
+                    new Choice('states:passport', $('Passport')),
+                    new Choice('states:no_id_year', $('None')),
+                ],
 
                 next: function(choice) {
                     return choice.value;

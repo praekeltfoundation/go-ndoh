@@ -70,10 +70,9 @@ describe("app", function() {
                     .check.interaction({
                         state: 'states:id_type',
                         reply: [
-                            'We need some info to send you messages. This ' +
-                            'is private and will only be used to help you ' +
-                            'if you go to a clinic. What kind of ' +
-                            'identification do you have?',
+                            'We need some info to message you. This is ' +
+                            'private and will only be used to help you at ' +
+                            'a clinic. What kind of ID do you have?',
                             '1. SA ID',
                             '2. Passport',
                             '3. None'

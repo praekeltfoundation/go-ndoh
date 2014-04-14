@@ -43,32 +43,50 @@ describe("app", function() {
             });
         });
 
-        describe("when the user selects English", function() {
-            it("should show the first screen again", function() {
+        describe("when the user selects a language", function() {
+            it("should ask them if they suspect pregnancy", function() {
                 return tester
                     .setup.user.state('states:start')
-                    .input('1')
+                    .input('1') /* change language state functionality */
                     .check.interaction({
-                        state: 'states:start',
+                        state: 'states:suspect_pregnancy',
                         reply: [
-                            'Welcome to The Department of Health\'s ' +
-                            'MomConnect programme. Please select your ' +
-                            'preferred language:',
-                            '1. English',
-                            '2. Afrikaans',
-                            '3. Zulu',
-                            '4. Xhosa',
-                            '5. Sotho'
+                            'MomConnect sends free support SMSs to ' +
+                            'pregnant mothers. Are you or do you suspect ' +
+                            'that you are pregnant?',
+                            '1. Yes',
+                            '2. No'
                         ].join('\n')
                     })
                     .run();
             });
         });
 
-        describe("when the user asks for another language", function() {
+        describe("if the user suspects pregnancy", function() {
+            it("should ask for their id type", function() {
+                return tester
+                    .setup.user.state('states:suspect_pregnancy')
+                    .input('1')
+                    .check.interaction({
+                        state: 'states:id_type',
+                        reply: [
+                            'We need some info to send you messages. This ' +
+                            'is private and will only be used to help you ' +
+                            'if you go to a clinic. What kind of ' +
+                            'identification do you have?',
+                            '1. SA ID',
+                            '2. Passport',
+                            '3. None'
+                        ].join('\n')
+                    })
+                    .run();
+            });
+        });
+
+        describe("if the user does not suspect pregnancy", function() {
             it("should say thank you and end the session", function() {
                 return tester
-                    .setup.user.state('states:start')
+                    .setup.user.state('states:suspect_pregnancy')
                     .input('2')
                     .check.interaction({
                         state: 'states:end',

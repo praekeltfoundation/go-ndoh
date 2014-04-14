@@ -7,6 +7,7 @@ go.app = function() {
     var Choice = vumigo.states.Choice;
     var ChoiceState = vumigo.states.ChoiceState;
     var EndState = vumigo.states.EndState;
+    var FreeText = vumigo.states.FreeText;
 
     var GoNDOH = App.extend(function(self) {
         App.call(self, 'states:start');
@@ -67,6 +68,30 @@ go.app = function() {
             });
         });
 
+        self.states.add('states:sa_id', function(name) {
+            return new FreeText(name, {
+                question: $('Please enter your SA ID number:'),
+
+                next: function() {
+                    return 'states:end_success';
+                }
+                // next: function(content) {
+                    // self.contact.extra.idno = content;
+                    // /* self.contact.extra.it_report_title = self.get_date_string(); */
+                    // return self.im.contacts.save(self.contact)
+                    //     .then(function() {
+                    //         return 'states:end_success';
+                        // });
+                // }
+            });
+        });
+
+        self.states.add('states:end_success', function(name) {
+            return new EndState(name, {
+                text: 'Thanks, cheers!',
+                next: 'states:start'
+            });
+        });
 
         self.states.add('states:end', function(name) {
             return new EndState(name, {

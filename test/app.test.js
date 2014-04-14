@@ -82,6 +82,19 @@ describe("app", function() {
             });
         });
 
+        describe("if the user selects SA ID", function() {
+            it("should ask for their id number", function() {
+                return tester
+                    .setup.user.state('states:id_type')
+                    .input('1')
+                    .check.interaction({
+                        state: 'states:sa_id',
+                        reply: 'Please enter your SA ID number:'
+                    })
+                    .run();
+            });
+        });
+
         describe("if the user does not suspect pregnancy", function() {
             it("should say thank you and end the session", function() {
                 return tester

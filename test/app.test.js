@@ -111,6 +111,23 @@ describe("app", function() {
             });
         });
 
+        describe("after the user enters their ID number", function() {
+            it("should thank them and exit", function() {
+                return tester
+                    .setup.user.state('states:sa_id')
+                    .input('7001011234050')
+                    .check.interaction({
+                        state: 'states:end_success',
+                        reply: ('Thank you for subscribing to MomConnect. ' +
+                            'You will now start receiving free messages ' +
+                            'about MomConnect. Remember to visit your ' + 
+                            'nearest clinic!')
+                    })
+                    .check.reply.ends_session()
+                    .run();
+            });
+        });
+
         describe("if the user selects Passport", function() {
             it("should ask for their country of origin", function() {
                 return tester
@@ -142,6 +159,23 @@ describe("app", function() {
                         state: 'states:passport_no',
                         reply: 'Please enter your Passport number:'
                     })
+                    .run();
+            });
+        });
+
+        describe("after the user enters their passport number", function() {
+            it("should thank them and exit", function() {
+                return tester
+                    .setup.user.state('states:passport_no')
+                    .input('12345')
+                    .check.interaction({
+                        state: 'states:end_success',
+                        reply: ('Thank you for subscribing to MomConnect. ' +
+                            'You will now start receiving free messages ' +
+                            'about MomConnect. Remember to visit your ' + 
+                            'nearest clinic!')
+                    })
+                    .check.reply.ends_session()
                     .run();
             });
         });

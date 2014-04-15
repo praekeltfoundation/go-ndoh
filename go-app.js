@@ -59,6 +59,7 @@ go.app = function() {
             });
         });
 
+        // text shortened - too many characters
         self.states.add('states:id_type', function(name) {
             return new ChoiceState(name, {
                 question: $('We need some info to message you. This ' +
@@ -117,9 +118,13 @@ go.app = function() {
             });
         });
 
+        // text shortened - too many characters
         self.states.add('states:end_success', function(name) {
             return new EndState(name, {
-                text: 'Thanks, cheers!',
+                text: $('Thank you for subscribing to MomConnect. ' +
+                    'You will now start receiving free messages ' +
+                    'about MomConnect. Remember to visit your ' +
+                    'nearest clinic!'),
                 next: 'states:start'
             });
         });

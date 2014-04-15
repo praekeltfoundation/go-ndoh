@@ -84,14 +84,6 @@ go.app = function() {
                 next: function() {
                     return 'states:end_success';
                 }
-                // next: function(content) {
-                    // self.contact.extra.idno = content;
-                    // /* self.contact.extra.it_report_title = self.get_date_string(); */
-                    // return self.im.contacts.save(self.contact)
-                    //     .then(function() {
-                    //         return 'states:end_success';
-                        // });
-                // }
             });
         });
 

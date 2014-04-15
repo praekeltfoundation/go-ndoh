@@ -111,6 +111,40 @@ describe("app", function() {
             });
         });
 
+        describe("if the user selects Passport", function() {
+            it("should ask for their country of origin", function() {
+                return tester
+                    .setup.user.state('states:id_type')
+                    .input('2')
+                    .check.interaction({
+                        state: 'states:passport_origin',
+                        reply: ['What is the country of origin of the ' +
+                            'passport?',
+                            '1. Zimbabwe',
+                            '2. Mozambique',
+                            '3. Malawi',
+                            '4. Nigeria',
+                            '5. DRC',
+                            '6. Somalia',
+                            '7. Other'
+                        ].join('\n')
+                    })
+                    .run();
+            });
+        });
+
+        describe("after the user selects passport country", function() {
+            it("should ask for their passport number", function() {
+                return tester
+                    .setup.user.state('states:passport_origin')
+                    .input('1')
+                    .check.interaction({
+                        state: 'states:passport_no',
+                        reply: 'Please enter your Passport number:'
+                    })
+                    .run();
+            });
+        });
         
     });
 });

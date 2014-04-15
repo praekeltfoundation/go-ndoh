@@ -67,7 +67,7 @@ go.app = function() {
 
                 choices: [
                     new Choice('states:sa_id', $('SA ID')),
-                    new Choice('states:passport', $('Passport')),
+                    new Choice('states:passport_origin', $('Passport')),
                     new Choice('states:no_id_year', $('None')),
                 ],
 
@@ -80,6 +80,36 @@ go.app = function() {
         self.states.add('states:sa_id', function(name) {
             return new FreeText(name, {
                 question: $('Please enter your SA ID number:'),
+
+                next: function() {
+                    return 'states:end_success';
+                }
+            });
+        });
+
+        self.states.add('states:passport_origin', function(name) {
+            return new ChoiceState(name, {
+                question: $('What is the country of origin of the passport?'),
+
+                choices: [
+                    new Choice('states:passport_no', $('Zimbabwe')),
+                    new Choice('states:passport_no', $('Mozambique')),
+                    new Choice('states:passport_no', $('Malawi')),
+                    new Choice('states:passport_no', $('Nigeria')),
+                    new Choice('states:passport_no', $('DRC')),
+                    new Choice('states:passport_no', $('Somalia')),
+                    new Choice('states:passport_no', $('Other')),
+                ],
+
+                next: function(choice) {
+                    return choice.value;
+                }
+            });
+        });
+
+        self.states.add('states:passport_no', function(name) {
+            return new FreeText(name, {
+                question: $('Please enter your Passport number:'),
 
                 next: function() {
                     return 'states:end_success';

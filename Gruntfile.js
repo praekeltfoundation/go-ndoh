@@ -1,40 +1,20 @@
 module.exports = function (grunt) {
+    var paths = require('./paths');
+
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-mocha-test');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-watch');
 
     grunt.initConfig({
-        paths: {
-            src: {
-                app: [
-                    'src/app.js'
-                ],
-                prd: [
-                    'src/index.js',
-                    '<%= paths.src.app %>',
-                    'src/init.js'
-                ],
-                all: [
-                    'src/**/*.js'
-                ]
-            },
-            dest: {
-                prd: 'go-app.js'
-            },
-            test: [
-                'test/setup.js',
-                '<%= paths.src.app %>',
-                'test/**/*.test.js'
-            ]
-        },
+        paths: paths,
 
         jshint: {
             options: {jshintrc: '.jshintrc'},
             all: [
                 'Gruntfile.js',
-                '<%= paths.src.all %>',
-                '<%= paths.test %>'
+                '<%= paths.src.app %>',
+                'test/**/*.js',
             ]
         },
 
@@ -54,7 +34,10 @@ module.exports = function (grunt) {
 
         mochaTest: {
             test: {
-                src: ['<%= paths.test %>'],
+                src: [
+                    '<%= paths.test.requires %>',
+                    '<%= paths.test.spec %>'
+                ],
                 options: {
                     reporter: 'spec'
                 }

@@ -127,6 +127,31 @@ go.app = function() {
             });
         });
 
+        self.states.add('states:birth_month', function(name) {
+            return new ChoiceState(name, {
+                question: $('Please enter the month that you were born.'),
+
+                choices: [
+                    new Choice('states:birth_day', $('Jan')),
+                    new Choice('states:birth_day', $('Feb')),
+                    new Choice('states:birth_day', $('March')),
+                    new Choice('states:birth_day', $('April')),
+                    new Choice('states:birth_day', $('May')),
+                    new Choice('states:birth_day', $('June')),
+                    new Choice('states:birth_day', $('July')),
+                    new Choice('states:birth_day', $('August')),
+                    new Choice('states:birth_day', $('Sept')),
+                    new Choice('states:birth_day', $('Oct')),
+                    new Choice('states:birth_day', $('Nov')),
+                    new Choice('states:birth_day', $('Dec')),
+                ],
+
+                next: function(choice) {
+                    return choice.value;
+                }
+            });
+        });
+
         // text shortened - too many characters
         self.states.add('states:end_success', function(name) {
             return new EndState(name, {

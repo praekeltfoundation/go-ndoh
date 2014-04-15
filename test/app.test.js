@@ -195,6 +195,31 @@ describe("app", function() {
             });
         });
 
-        
+        describe("after the user enters their birth year", function() {
+            it("should ask for their birth month", function() {
+                return tester
+                    .setup.user.state('states:birth_year')
+                    .input('1981')
+                    .check.interaction({
+                        state: 'states:birth_month',
+                        reply: ['Please enter the month that you were born.',
+                            '1. Jan',
+                            '2. Feb',
+                            '3. March',
+                            '4. April',
+                            '5. May',
+                            '6. June',
+                            '7. July',
+                            '8. August',
+                            '9. Sept',
+                            '10. Oct',
+                            '11. Nov',
+                            '12. Dec'
+                        ].join('\n')
+                    })
+                    .run();
+            });
+        });
+
     });
 });

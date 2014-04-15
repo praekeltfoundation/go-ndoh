@@ -62,6 +62,22 @@ describe("app", function() {
             });
         });
 
+        describe("if the user does not suspect pregnancy", function() {
+            it("state service is for pregnant mothers and exit", function() {
+                return tester
+                    .setup.user.state('states:suspect_pregnancy')
+                    .input('2')
+                    .check.interaction({
+                        state: 'states:end_not_pregnant',
+                        reply: ('We are sorry but this service is only for ' +
+                            'pregnant mothers. If you have other health ' +
+                            'concerns please visit your nearest clinic.')
+                    })
+                    .check.reply.ends_session()
+                    .run();
+            });
+        });
+
         describe("if the user suspects pregnancy", function() {
             it("should ask for their id type", function() {
                 return tester
@@ -95,18 +111,6 @@ describe("app", function() {
             });
         });
 
-        describe("if the user does not suspect pregnancy", function() {
-            it("should say thank you and end the session", function() {
-                return tester
-                    .setup.user.state('states:suspect_pregnancy')
-                    .input('2')
-                    .check.interaction({
-                        state: 'states:end',
-                        reply: 'Thanks, cheers!'
-                    })
-                    .check.reply.ends_session()
-                    .run();
-            });
-        });
+        
     });
 });

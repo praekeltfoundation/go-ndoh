@@ -41,12 +41,21 @@ go.app = function() {
 
                 choices: [
                     new Choice('states:id_type', $('Yes')),
-                    new Choice('states:end', $('No')),
+                    new Choice('states:end_not_pregnant', $('No')),
                 ],
 
                 next: function(choice) {
                     return choice.value;
                 }
+            });
+        });
+
+        self.states.add('states:end_not_pregnant', function(name) {
+            return new EndState(name, {
+                text: $('We are sorry but this service is only for ' +
+                    'pregnant mothers. If you have other health concerns ' +
+                    'please visit your nearest clinic.'),
+                next: 'states:start'
             });
         });
 
@@ -93,12 +102,6 @@ go.app = function() {
             });
         });
 
-        self.states.add('states:end', function(name) {
-            return new EndState(name, {
-                text: 'Thanks, cheers!',
-                next: 'states:start'
-            });
-        });
     });
 
     return {

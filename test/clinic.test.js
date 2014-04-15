@@ -9,7 +9,7 @@ describe("app", function() {
         var tester;
 
         beforeEach(function() {
-            app = new go.app.GoNDOH();
+            app = new go.clinic.GoNDOHclinic();
 
             tester = new AppTester(app);
 
@@ -23,20 +23,18 @@ describe("app", function() {
         });
 
         describe("when the user starts a session", function() {
-            it("should ask for their preferred language", function() {
+            it("should check if no. belongs to pregnant woman", function() {
                 return tester
                     .start()
                     .check.interaction({
                         state: 'states:start',
                         reply: [
                             'Welcome to The Department of Health\'s ' +
-                            'MomConnect programme. Please select your ' +
-                            'preferred language:',
-                            '1. English',
-                            '2. Afrikaans',
-                            '3. Zulu',
-                            '4. Xhosa',
-                            '5. Sotho'
+                            'MomConnect programme. Is this no. (MSISDN) ' +
+                            'the mobile no. of the pregnant woman to be ' +
+                            'registered?',
+                            '1. Yes',
+                            '2. No'
                         ].join('\n')
                     })
                     .run();

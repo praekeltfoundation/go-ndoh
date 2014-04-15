@@ -16,15 +16,13 @@ go.clinic = function() {
         self.states.add('states:start', function(name) {
             return new ChoiceState(name, {
                 question: $('Welcome to The Department of Health\'s ' +
-                    'MomConnect programme. Please select your preferred ' +
-                    'language:'),
+                            'MomConnect programme. Is this no. (MSISDN) ' +
+                            'the mobile no. of the pregnant woman to be ' +
+                            'registered?'),
 
                 choices: [
-                    new Choice('states:suspect_pregnancy', 'English'),
-                    new Choice('states:suspect_pregnancy', 'Afrikaans'),
-                    new Choice('states:suspect_pregnancy', 'Zulu'),
-                    new Choice('states:suspect_pregnancy', 'Xhosa'),
-                    new Choice('states:suspect_pregnancy', 'Sotho'),
+                    new Choice('states:suspect_pregnancy', 'Yes'),
+                    new Choice('states:mom_number', 'No'),
                 ],
 
                 next: function(choice) {

@@ -69,7 +69,7 @@ go.app = function() {
                 choices: [
                     new Choice('states:sa_id', $('SA ID')),
                     new Choice('states:passport_origin', $('Passport')),
-                    new Choice('states:no_id_year', $('None')),
+                    new Choice('states:birth_year', $('None')),
                 ],
 
                 next: function(choice) {
@@ -114,6 +114,18 @@ go.app = function() {
 
                 next: function() {
                     return 'states:end_success';
+                }
+            });
+        });
+
+        self.states.add('states:birth_year', function(name) {
+            return new FreeText(name, {
+                question: $('Since you don\'t have an ID or passport, ' +
+                    'please enter the year that you were born (eg ' +
+                    '1981)'),
+
+                next: function() {
+                    return 'states:birth_month';
                 }
             });
         });

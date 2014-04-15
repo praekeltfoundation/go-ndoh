@@ -98,7 +98,7 @@ describe("app", function() {
             });
         });
 
-        describe("if the user selects SA ID", function() {
+        describe("if the user selects SA ID (id type)", function() {
             it("should ask for their id number", function() {
                 return tester
                     .setup.user.state('states:id_type')
@@ -128,7 +128,7 @@ describe("app", function() {
             });
         });
 
-        describe("if the user selects Passport", function() {
+        describe("if the user selects Passport (id type)", function() {
             it("should ask for their country of origin", function() {
                 return tester
                     .setup.user.state('states:id_type')
@@ -179,6 +179,22 @@ describe("app", function() {
                     .run();
             });
         });
+
+        describe("if the user selects None (id type)", function() {
+            it("should ask for their birth year", function() {
+                return tester
+                    .setup.user.state('states:id_type')
+                    .input('3')
+                    .check.interaction({
+                        state: 'states:birth_year',
+                        reply: ('Since you don\'t have an ID or passport, ' +
+                            'please enter the year that you were born (eg ' +
+                            '1981)')
+                    })
+                    .run();
+            });
+        });
+
         
     });
 });

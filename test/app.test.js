@@ -221,5 +221,36 @@ describe("app", function() {
             });
         });
 
+        describe("after the user enters their birth month", function() {
+            it("should ask for their birth day", function() {
+                return tester
+                    .setup.user.state('states:birth_month')
+                    .input('1')
+                    .check.interaction({
+                        state: 'states:birth_day',
+                        reply: ('Please enter the day that you were born ' +
+                            '(eg 14).')
+                    })
+                    .run();
+            });
+        });
+
+        describe("after the user enters their birth day", function() {
+            it("should thank them and exit", function() {
+                return tester
+                    .setup.user.state('states:birth_day')
+                    .input('14')
+                    .check.interaction({
+                        state: 'states:end_success',
+                        reply: ('Thank you for subscribing to MomConnect. ' +
+                            'You will now start receiving free messages ' +
+                            'about MomConnect. Remember to visit your ' + 
+                            'nearest clinic!')
+                    })
+                    .check.reply.ends_session()
+                    .run();
+            });
+        });
+
     });
 });

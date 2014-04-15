@@ -155,6 +155,17 @@ go.app = function() {
             });
         });
 
+        self.states.add('states:birth_day', function(name) {
+            return new FreeText(name, {
+                question: $('Please enter the day that you were born ' +
+                    '(eg 14).'),
+
+                next: function() {
+                    return 'states:end_success';
+                }
+            });
+        });
+
         // text shortened - too many characters
         self.states.add('states:end_success', function(name) {
             return new EndState(name, {

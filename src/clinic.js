@@ -183,7 +183,12 @@ go.clinic = function() {
                     new Choice('so', 'Sotho'),
                 ],
 
-                next: 'states:end_success'
+                next: function(choice) {
+                    return self.im.user.set_lang(choice.value)
+                        .then(function() {
+                            return 'states:end_success';
+                    });
+                }
             });
         });
 

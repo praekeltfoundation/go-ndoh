@@ -186,7 +186,12 @@ go.clinic = function() {
                     new Choice('so', 'Sotho'),
                 ],
 
-                next: 'states:end_success'
+                next: function(choice) {
+                    return self.im.user.set_lang(choice.value)
+                        .then(function() {
+                            return 'states:end_success';
+                    });
+                }
             });
         });
 
@@ -235,7 +240,12 @@ go.app = function() {
                     new Choice('so', 'Sotho'),
                 ],
 
-                next: 'states:suspect_pregnancy'
+                next: function(choice) {
+                    return self.im.user.set_lang(choice.value)
+                        .then(function() {
+                            return 'states:suspect_pregnancy';
+                    });
+                }
             });
         });
 

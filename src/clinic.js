@@ -30,8 +30,8 @@ go.clinic = function() {
 
         self.states.add('states:clinic_code', function(name) {
             return new FreeText(name, {
-                question: $('Please input the mobile number of the ' +
-                            'pregnant woman to be registered:'),
+                question: $('Please enter the clinic code for the facility ' +
+                            'where this pregnancy is being registered:'),
 
                 next: function() {
                     return 'states:id_type';

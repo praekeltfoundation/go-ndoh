@@ -49,8 +49,8 @@ describe("app", function() {
                     .check.interaction({
                         state: 'states:clinic_code',
                         reply: (
-                            'Please input the mobile number of the ' +
-                            'pregnant woman to be registered:')
+                            'Please enter the clinic code for the facility ' +
+                            'where this pregnancy is being registered:')
                     })
                     .run();
             });
@@ -59,7 +59,7 @@ describe("app", function() {
         
 
 
-        
+
 
     });
 });

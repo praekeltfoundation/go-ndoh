@@ -22,7 +22,7 @@ go.clinic = function() {
 
                 choices: [
                     new Choice('states:clinic_code', 'Yes'),
-                    new Choice('states:mom_number', 'No'),
+                    new Choice('states:mobile_no', 'No'),
                 ],
 
                 next: function(choice) {
@@ -33,8 +33,8 @@ go.clinic = function() {
 
         self.states.add('states:clinic_code', function(name) {
             return new FreeText(name, {
-                question: $('Please input the mobile number of the ' +
-                            'pregnant woman to be registered:'),
+                question: $('Please enter the clinic code for the facility ' +
+                            'where this pregnancy is being registered:'),
 
                 next: function() {
                     return 'states:id_type';
@@ -42,10 +42,20 @@ go.clinic = function() {
             });
         });
 
-        
+        self.states.add('states:mobile_no', function(name) {
+            return new FreeText(name, {
+                question: $('Please input the mobile number of the ' +
+                            'pregnant woman to be registered:'),
+
+                next: function() {
+                    return 'states:clinic_code';
+                }
+            });
+        });
 
 
-        
+
+
     });
 
     return {

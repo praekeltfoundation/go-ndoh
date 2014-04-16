@@ -56,7 +56,20 @@ describe("app", function() {
             });
         });
 
-        
+        describe("when the no. is not the pregnant woman's no.", function() {
+            it("should ask for the pregnant woman's no.", function() {
+                return tester
+                    .setup.user.state('states:start')
+                    .input('2')
+                    .check.interaction({
+                        state: 'states:mobile_no',
+                        reply: (
+                            'Please input the mobile number of the ' +
+                            'pregnant woman to be registered:')
+                    })
+                    .run();
+            });
+        });
 
 
 

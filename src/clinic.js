@@ -185,8 +185,8 @@ go.clinic = function() {
 
                 next: function(choice) {
                     return self.im.user.set_lang(choice.value)
-                        .then(function() {
-                            return 'states:end_success';
+                    .then(function() {
+                        return 'states:end_success';
                     });
                 }
             });

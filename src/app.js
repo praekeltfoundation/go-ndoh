@@ -27,8 +27,8 @@ go.app = function() {
 
                 next: function(choice) {
                     return self.im.user.set_lang(choice.value)
-                        .then(function() {
-                            return 'states:suspect_pregnancy';
+                    .then(function() {
+                        return 'states:suspect_pregnancy';
                     });
                 }
             });

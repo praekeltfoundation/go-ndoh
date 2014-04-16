@@ -169,7 +169,7 @@ go.app = function() {
                 text: $('Thank you for subscribing to MomConnect. ' +
                     'You will now start receiving free messages ' +
                     'about MomConnect. Remember to visit your ' +
-                    'nearest clinic!'),
+                    'nearest clinic.'),
                 next: 'states:start'
             });
         });

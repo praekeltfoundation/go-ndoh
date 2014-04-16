@@ -245,7 +245,7 @@ describe("app", function() {
                         reply: ('Thank you for subscribing to MomConnect. ' +
                             'You will now start receiving free messages ' +
                             'about MomConnect. Remember to visit your ' + 
-                            'nearest clinic!')
+                            'nearest clinic.')
                     })
                     .check.reply.ends_session()
                     .run();

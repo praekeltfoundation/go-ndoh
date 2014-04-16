@@ -71,7 +71,20 @@ describe("app", function() {
             });
         });
 
-
+        describe("after entering the pregnant woman's number", function() {
+            it("should ask for the clinic code", function() {
+                return tester
+                    .setup.user.state('states:mobile_no')
+                    .input('0821234567')
+                    .check.interaction({
+                        state: 'states:clinic_code',
+                        reply: (
+                            'Please enter the clinic code for the facility ' +
+                            'where this pregnancy is being registered:')
+                    })
+                    .run();
+            });
+        });
 
 
     });

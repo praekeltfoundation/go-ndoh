@@ -6,6 +6,7 @@ go.clinic = function() {
     var App = vumigo.App;
     var Choice = vumigo.states.Choice;
     var ChoiceState = vumigo.states.ChoiceState;
+    // var LanguageChoice = vumigo.states.LanguageChoice;
     var EndState = vumigo.states.EndState;
     var FreeText = vumigo.states.FreeText;
 
@@ -21,12 +22,15 @@ go.clinic = function() {
                             'registered?'),
 
                 choices: [
-                    new Choice('states:clinic_code', 'Yes'),
-                    new Choice('states:mobile_no', 'No'),
+                    new Choice('yes', 'Yes'),
+                    new Choice('no', 'No'),
                 ],
 
                 next: function(choice) {
-                    return choice.value;
+                    return {
+                        yes: 'states:clinic_code',
+                        no: 'states:mobile_no'
+                    } [choice.value];
                 }
             });
         });
@@ -36,9 +40,7 @@ go.clinic = function() {
                 question: $('Please enter the clinic code for the facility ' +
                             'where this pregnancy is being registered:'),
 
-                next: function() {
-                    return 'states:due_date_month';
-                }
+                next: 'states:due_date_month'
             });
         });
 
@@ -58,20 +60,18 @@ go.clinic = function() {
                 question: $('Please select the month when the baby is due:'),
 
                 choices: [
-                    new Choice('states:id_type', 'Apr'),
-                    new Choice('states:id_type', 'May'),
-                    new Choice('states:id_type', 'Jun'),
-                    new Choice('states:id_type', 'Jul'),
-                    new Choice('states:id_type', 'Aug'),
-                    new Choice('states:id_type', 'Sept'),
-                    new Choice('states:id_type', 'Oct'),
-                    new Choice('states:id_type', 'Nov'),
-                    new Choice('states:id_type', 'Dec')
+                    new Choice('04', 'Apr'),
+                    new Choice('05', 'May'),
+                    new Choice('06', 'Jun'),
+                    new Choice('07', 'Jul'),
+                    new Choice('08', 'Aug'),
+                    new Choice('09', 'Sept'),
+                    new Choice('10', 'Oct'),
+                    new Choice('11', 'Nov'),
+                    new Choice('12', 'Dec')
                 ],
 
-                next: function(choice) {
-                    return choice.value;
-                }
+                next: 'states:id_type'
             });
         });
 
@@ -81,13 +81,17 @@ go.clinic = function() {
                             'mother have?'),
 
                 choices: [
-                    new Choice('states:sa_id', $('SA ID')),
-                    new Choice('states:passport_origin', $('Passport')),
-                    new Choice('states:birth_year', $('None')),
+                    new Choice('sa_id', $('SA ID')),
+                    new Choice('passport', $('Passport')),
+                    new Choice('none', $('None')),
                 ],
 
                 next: function(choice) {
-                    return choice.value;
+                    return {
+                        sa_id: 'states:sa_id',
+                        passport: 'states:passport_origin',
+                        none: 'states:birth_year'
+                    } [choice.value];
                 }
             });
         });
@@ -97,9 +101,7 @@ go.clinic = function() {
                 question: $('Please enter the pregnant mother\'s SA ID ' +
                             'number:'),
 
-                next: function() {
-                    return 'states:language';
-                }
+                next: 'states:language'
             });
         });
 
@@ -108,18 +110,16 @@ go.clinic = function() {
                 question: $('What is the country of origin of the passport?'),
 
                 choices: [
-                    new Choice('states:passport_no', $('Zimbabwe')),
-                    new Choice('states:passport_no', $('Mozambique')),
-                    new Choice('states:passport_no', $('Malawi')),
-                    new Choice('states:passport_no', $('Nigeria')),
-                    new Choice('states:passport_no', $('DRC')),
-                    new Choice('states:passport_no', $('Somalia')),
-                    new Choice('states:passport_no', $('Other')),
+                    new Choice('zimbabwe', $('Zimbabwe')),
+                    new Choice('mozambique', $('Mozambique')),
+                    new Choice('malawi', $('Malawi')),
+                    new Choice('nigeria', $('Nigeria')),
+                    new Choice('drc', $('DRC')),
+                    new Choice('somalia', $('Somalia')),
+                    new Choice('other', $('Other')),
                 ],
 
-                next: function(choice) {
-                    return choice.value;
-                }
+                next: 'states:passport_no'
             });
         });
 
@@ -127,9 +127,7 @@ go.clinic = function() {
             return new FreeText(name, {
                 question: $('Please enter your Passport number:'),
 
-                next: function() {
-                    return 'states:language';
-                }
+                next: 'states:language'
             });
         });
 
@@ -139,9 +137,7 @@ go.clinic = function() {
                     'please enter the year that you were born (eg ' +
                     '1981)'),
 
-                next: function() {
-                    return 'states:birth_month';
-                }
+                next: 'states:birth_month'
             });
         });
 
@@ -150,23 +146,21 @@ go.clinic = function() {
                 question: $('Please enter the month that you were born.'),
 
                 choices: [
-                    new Choice('states:birth_day', $('Jan')),
-                    new Choice('states:birth_day', $('Feb')),
-                    new Choice('states:birth_day', $('March')),
-                    new Choice('states:birth_day', $('April')),
-                    new Choice('states:birth_day', $('May')),
-                    new Choice('states:birth_day', $('June')),
-                    new Choice('states:birth_day', $('July')),
-                    new Choice('states:birth_day', $('August')),
-                    new Choice('states:birth_day', $('Sept')),
-                    new Choice('states:birth_day', $('Oct')),
-                    new Choice('states:birth_day', $('Nov')),
-                    new Choice('states:birth_day', $('Dec')),
+                    new Choice('01', $('Jan')),
+                    new Choice('02', $('Feb')),
+                    new Choice('03', $('March')),
+                    new Choice('04', $('April')),
+                    new Choice('05', $('May')),
+                    new Choice('06', $('June')),
+                    new Choice('07', $('July')),
+                    new Choice('08', $('August')),
+                    new Choice('09', $('Sept')),
+                    new Choice('10', $('Oct')),
+                    new Choice('11', $('Nov')),
+                    new Choice('12', $('Dec')),
                 ],
 
-                next: function(choice) {
-                    return choice.value;
-                }
+                next: 'states:birth_day'
             });
         });
 
@@ -175,9 +169,7 @@ go.clinic = function() {
                 question: $('Please enter the day that you were born ' +
                     '(eg 14).'),
 
-                next: function() {
-                    return 'states:language';
-                }
+                next: 'states:language'
             });
         });
 
@@ -187,16 +179,14 @@ go.clinic = function() {
                             'pregnant mother would like to get messages in:'),
 
                 choices: [
-                    new Choice('states:end_success', 'English'),
-                    new Choice('states:end_success', 'Afrikaans'),
-                    new Choice('states:end_success', 'Zulu'),
-                    new Choice('states:end_success', 'Xhosa'),
-                    new Choice('states:end_success', 'Sotho'),
+                    new Choice('en', 'English'),
+                    new Choice('af', 'Afrikaans'),
+                    new Choice('zu', 'Zulu'),
+                    new Choice('xh', 'Xhosa'),
+                    new Choice('so', 'Sotho'),
                 ],
 
-                next: function(choice) {
-                    return choice.value;
-                }
+                next: 'states:end_success'
             });
         });
 
@@ -206,6 +196,7 @@ go.clinic = function() {
                 text: $('Thank you. The pregnant woman will now ' +
                         'receive weekly messages about her pregnancy ' +
                         'from the Department of Health.'),
+
                 next: 'states:start'
             });
         });
@@ -222,6 +213,7 @@ go.app = function() {
     var App = vumigo.App;
     var Choice = vumigo.states.Choice;
     var ChoiceState = vumigo.states.ChoiceState;
+    // var LanguageChoice = vumigo.states.LanguageChoice;
     var EndState = vumigo.states.EndState;
     var FreeText = vumigo.states.FreeText;
 
@@ -236,16 +228,14 @@ go.app = function() {
                     'language:'),
 
                 choices: [
-                    new Choice('states:suspect_pregnancy', 'English'),
-                    new Choice('states:suspect_pregnancy', 'Afrikaans'),
-                    new Choice('states:suspect_pregnancy', 'Zulu'),
-                    new Choice('states:suspect_pregnancy', 'Xhosa'),
-                    new Choice('states:suspect_pregnancy', 'Sotho'),
+                    new Choice('en', 'English'),
+                    new Choice('af', 'Afrikaans'),
+                    new Choice('zu', 'Zulu'),
+                    new Choice('xh', 'Xhosa'),
+                    new Choice('so', 'Sotho'),
                 ],
 
-                next: function(choice) {
-                    return choice.value;
-                }
+                next: 'states:suspect_pregnancy'
             });
         });
 
@@ -256,12 +246,15 @@ go.app = function() {
                     'are pregnant?'),
 
                 choices: [
-                    new Choice('states:id_type', $('Yes')),
-                    new Choice('states:end_not_pregnant', $('No')),
+                    new Choice('yes', $('Yes')),
+                    new Choice('no', $('No')),
                 ],
 
                 next: function(choice) {
-                    return choice.value;
+                    return {
+                        yes: 'states:id_type',
+                        no: 'states:end_not_pregnant'
+                    } [choice.value];
                 }
             });
         });
@@ -283,13 +276,17 @@ go.app = function() {
                     'clinic. What kind of ID do you have?'),
 
                 choices: [
-                    new Choice('states:sa_id', $('SA ID')),
-                    new Choice('states:passport_origin', $('Passport')),
-                    new Choice('states:birth_year', $('None')),
+                    new Choice('sa_id', $('SA ID')),
+                    new Choice('passport', $('Passport')),
+                    new Choice('none', $('None')),
                 ],
 
                 next: function(choice) {
-                    return choice.value;
+                    return {
+                        sa_id: 'states:sa_id',
+                        passport: 'states:passport_origin',
+                        none: 'states:birth_year'
+                    } [choice.value];
                 }
             });
         });
@@ -298,9 +295,7 @@ go.app = function() {
             return new FreeText(name, {
                 question: $('Please enter your SA ID number:'),
 
-                next: function() {
-                    return 'states:end_success';
-                }
+                next: 'states:end_success'
             });
         });
 
@@ -309,18 +304,16 @@ go.app = function() {
                 question: $('What is the country of origin of the passport?'),
 
                 choices: [
-                    new Choice('states:passport_no', $('Zimbabwe')),
-                    new Choice('states:passport_no', $('Mozambique')),
-                    new Choice('states:passport_no', $('Malawi')),
-                    new Choice('states:passport_no', $('Nigeria')),
-                    new Choice('states:passport_no', $('DRC')),
-                    new Choice('states:passport_no', $('Somalia')),
-                    new Choice('states:passport_no', $('Other')),
+                    new Choice('zimbabwe', $('Zimbabwe')),
+                    new Choice('mozambique', $('Mozambique')),
+                    new Choice('malawi', $('Malawi')),
+                    new Choice('nigeria', $('Nigeria')),
+                    new Choice('drc', $('DRC')),
+                    new Choice('somalia', $('Somalia')),
+                    new Choice('other', $('Other')),
                 ],
 
-                next: function(choice) {
-                    return choice.value;
-                }
+                next: 'states:passport_no'
             });
         });
 
@@ -328,9 +321,7 @@ go.app = function() {
             return new FreeText(name, {
                 question: $('Please enter your Passport number:'),
 
-                next: function() {
-                    return 'states:end_success';
-                }
+                next: 'states:end_success'
             });
         });
 
@@ -340,9 +331,7 @@ go.app = function() {
                     'please enter the year that you were born (eg ' +
                     '1981)'),
 
-                next: function() {
-                    return 'states:birth_month';
-                }
+                next: 'states:birth_month'
             });
         });
 
@@ -351,23 +340,21 @@ go.app = function() {
                 question: $('Please enter the month that you were born.'),
 
                 choices: [
-                    new Choice('states:birth_day', $('Jan')),
-                    new Choice('states:birth_day', $('Feb')),
-                    new Choice('states:birth_day', $('March')),
-                    new Choice('states:birth_day', $('April')),
-                    new Choice('states:birth_day', $('May')),
-                    new Choice('states:birth_day', $('June')),
-                    new Choice('states:birth_day', $('July')),
-                    new Choice('states:birth_day', $('August')),
-                    new Choice('states:birth_day', $('Sept')),
-                    new Choice('states:birth_day', $('Oct')),
-                    new Choice('states:birth_day', $('Nov')),
-                    new Choice('states:birth_day', $('Dec')),
+                    new Choice('01', $('Jan')),
+                    new Choice('02', $('Feb')),
+                    new Choice('03', $('March')),
+                    new Choice('04', $('April')),
+                    new Choice('05', $('May')),
+                    new Choice('06', $('June')),
+                    new Choice('07', $('July')),
+                    new Choice('08', $('August')),
+                    new Choice('09', $('Sept')),
+                    new Choice('10', $('Oct')),
+                    new Choice('11', $('Nov')),
+                    new Choice('12', $('Dec')),
                 ],
 
-                next: function(choice) {
-                    return choice.value;
-                }
+                next: 'states:birth_day'
             });
         });
 
@@ -376,9 +363,7 @@ go.app = function() {
                 question: $('Please enter the day that you were born ' +
                     '(eg 14).'),
 
-                next: function() {
-                    return 'states:end_success';
-                }
+                next: 'states:end_success'
             });
         });
 
@@ -389,6 +374,7 @@ go.app = function() {
                     'You will now start receiving free messages ' +
                     'about MomConnect. Remember to visit your ' +
                     'nearest clinic.'),
+
                 next: 'states:start'
             });
         });

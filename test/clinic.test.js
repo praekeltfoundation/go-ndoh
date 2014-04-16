@@ -86,6 +86,29 @@ describe("app", function() {
             });
         });
 
+        describe("after entering the clinic code", function() {
+            it("should ask for the month the baby is due", function() {
+                return tester
+                    .setup.user.state('states:clinic_code')
+                    .input('12345')
+                    .check.interaction({
+                        state: 'states:due_date_month',
+                        reply: [
+                            'Please select the month when the baby is due:',
+                            '1. Apr',
+                            '2. May',
+                            '3. Jun',
+                            '4. Jul',
+                            '5. Aug',
+                            '6. Sept',
+                            '7. Oct',
+                            '8. Nov',
+                            '9. Dec'
+                        ].join('\n')
+                    })
+                    .run();
+            });
+        });
 
     });
 });

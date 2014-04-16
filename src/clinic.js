@@ -34,7 +34,7 @@ go.clinic = function() {
                             'where this pregnancy is being registered:'),
 
                 next: function() {
-                    return 'states:id_type';
+                    return 'states:due_date_month';
                 }
             });
         });
@@ -50,7 +50,27 @@ go.clinic = function() {
             });
         });
 
+        self.states.add('states:due_date_month', function(name) {
+            return new ChoiceState(name, {
+                question: $('Please select the month when the baby is due:'),
 
+                choices: [
+                    new Choice('states:id_type', 'Apr'),
+                    new Choice('states:id_type', 'May'),
+                    new Choice('states:id_type', 'Jun'),
+                    new Choice('states:id_type', 'Jul'),
+                    new Choice('states:id_type', 'Aug'),
+                    new Choice('states:id_type', 'Sept'),
+                    new Choice('states:id_type', 'Oct'),
+                    new Choice('states:id_type', 'Nov'),
+                    new Choice('states:id_type', 'Dec')
+                ],
+
+                next: function(choice) {
+                    return choice.value;
+                }
+            });
+        });
 
 
     });

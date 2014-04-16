@@ -1,19 +1,25 @@
-go-jsbox-skeleton
-=================
+NDOH MomConnect Apps
+====================
 
-|travis|_
+Includes 3 different apps - for use by:
+1. Clinic workers - upon confirmed pregnancy
+2. Community Health Workers - for suspected pregnancy
+3. Public use
 
-Skeleton for a vumi javascript sandbox app. Use this as a starting point for writing a sandbox app using the `vumi-jssandbox-toolkit`_.
+Idea is:
 
-::
+1. Clinic worker gathers mom's data:
+    1. Phone number
+    2. Due date
+    3. Identification
+    4. Language pref
 
-    $ npm install
-    $ npm test
+2. CHW worker gathers woman's data:
+    1. Phone number
+    2. Identification
+    3. Language pref
 
-Take a look at the `docs`_ for more examples and the toolkit's api.
-
-
-.. |travis| image:: https://travis-ci.org/praekelt/go-jsbox-skeleton.png?branch=develop
-.. _travis: https://travis-ci.org/praekelt/go-jsbox-skeleton
-.. _vumi-jssandbox-toolkit: https://github.com/praekelt/vumi-jssandbox-toolkit/tree/release/0.2.x
-.. _docs: http://vumi-jssandbox-toolkit.readthedocs.org/en/release-0.2.x/
+3. Public registration:
+    1. Choose their language
+    2. Ask if they suspect pregnancy
+    3. Supply ID

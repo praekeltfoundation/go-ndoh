@@ -119,9 +119,9 @@ describe("app", function() {
                     .check.interaction({
                         state: 'states:end_success',
                         reply: ('Thank you for subscribing to MomConnect. ' +
-                            'You will now start receiving free messages ' +
-                            'about MomConnect. Remember to visit your ' + 
-                            'nearest clinic.')
+                            'You will now receive free messages about ' +
+                            'MomConnect. Visit your nearest clinic to get ' + 
+                            'the full set of messages.')
                     })
                     .check.reply.ends_session()
                     .run();
@@ -171,9 +171,9 @@ describe("app", function() {
                     .check.interaction({
                         state: 'states:end_success',
                         reply: ('Thank you for subscribing to MomConnect. ' +
-                            'You will now start receiving free messages ' +
-                            'about MomConnect. Remember to visit your ' + 
-                            'nearest clinic.')
+                            'You will now receive free messages about ' +
+                            'MomConnect. Visit your nearest clinic to get ' + 
+                            'the full set of messages.')
                     })
                     .check.reply.ends_session()
                     .run();
@@ -243,9 +243,9 @@ describe("app", function() {
                     .check.interaction({
                         state: 'states:end_success',
                         reply: ('Thank you for subscribing to MomConnect. ' +
-                            'You will now start receiving free messages ' +
-                            'about MomConnect. Remember to visit your ' + 
-                            'nearest clinic.')
+                            'You will now receive free messages about ' +
+                            'MomConnect. Visit your nearest clinic to get ' + 
+                            'the full set of messages.')
                     })
                     .check.reply.ends_session()
                     .run();

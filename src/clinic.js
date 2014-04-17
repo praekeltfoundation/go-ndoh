@@ -11,6 +11,35 @@ go.clinic = function() {
         App.call(self, 'states:start');
         var $ = self.$;
 
+        self.make_month_choices = function(start, limit) {
+            var choices = [
+                    new Choice('1', $('Jan')),
+                    new Choice('2', $('Feb')),
+                    new Choice('3', $('Mar')),
+                    new Choice('4', $('Apr')),
+                    new Choice('5', $('May')),
+                    new Choice('6', $('Jun')),
+                    new Choice('7', $('Jul')),
+                    new Choice('8', $('Aug')),
+                    new Choice('9', $('Sep')),
+                    new Choice('10', $('Oct')),
+                    new Choice('11', $('Nov')),
+                    new Choice('12', $('Dec')),
+                ];
+
+            var choices_show = [];
+            var choices_show_count = 0;
+            
+            for (var i=start; i<limit; i++) {
+                var val = (i >= 12 ? (i-12) : i);
+                choices_show[choices_show_count] = choices[val];
+                choices_show_count++;
+            }
+
+            return choices_show;
+
+        };
+
         self.states.add('states:start', function(name) {
             return new ChoiceState(name, {
                 question: $('Welcome to The Department of Health\'s ' +
@@ -53,20 +82,14 @@ go.clinic = function() {
         });
 
         self.states.add('states:due_date_month', function(name) {
+            var today = new Date();
+            var month = today.getMonth(); // 0-bound
+
             return new ChoiceState(name, {
+                
                 question: $('Please select the month when the baby is due:'),
 
-                choices: [
-                    new Choice('04', 'Apr'),
-                    new Choice('05', 'May'),
-                    new Choice('06', 'Jun'),
-                    new Choice('07', 'Jul'),
-                    new Choice('08', 'Aug'),
-                    new Choice('09', 'Sept'),
-                    new Choice('10', 'Oct'),
-                    new Choice('11', 'Nov'),
-                    new Choice('12', 'Dec')
-                ],
+                choices: self.make_month_choices(month, month+9),
 
                 next: 'states:id_type'
             });
@@ -142,20 +165,7 @@ go.clinic = function() {
             return new ChoiceState(name, {
                 question: $('Please enter the month that you were born.'),
 
-                choices: [
-                    new Choice('01', $('Jan')),
-                    new Choice('02', $('Feb')),
-                    new Choice('03', $('March')),
-                    new Choice('04', $('April')),
-                    new Choice('05', $('May')),
-                    new Choice('06', $('June')),
-                    new Choice('07', $('July')),
-                    new Choice('08', $('August')),
-                    new Choice('09', $('Sept')),
-                    new Choice('10', $('Oct')),
-                    new Choice('11', $('Nov')),
-                    new Choice('12', $('Dec')),
-                ],
+                choices: self.make_month_choices(0, 12),
 
                 next: 'states:birth_day'
             });

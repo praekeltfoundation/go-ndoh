@@ -11,6 +11,7 @@ go.clinic = function() {
         var $ = self.$;
 
         self.make_month_choices = function(start, limit) {
+            // start should be 0 for Jan - array position
             var choices = [
                     new Choice('1', $('Jan')),
                     new Choice('2', $('Feb')),

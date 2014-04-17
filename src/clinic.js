@@ -130,12 +130,12 @@ go.clinic = function() {
                 question: $('What is the country of origin of the passport?'),
 
                 choices: [
-                    new Choice('zimbabwe', $('Zimbabwe')),
-                    new Choice('mozambique', $('Mozambique')),
-                    new Choice('malawi', $('Malawi')),
-                    new Choice('nigeria', $('Nigeria')),
-                    new Choice('drc', $('DRC')),
-                    new Choice('somalia', $('Somalia')),
+                    new Choice('zw', $('Zimbabwe')),
+                    new Choice('mz', $('Mozambique')),
+                    new Choice('mw', $('Malawi')),
+                    new Choice('ng', $('Nigeria')),
+                    new Choice('cd', $('DRC')),
+                    new Choice('so', $('Somalia')),
                     new Choice('other', $('Other')),
                 ],
 

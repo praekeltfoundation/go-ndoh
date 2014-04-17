@@ -92,7 +92,6 @@ go.app = function() {
             });
         });
 
-        // text shortened - too many characters
         self.states.add('states:id_type', function(name) {
             return new ChoiceState(name, {
                 question: $('We need some info to message you. This ' +
@@ -178,7 +177,6 @@ go.app = function() {
             });
         });
 
-        // text shortened - too many characters
         self.states.add('states:end_success', function(name) {
             return new EndState(name, {
                 text: $('Thank you for subscribing to MomConnect. ' +

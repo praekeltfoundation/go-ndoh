@@ -202,7 +202,6 @@ go.clinic = function() {
             });
         });
 
-        // text shortened - too many characters
         self.states.add('states:end_success', function(name) {
             return new EndState(name, {
                 text: $('Thank you. The pregnant woman will now ' +

@@ -3,7 +3,6 @@ go.app = function() {
     var App = vumigo.App;
     var Choice = vumigo.states.Choice;
     var ChoiceState = vumigo.states.ChoiceState;
-    // var LanguageChoice = vumigo.states.LanguageChoice;
     var EndState = vumigo.states.EndState;
     var FreeText = vumigo.states.FreeText;
 

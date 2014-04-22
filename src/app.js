@@ -149,13 +149,41 @@ go.app = function() {
             });
         });
 
-        self.states.add('states:birth_year', function(name) {
-            return new FreeText(name, {
-                question: $('Since you don\'t have an ID or passport, ' +
-                    'please enter the year that you were born (eg ' +
-                    '1981)'),
+        self.states.add('states:birth_year', function(name, opts) {
+            var error = $('There was an error in your entry. Please ' +
+                        'carefully enter your year of birth again (eg ' +
+                        '2001)');
+            // var response;
 
-                next: 'states:birth_month'
+            var question = "";
+            if (!opts.retry) {
+                question = $('Since you don\'t have an ID or passport, ' +
+                            'please enter the year that you were born (eg ' +
+                            '1981)');
+            } else {
+                question = error;
+            }
+
+            return new FreeText(name, {
+                question: question,
+
+                check: function(content) {
+                    return true;
+                    // console.log(content);
+                    // // return _.isNumber(content);
+                    // if (!_.isNumber(content)) {
+                    //     return error;
+                    // }
+                },
+
+                next: function() {
+                    return {
+                        name: 'states:birth_month',
+                        creator_opts: {
+                            retry: opts.retry
+                        }
+                    };
+                }
             });
         });
 

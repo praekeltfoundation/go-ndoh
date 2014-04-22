@@ -29,8 +29,9 @@ go.app = function() {
 
             var choices_show = [];
             var choices_show_count = 0;
+            var end = start + limit;
             
-            for (var i=start; i<limit; i++) {
+            for (var i=start; i<end; i++) {
                 var val = (i >= 12 ? (i-12) : i);
                 choices_show[choices_show_count] = choices[val];
                 choices_show_count++;

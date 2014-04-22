@@ -1,6 +1,7 @@
 var vumigo = require('vumigo_v02');
 var fixtures = require('./fixtures');
 var AppTester = vumigo.AppTester;
+var assert = require('assert');
 
 
 describe("app", function() {
@@ -15,13 +16,23 @@ describe("app", function() {
 
             tester
                 .setup.config.app({
-                    name: 'test_app',
+                    name: 'test_clinic',
                     testing: 'true',
                     testing_today: 'April 4, 2014 07:07:07'
                 })
                 .setup(function(api) {
                     fixtures().forEach(api.http.fixtures.add);
                 });
+        });
+
+        describe("when make_month_choices is called with (6,9)", function() {
+            it("should return Jul - Mar", function() {
+                assert.equal(tester.im.app.make_month_choices(6,9).length, 9);
+                assert.equal(tester.im.app.make_month_choices(6,9)[0].label
+                    .args, 'Jul');
+                assert.equal(tester.im.app.make_month_choices(6,9)[8].label
+                    .args, 'Mar');
+            });
         });
 
         describe("when the user starts a session", function() {

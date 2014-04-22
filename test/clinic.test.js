@@ -15,7 +15,9 @@ describe("app", function() {
 
             tester
                 .setup.config.app({
-                    name: 'test_app'
+                    name: 'test_app',
+                    testing: 'true',
+                    testing_today: 'April 4, 2014 07:07:07'
                 })
                 .setup(function(api) {
                     fixtures().forEach(api.http.fixtures.add);

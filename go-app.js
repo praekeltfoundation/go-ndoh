@@ -38,9 +38,17 @@ go.clinic = function() {
                 choices_show[choices_show_count] = choices[val];
                 choices_show_count++;
             }
-
             return choices_show;
+        };
 
+        self.get_today = function() {
+            var today = null;
+            if (self.im.config.testing) {
+                today = new Date(self.im.config.testing_today);
+            } else {
+                today = new Date();
+            }
+            return today;
         };
 
         self.states.add('states:start', function(name) {
@@ -85,8 +93,9 @@ go.clinic = function() {
         });
 
         self.states.add('states:due_date_month', function(name) {
-            var today = new Date();
-            var month = today.getMonth(); // 0-bound
+            
+            var today = self.get_today();   // askmike: var
+            var month = today.getMonth();   // 0-bound
 
             return new ChoiceState(name, {
                 

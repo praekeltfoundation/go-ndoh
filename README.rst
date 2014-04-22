@@ -1,19 +1,25 @@
-Go Hack App for mHealth Connectathon
-====================================
+NDOH MomConnect Apps
+====================
 
-|travis|_
+Includes 3 different apps - for use by:
+1. Clinic workers - upon confirmed pregnancy
+2. Community Health Workers - for suspected pregnancy
+3. Public use
 
-.. |travis| image:: https://travis-ci.org/praekelt/go-ndoh.png?branch=develop
-.. _travis: https://travis-ci.org/praekelt/go-ndoh
+Idea is:
 
-General idea is:
+1. Clinic worker gathers mom's data:
+    1. Phone number
+    2. Due date
+    3. Identification
+    4. Language pref
 
-1. Capture demographics:
-    1. Name
-    2. Date of Birth
-    3. ID Number
-    4. Last menstruation date
-    5. Pregnancy Status
-2. Push LH7v2 XML payload to app server
-    1. Register patient at HIE
-    2. Publish pregnancy status at HIE
+2. CHW worker gathers woman's data:
+    1. Phone number
+    2. Identification
+    3. Language pref
+
+3. Public registration:
+    1. Choose their language
+    2. Ask if they suspect pregnancy
+    3. Supply ID

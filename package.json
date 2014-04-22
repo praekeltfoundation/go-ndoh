@@ -1,14 +1,14 @@
 {
-  "name": "go-jsbox-skeleton",
-  "version": "0.2.0",
-  "description": "Skeleton for a vumi javascript sandbox app",
+  "name": "go-ndoh",
+  "version": "0.0.1",
+  "description": "NDOH pregnancy register application",
   "main": "lib/app.js",
   "scripts": {
     "test": "grunt test"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/praekelt/go-jsbox-skeleton.git"
+    "url": "git://github.com/praekelt/go-ndoh"
   },
   "keywords": [
     "vumi",
@@ -17,9 +17,9 @@
   "author": "Praekelt Foundation",
   "license": "BSD",
   "bugs": {
-    "url": "https://github.com/praekelt/go-jsbox-skeleton/issues"
+    "url": "https://github.com/praekelt/go-ndoh/issues"
   },
-  "homepage": "https://github.com/praekelt/go-jsbox-skeleton",
+  "homepage": "https://github.com/praekelt/go-ndoh",
   "dependencies": {
     "vumigo_v02": "~0.2",
     "q": "~0.9",

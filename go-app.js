@@ -95,7 +95,7 @@ go.clinic = function() {
 
         self.states.add('states:due_date_month', function(name) {
             
-            var today = self.get_today();   // askmike: var
+            var today = self.get_today();
             var month = today.getMonth();   // 0-bound
 
             return new ChoiceState(name, {

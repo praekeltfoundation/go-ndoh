@@ -43,7 +43,7 @@ go.clinic = function() {
         };
 
         self.get_today = function() {
-            var today = null;
+            var today;
             if (self.im.config.testing) {
                 today = new Date(self.im.config.testing_today);
             } else {

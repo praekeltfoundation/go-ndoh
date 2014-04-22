@@ -5,7 +5,7 @@ var assert = require('assert');
 
 
 describe("app", function() {
-    describe("GoNDOH", function() {
+    describe("for personal use", function() {
         var app;
         var tester;
 

@@ -1,23 +1,62 @@
-module.exports = function (grunt) {
-    var paths = require('./paths');
 
+
+module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-mocha-test');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-watch');
 
     grunt.initConfig({
-        paths: paths,
+        paths: {
+            src: {
+                app: {
+                    clinic: 'src/clinic.js',
+                    personal: 'src/personal.js'
+                },
+                clinic: [
+                    'src/index.js',
+                    'src/utils.js',
+                    '<%= paths.src.app.clinic %>',
+                    'src/init.js'
+                ],
+                personal: [
+                    'src/index.js',
+                    'src/utils.js',
+                    '<%= paths.src.app.personal %>',
+                    'src/init.js'
+                ],
+                all: [
+                    'src/**/*.js'
+                ]
+            },
+            dest: {
+                clinic: 'go-app-clinic.js',
+                personal: 'go-app-personal.js'
+            },
+            test: {
+                clinic: [
+                    'test/setup.js',
+                    'src/utils.js',
+                    '<%= paths.src.app.clinic %>',
+                    'test/clinic.test.js'
+                ],
+                personal: [
+                    'test/setup.js',
+                    'src/utils.js',
+                    '<%= paths.src.app.personal %>',
+                    'test/personal.test.js'
+                ]
+            }
+        },
 
         jshint: {
             options: {jshintrc: '.jshintrc'},
             all: [
                 'Gruntfile.js',
-                '<%= paths.src.app %>',
-                'test/**/*.js',
+                '<%= paths.src.all %>'
             ]
         },
-
+ 
         watch: {
             src: {
                 files: ['<%= paths.src.all %>'],
@@ -26,21 +65,25 @@ module.exports = function (grunt) {
         },
 
         concat: {
-            prd: {
-                src: ['<%= paths.src.prd %>'],
-                dest: '<%= paths.dest.prd %>'
+            clinic: {
+                src: ['<%= paths.src.clinic %>'],
+                dest: '<%= paths.dest.clinic %>'
+            },
+            personal: {
+                src: ['<%= paths.src.personal %>'],
+                dest: '<%= paths.dest.personal %>'
             }
         },
 
         mochaTest: {
-            test: {
-                src: [
-                    '<%= paths.test.requires %>',
-                    '<%= paths.test.spec %>'
-                ],
-                options: {
-                    reporter: 'spec'
-                }
+            options: {
+                reporter: 'spec'
+            },
+            test_clinic: {
+                src: ['<%= paths.test.clinic %>']
+            },
+            test_personal: {
+                src: ['<%= paths.test.personal %>']
             }
         }
     });

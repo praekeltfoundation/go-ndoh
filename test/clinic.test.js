@@ -5,13 +5,12 @@ var assert = require('assert');
 
 
 describe("app", function() {
-    describe("GoNDOHclinic", function() {
+    describe("for clinic use", function() {
         var app;
         var tester;
 
         beforeEach(function() {
-            app = new go.clinic.GoNDOHclinic();
-
+            app = new go.app.GoNDOH();
             tester = new AppTester(app);
 
             tester

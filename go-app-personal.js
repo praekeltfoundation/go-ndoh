@@ -1,3 +1,7 @@
+var go = {};
+go;
+
+
 go.app = function() {
     var vumigo = require('vumigo_v02');
     var App = vumigo.App;
@@ -30,31 +34,45 @@ go.app = function() {
             var choices_show = [];
             var choices_show_count = 0;
             var end = start + limit;
-
+            
             for (var i=start; i<end; i++) {
                 var val = (i >= 12 ? (i-12) : i);
                 choices_show[choices_show_count] = choices[val];
                 choices_show_count++;
             }
-            return choices_show;
-        };
 
-        self.get_today = function() {
-            var today;
-            if (self.im.config.testing) {
-                today = new Date(self.im.config.testing_today);
-            } else {
-                today = new Date();
-            }
-            return today;
+            return choices_show;
+
         };
 
         self.states.add('states:start', function(name) {
             return new ChoiceState(name, {
                 question: $('Welcome to The Department of Health\'s ' +
-                            'MomConnect programme. Is this no. (MSISDN) ' +
-                            'the mobile no. of the pregnant woman to be ' +
-                            'registered?'),
+                    'MomConnect programme. Please select your preferred ' +
+                    'language:'),
+
+                choices: [
+                    new Choice('en', $('English')),
+                    new Choice('af', $('Afrikaans')),
+                    new Choice('zu', $('Zulu')),
+                    new Choice('xh', $('Xhosa')),
+                    new Choice('so', $('Sotho')),
+                ],
+
+                next: function(choice) {
+                    return self.im.user.set_lang(choice.value)
+                    .then(function() {
+                        return 'states:suspect_pregnancy';
+                    });
+                }
+            });
+        });
+
+        self.states.add('states:suspect_pregnancy', function(name) {
+            return new ChoiceState(name, {
+                question: $('MomConnect sends free support SMSs to ' +
+                    'pregnant mothers. Are you or do you suspect that you ' +
+                    'are pregnant?'),
 
                 choices: [
                     new Choice('yes', $('Yes')),
@@ -63,52 +81,27 @@ go.app = function() {
 
                 next: function(choice) {
                     return {
-                        yes: 'states:clinic_code',
-                        no: 'states:mobile_no'
+                        yes: 'states:id_type',
+                        no: 'states:end_not_pregnant'
                     } [choice.value];
                 }
             });
         });
 
-        self.states.add('states:clinic_code', function(name) {
-            return new FreeText(name, {
-                question: $('Please enter the clinic code for the facility ' +
-                            'where this pregnancy is being registered:'),
-
-                next: 'states:due_date_month'
-            });
-        });
-
-        self.states.add('states:mobile_no', function(name) {
-            return new FreeText(name, {
-                question: $('Please input the mobile number of the ' +
-                            'pregnant woman to be registered:'),
-
-                next: function() {
-                    return 'states:clinic_code';
-                }
-            });
-        });
-
-        self.states.add('states:due_date_month', function(name) {
-            
-            var today = self.get_today();
-            var month = today.getMonth();   // 0-bound
-
-            return new ChoiceState(name, {
-                
-                question: $('Please select the month when the baby is due:'),
-
-                choices: self.make_month_choices(month, 9),
-
-                next: 'states:id_type'
+        self.states.add('states:end_not_pregnant', function(name) {
+            return new EndState(name, {
+                text: $('We are sorry but this service is only for ' +
+                    'pregnant mothers. If you have other health concerns ' +
+                    'please visit your nearest clinic.'),
+                next: 'states:start'
             });
         });
 
         self.states.add('states:id_type', function(name) {
             return new ChoiceState(name, {
-                question: $('What kind of identification does the pregnant ' +
-                            'mother have?'),
+                question: $('We need some info to message you. This ' +
+                    'is private and will only be used to help you at a ' +
+                    'clinic. What kind of ID do you have?'),
 
                 choices: [
                     new Choice('sa_id', $('SA ID')),
@@ -128,10 +121,9 @@ go.app = function() {
 
         self.states.add('states:sa_id', function(name) {
             return new FreeText(name, {
-                question: $('Please enter the pregnant mother\'s SA ID ' +
-                            'number:'),
+                question: $('Please enter your SA ID number:'),
 
-                next: 'states:language'
+                next: 'states:end_success'
             });
         });
 
@@ -157,7 +149,7 @@ go.app = function() {
             return new FreeText(name, {
                 question: $('Please enter your Passport number:'),
 
-                next: 'states:language'
+                next: 'states:end_success'
             });
         });
 
@@ -186,37 +178,16 @@ go.app = function() {
                 question: $('Please enter the day that you were born ' +
                     '(eg 14).'),
 
-                next: 'states:language'
-            });
-        });
-
-        self.states.add('states:language', function(name) {
-            return new ChoiceState(name, {
-                question: $('Please select the language that the ' +
-                            'pregnant mother would like to get messages in:'),
-
-                choices: [
-                    new Choice('en', $('English')),
-                    new Choice('af', $('Afrikaans')),
-                    new Choice('zu', $('Zulu')),
-                    new Choice('xh', $('Xhosa')),
-                    new Choice('so', $('Sotho')),
-                ],
-
-                next: function(choice) {
-                    return self.im.user.set_lang(choice.value)
-                    .then(function() {
-                        return 'states:end_success';
-                    });
-                }
+                next: 'states:end_success'
             });
         });
 
         self.states.add('states:end_success', function(name) {
             return new EndState(name, {
-                text: $('Thank you. The pregnant woman will now ' +
-                        'receive weekly messages about her pregnancy ' +
-                        'from the Department of Health.'),
+                text: $('Thank you for subscribing to MomConnect. ' +
+                        'You will now receive free messages about ' +
+                        'MomConnect. Visit your nearest clinic to get ' + 
+                        'the full set of messages.'),
 
                 next: 'states:start'
             });
@@ -226,5 +197,16 @@ go.app = function() {
 
     return {
         GoNDOH: GoNDOH
+    };
+}();
+
+go.init = function() {
+    var vumigo = require('vumigo_v02');
+    var InteractionMachine = vumigo.InteractionMachine;
+    var GoNDOH = go.app.GoNDOH;
+
+
+    return {
+        im: new InteractionMachine(api, new GoNDOH())
     };
 }();

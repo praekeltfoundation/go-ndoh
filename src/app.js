@@ -48,11 +48,11 @@ go.app = function() {
                     'language:'),
 
                 choices: [
-                    new Choice('en', 'English'),
-                    new Choice('af', 'Afrikaans'),
-                    new Choice('zu', 'Zulu'),
-                    new Choice('xh', 'Xhosa'),
-                    new Choice('so', 'Sotho'),
+                    new Choice('en', $('English')),
+                    new Choice('af', $('Afrikaans')),
+                    new Choice('zu', $('Zulu')),
+                    new Choice('xh', $('Xhosa')),
+                    new Choice('so', $('Sotho')),
                 ],
 
                 next: function(choice) {

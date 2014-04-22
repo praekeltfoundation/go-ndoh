@@ -57,8 +57,8 @@ go.clinic = function() {
                             'registered?'),
 
                 choices: [
-                    new Choice('yes', 'Yes'),
-                    new Choice('no', 'No'),
+                    new Choice('yes', $('Yes')),
+                    new Choice('no', $('No')),
                 ],
 
                 next: function(choice) {
@@ -196,11 +196,11 @@ go.clinic = function() {
                             'pregnant mother would like to get messages in:'),
 
                 choices: [
-                    new Choice('en', 'English'),
-                    new Choice('af', 'Afrikaans'),
-                    new Choice('zu', 'Zulu'),
-                    new Choice('xh', 'Xhosa'),
-                    new Choice('so', 'Sotho'),
+                    new Choice('en', $('English')),
+                    new Choice('af', $('Afrikaans')),
+                    new Choice('zu', $('Zulu')),
+                    new Choice('xh', $('Xhosa')),
+                    new Choice('so', $('Sotho')),
                 ],
 
                 next: function(choice) {

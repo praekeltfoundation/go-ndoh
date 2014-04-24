@@ -83,6 +83,22 @@ describe("app", function() {
             });
         });
 
+        describe("after entering the pregnant woman's number incorrectly", function() {
+            it("should ask for the mobile number again", function() {
+                return tester
+                    .setup.user.state('states:mobile_no')
+                    .input('08212345AB')
+                    .check.interaction({
+                        state: 'states:mobile_no',
+                        reply: (
+                            'Sorry, the mobile number did not validate. ' +
+                            'Please reenter the mobile number:')
+                    })
+                    .run();
+            });
+        });
+
+
         describe("after entering the pregnant woman's number", function() {
             it("should ask for the clinic code", function() {
                 return tester
@@ -160,7 +176,7 @@ describe("app", function() {
             it("should ask for pregnant woman's msg language", function() {
                 return tester
                     .setup.user.state('states:sa_id')
-                    .input('7001011234050')
+                    .input('8001015009087')
                     .check.interaction({
                         state: 'states:language',
                         reply: ['Please select the language that the ' +
@@ -171,6 +187,20 @@ describe("app", function() {
                             '4. Xhosa',
                             '5. Sotho'
                             ].join('\n')
+                    })
+                    .run();
+            });
+        });
+
+        describe("after the user enters their ID number incorrectly", function() {
+            it("should ask them to try again", function() {
+                return tester
+                    .setup.user.state('states:sa_id')
+                    .input('1234015009087')
+                    .check.interaction({
+                        state: 'states:sa_id',
+                        reply: 'Sorry, the mother\'s ID number did not validate. ' +
+                          'Please reenter the SA ID number:'
                     })
                     .run();
             });
@@ -238,9 +268,23 @@ describe("app", function() {
                     .input('3')
                     .check.interaction({
                         state: 'states:birth_year',
-                        reply: ('Since you don\'t have an ID or passport, ' +
-                            'please enter the year that you were born (eg ' +
-                            '1981)')
+                        reply: ('Please enter the year that the pregnant mother was born (eg ' +
+                                '1981)')
+                    })
+                    .run();
+            });
+        });
+
+        describe("after the user enters their birth year incorrectly", function() {
+            it("should ask for their birth year again", function() {
+                return tester
+                    .setup.user.state('states:birth_year')
+                    .input('Nineteen Eighty One')
+                    .check.interaction({
+                        state: 'states:birth_year',
+                        reply: ('There was an error in your entry. Please ' +
+                        'carefully enter the mother\'s year of birth again (eg ' +
+                        '2001)')
                     })
                     .run();
             });
@@ -279,8 +323,23 @@ describe("app", function() {
                     .input('1')
                     .check.interaction({
                         state: 'states:birth_day',
-                        reply: ('Please enter the day that you were born ' +
+                        reply: ('Please enter the day that the mother was born ' +
                             '(eg 14).')
+                    })
+                    .run();
+            });
+        });
+
+        describe("after the user enters their birth day incorrectly", function() {
+            it("should ask them their birth day again", function() {
+                return tester
+                    .setup.user.state('states:birth_day')
+                    .input('fourteen')
+                    .check.interaction({
+                        state: 'states:birth_day',
+                        reply: ('There was an error in your entry. Please ' +
+                        'carefully enter the mother\'s day of birth again (eg ' +
+                        '8)')
                     })
                     .run();
             });
@@ -290,7 +349,7 @@ describe("app", function() {
             it("should ask for pregnant woman's msg language", function() {
                 return tester
                     .setup.user.state('states:birth_day')
-                    .input('7001011234050')
+                    .input('14')
                     .check.interaction({
                         state: 'states:language',
                         reply: ['Please select the language that the ' +

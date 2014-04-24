@@ -53,6 +53,44 @@ go.app = function() {
             return today;
         };
 
+        self.check_valid_number = function(input){
+            // an attempt to solve the insanity of JavaScript numbers
+            var numbers_only = new RegExp('^\\d+$');
+            if (input !== '' && numbers_only.test(input) && !Number.isNaN(Number(input))){
+                return true;
+            } else {
+                return false;
+            }
+        };
+
+        self.check_number_in_range = function(input, start, end){
+            return self.check_valid_number(input) && (parseInt(input) >= start) && (parseInt(input) <= end);
+        };
+
+        self.validate_id_sa = function(id) {
+            var i, c,
+                even = '',
+                sum = 0,
+                check = id.slice(-1);
+
+            if (id.length != 13 || id.match(/\D/)) {
+                return false;
+            }
+            id = id.substr(0, id.length - 1);
+            for (i = 0; id.charAt(i); i += 2) {
+                c = id.charAt(i);
+                sum += +c;
+                even += id.charAt(i + 1);
+            }
+            even = '' + even * 2;
+            for (i = 0; even.charAt(i); i++) {
+                c = even.charAt(i);
+                sum += +c;
+            }
+            sum = 10 - ('' + sum).charAt(1);
+            return ('' + sum).slice(-1) == check;
+        };
+
         self.states.add('states:start', function(name) {
             return new ChoiceState(name, {
                 question: $('Welcome to The Department of Health\'s ' +
@@ -83,13 +121,34 @@ go.app = function() {
             });
         });
 
-        self.states.add('states:mobile_no', function(name) {
+        self.states.add('states:mobile_no', function(name, opts) {
+            var error = $('Sorry, the mobile number did not validate. ' +
+                          'Please reenter the mobile number:');
+
+            var question;
+            if (!opts.retry) {
+                question = $('Please input the mobile number of the ' +
+                            'pregnant woman to be registered:');
+            } else {
+                question = error;
+            }
+
             return new FreeText(name, {
-                question: $('Please input the mobile number of the ' +
-                            'pregnant woman to be registered:'),
+                question: question,
+
+                check: function(content) {
+                    if (!self.check_valid_number(content)) {
+                        return error;
+                    }
+                },
 
                 next: function() {
-                    return 'states:clinic_code';
+                    return {
+                        name: 'states:clinic_code',
+                        creator_opts: {
+                            retry: opts.retry
+                        }
+                    };
                 }
             });
         });
@@ -130,12 +189,35 @@ go.app = function() {
             });
         });
 
-        self.states.add('states:sa_id', function(name) {
-            return new FreeText(name, {
-                question: $('Please enter the pregnant mother\'s SA ID ' +
-                            'number:'),
+        self.states.add('states:sa_id', function(name, opts) {
+            var error = $('Sorry, the mother\'s ID number did not validate. ' +
+                          'Please reenter the SA ID number:');
 
-                next: 'states:language'
+            var question;
+            if (!opts.retry) {
+                question = $('Please enter the pregnant mother\'s SA ID ' +
+                            'number:');
+            } else {
+                question = error;
+            }
+
+            return new FreeText(name, {
+                question: question,
+
+                check: function(content) {
+                    if (!self.validate_id_sa(content)) {
+                        return error;
+                    }
+                },
+
+                next: function() {
+                    return {
+                        name: 'states:language',
+                        creator_opts: {
+                            retry: opts.retry
+                        }
+                    };
+                }
             });
         });
 
@@ -165,13 +247,37 @@ go.app = function() {
             });
         });
 
-        self.states.add('states:birth_year', function(name) {
-            return new FreeText(name, {
-                question: $('Since you don\'t have an ID or passport, ' +
-                    'please enter the year that you were born (eg ' +
-                    '1981)'),
 
-                next: 'states:birth_month'
+        self.states.add('states:birth_year', function(name, opts) {
+            var error = $('There was an error in your entry. Please ' +
+                        'carefully enter the mother\'s year of birth again (eg ' +
+                        '2001)');
+
+            var question;
+            if (!opts.retry) {
+                question = $('Please enter the year that the pregnant mother was born (eg ' +
+                    '1981)');
+            } else {
+                question = error;
+            }
+
+            return new FreeText(name, {
+                question: question,
+
+                check: function(content) {
+                    if (!self.check_number_in_range(content, 1900, self.get_today().getFullYear())) {
+                        return error;
+                    }
+                },
+
+                next: function() {
+                    return {
+                        name: 'states:birth_month',
+                        creator_opts: {
+                            retry: opts.retry
+                        }
+                    };
+                }
             });
         });
 
@@ -185,12 +291,37 @@ go.app = function() {
             });
         });
 
-        self.states.add('states:birth_day', function(name) {
-            return new FreeText(name, {
-                question: $('Please enter the day that you were born ' +
-                    '(eg 14).'),
 
-                next: 'states:language'
+        self.states.add('states:birth_day', function(name, opts) {
+            var error = $('There was an error in your entry. Please ' +
+                        'carefully enter the mother\'s day of birth again (eg ' +
+                        '8)');
+
+            var question;
+            if (!opts.retry) {
+                question = $('Please enter the day that the mother was born ' +
+                    '(eg 14).');
+            } else {
+                question = error;
+            }
+
+            return new FreeText(name, {
+                question: question,
+
+                check: function(content) {
+                    if (!self.check_number_in_range(content, 1, 31)) {
+                        return error;
+                    }
+                },
+
+                next: function() {
+                    return {
+                        name: 'states:language',
+                        creator_opts: {
+                            retry: opts.retry
+                        }
+                    };
+                }
             });
         });
 

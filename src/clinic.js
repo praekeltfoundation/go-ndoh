@@ -185,12 +185,35 @@ go.app = function() {
             });
         });
 
-        self.states.add('states:sa_id', function(name) {
-            return new FreeText(name, {
-                question: $('Please enter the pregnant mother\'s SA ID ' +
-                            'number:'),
+        self.states.add('states:sa_id', function(name, opts) {
+            var error = $('Sorry, the mother\'s ID number did not validate. ' +
+                          'Please reenter the SA ID number:');
 
-                next: 'states:language'
+            var question;
+            if (!opts.retry) {
+                question = $('Please enter the pregnant mother\'s SA ID ' +
+                            'number:');
+            } else {
+                question = error;
+            }
+
+            return new FreeText(name, {
+                question: question,
+
+                check: function(content) {
+                    if (!self.validate_id_sa(content)) {
+                        return error;
+                    }
+                },
+
+                next: function() {
+                    return {
+                        name: 'states:language',
+                        creator_opts: {
+                            retry: opts.retry
+                        }
+                    };
+                }
             });
         });
 

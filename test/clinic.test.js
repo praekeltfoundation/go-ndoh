@@ -176,7 +176,7 @@ describe("app", function() {
             it("should ask for pregnant woman's msg language", function() {
                 return tester
                     .setup.user.state('states:sa_id')
-                    .input('7001011234050')
+                    .input('8001015009087')
                     .check.interaction({
                         state: 'states:language',
                         reply: ['Please select the language that the ' +
@@ -187,6 +187,20 @@ describe("app", function() {
                             '4. Xhosa',
                             '5. Sotho'
                             ].join('\n')
+                    })
+                    .run();
+            });
+        });
+
+        describe("after the user enters their ID number incorrectly", function() {
+            it("should ask them to try again", function() {
+                return tester
+                    .setup.user.state('states:sa_id')
+                    .input('1234015009087')
+                    .check.interaction({
+                        state: 'states:sa_id',
+                        reply: 'Sorry, the mother\'s ID number did not validate. ' +
+                          'Please reenter the SA ID number:'
                     })
                     .run();
             });

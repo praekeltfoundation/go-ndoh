@@ -254,9 +254,23 @@ describe("app", function() {
                     .input('3')
                     .check.interaction({
                         state: 'states:birth_year',
-                        reply: ('Since you don\'t have an ID or passport, ' +
-                            'please enter the year that you were born (eg ' +
-                            '1981)')
+                        reply: ('Please enter the year that the pregnant mother was born (eg ' +
+                                '1981)')
+                    })
+                    .run();
+            });
+        });
+
+        describe("after the user enters their birth year incorrectly", function() {
+            it("should ask for their birth year again", function() {
+                return tester
+                    .setup.user.state('states:birth_year')
+                    .input('Nineteen Eighty One')
+                    .check.interaction({
+                        state: 'states:birth_year',
+                        reply: ('There was an error in your entry. Please ' +
+                        'carefully enter the mother\'s year of birth again (eg ' +
+                        '2001)')
                     })
                     .run();
             });

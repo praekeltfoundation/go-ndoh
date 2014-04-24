@@ -295,8 +295,23 @@ describe("app", function() {
                     .input('1')
                     .check.interaction({
                         state: 'states:birth_day',
-                        reply: ('Please enter the day that you were born ' +
+                        reply: ('Please enter the day that the mother was born ' +
                             '(eg 14).')
+                    })
+                    .run();
+            });
+        });
+
+        describe("after the user enters their birth day incorrectly", function() {
+            it("should ask them their birth day again", function() {
+                return tester
+                    .setup.user.state('states:birth_day')
+                    .input('fourteen')
+                    .check.interaction({
+                        state: 'states:birth_day',
+                        reply: ('There was an error in your entry. Please ' +
+                        'carefully enter the mother\'s day of birth again (eg ' +
+                        '8)')
                     })
                     .run();
             });
@@ -306,7 +321,7 @@ describe("app", function() {
             it("should ask for pregnant woman's msg language", function() {
                 return tester
                     .setup.user.state('states:birth_day')
-                    .input('7001011234050')
+                    .input('14')
                     .check.interaction({
                         state: 'states:language',
                         reply: ['Please select the language that the ' +

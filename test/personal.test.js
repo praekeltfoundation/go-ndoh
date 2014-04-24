@@ -126,7 +126,7 @@ describe("app", function() {
             it("should thank them and exit", function() {
                 return tester
                     .setup.user.state('states:sa_id')
-                    .input('7001011234050')
+                    .input('8001015009087')
                     .check.interaction({
                         state: 'states:end_success',
                         reply: ('Thank you for subscribing to MomConnect. ' +
@@ -138,6 +138,21 @@ describe("app", function() {
                     .run();
             });
         });
+
+        describe("after the user enters their ID number incorrectly", function() {
+            it("should ask them to try again", function() {
+                return tester
+                    .setup.user.state('states:sa_id')
+                    .input('1234015009087')
+                    .check.interaction({
+                        state: 'states:sa_id',
+                        reply: 'Sorry, your ID number did not validate. ' +
+                          'Please reenter your SA ID number:'
+                    })
+                    .run();
+            });
+        });
+
 
         describe("if the user selects Passport (id type)", function() {
             it("should ask for their country of origin", function() {

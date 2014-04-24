@@ -65,6 +65,30 @@ go.app = function() {
             return self.check_valid_number(input) && (parseInt(input) >= start) && (parseInt(input) <= end);
         };
 
+        self.validate_id_sa = function(id) {
+            var i, c,
+                even = '',
+                sum = 0,
+                check = id.slice(-1);
+
+            if (id.length != 13 || id.match(/\D/)) {
+                return false;
+            }
+            id = id.substr(0, id.length - 1);
+            for (i = 0; id.charAt(i); i += 2) {
+                c = id.charAt(i);
+                sum += +c;
+                even += id.charAt(i + 1);
+            }
+            even = '' + even * 2;
+            for (i = 0; even.charAt(i); i++) {
+                c = even.charAt(i);
+                sum += +c;
+            }
+            sum = 10 - ('' + sum).charAt(1);
+            return ('' + sum).slice(-1) == check;
+        };
+
         self.states.add('states:start', function(name) {
             return new ChoiceState(name, {
                 question: $('Welcome to The Department of Health\'s ' +
@@ -139,11 +163,34 @@ go.app = function() {
             });
         });
 
-        self.states.add('states:sa_id', function(name) {
-            return new FreeText(name, {
-                question: $('Please enter your SA ID number:'),
+        self.states.add('states:sa_id', function(name, opts) {
+            var error = $('Sorry, your ID number did not validate. ' +
+                          'Please reenter your SA ID number:');
 
-                next: 'states:end_success'
+            var question;
+            if (!opts.retry) {
+                question = $('Please enter your SA ID number:');
+            } else {
+                question = error;
+            }
+
+            return new FreeText(name, {
+                question: question,
+
+                check: function(content) {
+                    if (!self.validate_id_sa(content)) {
+                        return error;
+                    }
+                },
+
+                next: function() {
+                    return {
+                        name: 'states:end_success',
+                        creator_opts: {
+                            retry: opts.retry
+                        }
+                    };
+                }
             });
         });
 

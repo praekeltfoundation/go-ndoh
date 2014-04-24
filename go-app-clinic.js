@@ -53,6 +53,44 @@ go.app = function() {
             return today;
         };
 
+        self.check_valid_number = function(input){
+            // an attempt to solve the insanity of JavaScript numbers
+            var numbers_only = new RegExp('^\\d+$');
+            if (input !== '' && numbers_only.test(input) && !Number.isNaN(Number(input))){
+                return true;
+            } else {
+                return false;
+            }
+        };
+
+        self.check_number_in_range = function(input, start, end){
+            return self.check_valid_number(input) && (parseInt(input) >= start) && (parseInt(input) <= end);
+        };
+
+        self.validate_id_sa = function(id) {
+            var i, c,
+                even = '',
+                sum = 0,
+                check = id.slice(-1);
+
+            if (id.length != 13 || id.match(/\D/)) {
+                return false;
+            }
+            id = id.substr(0, id.length - 1);
+            for (i = 0; id.charAt(i); i += 2) {
+                c = id.charAt(i);
+                sum += +c;
+                even += id.charAt(i + 1);
+            }
+            even = '' + even * 2;
+            for (i = 0; even.charAt(i); i++) {
+                c = even.charAt(i);
+                sum += +c;
+            }
+            sum = 10 - ('' + sum).charAt(1);
+            return ('' + sum).slice(-1) == check;
+        };
+
         self.states.add('states:start', function(name) {
             return new ChoiceState(name, {
                 question: $('Welcome to The Department of Health\'s ' +
@@ -83,13 +121,34 @@ go.app = function() {
             });
         });
 
-        self.states.add('states:mobile_no', function(name) {
+        self.states.add('states:mobile_no', function(name, opts) {
+            var error = $('Sorry, the mobile number did not validate. ' +
+                          'Please reenter the mobile number:');
+
+            var question;
+            if (!opts.retry) {
+                question = $('Please input the mobile number of the ' +
+                            'pregnant woman to be registered:');
+            } else {
+                question = error;
+            }
+
             return new FreeText(name, {
-                question: $('Please input the mobile number of the ' +
-                            'pregnant woman to be registered:'),
+                question: question,
+
+                check: function(content) {
+                    if (!self.check_valid_number(content)) {
+                        return error;
+                    }
+                },
 
                 next: function() {
-                    return 'states:clinic_code';
+                    return {
+                        name: 'states:clinic_code',
+                        creator_opts: {
+                            retry: opts.retry
+                        }
+                    };
                 }
             });
         });

@@ -83,6 +83,22 @@ describe("app", function() {
             });
         });
 
+        describe("after entering the pregnant woman's number incorrectly", function() {
+            it("should ask for the mobile number again", function() {
+                return tester
+                    .setup.user.state('states:mobile_no')
+                    .input('08212345AB')
+                    .check.interaction({
+                        state: 'states:mobile_no',
+                        reply: (
+                            'Sorry, the mobile number did not validate. ' +
+                            'Please reenter the mobile number:')
+                    })
+                    .run();
+            });
+        });
+
+
         describe("after entering the pregnant woman's number", function() {
             it("should ask for the clinic code", function() {
                 return tester

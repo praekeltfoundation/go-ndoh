@@ -233,7 +233,7 @@ describe("app", function() {
         });
 
         describe("after the user enters their birth year incorrectly", function() {
-            it("should ask for their birth month", function() {
+            it("should ask for their birth year again", function() {
                 return tester
                     .setup.user.state('states:birth_year')
                     .input('Nineteen Eighty One')
@@ -256,6 +256,21 @@ describe("app", function() {
                         state: 'states:birth_day',
                         reply: ('Please enter the day that you were born ' +
                             '(eg 14).')
+                    })
+                    .run();
+            });
+        });
+
+        describe("after the user enters their birth day incorrectly", function() {
+            it("should ask them their birth day again", function() {
+                return tester
+                    .setup.user.state('states:birth_day')
+                    .input('fourteen')
+                    .check.interaction({
+                        state: 'states:birth_day',
+                        reply: ('There was an error in your entry. Please ' +
+                        'carefully enter your day of birth again (eg ' +
+                        '8)')
                     })
                     .run();
             });

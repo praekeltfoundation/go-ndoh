@@ -181,9 +181,8 @@ go.app = function() {
             var error = $('There was an error in your entry. Please ' +
                         'carefully enter your year of birth again (eg ' +
                         '2001)');
-            // var response;
 
-            var question = "";
+            var question;
             if (!opts.retry) {
                 question = $('Since you don\'t have an ID or passport, ' +
                             'please enter the year that you were born (eg ' +
@@ -222,12 +221,36 @@ go.app = function() {
             });
         });
 
-        self.states.add('states:birth_day', function(name) {
-            return new FreeText(name, {
-                question: $('Please enter the day that you were born ' +
-                    '(eg 14).'),
+        self.states.add('states:birth_day', function(name, opts) {
+            var error = $('There was an error in your entry. Please ' +
+                        'carefully enter your day of birth again (eg ' +
+                        '8)');
 
-                next: 'states:end_success'
+            var question;
+            if (!opts.retry) {
+                question = $('Please enter the day that you were born ' +
+                    '(eg 14).');
+            } else {
+                question = error;
+            }
+
+            return new FreeText(name, {
+                question: question,
+
+                check: function(content) {
+                    if (!self.check_number_in_range(content, 1, 31)) {
+                        return error;
+                    }
+                },
+
+                next: function() {
+                    return {
+                        name: 'states:end_success',
+                        creator_opts: {
+                            retry: opts.retry
+                        }
+                    };
+                }
             });
         });
 

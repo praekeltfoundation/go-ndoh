@@ -32,6 +32,12 @@ module.exports = function (grunt) {
                     '<%= paths.src.app.personal %>',
                     'src/init.js'
                 ],
+                optout: [
+                    'src/index.js',
+                    'src/utils.js',
+                    '<%= paths.src.app.optout %>',
+                    'src/init.js'
+                ],
                 all: [
                     'src/**/*.js'
                 ]
@@ -39,7 +45,8 @@ module.exports = function (grunt) {
             dest: {
                 clinic: 'go-app-clinic.js',
                 chw: 'go-app-chw.js',
-                personal: 'go-app-personal.js'
+                personal: 'go-app-personal.js',
+                optout: 'go-app-optout.js'
             },
             test: {
                 clinic: [
@@ -59,6 +66,12 @@ module.exports = function (grunt) {
                     'src/utils.js',
                     '<%= paths.src.app.personal %>',
                     'test/personal.test.js'
+                ],
+                optout: [
+                    'test/setup.js',
+                    'src/utils.js',
+                    '<%= paths.src.app.optout %>',
+                    'test/optout.test.js'
                 ]
             }
         },
@@ -90,6 +103,10 @@ module.exports = function (grunt) {
             personal: {
                 src: ['<%= paths.src.personal %>'],
                 dest: '<%= paths.dest.personal %>'
+            },
+            optout: {
+                src: ['<%= paths.src.optout %>'],
+                dest: '<%= paths.dest.optout %>'
             }
         },
 
@@ -105,6 +122,9 @@ module.exports = function (grunt) {
             },
             test_personal: {
                 src: ['<%= paths.test.personal %>']
+            },
+            test_optout: {
+                src: ['<%= paths.test.optout %>']
             }
         }
     });

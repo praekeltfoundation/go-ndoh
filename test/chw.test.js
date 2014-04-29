@@ -5,7 +5,7 @@ var assert = require('assert');
 
 
 describe("app", function() {
-    describe("for clinic use", function() {
+    describe("for chw use", function() {
         var app;
         var tester;
 
@@ -15,7 +15,7 @@ describe("app", function() {
 
             tester
                 .setup.config.app({
-                    name: 'test_clinic',
+                    name: 'test_chw',
                     testing: 'true',
                     testing_today: 'April 4, 2014 07:07:07'
                 })
@@ -103,7 +103,7 @@ describe("app", function() {
         });
 
         describe("after entering the pregnant woman's number", function() {
-            it("should ask for the clinic code", function() {
+            it("should ask for the pregnant woman's id type", function() {
                 return tester
                     .setup.user.state('states:mobile_no')
                     .input('0821234567')

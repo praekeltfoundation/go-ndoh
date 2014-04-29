@@ -12,7 +12,8 @@ module.exports = function (grunt) {
                 app: {
                     clinic: 'src/clinic.js',
                     chw: 'src/chw.js',
-                    personal: 'src/personal.js'
+                    personal: 'src/personal.js',
+                    optout: 'src/optout.js'
                 },
                 clinic: [
                     'src/index.js',

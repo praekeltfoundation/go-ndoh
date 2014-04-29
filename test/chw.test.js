@@ -336,9 +336,10 @@ describe("app", function() {
                     .input('1')
                     .check.interaction({
                         state: 'states:end_success',
-                        reply: ('Thank you. The pregnant woman will now ' +
-                            'receive weekly messages about her pregnancy ' +
-                            'from the Department of Health.')
+                        reply: ('Thank you, registration is complete. The ' +
+                            'pregnant woman will now receive messages to ' +
+                            'encourage her to register at her nearest ' + 
+                            'clinic.')
                     })
                     .check.reply.ends_session()
                     .run();

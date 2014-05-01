@@ -24,16 +24,6 @@ describe("app", function() {
                 });
         });
 
-        describe("when make_month_choices is called with (6,9)", function() {
-            it("should return Jul - Mar", function() {
-                assert.equal(tester.im.app.make_month_choices(6,9).length, 9);
-                assert.equal(tester.im.app.make_month_choices(6,9)[0].label
-                    .args, 'Jul');
-                assert.equal(tester.im.app.make_month_choices(6,9)[8].label
-                    .args, 'Mar');
-            });
-        });
-
         describe("when the user starts a session", function() {
             it("should check if no. belongs to pregnant woman", function() {
                 return tester

@@ -329,7 +329,7 @@ describe("app", function() {
         });
 
         describe("after the user enters their birth month", function() {
-            it("should ask for their birth day", function() {
+            it("should set their birth year, ask for their birth day", function() {
                 return tester
                     .setup.user.addr('+27001')
                     .setup.user.state('states:birth_month')
@@ -348,8 +348,9 @@ describe("app", function() {
         });
 
         describe("after the user enters their birth day incorrectly", function() {
-            it("should ask them their birth day again", function() {
+            it("should not save birth day, ask them their birth day again", function() {
                 return tester
+                    .setup.user.addr('+27001')
                     .setup.user.state('states:birth_day')
                     .input('fourteen')
                     .check.interaction({
@@ -358,13 +359,18 @@ describe("app", function() {
                         'carefully enter your day of birth again (eg ' +
                         '8)')
                     })
+                    .check(function(api) {
+                        var contact = api.contacts.store[0];
+                        assert.equal(contact.extra.birth_day, undefined);
+                    })
                     .run();
             });
         });
 
         describe("after the user enters their birth day", function() {
-            it("should thank them and exit", function() {
+            it("should save birth day, thank them and exit", function() {
                 return tester
+                    .setup.user.addr('+27001')
                     .setup.user.state('states:birth_day')
                     .input('14')
                     .check.interaction({
@@ -373,6 +379,10 @@ describe("app", function() {
                             'You will now receive free messages about ' +
                             'MomConnect. Visit your nearest clinic to get ' + 
                             'the full set of messages.')
+                    })
+                    .check(function(api) {
+                        var contact = api.contacts.store[0];
+                        assert.equal(contact.extra.birth_day, '14');
                     })
                     .check.reply.ends_session()
                     .run();

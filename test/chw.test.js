@@ -2,6 +2,7 @@ var vumigo = require('vumigo_v02');
 var fixtures = require('./fixtures');
 var AppTester = vumigo.AppTester;
 var assert = require('assert');
+var _ = require('lodash');
 
 describe("app", function() {
     describe("for chw use", function() {
@@ -16,7 +17,11 @@ describe("app", function() {
                 .setup.config.app({
                     name: 'test_chw',
                     testing: 'true',
-                    testing_today: 'April 4, 2014 07:07:07'
+                    testing_today: 'April 4, 2014 07:07:07',
+                    endpoints: {
+                        "sms": {"delivery_class": "sms"}
+                    },
+                    channel: "*120*550*3#"
                 })
                 .setup(function(api) {
                     fixtures().forEach(api.http.fixtures.add);
@@ -335,5 +340,59 @@ describe("app", function() {
             });
         });
 
+        describe("when a session is terminated", function() {
+            describe("when they are not completed registration",function() {
+                describe("when they have already been sent a registration sms",function() {
+                    it("should not send them an sms",function() {
+                        return tester
+                            .setup(function(api) {
+                                api.contacts.add( {
+                                    msisdn: '+273444',
+                                    extra : {
+                                        redial_sms_sent: 'true'
+                                    }
+                                });
+                            })
+                            .setup.user.addr('+273444')
+                            .setup.user.state('states:start')
+                            .input('1')
+                            .input.session_event('close')
+                            .check(function(api) {
+                                var smses = _.where(api.outbound.store, {
+                                    endpoint: 'sms'
+                                });
+                                assert.equal(smses.length,0);
+                            }).run();
+                    });
+                });
+
+                describe("when they have not been sent a registration sms",function() {
+                    it("should send them an sms thanking them for their registration",function() {
+                        return tester
+                            .setup(function(api) {
+                                api.contacts.add( {
+                                    msisdn: '+273323',
+                                    extra : {}
+                                });
+                            })
+                            .setup.user.addr('+273323')
+                            .setup.user.state('states:start')
+                            .input(1)
+                            .input.session_event('close')
+                            .check(function(api) {
+                                var smses = _.where(api.outbound.store, {
+                                    endpoint: 'sms'
+                                });
+                                var sms = smses[0];
+                                assert.equal(smses.length,1);
+                                assert.equal(sms.content, 
+                                    "Please dial back in to *120*550*3# to complete the pregnancy registration."
+                                );
+                                assert.equal(sms.to_addr,'+273323');
+                            }).run();
+                    });
+                });
+            });
+        });
     });
 });

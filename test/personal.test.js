@@ -191,8 +191,9 @@ describe("app", function() {
 
 
         describe("if the user selects Passport (id type)", function() {
-            it("should ask for their country of origin", function() {
+            it("should save their id type & ask for their country of origin", function() {
                 return tester
+                    .setup.user.addr('+27001')
                     .setup.user.state('states:id_type')
                     .input('2')
                     .check.interaction({
@@ -208,18 +209,27 @@ describe("app", function() {
                             '7. Other'
                         ].join('\n')
                     })
+                    .check(function(api) {
+                        var contact = api.contacts.store[0];
+                        assert.equal(contact.extra.id_type, 'passport');
+                    })
                     .run();
             });
         });
 
         describe("after the user selects passport country", function() {
-            it("should ask for their passport number", function() {
+            it("should set their country & ask for their passport number", function() {
                 return tester
+                    .setup.user.addr('+27001')
                     .setup.user.state('states:passport_origin')
                     .input('1')
                     .check.interaction({
                         state: 'states:passport_no',
                         reply: 'Please enter your Passport number:'
+                    })
+                    .check(function(api) {
+                        var contact = api.contacts.store[0];
+                        assert.equal(contact.extra.passport_origin, 'zw');
                     })
                     .run();
             });

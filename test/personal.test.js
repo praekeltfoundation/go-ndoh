@@ -260,6 +260,7 @@ describe("app", function() {
         describe("if the user selects None (id type)", function() {
             it("should ask for their birth year", function() {
                 return tester
+                    .setup.user.addr('+27001')
                     .setup.user.state('states:id_type')
                     .input('3')
                     .check.interaction({
@@ -267,6 +268,10 @@ describe("app", function() {
                         reply: ('Since you don\'t have an ID or passport, ' +
                             'please enter the year that you were born (eg ' +
                             '1981)')
+                    })
+                    .check(function(api) {
+                        var contact = api.contacts.store[0];
+                        assert.equal(contact.extra.id_type, 'none');
                     })
                     .run();
             });

@@ -10,81 +10,42 @@ go.app = function() {
         App.call(self, 'states:start');
         var $ = self.$;
 
-        self.make_month_choices = function(start, limit) {
-            // start should be 0 for Jan - array position
-            var choices = [
-                    new Choice('1', $('Jan')),
-                    new Choice('2', $('Feb')),
-                    new Choice('3', $('Mar')),
-                    new Choice('4', $('Apr')),
-                    new Choice('5', $('May')),
-                    new Choice('6', $('Jun')),
-                    new Choice('7', $('Jul')),
-                    new Choice('8', $('Aug')),
-                    new Choice('9', $('Sep')),
-                    new Choice('10', $('Oct')),
-                    new Choice('11', $('Nov')),
-                    new Choice('12', $('Dec')),
-                ];
+        self.init = function() {
 
-            var choices_show = [];
-            var choices_show_count = 0;
-            var end = start + limit;
+            self.im.on('session:close', function(e) {
+                if (!self.should_send_dialback(e)) { return; }
+                return self.send_dialback();
+            });
 
-            for (var i=start; i<end; i++) {
-                var val = (i >= 12 ? (i-12) : i);
-                choices_show[choices_show_count] = choices[val];
-                choices_show_count++;
-            }
-            return choices_show;
+            return self.im.contacts
+                .for_user()
+                .then(function(user_contact) {
+                   self.contact = user_contact;
+                });
         };
 
-        self.get_today = function() {
-            var today;
-            if (self.im.config.testing) {
-                today = new Date(self.im.config.testing_today);
-            } else {
-                today = new Date();
-            }
-            return today;
+        self.should_send_dialback = function(e) {
+            return e.user_terminated
+                && !go.utils.is_true(self.contact.extra.redial_sms_sent);
         };
 
-        self.check_valid_number = function(input){
-            // an attempt to solve the insanity of JavaScript numbers
-            var numbers_only = new RegExp('^\\d+$');
-            if (input !== '' && numbers_only.test(input) && !Number.isNaN(Number(input))){
-                return true;
-            } else {
-                return false;
-            }
+        self.send_dialback = function() {
+            return self.im.outbound
+                .send_to_user({
+                    endpoint: 'sms',
+                    content: self.get_finish_reg_sms()
+                })
+                .then(function() {
+                    self.contact.extra.redial_sms_sent = 'true';
+                    return self.im.contacts.save(self.contact);
+                });
         };
 
-        self.check_number_in_range = function(input, start, end){
-            return self.check_valid_number(input) && (parseInt(input) >= start) && (parseInt(input) <= end);
-        };
-
-        self.validate_id_sa = function(id) {
-            var i, c,
-                even = '',
-                sum = 0,
-                check = id.slice(-1);
-
-            if (id.length != 13 || id.match(/\D/)) {
-                return false;
-            }
-            id = id.substr(0, id.length - 1);
-            for (i = 0; id.charAt(i); i += 2) {
-                c = id.charAt(i);
-                sum += +c;
-                even += id.charAt(i + 1);
-            }
-            even = '' + even * 2;
-            for (i = 0; even.charAt(i); i++) {
-                c = even.charAt(i);
-                sum += +c;
-            }
-            sum = 10 - ('' + sum).charAt(1);
-            return ('' + sum).slice(-1) == check;
+        self.get_finish_reg_sms = function() {
+            return $("Please dial back in to {{ USSD_number }} to complete the pregnancy registration.")
+                .context({
+                    USSD_number: self.im.config.channel
+                });
         };
 
         self.states.add('states:start', function(name) {
@@ -124,7 +85,7 @@ go.app = function() {
                 question: question,
 
                 check: function(content) {
-                    if (!self.check_valid_number(content)) {
+                    if (!go.utils.check_valid_number(content)) {
                         return error;
                     }
                 },
@@ -177,7 +138,7 @@ go.app = function() {
                 question: question,
 
                 check: function(content) {
-                    if (!self.validate_id_sa(content)) {
+                    if (!go.utils.validate_id_sa(content)) {
                         return error;
                     }
                 },
@@ -237,7 +198,7 @@ go.app = function() {
                 question: question,
 
                 check: function(content) {
-                    if (!self.check_number_in_range(content, 1900, self.get_today().getFullYear())) {
+                    if (!go.utils.check_number_in_range(content, 1900, go.utils.get_today(self.im.config.testing_date).getFullYear())) {
                         return error;
                     }
                 },
@@ -257,7 +218,7 @@ go.app = function() {
             return new ChoiceState(name, {
                 question: $('Please enter the month that you were born.'),
 
-                choices: self.make_month_choices(0, 12),
+                choices: go.utils.make_month_choices($, 0, 12),
 
                 next: 'states:birth_day'
             });
@@ -281,7 +242,7 @@ go.app = function() {
                 question: question,
 
                 check: function(content) {
-                    if (!self.check_number_in_range(content, 1, 31)) {
+                    if (!go.utils.check_number_in_range(content, 1, 31)) {
                         return error;
                     }
                 },

@@ -131,13 +131,18 @@ describe("app", function() {
         });
 
         describe("if the user selects SA ID (id type)", function() {
-            it("should ask for their id number", function() {
+            it("should set their id type and ask for their id number", function() {
                 return tester
+                    .setup.user.addr('+27001')
                     .setup.user.state('states:id_type')
                     .input('1')
                     .check.interaction({
                         state: 'states:sa_id',
                         reply: 'Please enter your SA ID number:'
+                    })
+                    .check(function(api) {
+                        var contact = api.contacts.store[0];
+                        assert.equal(contact.extra.id_type, 'sa_id');
                     })
                     .run();
             });

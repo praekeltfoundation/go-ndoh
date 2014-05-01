@@ -142,7 +142,7 @@ go.app = function() {
 
                 next: function(choice) {
                     self.contact.extra.suspect_pregnancy = choice.value;
-                    
+
                     return self.im.contacts.save(self.contact)
                     .then(function() {
                         return {
@@ -176,11 +176,16 @@ go.app = function() {
                 ],
 
                 next: function(choice) {
-                    return {
-                        sa_id: 'states:sa_id',
-                        passport: 'states:passport_origin',
-                        none: 'states:birth_year'
-                    } [choice.value];
+                    self.contact.extra.id_type = choice.value;
+
+                    return self.im.contacts.save(self.contact)
+                    .then(function() {
+                        return {
+                            sa_id: 'states:sa_id',
+                            passport: 'states:passport_origin',
+                            none: 'states:birth_year'
+                        } [choice.value];
+                    });
                 }
             });
         });

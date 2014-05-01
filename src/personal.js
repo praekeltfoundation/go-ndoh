@@ -10,6 +10,44 @@ go.app = function() {
         App.call(self, 'states:start');
         var $ = self.$;
 
+        self.init = function() {
+
+            self.im.on('session:close', function(e) {
+                if (!self.should_send_dialback(e)) { return; }
+                return self.send_dialback();
+            });
+
+            return self.im.contacts
+                .for_user()
+                .then(function(user_contact) {
+                   self.contact = user_contact;
+                });
+        };
+
+        self.should_send_dialback = function(e) {
+            return e.user_terminated
+                && !go.utils.is(self.contact.extra.redial_sms_sent);
+        };
+
+        self.send_dialback = function() {
+            return self.im.outbound
+                .send_to_user({
+                    endpoint: 'sms',
+                    content: self.get_finish_reg_sms()
+                })
+                .then(function() {
+                    self.contact.extra.redial_sms_sent = 'true';
+                    return self.im.contacts.save(self.contact);
+                });
+        };
+
+        self.get_finish_reg_sms = function() {
+            return $("Please dial back in to {{ USSD_number }} to complete the pregnancy registration.")
+                .context({
+                    USSD_number: self.im.config.channel
+                });
+        };
+
 
         self.states.add('states:start', function(name) {
             return new ChoiceState(name, {

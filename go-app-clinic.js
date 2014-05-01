@@ -1,6 +1,7 @@
 var go = {};
 go;
 
+var _ = require('lodash');
 go.utils = {
     // Shared utils lib
 
@@ -82,6 +83,11 @@ go.utils = {
         }
         sum = 10 - ('' + sum).charAt(1);
         return ('' + sum).slice(-1) == check;
+    },
+
+    is: function(boolean) {
+        //If is is not undefined and boolean is true
+        return (!_.isUndefined(boolean) && (boolean==='true' || boolean===true));
     },
 
 };

@@ -213,7 +213,6 @@ go.app = function() {
                     .then(function() {
                         return {
                             name: 'states:end_success'
-
                         };
                     });
                 }
@@ -241,7 +240,6 @@ go.app = function() {
                     .then(function() {
                         return {
                             name: 'states:passport_no'
-
                         };
                     });
                 }
@@ -252,7 +250,16 @@ go.app = function() {
             return new FreeText(name, {
                 question: $('Please enter your Passport number:'),
 
-                next: 'states:end_success'
+                next: function(content) {
+                    self.contact.extra.passport_no = content;
+
+                    return self.im.contacts.save(self.contact)
+                    .then(function() {
+                        return {
+                            name: 'states:end_success'
+                        };
+                    });
+                }
             });
         });
 

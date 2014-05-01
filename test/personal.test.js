@@ -236,8 +236,9 @@ describe("app", function() {
         });
 
         describe("after the user enters their passport number", function() {
-            it("should thank them and exit", function() {
+            it("should set their passport number, thank them and exit", function() {
                 return tester
+                    .setup.user.addr('+27001')
                     .setup.user.state('states:passport_no')
                     .input('12345')
                     .check.interaction({
@@ -246,6 +247,10 @@ describe("app", function() {
                             'You will now receive free messages about ' +
                             'MomConnect. Visit your nearest clinic to get ' + 
                             'the full set of messages.')
+                    })
+                    .check(function(api) {
+                        var contact = api.contacts.store[0];
+                        assert.equal(contact.extra.passport_no, '12345');
                     })
                     .check.reply.ends_session()
                     .run();

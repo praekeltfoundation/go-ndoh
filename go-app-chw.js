@@ -14,6 +14,11 @@ go.app = function() {
         App.call(self, 'states:start');
         var $ = self.$;
 
+        self.normalise_msisdn = function(msisdn) {
+            normalised_no = '0' + msisdn.slice(3,12);
+            return normalised_no;
+        };
+
         self.make_month_choices = function(start, limit) {
             // start should be 0 for Jan - array position
             var choices = [
@@ -92,11 +97,13 @@ go.app = function() {
         };
 
         self.states.add('states:start', function(name) {
+            var normalised_no = self.normalise_msisdn(self.im.user.addr);
+            
             return new ChoiceState(name, {
                 question: $('Welcome to The Department of Health\'s ' +
-                            'MomConnect programme. Is this no. (MSISDN) ' +
-                            'the mobile no. of the pregnant woman to be ' +
-                            'registered?'),
+                            'MomConnect. Tell us if this is the no. that ' +
+                            'the mother would like to get SMSs on: {{ num }}')
+                    .context({ num: normalised_no }),
 
                 choices: [
                     new Choice('yes', $('Yes')),

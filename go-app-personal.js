@@ -309,7 +309,16 @@ go.app = function() {
 
                 choices: self.make_month_choices(0, 12),
 
-                next: 'states:birth_day'
+                next: function(choice) {
+                    self.contact.extra.birth_month = choice.value;
+
+                    return self.im.contacts.save(self.contact)
+                    .then(function() {
+                        return {
+                            name: 'states:birth_day'
+                        };
+                    });
+                }
             });
         });
 

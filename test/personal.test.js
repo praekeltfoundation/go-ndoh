@@ -331,12 +331,17 @@ describe("app", function() {
         describe("after the user enters their birth month", function() {
             it("should ask for their birth day", function() {
                 return tester
+                    .setup.user.addr('+27001')
                     .setup.user.state('states:birth_month')
                     .input('1')
                     .check.interaction({
                         state: 'states:birth_day',
                         reply: ('Please enter the day that you were born ' +
                             '(eg 14).')
+                    })
+                    .check(function(api) {
+                        var contact = api.contacts.store[0];
+                        assert.equal(contact.extra.birth_month, '1');
                     })
                     .run();
             });

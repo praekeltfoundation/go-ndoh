@@ -77,7 +77,7 @@ describe("app", function() {
                     })
                     .check.user.properties({lang: 'en'})
                     .check(function(api) {
-                        var contact = api.contacts.store[0]; //askmike
+                        var contact = api.contacts.store[0];
                         assert.equal(contact.extra.language_choice, 'en');
                     })
                     .run();

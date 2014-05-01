@@ -14,6 +14,14 @@ go.app = function() {
         App.call(self, 'states:start');
         var $ = self.$;
 
+        self.init = function() {
+            return self.im.contacts
+                .for_user()
+                .then(function(user_contact) {
+                   self.contact = user_contact;
+                });
+        };
+
         self.make_month_choices = function(start, limit) {
             // start should be 0 for Jan - array position
             var choices = [
@@ -108,7 +116,12 @@ go.app = function() {
                 ],
 
                 next: function(choice) {
+                    self.contact.extra.language_choice = choice.value;
+
                     return self.im.user.set_lang(choice.value)
+                    .then(function() {
+                        return self.im.contacts.save(self.contact);
+                    })
                     .then(function() {
                         return 'states:suspect_pregnancy';
                     });
@@ -128,10 +141,15 @@ go.app = function() {
                 ],
 
                 next: function(choice) {
-                    return {
-                        yes: 'states:id_type',
-                        no: 'states:end_not_pregnant'
-                    } [choice.value];
+                    self.contact.extra.suspect_pregnancy = choice.value;
+                    
+                    return self.im.contacts.save(self.contact)
+                    .then(function() {
+                        return {
+                            yes: 'states:id_type',
+                            no: 'states:end_not_pregnant'
+                        } [choice.value];
+                    });
                 }
             });
         });

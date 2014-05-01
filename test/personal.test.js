@@ -19,6 +19,11 @@ describe("app", function() {
                     name: 'test_app'
                 })
                 .setup(function(api) {
+                    api.contacts.add( {
+                        msisdn: '+27001'
+                    });
+                })
+                .setup(function(api) {
                     fixtures().forEach(api.http.fixtures.add);
                 });
         });
@@ -55,10 +60,11 @@ describe("app", function() {
         });
 
         describe("when the user selects a language", function() {
-            it("should ask them if they suspect pregnancy", function() {
+            it("should set language and ask if they suspect pregnancy", function() {
                 return tester
+                    .setup.user.addr('+27001')
                     .setup.user.state('states:start')
-                    .input('1') /* change language state functionality */
+                    .input('1')
                     .check.interaction({
                         state: 'states:suspect_pregnancy',
                         reply: [
@@ -69,13 +75,19 @@ describe("app", function() {
                             '2. No'
                         ].join('\n')
                     })
+                    .check.user.properties({lang: 'en'})
+                    .check(function(api) {
+                        var contact = api.contacts.store[0]; //askmike
+                        assert.equal(contact.extra.language_choice, 'en');
+                    })
                     .run();
             });
         });
 
         describe("if the user does not suspect pregnancy", function() {
-            it("state service is for pregnant mothers and exit", function() {
+            it("should set pregnancy status, state service is for pregnant moms, exit", function() {
                 return tester
+                    .setup.user.addr('+27001')
                     .setup.user.state('states:suspect_pregnancy')
                     .input('2')
                     .check.interaction({
@@ -85,13 +97,18 @@ describe("app", function() {
                             'concerns please visit your nearest clinic.')
                     })
                     .check.reply.ends_session()
+                    .check(function(api) {
+                        var contact = api.contacts.store[0];
+                        assert.equal(contact.extra.suspect_pregnancy, 'no');
+                    })
                     .run();
             });
         });
 
         describe("if the user suspects pregnancy", function() {
-            it("should ask for their id type", function() {
+            it("should set pregnancy status, ask for their id type", function() {
                 return tester
+                    .setup.user.addr('+27001')
                     .setup.user.state('states:suspect_pregnancy')
                     .input('1')
                     .check.interaction({
@@ -104,6 +121,10 @@ describe("app", function() {
                             '2. Passport',
                             '3. None'
                         ].join('\n')
+                    })
+                    .check(function(api) {
+                        var contact = api.contacts.store[0];
+                        assert.equal(contact.extra.suspect_pregnancy, 'yes');
                     })
                     .run();
             });

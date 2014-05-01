@@ -2,11 +2,13 @@ var go = {};
 go;
 
 var _ = require('lodash');
+var vumigo = require('vumigo_v02');
+var Choice = vumigo.states.Choice;
 go.utils = {
     // Shared utils lib
 
     // make choices options with options
-    make_month_choices: function(Choice, $, start, limit) {
+    make_month_choices: function($, start, limit) {
             // start should be 0 for Jan - array position
             var choices = [
                     new Choice('1', $('Jan')),

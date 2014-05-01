@@ -218,7 +218,7 @@ go.app = function() {
             return new ChoiceState(name, {
                 question: $('Please enter the month that you were born.'),
 
-                choices: go.utils.make_month_choices(Choice, $, 0, 12),
+                choices: go.utils.make_month_choices($, 0, 12),
 
                 next: 'states:birth_day'
             });

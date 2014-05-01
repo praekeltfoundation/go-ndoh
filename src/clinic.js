@@ -119,7 +119,7 @@ go.app = function() {
                 
                 question: $('Please select the month when the baby is due:'),
 
-                choices: go.utils.make_month_choices(Choice, $, month, 9),
+                choices: go.utils.make_month_choices($, month, 9),
 
                 next: 'states:id_type'
             });
@@ -242,7 +242,7 @@ go.app = function() {
             return new ChoiceState(name, {
                 question: $('Please enter the month that you were born.'),
 
-                choices: go.utils.make_month_choices(Choice, $, 0, 12),
+                choices: go.utils.make_month_choices($, 0, 12),
 
                 next: 'states:birth_day'
             });

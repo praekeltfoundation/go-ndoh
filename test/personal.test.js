@@ -258,7 +258,7 @@ describe("app", function() {
         });
 
         describe("if the user selects None (id type)", function() {
-            it("should ask for their birth year", function() {
+            it("should set id type, ask for their birth year", function() {
                 return tester
                     .setup.user.addr('+27001')
                     .setup.user.state('states:id_type')
@@ -280,6 +280,7 @@ describe("app", function() {
         describe("after the user enters their birth year", function() {
             it("should ask for their birth month", function() {
                 return tester
+                    .setup.user.addr('+27001')
                     .setup.user.state('states:birth_year')
                     .input('1981')
                     .check.interaction({
@@ -299,13 +300,18 @@ describe("app", function() {
                             '12. Dec'
                         ].join('\n')
                     })
+                    .check(function(api) {
+                        var contact = api.contacts.store[0];
+                        assert.equal(contact.extra.birth_year, '1981');
+                    })
                     .run();
             });
         });
 
         describe("after the user enters their birth year incorrectly", function() {
-            it("should ask for their birth year again", function() {
+            it("should not save birth year, ask for their birth year again", function() {
                 return tester
+                    .setup.user.addr('+27001')
                     .setup.user.state('states:birth_year')
                     .input('Nineteen Eighty One')
                     .check.interaction({
@@ -313,6 +319,10 @@ describe("app", function() {
                         reply: ('There was an error in your entry. Please ' +
                         'carefully enter your year of birth again (eg ' +
                         '2001)')
+                    })
+                    .check(function(api) {
+                        var contact = api.contacts.store[0];
+                        assert.equal(contact.extra.birth_year, undefined);
                     })
                     .run();
             });

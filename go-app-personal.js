@@ -210,13 +210,16 @@ go.app = function() {
                     }
                 },
 
-                next: function() {
-                    return {
-                        name: 'states:end_success',
-                        creator_opts: {
-                            retry: opts.retry
-                        }
-                    };
+                next: function(content) {
+                    self.contact.extra.sa_id = content;
+
+                    return self.im.contacts.save(self.contact)
+                    .then(function() {
+                        return {
+                            name: 'states:end_success'
+
+                        };
+                    });
                 }
             });
         });

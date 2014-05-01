@@ -149,8 +149,9 @@ describe("app", function() {
         });
 
         describe("after the user enters their ID number", function() {
-            it("should thank them and exit", function() {
+            it("should set their ID no, thank them and exit", function() {
                 return tester
+                    .setup.user.addr('+27001')
                     .setup.user.state('states:sa_id')
                     .input('8001015009087')
                     .check.interaction({
@@ -160,20 +161,29 @@ describe("app", function() {
                             'MomConnect. Visit your nearest clinic to get ' + 
                             'the full set of messages.')
                     })
+                    .check(function(api) {
+                        var contact = api.contacts.store[0];
+                        assert.equal(contact.extra.sa_id, '8001015009087');
+                    })
                     .check.reply.ends_session()
                     .run();
             });
         });
 
         describe("after the user enters their ID number incorrectly", function() {
-            it("should ask them to try again", function() {
+            it("should not save their id, ask them to try again", function() {
                 return tester
+                    .setup.user.addr('+27001')
                     .setup.user.state('states:sa_id')
                     .input('1234015009087')
                     .check.interaction({
                         state: 'states:sa_id',
                         reply: 'Sorry, your ID number did not validate. ' +
                           'Please reenter your SA ID number:'
+                    })
+                    .check(function(api) {
+                        var contact = api.contacts.store[0];
+                        assert.equal(contact.extra.sa_id, undefined);
                     })
                     .run();
             });

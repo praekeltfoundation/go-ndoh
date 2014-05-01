@@ -149,7 +149,7 @@ describe("app", function() {
         });
 
         describe("after the user enters their ID number", function() {
-            it("should set their ID no, thank them and exit", function() {
+            it("should set their ID no, extract their DOB, thank them and exit", function() {
                 return tester
                     .setup.user.addr('+27001')
                     .setup.user.state('states:sa_id')
@@ -164,6 +164,10 @@ describe("app", function() {
                     .check(function(api) {
                         var contact = api.contacts.store[0];
                         assert.equal(contact.extra.sa_id, '8001015009087');
+                        assert.equal(contact.extra.birth_year, '1980');
+                        assert.equal(contact.extra.birth_month, '1');
+                        assert.equal(contact.extra.birth_day, '1');
+                        assert.equal(contact.extra.dob, '1980-1-1');
                     })
                     .check.reply.ends_session()
                     .run();
@@ -371,6 +375,10 @@ describe("app", function() {
             it("should save birth day, thank them and exit", function() {
                 return tester
                     .setup.user.addr('+27001')
+                    .setup.user.answers({
+                        'states:birth_year': '1981',
+                        'states:birth_month': '1'
+                    })
                     .setup.user.state('states:birth_day')
                     .input('14')
                     .check.interaction({
@@ -383,11 +391,11 @@ describe("app", function() {
                     .check(function(api) {
                         var contact = api.contacts.store[0];
                         assert.equal(contact.extra.birth_day, '14');
+                        assert.equal(contact.extra.dob, '1981-1-14');
                     })
                     .check.reply.ends_session()
                     .run();
             });
         });
-
     });
 });

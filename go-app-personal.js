@@ -213,6 +213,34 @@ go.app = function() {
                 next: function(content) {
                     self.contact.extra.sa_id = content;
 
+                    var birth_year = content.slice(0,2);
+                    var birth_month = content.slice(2,4);
+                    var birth_day = content.slice(4,6);
+
+                    // assume if born before 1950 they won't get pregnant
+                    // assumption necessary due to sa id number duplication
+                    if (parseInt(birth_year) >= 50) {
+                        self.contact.extra.birth_year = '19' + birth_year;
+                    } else {
+                        self.contact.extra.birth_year = '20' + birth_year;
+                    }
+
+                    if (parseInt(birth_month) <= 9) {
+                        self.contact.extra.birth_month = birth_month.slice(1,2);
+                    } else {
+                        self.contact.extra.birth_month = birth_month;
+                    }
+                    
+                    if (parseInt(birth_day) <= 9) {
+                        self.contact.extra.birth_day = birth_day.slice(1,2);
+                    } else {
+                        self.contact.extra.birth_day = birth_day;
+                    }
+
+                    self.contact.extra.dob = (self.contact.extra.birth_year +
+                        '-' + self.contact.extra.birth_month + 
+                        '-' + self.contact.extra.birth_day);
+
                     return self.im.contacts.save(self.contact)
                     .then(function() {
                         return {
@@ -346,6 +374,9 @@ go.app = function() {
 
                 next: function(content) {
                     self.contact.extra.birth_day = content;
+                    self.contact.extra.dob = (self.im.user.answers['states:birth_year'] + 
+                        '-' + self.im.user.answers['states:birth_month'] +
+                        '-' + content);
 
                     return self.im.contacts.save(self.contact)
                     .then(function() {

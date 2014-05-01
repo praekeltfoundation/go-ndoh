@@ -87,7 +87,7 @@ go.utils = {
         return ('' + sum).slice(-1) == check;
     },
 
-    is: function(boolean) {
+    is_true: function(boolean) {
         //If is is not undefined and boolean is true
         return (!_.isUndefined(boolean) && (boolean==='true' || boolean===true));
     },

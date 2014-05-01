@@ -87,7 +87,7 @@ go.utils = {
         return ('' + sum).slice(-1) == check;
     },
 
-    is: function(boolean) {
+    is_true: function(boolean) {
         //If is is not undefined and boolean is true
         return (!_.isUndefined(boolean) && (boolean==='true' || boolean===true));
     },
@@ -121,7 +121,7 @@ go.app = function() {
 
         self.should_send_dialback = function(e) {
             return e.user_terminated
-                && !go.utils.is(self.contact.extra.redial_sms_sent);
+                && !go.utils.is_true(self.contact.extra.redial_sms_sent);
         };
 
         self.send_dialback = function() {

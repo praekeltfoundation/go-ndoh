@@ -162,9 +162,9 @@ describe("app", function() {
                         var contact = api.contacts.store[0];
                         assert.equal(contact.extra.sa_id, '8001015009087');
                         assert.equal(contact.extra.birth_year, '1980');
-                        assert.equal(contact.extra.birth_month, '1');
-                        assert.equal(contact.extra.birth_day, '1');
-                        assert.equal(contact.extra.dob, '1980-1-1');
+                        assert.equal(contact.extra.birth_month, '01');
+                        assert.equal(contact.extra.birth_day, '01');
+                        assert.equal(contact.extra.dob, '1980-01-01');
                     })
                     .check.reply.ends_session()
                     .run();
@@ -374,10 +374,10 @@ describe("app", function() {
                     .setup.user.addr('+27001')
                     .setup.user.answers({
                         'states:birth_year': '1981',
-                        'states:birth_month': '1'
+                        'states:birth_month': '01'
                     })
                     .setup.user.state('states:birth_day')
-                    .input('14')
+                    .input('1')
                     .check.interaction({
                         state: 'states:end_success',
                         reply: ('Thank you for subscribing to MomConnect. ' +
@@ -387,8 +387,8 @@ describe("app", function() {
                     })
                     .check(function(api) {
                         var contact = api.contacts.store[0];
-                        assert.equal(contact.extra.birth_day, '14');
-                        assert.equal(contact.extra.dob, '1981-1-14');
+                        assert.equal(contact.extra.birth_day, '01');
+                        assert.equal(contact.extra.dob, '1981-01-01');
                     })
                     .check.reply.ends_session()
                     .run();

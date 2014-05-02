@@ -87,6 +87,21 @@ go.utils = {
         return ('' + sum).slice(-1) == check;
     },
 
+    extract_id_dob: function(id) {
+        var birth_year = id.slice(0,2);
+        var birth_month = id.slice(2,4);
+        var birth_day = id.slice(4,6);
+
+        // assume if born before 1950 they won't get pregnant
+        // assumption necessary due to sa id number duplication
+        if (parseInt(birth_year) >= 50) {
+           birth_year = '19' + birth_year;
+        } else {
+           birth_year = '20' + birth_year;
+        }
+        return birth_year + '-' + birth_month + '-' + birth_day;
+    },
+
     is_true: function(boolean) {
         //If is is not undefined and boolean is true
         return (!_.isUndefined(boolean) && (boolean==='true' || boolean===true));
@@ -256,40 +271,18 @@ go.app = function() {
                 next: function(content) {
                     self.contact.extra.sa_id = content;
 
-                    var birth_year = content.slice(0,2);
-                    var birth_month = content.slice(2,4);
-                    var birth_day = content.slice(4,6);
-
-                    // assume if born before 1950 they won't get pregnant
-                    // assumption necessary due to sa id number duplication
-                    if (parseInt(birth_year) >= 50) {
-                        self.contact.extra.birth_year = '19' + birth_year;
-                    } else {
-                        self.contact.extra.birth_year = '20' + birth_year;
-                    }
-
-                    if (parseInt(birth_month) <= 9) {
-                        self.contact.extra.birth_month = birth_month.slice(1,2);
-                    } else {
-                        self.contact.extra.birth_month = birth_month;
-                    }
-                    
-                    if (parseInt(birth_day) <= 9) {
-                        self.contact.extra.birth_day = birth_day.slice(1,2);
-                    } else {
-                        self.contact.extra.birth_day = birth_day;
-                    }
-
-                    self.contact.extra.dob = (self.contact.extra.birth_year +
-                        '-' + self.contact.extra.birth_month + 
-                        '-' + self.contact.extra.birth_day);
+                    var id_date_of_birth = go.utils.extract_id_dob(content);
+                    self.contact.extra.birth_year = id_date_of_birth.slice(0,4);
+                    self.contact.extra.birth_month = id_date_of_birth.slice(5,7);
+                    self.contact.extra.birth_day = id_date_of_birth.slice(8,10);
+                    self.contact.extra.dob = id_date_of_birth;
 
                     return self.im.contacts.save(self.contact)
-                    .then(function() {
-                        return {
-                            name: 'states:end_success'
-                        };
-                    });
+                        .then(function() {
+                            return {
+                                name: 'states:end_success'
+                            };
+                        });
                 }
             });
         });
@@ -416,6 +409,9 @@ go.app = function() {
                 },
 
                 next: function(content) {
+                    if (content.length === 1) {
+                        content = '0' + content;
+                    }
                     self.contact.extra.birth_day = content;
                     self.contact.extra.dob = (self.im.user.answers['states:birth_year'] + 
                         '-' + self.im.user.answers['states:birth_month'] +

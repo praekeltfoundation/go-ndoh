@@ -342,7 +342,7 @@ describe("app", function() {
                     })
                     .check(function(api) {
                         var contact = api.contacts.store[0];
-                        assert.equal(contact.extra.birth_month, '1');
+                        assert.equal(contact.extra.birth_month, '01');
                     })
                     .run();
             });

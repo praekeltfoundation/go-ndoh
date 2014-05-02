@@ -20,7 +20,15 @@ go.app = function() {
             return self.im.contacts
                 .for_user()
                 .then(function(user_contact) {
-                   self.contact = user_contact;
+                    if ((user_contact.extra.working_on !== undefined) && (user_contact.extra.working_on !== "")){
+                        self.user = user_contact;
+                        return self.im.contacts.get(user_contact.extra.working_on, {create: true})
+                            .then(function(working_on){
+                                self.contact = working_on;
+                            });
+                    } else {
+                        self.contact = user_contact;
+                    }                   
                 });
         };
 

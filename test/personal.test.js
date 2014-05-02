@@ -1,6 +1,7 @@
 var vumigo = require('vumigo_v02');
 var fixtures = require('./fixtures');
 var AppTester = vumigo.AppTester;
+var _ = require('lodash');
 var assert = require('assert');
 
 
@@ -15,8 +16,14 @@ describe("app", function() {
             tester = new AppTester(app);
 
             tester
+                .setup.user.lang('en')
+                .setup.char_limit(180)
                 .setup.config.app({
-                    name: 'test_app'
+                    name: 'test_app',
+                    endpoints: {
+                        "sms": {"delivery_class": "sms"}
+                    },
+                    channel: "*120*550#"
                 })
                 .setup(function(api) {
                     api.contacts.add( {
@@ -26,16 +33,6 @@ describe("app", function() {
                 .setup(function(api) {
                     fixtures().forEach(api.http.fixtures.add);
                 });
-        });
-
-        describe("when make_month_choices is called with (6,9)", function() {
-            it("should return Jul - Mar", function() {
-                assert.equal(tester.im.app.make_month_choices(6,9).length, 9);
-                assert.equal(tester.im.app.make_month_choices(6,9)[0].label
-                    .args, 'Jul');
-                assert.equal(tester.im.app.make_month_choices(6,9)[8].label
-                    .args, 'Mar');
-            });
         });
 
         describe("when the user starts a session", function() {
@@ -395,6 +392,61 @@ describe("app", function() {
                     })
                     .check.reply.ends_session()
                     .run();
+            });
+        });
+
+        describe("when a session is terminated", function() {
+            describe("when they are not completed registration",function() {
+                describe("when they have already been sent a registration sms",function() {
+                    it("should not send them an sms",function() {
+                        return tester
+                            .setup(function(api) {
+                                api.contacts.add( {
+                                    msisdn: '+273444',
+                                    extra : {
+                                        redial_sms_sent: 'true'
+                                    }
+                                });
+                            })
+                            .setup.user.addr('+273444')
+                            .setup.user.state('states:start')
+                            .input('1')
+                            .input.session_event('close')
+                            .check(function(api) {
+                                var smses = _.where(api.outbound.store, {
+                                    endpoint: 'sms'
+                                });
+                                assert.equal(smses.length,0);
+                            }).run();
+                    });
+                });
+
+                describe("when they have not been sent a registration sms",function() {
+                    it("should send them an sms thanking them for their registration",function() {
+                        return tester
+                            .setup(function(api) {
+                                api.contacts.add( {
+                                    msisdn: '+273323',
+                                    extra : {}
+                                });
+                            })
+                            .setup.user.addr('+273323')
+                            .setup.user.state('states:start')
+                            .input(1)
+                            .input.session_event('close')
+                            .check(function(api) {
+                                var smses = _.where(api.outbound.store, {
+                                    endpoint: 'sms'
+                                });
+                                var sms = smses[0];
+                                assert.equal(smses.length,1);
+                                assert.equal(sms.content, 
+                                    "Please dial back in to *120*550# to complete the pregnancy registration."
+                                );
+                                assert.equal(sms.to_addr,'+273323');
+                            }).run();
+                    });
+                });
             });
         });
     });

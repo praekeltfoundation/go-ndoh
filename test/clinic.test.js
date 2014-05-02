@@ -158,11 +158,6 @@ describe("app", function() {
             describe("if the number used is the mom's", function() {
                 it("should save the clinic code, ask for the month the baby is due", function() {
                     return tester
-                        .setup(function(api) {
-                            api.contacts.add( {
-                                msisdn: '+270001',
-                            });
-                        })
                         .setup.user.addr('+270001')
                         .setup.user.state('states:clinic_code')
                         .input('12345')
@@ -195,11 +190,6 @@ describe("app", function() {
         describe("after the birth month is selected", function() {
             it("should ask for the pregnant woman's id type", function() {
                 return tester
-                    .setup(function(api) {
-                        api.contacts.add( {
-                            msisdn: '+270001',
-                        });
-                    })
                     .setup.user.addr('+270001')
                     .setup.user.state('states:due_date_month')
                     .input('1')

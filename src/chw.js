@@ -100,10 +100,16 @@ go.app = function() {
                     }
                 },
 
-                next: function() {
-                    return {
-                        name: 'states:id_type',
-                    };
+                next: function(content) {
+                    msisdn = go.utils.denormalise_sa_msisdn(content);
+                    self.contact.extra.working_on = msisdn;
+
+                    return self.im.contacts.save(self.contact)
+                        .then(function() {
+                            return {
+                                name: 'states:clinic_code',
+                            };
+                        });
                 }
             });
         });

@@ -236,7 +236,7 @@ describe("app", function() {
         });
 
         describe("after the user enters the ID number", function() {
-            it("should ask for pregnant woman's msg language", function() {
+            it("should save ID, ask for pregnant woman's msg language", function() {
                 return tester
                     .setup.user.addr('+270001')
                     .setup.user.state('states:sa_id')
@@ -251,6 +251,12 @@ describe("app", function() {
                             '4. Xhosa',
                             '5. Sotho'
                             ].join('\n')
+                    })
+                    .check(function(api) {
+                        var contact = _.find(api.contacts.store, {
+                          msisdn: '+270001'
+                        });
+                        assert.equal(contact.extra.sa_id, '8001015009087');
                     })
                     .run();
             });

@@ -107,7 +107,7 @@ go.app = function() {
                     return self.im.contacts.save(self.contact)
                         .then(function() {
                             return {
-                                name: 'states:clinic_code',
+                                name: 'states:id_type',
                             };
                         });
                 }

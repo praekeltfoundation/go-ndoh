@@ -128,9 +128,6 @@ go.app = function() {
                         .then(function() {
                             return {
                                 name: 'states:clinic_code',
-                                creator_opts: {
-                                    retry: opts.retry
-                                }
                             };
                         });
                 }

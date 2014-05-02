@@ -103,9 +103,6 @@ go.app = function() {
                 next: function() {
                     return {
                         name: 'states:id_type',
-                        creator_opts: {
-                            retry: opts.retry
-                        }
                     };
                 }
             });

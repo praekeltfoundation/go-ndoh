@@ -17,10 +17,6 @@ describe("app", function() {
                 .setup.user.lang('en')
                 .setup.char_limit(180)
                 .setup.config.app({
-                    name: 'test_app',
-                    
-                })
-                .setup.config.app({
                     name: 'test_clinic',
                     testing: 'true',
                     testing_today: 'April 4, 2014 07:07:07',

@@ -98,7 +98,7 @@ describe("app", function() {
         describe("after entering the pregnant woman's number", function() {
             it("should ask for the clinic code", function() {
                 return tester
-                    .setup.user.addr('+271111')
+                    .setup.user.addr('+270001')
                     .setup.user.state('states:mobile_no')
                     .input('0821234567')
                     .check.interaction({
@@ -116,47 +116,91 @@ describe("app", function() {
         });
 
         describe("after entering the clinic code", function() {
-            it("should ask for the month the baby is due", function() {
-                return tester
-                    .setup(function(api) {
-                        api.contacts.add( {
-                            msisdn: '+271111',
-                            extra : {
-                                working_on: '+27821234567'
-                            }
-                        });
-                    })
-                    .setup.user.addr('+271111')
-                    .setup.user.state('states:clinic_code')
-                    .input('12345')
-                    .check.interaction({
-                        state: 'states:due_date_month',
-                        reply: [
-                            'Please select the month when the baby is due:',
-                            '1. Apr',
-                            '2. May',
-                            '3. Jun',
-                            '4. Jul',
-                            '5. Aug',
-                            '6. Sep',
-                            '7. Oct',
-                            '8. Nov',
-                            '9. Dec'
-                        ].join('\n')
-                    })
-                    .check(function(api) {
-                        var contact = _.find(api.contacts.store, {
-                          msisdn: '+27821234567'
-                        });
-                        assert.equal(contact.extra.clinic_code, '12345');
-                    })
-                    .run();
+            describe("if the number used is not the mom's", function() {
+                it("should save clinic code, ask for the month the baby is due", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add( {
+                                msisdn: '+270001',
+                                extra : {
+                                    working_on: '+27821234567'
+                                }
+                            });
+                        })
+                        .setup.user.addr('+270001')
+                        .setup.user.state('states:clinic_code')
+                        .input('12345')
+                        .check.interaction({
+                            state: 'states:due_date_month',
+                            reply: [
+                                'Please select the month when the baby is due:',
+                                '1. Apr',
+                                '2. May',
+                                '3. Jun',
+                                '4. Jul',
+                                '5. Aug',
+                                '6. Sep',
+                                '7. Oct',
+                                '8. Nov',
+                                '9. Dec'
+                            ].join('\n')
+                        })
+                        .check(function(api) {
+                            var contact = _.find(api.contacts.store, {
+                              msisdn: '+27821234567'
+                            });
+                            assert.equal(contact.extra.clinic_code, '12345');
+                        })
+                        .run();
+                });
+            });
+
+            describe("if the number used is the mom's", function() {
+                it("should save the clinic code, ask for the month the baby is due", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add( {
+                                msisdn: '+270001',
+                            });
+                        })
+                        .setup.user.addr('+270001')
+                        .setup.user.state('states:clinic_code')
+                        .input('12345')
+                        .check.interaction({
+                            state: 'states:due_date_month',
+                            reply: [
+                                'Please select the month when the baby is due:',
+                                '1. Apr',
+                                '2. May',
+                                '3. Jun',
+                                '4. Jul',
+                                '5. Aug',
+                                '6. Sep',
+                                '7. Oct',
+                                '8. Nov',
+                                '9. Dec'
+                            ].join('\n')
+                        })
+                        .check(function(api) {
+                            var contact = _.find(api.contacts.store, {
+                              msisdn: '+270001'
+                            });
+                            assert.equal(contact.extra.clinic_code, '12345');
+                        })
+                        .run();
+                });
             });
         });
 
         describe("after the birth month is selected", function() {
             it("should ask for the pregnant woman's id type", function() {
                 return tester
+                    .setup(function(api) {
+                        api.contacts.add( {
+                            msisdn: '+270001',
+                        });
+                    })
+                    .setup.user.addr('+270001')
                     .setup.user.state('states:due_date_month')
                     .input('1')
                     .check.interaction({
@@ -168,6 +212,12 @@ describe("app", function() {
                             '2. Passport',
                             '3. None'
                         ].join('\n')
+                    })
+                    .check(function(api) {
+                        var contact = _.find(api.contacts.store, {
+                          msisdn: '+270001'
+                        });
+                        assert.equal(contact.extra.due_date_month, '04');
                     })
                     .run();
             });

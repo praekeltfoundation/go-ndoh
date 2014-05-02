@@ -145,7 +145,16 @@ go.app = function() {
 
                 choices: go.utils.make_month_choices($, month, 9),
 
-                next: 'states:id_type'
+                next: function(choice) {
+                    self.contact.extra.due_date_month = choice.value;
+
+                    return self.im.contacts.save(self.contact)
+                        .then(function() {
+                            return {
+                                name: 'states:id_type',
+                            };
+                        });
+                }
             });
         });
 

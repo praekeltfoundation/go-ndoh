@@ -140,7 +140,15 @@ go.app = function() {
             return self.im.contacts
                 .for_user()
                 .then(function(user_contact) {
-                   self.contact = user_contact;
+                    if ((user_contact.extra.working_on !== undefined) && (user_contact.extra.working_on !== "")){
+                        self.user = user_contact;
+                        return self.im.contacts.get(user_contact.extra.working_on, {create: true})
+                            .then(function(working_on){
+                                self.contact = working_on;
+                            });
+                    } else {
+                        self.contact = user_contact;
+                    }                   
                 });
         };
 
@@ -212,13 +220,16 @@ go.app = function() {
                     }
                 },
 
-                next: function() {
-                    return {
-                        name: 'states:id_type',
-                        creator_opts: {
-                            retry: opts.retry
-                        }
-                    };
+                next: function(content) {
+                    msisdn = go.utils.denormalise_sa_msisdn(content);
+                    self.contact.extra.working_on = msisdn;
+
+                    return self.im.contacts.save(self.contact)
+                        .then(function() {
+                            return {
+                                name: 'states:id_type',
+                            };
+                        });
                 }
             });
         });

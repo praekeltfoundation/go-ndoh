@@ -31,14 +31,14 @@ describe("app", function() {
         describe("when the user starts a session", function() {
             it("should check if no. belongs to pregnant woman", function() {
                 return tester
+                    .setup.user.addr('+27001')
                     .start()
                     .check.interaction({
                         state: 'states:start',
                         reply: [
                             'Welcome to The Department of Health\'s ' +
-                            'MomConnect programme. Is this no. (MSISDN) ' +
-                            'the mobile no. of the pregnant woman to be ' +
-                            'registered?',
+                            'MomConnect. Tell us if this is the no. that ' +
+                            'the mother would like to get SMSs on: 0001',
                             '1. Yes',
                             '2. No'
                         ].join('\n')

@@ -102,6 +102,7 @@ describe("app", function() {
         describe("after entering the pregnant woman's number", function() {
             it("should ask for the clinic code", function() {
                 return tester
+                    .setup.user.addr('+271111')
                     .setup.user.state('states:mobile_no')
                     .input('0821234567')
                     .check.interaction({
@@ -110,6 +111,10 @@ describe("app", function() {
                             'Please enter the clinic code for the facility ' +
                             'where this pregnancy is being registered:')
                     })
+                    .check(function(api) {
+                        var contact = api.contacts.store[0];
+                        assert.equal(contact.extra.working_on, "+27821234567");
+                    })
                     .run();
             });
         });
@@ -117,6 +122,15 @@ describe("app", function() {
         describe("after entering the clinic code", function() {
             it("should ask for the month the baby is due", function() {
                 return tester
+                    .setup(function(api) {
+                        api.contacts.add( {
+                            msisdn: '+271111',
+                            extra : {
+                                working_on: '+27821234567'
+                            }
+                        });
+                    })
+                    .setup.user.addr('+271111')
                     .setup.user.state('states:clinic_code')
                     .input('12345')
                     .check.interaction({
@@ -133,6 +147,12 @@ describe("app", function() {
                             '8. Nov',
                             '9. Dec'
                         ].join('\n')
+                    })
+                    .check(function(api) {
+                        var contact = _.find(api.contacts.store, {
+                          msisdn: '+27821234567'
+                        });
+                        assert.equal(contact.extra.clinic_code, '12345');
                     })
                     .run();
             });

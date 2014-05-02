@@ -107,6 +107,16 @@ go.utils = {
         return (!_.isUndefined(boolean) && (boolean==='true' || boolean===true));
     },
 
+    normalise_sa_msisdn: function(msisdn) {
+        normalised_no = '0' + msisdn.slice(3,12);
+        return normalised_no;
+    },
+
+    denormalise_sa_msisdn: function(msisdn) {
+        denormalised_no = '+27' + msisdn.slice(1,10);
+        return denormalised_no;
+    },
+
 };
 go.app = function() {
     var vumigo = require('vumigo_v02');
@@ -115,6 +125,7 @@ go.app = function() {
     var ChoiceState = vumigo.states.ChoiceState;
     var EndState = vumigo.states.EndState;
     var FreeText = vumigo.states.FreeText;
+    // var Q = require('q');
 
     var GoNDOH = App.extend(function(self) {
         App.call(self, 'states:start');
@@ -130,7 +141,15 @@ go.app = function() {
             return self.im.contacts
                 .for_user()
                 .then(function(user_contact) {
-                   self.contact = user_contact;
+                    if ((user_contact.extra.working_on !== undefined) && (user_contact.extra.working_on !== "")){
+                        self.user = user_contact;
+                        return self.im.contacts.get(user_contact.extra.working_on, {create: true})
+                            .then(function(working_on){
+                                self.contact = working_on;
+                            });
+                    } else {
+                        self.contact = user_contact;
+                    }                   
                 });
         };
 
@@ -184,7 +203,17 @@ go.app = function() {
                 question: $('Please enter the clinic code for the facility ' +
                             'where this pregnancy is being registered:'),
 
-                next: 'states:due_date_month'
+                next: function(content) {
+                    self.contact.extra.clinic_code = content;
+
+                    return self.im.contacts.save(self.contact)
+                        .then(function() {
+                            return {
+                                name: 'states:due_date_month'
+                            };
+                        });
+                }
+                    
             });
         });
 
@@ -209,13 +238,19 @@ go.app = function() {
                     }
                 },
 
-                next: function() {
-                    return {
-                        name: 'states:clinic_code',
-                        creator_opts: {
-                            retry: opts.retry
-                        }
-                    };
+                next: function(content) {
+                    msisdn = go.utils.denormalise_sa_msisdn(content);
+                    self.contact.extra.working_on = msisdn;
+
+                    return self.im.contacts.save(self.contact)
+                        .then(function() {
+                            return {
+                                name: 'states:clinic_code',
+                                creator_opts: {
+                                    retry: opts.retry
+                                }
+                            };
+                        });
                 }
             });
         });

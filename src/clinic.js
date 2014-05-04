@@ -232,7 +232,16 @@ go.app = function() {
                     new Choice('other', $('Other')),
                 ],
 
-                next: 'states:passport_no'
+                next: function(choice) {
+                    self.contact.extra.passport_origin = choice.value;
+
+                    return self.im.contacts.save(self.contact)
+                    .then(function() {
+                        return {
+                            name: 'states:passport_no'
+                        };
+                    });
+                }
             });
         });
 
@@ -240,7 +249,16 @@ go.app = function() {
             return new FreeText(name, {
                 question: $('Please enter your Passport number:'),
 
-                next: 'states:language'
+                next: function(content) {
+                    self.contact.extra.passport_no = content;
+
+                    return self.im.contacts.save(self.contact)
+                    .then(function() {
+                        return {
+                            name: 'states:language'
+                        };
+                    });
+                }
             });
         });
 

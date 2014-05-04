@@ -263,7 +263,7 @@ describe("app", function() {
         });
 
         describe("after the user enters their ID number incorrectly", function() {
-            it("should ask them to try again", function() {
+            it("should not save ID, ask them to try again", function() {
                 return tester
                     .setup.user.addr('+270001')
                     .setup.user.state('states:sa_id')
@@ -273,12 +273,18 @@ describe("app", function() {
                         reply: 'Sorry, the mother\'s ID number did not validate. ' +
                           'Please reenter the SA ID number:'
                     })
+                    .check(function(api) {
+                        var contact = _.find(api.contacts.store, {
+                          msisdn: '+270001'
+                        });
+                        assert.equal(contact.extra.sa_id, undefined);
+                    })
                     .run();
             });
         });
 
         describe("if the user selects Passport (id type)", function() {
-            it("should ask for their country of origin", function() {
+            it("should set id type, ask for their country of origin", function() {
                 return tester
                     .setup.user.addr('+270001')
                     .setup.user.state('states:id_type')
@@ -296,12 +302,18 @@ describe("app", function() {
                             '7. Other'
                         ].join('\n')
                     })
+                    .check(function(api) {
+                        var contact = _.find(api.contacts.store, {
+                          msisdn: '+270001'
+                        });
+                        assert.equal(contact.extra.id_type, 'passport');
+                    })
                     .run();
             });
         });
 
         describe("after the user selects passport country", function() {
-            it("should ask for their passport number", function() {
+            it("should save passport country, ask for their passport number", function() {
                 return tester
                     .setup.user.addr('+270001')
                     .setup.user.state('states:passport_origin')
@@ -310,12 +322,18 @@ describe("app", function() {
                         state: 'states:passport_no',
                         reply: 'Please enter your Passport number:'
                     })
+                    .check(function(api) {
+                        var contact = _.find(api.contacts.store, {
+                          msisdn: '+270001'
+                        });
+                        assert.equal(contact.extra.passport_origin, 'zw');
+                    })
                     .run();
             });
         });
 
         describe("after the user enters the passport number", function() {
-            it("should ask for pregnant woman's msg language", function() {
+            it("should save passport no, ask for pregnant woman's msg language", function() {
                 return tester
                     .setup.user.addr('+270001')
                     .setup.user.state('states:passport_no')
@@ -330,6 +348,12 @@ describe("app", function() {
                             '4. Xhosa',
                             '5. Sotho'
                             ].join('\n')
+                    })
+                    .check(function(api) {
+                        var contact = _.find(api.contacts.store, {
+                          msisdn: '+270001'
+                        });
+                        assert.equal(contact.extra.passport_no, '12345');
                     })
                     .run();
             });

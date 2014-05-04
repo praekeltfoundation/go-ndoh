@@ -405,13 +405,15 @@ go.app = function() {
                     }
                 },
 
-                next: function() {
-                    return {
-                        name: 'states:birth_month',
-                        creator_opts: {
-                            retry: opts.retry
-                        }
-                    };
+                next: function(content) {
+                    self.contact.extra.birth_year = content;
+
+                    return self.im.contacts.save(self.contact)
+                    .then(function() {
+                        return {
+                            name: 'states:birth_month'
+                        };
+                    });
                 }
             });
         });
@@ -422,7 +424,16 @@ go.app = function() {
 
                 choices: go.utils.make_month_choices($, 0, 12),
 
-                next: 'states:birth_day'
+                next: function(choice) {
+                    self.contact.extra.birth_month = choice.value;
+
+                    return self.im.contacts.save(self.contact)
+                    .then(function() {
+                        return {
+                            name: 'states:birth_day'
+                        };
+                    });
+                }
             });
         });
 
@@ -449,13 +460,21 @@ go.app = function() {
                     }
                 },
 
-                next: function() {
-                    return {
-                        name: 'states:language',
-                        creator_opts: {
-                            retry: opts.retry
-                        }
-                    };
+                next: function(content) {
+                    if (content.length === 1) {
+                        content = '0' + content;
+                    }
+                    self.contact.extra.birth_day = content;
+                    self.contact.extra.dob = (self.im.user.answers['states:birth_year'] + 
+                        '-' + self.im.user.answers['states:birth_month'] +
+                        '-' + content);
+
+                    return self.im.contacts.save(self.contact)
+                    .then(function() {
+                        return {
+                            name: 'states:language'
+                        };
+                    });
                 }
             });
         });
@@ -474,7 +493,15 @@ go.app = function() {
                 ],
 
                 next: function(choice) {
+                    self.contact.extra.language_choice = choice.value;
+
                     return self.im.user.set_lang(choice.value)
+                    // askmike: is this saved automatically?
+                    // askmike: should we be doing self.im.contact.set_lang(choice.value)?
+                    // we may not have to run this for this flow as it's last state.
+                    .then(function() {
+                        return self.im.contacts.save(self.contact);
+                    })
                     .then(function() {
                         return 'states:end_success';
                     });

@@ -39,10 +39,10 @@ go.utils = {
 
     },  
 
-    get_today: function(testing_today) {
+    get_today: function(config) {
         var today;
-        if (testing_today) {
-            today = new Date(testing_today);
+        if (config.testing_today) {
+            today = new Date(config.testing_today);
         } else {
             today = new Date();
         }
@@ -256,7 +256,7 @@ go.app = function() {
 
         self.states.add('states:due_date_month', function(name) {
             
-            var today = go.utils.get_today(self.im.config.testing_today);
+            var today = go.utils.get_today(self.im.config);
             var month = today.getMonth();   // 0-bound
 
             return new ChoiceState(name, {
@@ -406,7 +406,7 @@ go.app = function() {
                 question: question,
 
                 check: function(content) {
-                    if (!go.utils.check_number_in_range(content, 1900, go.utils.get_today(self.im.config.testing_today).getFullYear())) {
+                    if (!go.utils.check_number_in_range(content, 1900, go.utils.get_today(self.im.config).getFullYear())) {
                         return error;
                     }
                 },

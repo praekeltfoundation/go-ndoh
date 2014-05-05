@@ -15,7 +15,7 @@ describe("app", function() {
 
             tester
                 .setup.user.lang('en')
-                .setup.char_limit(180)
+                .setup.char_limit(160)
                 .setup.config.app({
                     name: 'test_chw',
                     testing: 'true',

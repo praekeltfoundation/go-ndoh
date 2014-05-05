@@ -39,10 +39,10 @@ go.utils = {
 
     },  
 
-    get_today: function(testing_today) {
+    get_today: function(config) {
         var today;
-        if (testing_today) {
-            today = new Date(testing_today);
+        if (config.testing_today) {
+            today = new Date(config.testing_today);
         } else {
             today = new Date();
         }

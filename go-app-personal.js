@@ -187,12 +187,12 @@ go.app = function() {
                     self.contact.extra.language_choice = choice.value;
 
                     return self.im.user.set_lang(choice.value)
-                    .then(function() {
-                        return self.im.contacts.save(self.contact);
-                    })
-                    .then(function() {
-                        return 'states:suspect_pregnancy';
-                    });
+                        .then(function() {
+                            return self.im.contacts.save(self.contact);
+                        })
+                        .then(function() {
+                            return 'states:suspect_pregnancy';
+                        });
                 }
             });
         });
@@ -212,12 +212,12 @@ go.app = function() {
                     self.contact.extra.suspect_pregnancy = choice.value;
 
                     return self.im.contacts.save(self.contact)
-                    .then(function() {
-                        return {
-                            yes: 'states:id_type',
-                            no: 'states:end_not_pregnant'
-                        } [choice.value];
-                    });
+                        .then(function() {
+                            return {
+                                yes: 'states:id_type',
+                                no: 'states:end_not_pregnant'
+                            } [choice.value];
+                        });
                 }
             });
         });
@@ -315,11 +315,11 @@ go.app = function() {
                     self.contact.extra.passport_origin = choice.value;
 
                     return self.im.contacts.save(self.contact)
-                    .then(function() {
-                        return {
-                            name: 'states:passport_no'
-                        };
-                    });
+                        .then(function() {
+                            return {
+                                name: 'states:passport_no'
+                            };
+                        });
                 }
             });
         });
@@ -332,11 +332,11 @@ go.app = function() {
                     self.contact.extra.passport_no = content;
 
                     return self.im.contacts.save(self.contact)
-                    .then(function() {
-                        return {
-                            name: 'states:end_success'
-                        };
-                    });
+                        .then(function() {
+                            return {
+                                name: 'states:end_success'
+                            };
+                        });
                 }
             });
         });
@@ -368,11 +368,11 @@ go.app = function() {
                     self.contact.extra.birth_year = content;
 
                     return self.im.contacts.save(self.contact)
-                    .then(function() {
-                        return {
-                            name: 'states:birth_month'
-                        };
-                    });
+                        .then(function() {
+                            return {
+                                name: 'states:birth_month'
+                            };
+                        });
                 }
             });
         });
@@ -387,11 +387,11 @@ go.app = function() {
                     self.contact.extra.birth_month = choice.value;
 
                     return self.im.contacts.save(self.contact)
-                    .then(function() {
-                        return {
-                            name: 'states:birth_day'
-                        };
-                    });
+                        .then(function() {
+                            return {
+                                name: 'states:birth_day'
+                            };
+                        });
                 }
             });
         });
@@ -428,11 +428,11 @@ go.app = function() {
                         '-' + content);
 
                     return self.im.contacts.save(self.contact)
-                    .then(function() {
-                        return {
-                            name: 'states:end_success'
-                        };
-                    });
+                        .then(function() {
+                            return {
+                                name: 'states:end_success'
+                            };
+                        });
                 }
             });
         });

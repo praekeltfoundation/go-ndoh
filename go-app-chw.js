@@ -458,7 +458,7 @@ go.app = function() {
                     self.contact.extra.language_choice = choice.value;
 
                     return self.im.user.set_lang(choice.value)
-                    // we may not have to run this for this flow as it's last state.
+                    // we may not have to run this for this flow
                     .then(function() {
                         return self.im.contacts.save(self.contact);
                     })

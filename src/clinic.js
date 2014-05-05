@@ -208,6 +208,12 @@ go.app = function() {
                 next: function(content) {
                     self.contact.extra.sa_id = content;
 
+                    var id_date_of_birth = go.utils.extract_id_dob(content);
+                    self.contact.extra.birth_year = id_date_of_birth.slice(0,4);
+                    self.contact.extra.birth_month = id_date_of_birth.slice(5,7);
+                    self.contact.extra.birth_day = id_date_of_birth.slice(8,10);
+                    self.contact.extra.dob = id_date_of_birth;
+
                     return self.im.contacts.save(self.contact)
                         .then(function() {
                             return {

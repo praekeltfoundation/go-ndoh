@@ -5,7 +5,6 @@ go.app = function() {
     var ChoiceState = vumigo.states.ChoiceState;
     var EndState = vumigo.states.EndState;
     var FreeText = vumigo.states.FreeText;
-    // var Q = require('q');
 
     var GoNDOH = App.extend(function(self) {
         App.call(self, 'states:start');

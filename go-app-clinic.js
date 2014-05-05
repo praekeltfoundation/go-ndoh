@@ -474,6 +474,7 @@ go.app = function() {
                     }
                     self.contact.extra.birth_day = content;
                     self.contact.extra.dob = moment({year: self.im.user.answers['states:birth_year'], month: (self.im.user.answers['states:birth_month'] - 1), day: content}).format('YYYY-MM-DD');
+                    // -1 for 0-bound month
 
                     return self.im.contacts.save(self.contact)
                         .then(function() {

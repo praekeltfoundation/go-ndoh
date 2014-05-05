@@ -107,12 +107,12 @@ go.utils = {
         return (!_.isUndefined(boolean) && (boolean==='true' || boolean===true));
     },
 
-    normalise_sa_msisdn: function(msisdn) {
-        normalised_no = '0' + msisdn.slice(3,12);
-        return normalised_no;
+    readable_sa_msisdn: function(msisdn) {
+        readable_no = '0' + msisdn.slice(3,12);
+        return readable_no;
     },
 
-    denormalise_sa_msisdn: function(msisdn) {
+    normalise_sa_msisdn: function(msisdn) {
         denormalised_no = '+27' + msisdn.slice(1,10);
         return denormalised_no;
     },
@@ -180,13 +180,13 @@ go.app = function() {
         };
 
         self.states.add('states:start', function(name) {
-            var normalised_no = go.utils.normalise_sa_msisdn(self.im.user.addr);
+            var readable_no = go.utils.readable_sa_msisdn(self.im.user.addr);
 
             return new ChoiceState(name, {
                 question: $('Welcome to The Department of Health\'s ' +
                             'MomConnect. Tell us if this is the no. that ' +
                             'the mother would like to get SMSs on: {{ num }}')
-                    .context({ num: normalised_no }),
+                    .context({ num: readable_no }),
 
                 choices: [
                     new Choice('yes', $('Yes')),
@@ -224,7 +224,7 @@ go.app = function() {
                 },
 
                 next: function(content) {
-                    msisdn = go.utils.denormalise_sa_msisdn(content);
+                    msisdn = go.utils.normalise_sa_msisdn(content);
                     self.contact.extra.working_on = msisdn;
 
                     return self.im.contacts.save(self.contact)

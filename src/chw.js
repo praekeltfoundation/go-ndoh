@@ -27,6 +27,7 @@ go.app = function() {
                                 self.contact = working_on;
                             });
                     } else {
+                        self.user = user_contact;
                         self.contact = user_contact;
                     }                   
                 });
@@ -343,7 +344,7 @@ go.app = function() {
                             return self.im.contacts.save(self.contact);
                         })
                         .then(function() {
-                            if (self.user !== undefined && self.user.extra.working_on !== undefined) {
+                            if (self.user.extra.working_on !== undefined) {
                                 self.user.extra.working_on = "";
                                 return self.im.contacts.save(self.user);
                             }

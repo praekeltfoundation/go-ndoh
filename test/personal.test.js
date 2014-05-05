@@ -145,12 +145,12 @@ describe("app", function() {
             });
         });
 
-        describe("after the user enters their ID number", function() {
+        describe("after the user enters their ID number after '50", function() {
             it("should set their ID no, extract their DOB, thank them and exit", function() {
                 return tester
                     .setup.user.addr('+27001')
                     .setup.user.state('states:sa_id')
-                    .input('8001015009087')
+                    .input('5101015009088')
                     .check.interaction({
                         state: 'states:end_success',
                         reply: ('Thank you for subscribing to MomConnect. ' +
@@ -160,11 +160,43 @@ describe("app", function() {
                     })
                     .check(function(api) {
                         var contact = api.contacts.store[0];
-                        assert.equal(contact.extra.sa_id, '8001015009087');
-                        assert.equal(contact.extra.birth_year, '1980');
+                        assert.equal(contact.extra.sa_id, '5101015009088');
+                        assert.equal(contact.extra.birth_year, '1951');
                         assert.equal(contact.extra.birth_month, '01');
                         assert.equal(contact.extra.birth_day, '01');
-                        assert.equal(contact.extra.dob, '1980-01-01');
+                        assert.equal(contact.extra.dob, '1951-01-01');
+                    })
+                    .check.reply.ends_session()
+                    .run();
+            });
+        });
+
+        describe("after the user enters their ID number before '50", function() {
+            it("should set their ID no, extract their DOB", function() {
+                return tester
+                    .setup.user.addr('+27001')
+                    .setup.user.state('states:sa_id')
+                    .input('2012315678097')
+                    .check(function(api) {
+                        var contact = api.contacts.store[0];
+                        assert.equal(contact.extra.sa_id, '2012315678097');
+                        assert.equal(contact.extra.dob, '2020-12-31');
+                    })
+                    .check.reply.ends_session()
+                    .run();
+            });
+        });
+
+        describe("after the user enters their ID number on '50", function() {
+            it("should set their ID no, extract their DOB", function() {
+                return tester
+                    .setup.user.addr('+27001')
+                    .setup.user.state('states:sa_id')
+                    .input('5002285000007')
+                    .check(function(api) {
+                        var contact = api.contacts.store[0];
+                        assert.equal(contact.extra.sa_id, '5002285000007');
+                        assert.equal(contact.extra.dob, '1950-02-28');
                     })
                     .check.reply.ends_session()
                     .run();

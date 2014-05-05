@@ -1,6 +1,7 @@
 go.app = function() {
     var vumigo = require('vumigo_v02');
     var _ = require('lodash');
+    var moment = require('moment');
     var App = vumigo.App;
     var Choice = vumigo.states.Choice;
     var ChoiceState = vumigo.states.ChoiceState;
@@ -167,9 +168,9 @@ go.app = function() {
                     self.contact.extra.sa_id = content;
 
                     var id_date_of_birth = go.utils.extract_id_dob(content);
-                    self.contact.extra.birth_year = id_date_of_birth.slice(0,4);
-                    self.contact.extra.birth_month = id_date_of_birth.slice(5,7);
-                    self.contact.extra.birth_day = id_date_of_birth.slice(8,10);
+                    self.contact.extra.birth_year = moment(id_date_of_birth, 'YYYY-MM-DD').format('YYYY');
+                    self.contact.extra.birth_month = moment(id_date_of_birth, 'YYYY-MM-DD').format('MM');
+                    self.contact.extra.birth_day = moment(id_date_of_birth, 'YYYY-MM-DD').format('DD');
                     self.contact.extra.dob = id_date_of_birth;
 
                     return self.im.contacts.save(self.contact)

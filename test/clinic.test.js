@@ -565,10 +565,14 @@ describe("app", function() {
                                 'from the Department of Health.')
                         })
                         .check(function(api) {
-                            var contact = _.find(api.contacts.store, {
-                              msisdn: '+27821234567'
+                            var contact_mom = _.find(api.contacts.store, {
+                                msisdn: '+27821234567'
                             });
-                            assert.equal(contact.extra.language_choice, 'en');
+                            var contact_user = _.find(api.contacts.store, {
+                                msisdn: '+270001'
+                            });
+                            assert.equal(contact_mom.extra.language_choice, 'en');
+                            assert.equal(contact_user.extra.working_on, '');
                         })
                         .check.reply.ends_session()
                         .run();

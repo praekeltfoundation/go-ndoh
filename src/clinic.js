@@ -381,11 +381,15 @@ go.app = function() {
                     self.contact.extra.language_choice = choice.value;
 
                     return self.im.user.set_lang(choice.value)
-                    // askmike: is this saved automatically?
-                    // askmike: should we be doing self.im.contact.set_lang(choice.value)?
-                    // we may not have to run this for this flow as it's last state.
+                    // we may not have to run this for this flow
                     .then(function() {
                         return self.im.contacts.save(self.contact);
+                    })
+                    .then(function() {
+                        if (self.user !== undefined && self.user.extra.working_on !== undefined) {
+                            self.user.extra.working_on = "";
+                            return self.im.contacts.save(self.user);
+                        }
                     })
                     .then(function() {
                         return 'states:end_success';

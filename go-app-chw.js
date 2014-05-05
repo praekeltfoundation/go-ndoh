@@ -463,6 +463,12 @@ go.app = function() {
                         return self.im.contacts.save(self.contact);
                     })
                     .then(function() {
+                        if (self.user !== undefined && self.user.extra.working_on !== undefined) {
+                            self.user.extra.working_on = "";
+                            return self.im.contacts.save(self.user);
+                        }
+                    })
+                    .then(function() {
                         return 'states:end_success';
                     });
                 }

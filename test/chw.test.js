@@ -177,12 +177,12 @@ describe("app", function() {
             });
         });
 
-        describe("after the user enters the ID number", function() {
-            it("should save ID, ask for pregnant woman's msg language", function() {
+        describe("after the user enters the ID number after '50", function() {
+            it("should save ID, extract DOB, ask for pregnant woman's msg language", function() {
                 return tester
                     .setup.user.addr('+270001')
                     .setup.user.state('states:sa_id')
-                    .input('8001015009087')
+                    .input('5101015009088')
                     .check.interaction({
                         state: 'states:language',
                         reply: ['Please select the language that the ' +
@@ -198,7 +198,45 @@ describe("app", function() {
                         var contact = _.find(api.contacts.store, {
                           msisdn: '+270001'
                         });
-                        assert.equal(contact.extra.sa_id, '8001015009087');
+                        assert.equal(contact.extra.sa_id, '5101015009088');
+                        assert.equal(contact.extra.birth_year, '1951');
+                        assert.equal(contact.extra.birth_month, '01');
+                        assert.equal(contact.extra.birth_day, '01');
+                        assert.equal(contact.extra.dob, '1951-01-01');
+                    })
+                    .run();
+            });
+        });
+
+        describe("after the user enters the ID number before '50", function() {
+            it("should save ID, extract DOB", function() {
+                return tester
+                    .setup.user.addr('+270001')
+                    .setup.user.state('states:sa_id')
+                    .input('2012315678097')
+                    .check(function(api) {
+                        var contact = _.find(api.contacts.store, {
+                          msisdn: '+270001'
+                        });
+                        assert.equal(contact.extra.sa_id, '2012315678097');
+                        assert.equal(contact.extra.dob, '2020-12-31');
+                    })
+                    .run();
+            });
+        });
+
+        describe("after the user enters the ID number on '50", function() {
+            it("should save ID, extract DOB", function() {
+                return tester
+                    .setup.user.addr('+270001')
+                    .setup.user.state('states:sa_id')
+                    .input('5002285000007')
+                    .check(function(api) {
+                        var contact = _.find(api.contacts.store, {
+                          msisdn: '+270001'
+                        });
+                        assert.equal(contact.extra.sa_id, '5002285000007');
+                        assert.equal(contact.extra.dob, '1950-02-28');
                     })
                     .run();
             });

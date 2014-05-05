@@ -1,5 +1,6 @@
 go.app = function() {
     var vumigo = require('vumigo_v02');
+    var _ = require('lodash');
     var App = vumigo.App;
     var Choice = vumigo.states.Choice;
     var ChoiceState = vumigo.states.ChoiceState;
@@ -20,7 +21,7 @@ go.app = function() {
             return self.im.contacts
                 .for_user()
                 .then(function(user_contact) {
-                    if ((user_contact.extra.working_on !== undefined) && (user_contact.extra.working_on !== "")){
+                    if ((!_.isUndefined(user_contact.extra.working_on)) && (user_contact.extra.working_on !== "")){
                         self.user = user_contact;
                         return self.im.contacts.get(user_contact.extra.working_on, {create: true})
                             .then(function(working_on){
@@ -387,7 +388,7 @@ go.app = function() {
                             return self.im.contacts.save(self.contact);
                         })
                         .then(function() {
-                            if (self.user.extra.working_on !== undefined) {
+                            if (!_.isUndefined(self.user.extra.working_on)) {
                                 self.user.extra.working_on = "";
                                 return self.im.contacts.save(self.user);
                             }

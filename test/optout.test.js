@@ -2,6 +2,9 @@ var vumigo = require('vumigo_v02');
 var fixtures = require('./fixtures');
 var AppTester = vumigo.AppTester;
 
+var messagestore = require('./messagestore');
+var DummyMessageStoreResource = messagestore.DummyMessageStoreResource;
+
 
 describe("app", function() {
     describe("for opting out of messages", function() {
@@ -45,6 +48,10 @@ describe("app", function() {
         describe("when the user selects a reason for opting out", function() {
             it("should thank them and exit", function() {
                 return tester
+                    .setup(function(api) {
+                        api.resources.add(new DummyMessageStoreResource());
+                        api.resources.attach(api);
+                    });
                     .setup.user.state('states:start')
                     .input('1')
                     .check.interaction({

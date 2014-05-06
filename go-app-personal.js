@@ -113,6 +113,15 @@ go.utils = {
         return denormalised_no;
     },
 
+    incr_user_extra: function(data_to_increment, amount_to_increment) {
+        if (_.isUndefined(data_to_increment)) {
+            new_data_amount = 1;
+        } else {
+            new_data_amount = parseInt(data_to_increment) + amount_to_increment;
+        }
+        return new_data_amount.toString();
+    },
+
 };
 go.app = function() {
     var vumigo = require('vumigo_v02');

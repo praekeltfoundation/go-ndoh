@@ -64,10 +64,15 @@ go.app = function() {
                 ],
 
                 next: function(choice) {
+                    self.contact.extra.language_choice = choice.value;
+
                     return self.im.user.set_lang(choice.value)
-                    .then(function() {
-                        return 'states:suspect_pregnancy';
-                    });
+                        .then(function() {
+                            return self.im.contacts.save(self.contact);
+                        })
+                        .then(function() {
+                            return 'states:suspect_pregnancy';
+                        });
                 }
             });
         });
@@ -84,10 +89,15 @@ go.app = function() {
                 ],
 
                 next: function(choice) {
-                    return {
-                        yes: 'states:id_type',
-                        no: 'states:end_not_pregnant'
-                    } [choice.value];
+                    self.contact.extra.suspect_pregnancy = choice.value;
+
+                    return self.im.contacts.save(self.contact)
+                        .then(function() {
+                            return {
+                                yes: 'states:id_type',
+                                no: 'states:end_not_pregnant'
+                            } [choice.value];
+                        });
                 }
             });
         });
@@ -114,11 +124,16 @@ go.app = function() {
                 ],
 
                 next: function(choice) {
-                    return {
-                        sa_id: 'states:sa_id',
-                        passport: 'states:passport_origin',
-                        none: 'states:birth_year'
-                    } [choice.value];
+                    self.contact.extra.id_type = choice.value;
+
+                    return self.im.contacts.save(self.contact)
+                        .then(function() {
+                            return {
+                                sa_id: 'states:sa_id',
+                                passport: 'states:passport_origin',
+                                none: 'states:birth_year'
+                            } [choice.value];
+                        });
                 }
             });
         });
@@ -143,13 +158,21 @@ go.app = function() {
                     }
                 },
 
-                next: function() {
-                    return {
-                        name: 'states:end_success',
-                        creator_opts: {
-                            retry: opts.retry
-                        }
-                    };
+                next: function(content) {
+                    self.contact.extra.sa_id = content;
+
+                    var id_date_of_birth = go.utils.extract_id_dob(content);
+                    self.contact.extra.birth_year = id_date_of_birth.slice(0,4);
+                    self.contact.extra.birth_month = id_date_of_birth.slice(5,7);
+                    self.contact.extra.birth_day = id_date_of_birth.slice(8,10);
+                    self.contact.extra.dob = id_date_of_birth;
+
+                    return self.im.contacts.save(self.contact)
+                        .then(function() {
+                            return {
+                                name: 'states:end_success'
+                            };
+                        });
                 }
             });
         });
@@ -168,7 +191,16 @@ go.app = function() {
                     new Choice('other', $('Other')),
                 ],
 
-                next: 'states:passport_no'
+                next: function(choice) {
+                    self.contact.extra.passport_origin = choice.value;
+
+                    return self.im.contacts.save(self.contact)
+                        .then(function() {
+                            return {
+                                name: 'states:passport_no'
+                            };
+                        });
+                }
             });
         });
 
@@ -176,7 +208,16 @@ go.app = function() {
             return new FreeText(name, {
                 question: $('Please enter your Passport number:'),
 
-                next: 'states:end_success'
+                next: function(content) {
+                    self.contact.extra.passport_no = content;
+
+                    return self.im.contacts.save(self.contact)
+                        .then(function() {
+                            return {
+                                name: 'states:end_success'
+                            };
+                        });
+                }
             });
         });
 
@@ -198,18 +239,20 @@ go.app = function() {
                 question: question,
 
                 check: function(content) {
-                    if (!go.utils.check_number_in_range(content, 1900, go.utils.get_today(self.im.config.testing_today).getFullYear())) {
+                    if (!go.utils.check_number_in_range(content, 1900, go.utils.get_today(self.im.config).getFullYear())) {
                         return error;
                     }
                 },
 
-                next: function() {
-                    return {
-                        name: 'states:birth_month',
-                        creator_opts: {
-                            retry: opts.retry
-                        }
-                    };
+                next: function(content) {
+                    self.contact.extra.birth_year = content;
+
+                    return self.im.contacts.save(self.contact)
+                        .then(function() {
+                            return {
+                                name: 'states:birth_month'
+                            };
+                        });
                 }
             });
         });
@@ -220,7 +263,16 @@ go.app = function() {
 
                 choices: go.utils.make_month_choices($, 0, 12),
 
-                next: 'states:birth_day'
+                next: function(choice) {
+                    self.contact.extra.birth_month = choice.value;
+
+                    return self.im.contacts.save(self.contact)
+                        .then(function() {
+                            return {
+                                name: 'states:birth_day'
+                            };
+                        });
+                }
             });
         });
 
@@ -246,13 +298,21 @@ go.app = function() {
                     }
                 },
 
-                next: function() {
-                    return {
-                        name: 'states:end_success',
-                        creator_opts: {
-                            retry: opts.retry
-                        }
-                    };
+                next: function(content) {
+                    if (content.length === 1) {
+                        content = '0' + content;
+                    }
+                    self.contact.extra.birth_day = content;
+                    self.contact.extra.dob = (self.im.user.answers['states:birth_year'] + 
+                        '-' + self.im.user.answers['states:birth_month'] +
+                        '-' + content);
+
+                    return self.im.contacts.save(self.contact)
+                        .then(function() {
+                            return {
+                                name: 'states:end_success'
+                            };
+                        });
                 }
             });
         });

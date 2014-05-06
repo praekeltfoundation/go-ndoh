@@ -1,6 +1,13 @@
 var _ = require('lodash');
+var moment = require('moment');
 var vumigo = require('vumigo_v02');
 var Choice = vumigo.states.Choice;
+
+// override moment default century switch at '68 with '49
+moment.parseTwoDigitYear = function (input) {
+    return +input + (+input > 49 ? 1900 : 2000);
+};
+
 go.utils = {
     // Shared utils lib
 
@@ -8,15 +15,15 @@ go.utils = {
     make_month_choices: function($, start, limit) {
             // start should be 0 for Jan - array position
             var choices = [
-                    new Choice('1', $('Jan')),
-                    new Choice('2', $('Feb')),
-                    new Choice('3', $('Mar')),
-                    new Choice('4', $('Apr')),
-                    new Choice('5', $('May')),
-                    new Choice('6', $('Jun')),
-                    new Choice('7', $('Jul')),
-                    new Choice('8', $('Aug')),
-                    new Choice('9', $('Sep')),
+                    new Choice('01', $('Jan')),
+                    new Choice('02', $('Feb')),
+                    new Choice('03', $('Mar')),
+                    new Choice('04', $('Apr')),
+                    new Choice('05', $('May')),
+                    new Choice('06', $('Jun')),
+                    new Choice('07', $('Jul')),
+                    new Choice('08', $('Aug')),
+                    new Choice('09', $('Sep')),
                     new Choice('10', $('Oct')),
                     new Choice('11', $('Nov')),
                     new Choice('12', $('Dec')),
@@ -36,10 +43,10 @@ go.utils = {
 
     },  
 
-    get_today: function(testing_today) {
+    get_today: function(config) {
         var today;
-        if (testing_today) {
-            today = new Date(testing_today);
+        if (config.testing_today) {
+            today = new Date(config.testing_today);
         } else {
             today = new Date();
         }
@@ -84,9 +91,23 @@ go.utils = {
         return ('' + sum).slice(-1) == check;
     },
 
+    extract_id_dob: function(id) {
+        return moment(id.slice(0,6), 'YYMMDD').format('YYYY-MM-DD');
+    },
+
     is_true: function(boolean) {
         //If is is not undefined and boolean is true
         return (!_.isUndefined(boolean) && (boolean==='true' || boolean===true));
+    },
+
+    readable_sa_msisdn: function(msisdn) {
+        readable_no = '0' + msisdn.slice(3,12);
+        return readable_no;
+    },
+
+    normalise_sa_msisdn: function(msisdn) {
+        denormalised_no = '+27' + msisdn.slice(1,10);
+        return denormalised_no;
     },
 
 };

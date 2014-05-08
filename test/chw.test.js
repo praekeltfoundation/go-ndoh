@@ -33,18 +33,48 @@ describe("app", function() {
         describe("when the user starts a session", function() {
             it("should check if no. belongs to pregnant woman", function() {
                 return tester
-                    .setup.user.addr('+27001')
+                    .setup.user.addr('+270001')
                     .start()
                     .check.interaction({
                         state: 'states:start',
                         reply: [
                             'Welcome to The Department of Health\'s ' +
                             'MomConnect. Tell us if this is the no. that ' +
-                            'the mother would like to get SMSs on: 0001',
+                            'the mother would like to get SMSs on: 00001',
                             '1. Yes',
                             '2. No'
                         ].join('\n')
                     })
+                    .check(function(api) {
+                            var contact = _.find(api.contacts.store, {
+                              msisdn: '+270001'
+                            });
+                            assert.equal(contact.extra.ussd_sessions, '1');
+                        })
+                    .run();
+            });
+        });
+
+        describe("when the user has previously logged on", function() {
+            it("should increase their number of ussd_sessions by 1", function() {
+                return tester
+                    .setup(function(api) {
+                            api.contacts.add( {
+                                msisdn: '+270001',
+                                extra : {
+                                    ussd_sessions: '3',
+                                    working_on: '+2712345'
+                                }
+                            });
+                        })
+                    .setup.user.addr('+270001')
+                    .start()
+                    .check(function(api) {
+                            var contact = _.find(api.contacts.store, {
+                              msisdn: '+270001'
+                            });
+                            assert.equal(contact.extra.ussd_sessions, '4');
+                        })
                     .run();
             });
         });
@@ -494,7 +524,8 @@ describe("app", function() {
                             api.contacts.add( {
                                 msisdn: '+270001',
                                 extra : {
-                                    working_on: '+27821234567'
+                                    working_on: '+27821234567',
+                                    ussd_sessions: '4'
                                 }
                             });
                         })
@@ -515,6 +546,7 @@ describe("app", function() {
                                 msisdn: '+270001'
                             });
                             assert.equal(contact_mom.extra.language_choice, 'en');
+                            assert.equal(contact_user.extra.ussd_sessions, '0');
                             assert.equal(contact_user.extra.working_on, '');
                         })
                         .check.reply.ends_session()
@@ -525,6 +557,14 @@ describe("app", function() {
             describe("if the phone used is the mom's", function() {
                 it("should save msg language, thank them and exit", function() {
                     return tester
+                        .setup(function(api) {
+                            api.contacts.add( {
+                                msisdn: '+270001',
+                                extra : {
+                                    ussd_sessions: '5'
+                                }
+                            });
+                        })
                         .setup.user.addr('+270001')
                         .setup.user.state('states:language')
                         .input('1')
@@ -540,6 +580,7 @@ describe("app", function() {
                               msisdn: '+270001'
                             });
                             assert.equal(contact.extra.language_choice, 'en');
+                            assert.equal(contact.extra.ussd_sessions, '0');
                         })
                         .check.reply.ends_session()
                         .run();

@@ -3,6 +3,8 @@ var fixtures = require('./fixtures');
 var AppTester = vumigo.AppTester;
 var assert = require('assert');
 var _ = require('lodash');
+var messagestore = require('./messagestore');
+var DummyMessageStoreResource = messagestore.DummyMessageStoreResource;
 
 describe("app", function() {
     describe("for chw use", function() {
@@ -14,6 +16,10 @@ describe("app", function() {
             tester = new AppTester(app);
 
             tester
+                .setup(function(api) {
+                    api.resources.add(new DummyMessageStoreResource());
+                    api.resources.attach(api);
+                })
                 .setup.user.lang('en')
                 .setup.char_limit(160)
                 .setup.config.app({
@@ -28,6 +34,20 @@ describe("app", function() {
                 .setup(function(api) {
                     fixtures().forEach(api.http.fixtures.add);
                 });
+        });
+
+        describe("when a new unique user logs on", function() {
+            it("should increment the no. of unique users by 1", function() {
+                return tester
+                    .setup(function(api) {
+                        api.messagestore.inbound_uniques = 22;
+                    })
+                    .start()
+                    .check(function(api) {
+                        var metrics = api.metrics.stores.test_chw;
+                        assert.deepEqual(metrics['sum.unique_users'].values, [22]);
+                    }).run();
+            });
         });
 
         describe("when the user starts a session", function() {
@@ -525,7 +545,7 @@ describe("app", function() {
                                 msisdn: '+270001',
                                 extra : {
                                     working_on: '+27821234567',
-                                    ussd_sessions: '4'
+                                    ussd_sessions: '5'
                                 }
                             });
                         })
@@ -548,6 +568,10 @@ describe("app", function() {
                             assert.equal(contact_mom.extra.language_choice, 'en');
                             assert.equal(contact_user.extra.ussd_sessions, '0');
                             assert.equal(contact_user.extra.working_on, '');
+                        })
+                        .check(function(api) {
+                            var metrics = api.metrics.stores.test_chw;
+                            assert.deepEqual(metrics['test_chw.avg.sessions_to_register'].values, [5]);
                         })
                         .check.reply.ends_session()
                         .run();
@@ -581,6 +605,10 @@ describe("app", function() {
                             });
                             assert.equal(contact.extra.language_choice, 'en');
                             assert.equal(contact.extra.ussd_sessions, '0');
+                        })
+                        .check(function(api) {
+                            var metrics = api.metrics.stores.test_chw;
+                            assert.deepEqual(metrics['test_chw.avg.sessions_to_register'].values, [5]);
                         })
                         .check.reply.ends_session()
                         .run();

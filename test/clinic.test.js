@@ -71,7 +71,6 @@ describe("app", function() {
                     .start()
                     .check(function(api) {
                         var metrics = api.metrics.stores.test_clinic;
-                        console.log(metrics);
                         assert.deepEqual(metrics['sum.unique_users'].values, [22]);
                     }).run();
             });

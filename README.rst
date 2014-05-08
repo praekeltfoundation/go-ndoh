@@ -37,11 +37,18 @@ Metrics produced:
 * chw.avg.sessions_to_register
 * personal.avg.sessions_to_register
 
+
+Analytics produced:
+
+* self.contact.extra.<question>  (responses to each question per user)
+
+
 Metrics required (v1):
 
 * clinic.sum.sent_to_hie (records number of complete registrations sent to HIE)
 * chw.sum.sent_to_hie
 * personal.sum.sent_to_hie
+
 
 Metrics required (v2):
 * percentage_users (clinic + chw + personal = 100)
@@ -54,6 +61,11 @@ Metrics required (v2):
 * chw.percentage_complete_registrations
 * personal.percentage_complete_registrations
 
+
 Analytics required (v2):
 
-* waiting on responses from Debbie
+* number of sessions - total and per user
+* position in menu where each user drops off
+* number of sessions needed to complete registration per user
+* number of moms registered per facility/nurse phone
+* reasons for optout per person

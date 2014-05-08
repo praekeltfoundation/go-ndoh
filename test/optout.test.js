@@ -51,7 +51,7 @@ describe("app", function() {
                     .setup(function(api) {
                         api.resources.add(new DummyMessageStoreResource());
                         api.resources.attach(api);
-                    });
+                    })
                     .setup.user.state('states:start')
                     .input('1')
                     .check.interaction({

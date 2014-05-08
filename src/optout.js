@@ -9,6 +9,7 @@ go.app = function() {
         App.call(self, 'states:start');
         var $ = self.$;
 
+
         self.states.add('states:start', function(name) {
             return new ChoiceState(name, {
                 question: $('Welcome to MomConnect. Why do you want to ' +
@@ -22,7 +23,18 @@ go.app = function() {
                     new Choice('other', $('Other')),
                 ],
 
-                next: 'states:end'
+                next: function(choice) {
+                    return self.im.api_request('optout.status', {
+                        address_type: "msisdn",
+                        address_value: self.im.user_addr
+                        })
+                        .then(function(result){
+                            console.log(result.opted_out);
+                        })
+                        .then(function() {
+                            return 'states:end';
+                        });
+                }
             });
         });
 
@@ -42,3 +54,61 @@ go.app = function() {
         GoNDOH: GoNDOH
     };
 }();
+
+
+// self.add_creator('optstatus', function (state_name, im) {
+//     var p = im.api_request('optout.status', {
+//         address_type: "msisdn",
+//         address_value: im.user_addr
+//     });
+//     p.add_callback(function (result) {
+ 
+//         if(result.opted_out) {
+//             return new ChoiceState(
+//                 state_name,
+//                 function(choice) {
+//                     return (choice.value == 'yes' ?
+//                             'opt_back_in' : 'remain_opted_out');
+//                 },
+//                 ('You have previously opted-out of this service. ' +
+//                  'Do you want to opt-back in again?'),
+//                 [
+//                     new Choice('yes', 'Yes please.'),
+//                     new Choice('no', 'No thank you.')
+//                 ]);
+//         }
+ 
+//         return new LanguageChoice(
+//             'language_selection',
+//             'user_status',
+//             ('To get MAMA messages, we need to ask you 4 questions. '+
+//              'What language would you like?'),
+//             [
+//                 new Choice('english', 'English'),
+//                 new Choice('zulu', 'Zulu'),
+//                 new Choice('xhosa', 'Xhosa'),
+//                 new Choice('afrikaans', 'Afrikaans'),
+//                 new Choice('sotho', 'Sotho'),
+//                 new Choice('setswana', 'Setswana')
+//             ]
+//         );
+//     });
+//     return p;
+// });
+ 
+// self.add_creator('opt_back_in', function (state_name, im) {
+//     var p = im.api_request('optout.cancel_optout', {
+//         address_type: 'msisdn',
+//         address_value: im.user_addr
+//     });
+//     p.add_callback(function (result) {
+//         return new ChoiceState(
+//             state_name,
+//             'optstatus',
+//             'You have opted-back in to MAMA. Press 1 to continue.',
+//             [
+//                 new Choice('1', 'Continue')
+//             ]);
+//     });
+//     return p;
+// });

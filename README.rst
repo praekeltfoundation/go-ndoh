@@ -51,6 +51,7 @@ Metrics required (v1):
 
 
 Metrics required (v2):
+
 * percentage_users (clinic + chw + personal = 100)
 
 * clinic.<state-name>.sum.fatal_dropoffs (records number of fatal dropoffs for each state)

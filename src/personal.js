@@ -14,6 +14,8 @@ go.app = function() {
         self.init = function() {
             self.metric_prefix = self.im.config.name;
 
+            self.get_unique_users();
+
             self.im.on('session:new', function() {
                 self.contact.extra.ussd_sessions = go.utils.incr_user_extra(
                     self.contact.extra.ussd_sessions, 1);
@@ -27,6 +29,11 @@ go.app = function() {
             self.im.on('session:close', function(e) {
                 if (!self.should_send_dialback(e)) { return; }
                 return self.send_dialback();
+            });
+
+            // can't get this event-handler to fire in the tests - no tests!
+            self.im.on('new:user', function(e) {
+                self.im.metrics.fire.inc((self.metric_prefix + ".sum.unique_users"), 1);
             });
 
             return self.im.contacts
@@ -57,6 +64,15 @@ go.app = function() {
             return $("Please dial back in to {{ USSD_number }} to complete the pregnancy registration.")
                 .context({
                     USSD_number: self.im.config.channel
+                });
+        };
+
+        // unique users for the account (across conversations)
+        self.get_unique_users = function() {
+            return self.im
+                .api_request('messagestore.count_inbound_uniques',{})
+                .then(function(result) {
+                    return self.im.metrics.fire.last('sum.unique_users', result.count);
                 });
         };
 

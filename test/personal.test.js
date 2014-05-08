@@ -3,6 +3,8 @@ var fixtures = require('./fixtures');
 var AppTester = vumigo.AppTester;
 var _ = require('lodash');
 var assert = require('assert');
+var messagestore = require('./messagestore');
+var DummyMessageStoreResource = messagestore.DummyMessageStoreResource;
 
 
 describe("app", function() {
@@ -16,6 +18,10 @@ describe("app", function() {
             tester = new AppTester(app);
 
             tester
+                .setup(function(api) {
+                    api.resources.add(new DummyMessageStoreResource());
+                    api.resources.attach(api);
+                })
                 .setup.user.lang('en')
                 .setup.char_limit(160)
                 .setup.config.app({
@@ -33,6 +39,20 @@ describe("app", function() {
                 .setup(function(api) {
                     fixtures().forEach(api.http.fixtures.add);
                 });
+        });
+
+        describe("when a new unique user logs on", function() {
+            it("should increment the no. of unique users by 1", function() {
+                return tester
+                    .setup(function(api) {
+                        api.messagestore.inbound_uniques = 22;
+                    })
+                    .start()
+                    .check(function(api) {
+                        var metrics = api.metrics.stores.test_personal;
+                        assert.deepEqual(metrics['sum.unique_users'].values, [22]);
+                    }).run();
+            });
         });
 
         describe("when the user starts a session", function() {

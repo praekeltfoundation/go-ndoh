@@ -64,7 +64,6 @@ describe("app", function() {
         describe("when a new unique user logs on", function() {
             it("should increment the no. of unique users by 1", function() {
                 return tester
-                    // .setup.user.addr('+275555')
                     .setup(function(api) {
                         api.messagestore.inbound_uniques = 22;
                     })
@@ -627,6 +626,10 @@ describe("app", function() {
                             assert.equal(contact_mom.extra.language_choice, 'en');
                             assert.equal(contact_user.extra.ussd_sessions, '0');
                             assert.equal(contact_user.extra.working_on, '');
+                        })
+                        .check(function(api) {
+                            var metrics = api.metrics.stores.test_clinic;
+                            assert.deepEqual(metrics['test_clinic.avg.sessions_to_register'].values, [5]);
                         })
                         .check.reply.ends_session()
                         .run();

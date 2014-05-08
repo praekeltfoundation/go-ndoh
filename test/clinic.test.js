@@ -3,6 +3,8 @@ var fixtures = require('./fixtures');
 var AppTester = vumigo.AppTester;
 var assert = require('assert');
 var _ = require('lodash');
+var messagestore = require('./messagestore');
+var DummyMessageStoreResource = messagestore.DummyMessageStoreResource;
 
 describe("app", function() {
     describe("for clinic use", function() {
@@ -14,6 +16,10 @@ describe("app", function() {
             tester = new AppTester(app);
 
             tester
+                .setup(function(api) {
+                    api.resources.add(new DummyMessageStoreResource());
+                    api.resources.attach(api);
+                })
                 .setup.user.lang('en')
                 .setup.char_limit(160)
                 .setup.config.app({
@@ -52,6 +58,22 @@ describe("app", function() {
                             assert.equal(contact.extra.ussd_sessions, '1');
                         })
                     .run();
+            });
+        });
+
+        describe("when a new unique user logs on", function() {
+            it("should increment the no. of unique users by 1", function() {
+                return tester
+                    // .setup.user.addr('+275555')
+                    .setup(function(api) {
+                        api.messagestore.inbound_uniques = 22;
+                    })
+                    .start()
+                    .check(function(api) {
+                        var metrics = api.metrics.stores.test_clinic;
+                        console.log(metrics);
+                        assert.deepEqual(metrics['sum.unique_users'].values, [22]);
+                    }).run();
             });
         });
 
@@ -175,6 +197,7 @@ describe("app", function() {
                                 '9. Dec'
                             ].join('\n')
                         })
+
                         .check(function(api) {
                             var contact = _.find(api.contacts.store, {
                               msisdn: '+27821234567'
@@ -642,7 +665,7 @@ describe("app", function() {
                         })
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_clinic;
-                            assert.deepEqual(metrics['avg.sessions_to_register'].values, [5]);
+                            assert.deepEqual(metrics['test_clinic.avg.sessions_to_register'].values, [5]);
                         })
                         .check.reply.ends_session()
                         .run();

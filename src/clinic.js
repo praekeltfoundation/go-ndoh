@@ -34,7 +34,7 @@ go.app = function() {
             });
 
             // can't get this event-handler to fire in the tests - no tests!
-            self.im.on('new:user', function(e) {
+            self.im.user.on('user:new', function(e) {
                 self.im.metrics.fire.inc((self.metric_prefix + ".sum.unique_users"), 1);
             });
 

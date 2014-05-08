@@ -2,8 +2,15 @@ var go = {};
 go;
 
 var _ = require('lodash');
+var moment = require('moment');
 var vumigo = require('vumigo_v02');
 var Choice = vumigo.states.Choice;
+
+// override moment default century switch at '68 with '49
+moment.parseTwoDigitYear = function (input) {
+    return +input + (+input > 49 ? 1900 : 2000);
+};
+
 go.utils = {
     // Shared utils lib
 
@@ -11,15 +18,15 @@ go.utils = {
     make_month_choices: function($, start, limit) {
             // start should be 0 for Jan - array position
             var choices = [
-                    new Choice('1', $('Jan')),
-                    new Choice('2', $('Feb')),
-                    new Choice('3', $('Mar')),
-                    new Choice('4', $('Apr')),
-                    new Choice('5', $('May')),
-                    new Choice('6', $('Jun')),
-                    new Choice('7', $('Jul')),
-                    new Choice('8', $('Aug')),
-                    new Choice('9', $('Sep')),
+                    new Choice('01', $('Jan')),
+                    new Choice('02', $('Feb')),
+                    new Choice('03', $('Mar')),
+                    new Choice('04', $('Apr')),
+                    new Choice('05', $('May')),
+                    new Choice('06', $('Jun')),
+                    new Choice('07', $('Jul')),
+                    new Choice('08', $('Aug')),
+                    new Choice('09', $('Sep')),
                     new Choice('10', $('Oct')),
                     new Choice('11', $('Nov')),
                     new Choice('12', $('Dec')),
@@ -39,10 +46,10 @@ go.utils = {
 
     },  
 
-    get_today: function(testing_today) {
+    get_today: function(config) {
         var today;
-        if (testing_today) {
-            today = new Date(testing_today);
+        if (config.testing_today) {
+            today = new Date(config.testing_today);
         } else {
             today = new Date();
         }
@@ -87,9 +94,23 @@ go.utils = {
         return ('' + sum).slice(-1) == check;
     },
 
+    extract_id_dob: function(id) {
+        return moment(id.slice(0,6), 'YYMMDD').format('YYYY-MM-DD');
+    },
+
     is_true: function(boolean) {
         //If is is not undefined and boolean is true
         return (!_.isUndefined(boolean) && (boolean==='true' || boolean===true));
+    },
+
+    readable_sa_msisdn: function(msisdn) {
+        readable_no = '0' + msisdn.slice(3,12);
+        return readable_no;
+    },
+
+    normalise_sa_msisdn: function(msisdn) {
+        denormalised_no = '+27' + msisdn.slice(1,10);
+        return denormalised_no;
     },
 
 };
@@ -159,10 +180,15 @@ go.app = function() {
                 ],
 
                 next: function(choice) {
+                    self.contact.extra.language_choice = choice.value;
+
                     return self.im.user.set_lang(choice.value)
-                    .then(function() {
-                        return 'states:suspect_pregnancy';
-                    });
+                        .then(function() {
+                            return self.im.contacts.save(self.contact);
+                        })
+                        .then(function() {
+                            return 'states:suspect_pregnancy';
+                        });
                 }
             });
         });
@@ -179,10 +205,15 @@ go.app = function() {
                 ],
 
                 next: function(choice) {
-                    return {
-                        yes: 'states:id_type',
-                        no: 'states:end_not_pregnant'
-                    } [choice.value];
+                    self.contact.extra.suspect_pregnancy = choice.value;
+
+                    return self.im.contacts.save(self.contact)
+                        .then(function() {
+                            return {
+                                yes: 'states:id_type',
+                                no: 'states:end_not_pregnant'
+                            } [choice.value];
+                        });
                 }
             });
         });
@@ -209,11 +240,16 @@ go.app = function() {
                 ],
 
                 next: function(choice) {
-                    return {
-                        sa_id: 'states:sa_id',
-                        passport: 'states:passport_origin',
-                        none: 'states:birth_year'
-                    } [choice.value];
+                    self.contact.extra.id_type = choice.value;
+
+                    return self.im.contacts.save(self.contact)
+                        .then(function() {
+                            return {
+                                sa_id: 'states:sa_id',
+                                passport: 'states:passport_origin',
+                                none: 'states:birth_year'
+                            } [choice.value];
+                        });
                 }
             });
         });
@@ -238,13 +274,21 @@ go.app = function() {
                     }
                 },
 
-                next: function() {
-                    return {
-                        name: 'states:end_success',
-                        creator_opts: {
-                            retry: opts.retry
-                        }
-                    };
+                next: function(content) {
+                    self.contact.extra.sa_id = content;
+
+                    var id_date_of_birth = go.utils.extract_id_dob(content);
+                    self.contact.extra.birth_year = id_date_of_birth.slice(0,4);
+                    self.contact.extra.birth_month = id_date_of_birth.slice(5,7);
+                    self.contact.extra.birth_day = id_date_of_birth.slice(8,10);
+                    self.contact.extra.dob = id_date_of_birth;
+
+                    return self.im.contacts.save(self.contact)
+                        .then(function() {
+                            return {
+                                name: 'states:end_success'
+                            };
+                        });
                 }
             });
         });
@@ -263,7 +307,16 @@ go.app = function() {
                     new Choice('other', $('Other')),
                 ],
 
-                next: 'states:passport_no'
+                next: function(choice) {
+                    self.contact.extra.passport_origin = choice.value;
+
+                    return self.im.contacts.save(self.contact)
+                        .then(function() {
+                            return {
+                                name: 'states:passport_no'
+                            };
+                        });
+                }
             });
         });
 
@@ -271,7 +324,16 @@ go.app = function() {
             return new FreeText(name, {
                 question: $('Please enter your Passport number:'),
 
-                next: 'states:end_success'
+                next: function(content) {
+                    self.contact.extra.passport_no = content;
+
+                    return self.im.contacts.save(self.contact)
+                        .then(function() {
+                            return {
+                                name: 'states:end_success'
+                            };
+                        });
+                }
             });
         });
 
@@ -293,18 +355,20 @@ go.app = function() {
                 question: question,
 
                 check: function(content) {
-                    if (!go.utils.check_number_in_range(content, 1900, go.utils.get_today(self.im.config.testing_today).getFullYear())) {
+                    if (!go.utils.check_number_in_range(content, 1900, go.utils.get_today(self.im.config).getFullYear())) {
                         return error;
                     }
                 },
 
-                next: function() {
-                    return {
-                        name: 'states:birth_month',
-                        creator_opts: {
-                            retry: opts.retry
-                        }
-                    };
+                next: function(content) {
+                    self.contact.extra.birth_year = content;
+
+                    return self.im.contacts.save(self.contact)
+                        .then(function() {
+                            return {
+                                name: 'states:birth_month'
+                            };
+                        });
                 }
             });
         });
@@ -315,7 +379,16 @@ go.app = function() {
 
                 choices: go.utils.make_month_choices($, 0, 12),
 
-                next: 'states:birth_day'
+                next: function(choice) {
+                    self.contact.extra.birth_month = choice.value;
+
+                    return self.im.contacts.save(self.contact)
+                        .then(function() {
+                            return {
+                                name: 'states:birth_day'
+                            };
+                        });
+                }
             });
         });
 
@@ -341,13 +414,21 @@ go.app = function() {
                     }
                 },
 
-                next: function() {
-                    return {
-                        name: 'states:end_success',
-                        creator_opts: {
-                            retry: opts.retry
-                        }
-                    };
+                next: function(content) {
+                    if (content.length === 1) {
+                        content = '0' + content;
+                    }
+                    self.contact.extra.birth_day = content;
+                    self.contact.extra.dob = (self.im.user.answers['states:birth_year'] + 
+                        '-' + self.im.user.answers['states:birth_month'] +
+                        '-' + content);
+
+                    return self.im.contacts.save(self.contact)
+                        .then(function() {
+                            return {
+                                name: 'states:end_success'
+                            };
+                        });
                 }
             });
         });

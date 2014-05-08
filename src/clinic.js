@@ -1,5 +1,7 @@
 go.app = function() {
     var vumigo = require('vumigo_v02');
+    var _ = require('lodash');
+    var moment = require('moment');
     var App = vumigo.App;
     var Choice = vumigo.states.Choice;
     var ChoiceState = vumigo.states.ChoiceState;
@@ -20,7 +22,16 @@ go.app = function() {
             return self.im.contacts
                 .for_user()
                 .then(function(user_contact) {
-                   self.contact = user_contact;
+                    if ((!_.isUndefined(user_contact.extra.working_on)) && (user_contact.extra.working_on !== "")){
+                        self.user = user_contact;
+                        return self.im.contacts.get(user_contact.extra.working_on, {create: true})
+                            .then(function(working_on){
+                                self.contact = working_on;
+                            });
+                    } else {
+                        self.user = user_contact;
+                        self.contact = user_contact;
+                    }                   
                 });
         };
 
@@ -49,11 +60,13 @@ go.app = function() {
         };
 
         self.states.add('states:start', function(name) {
+            var readable_no = go.utils.readable_sa_msisdn(self.im.user.addr);
+
             return new ChoiceState(name, {
                 question: $('Welcome to The Department of Health\'s ' +
-                            'MomConnect programme. Is this no. (MSISDN) ' +
-                            'the mobile no. of the pregnant woman to be ' +
-                            'registered?'),
+                            'MomConnect. Tell us if this is the no. that ' +
+                            'the mother would like to get SMSs on: {{ num }}')
+                    .context({ num: readable_no }),
 
                 choices: [
                     new Choice('yes', $('Yes')),
@@ -74,7 +87,17 @@ go.app = function() {
                 question: $('Please enter the clinic code for the facility ' +
                             'where this pregnancy is being registered:'),
 
-                next: 'states:due_date_month'
+                next: function(content) {
+                    self.contact.extra.clinic_code = content;
+
+                    return self.im.contacts.save(self.contact)
+                        .then(function() {
+                            return {
+                                name: 'states:due_date_month'
+                            };
+                        });
+                }
+                    
             });
         });
 
@@ -99,20 +122,23 @@ go.app = function() {
                     }
                 },
 
-                next: function() {
-                    return {
-                        name: 'states:clinic_code',
-                        creator_opts: {
-                            retry: opts.retry
-                        }
-                    };
+                next: function(content) {
+                    msisdn = go.utils.normalise_sa_msisdn(content);
+                    self.contact.extra.working_on = msisdn;
+
+                    return self.im.contacts.save(self.contact)
+                        .then(function() {
+                            return {
+                                name: 'states:clinic_code',
+                            };
+                        });
                 }
             });
         });
 
         self.states.add('states:due_date_month', function(name) {
             
-            var today = go.utils.get_today(self.im.config.testing_today);
+            var today = go.utils.get_today(self.im.config);
             var month = today.getMonth();   // 0-bound
 
             return new ChoiceState(name, {
@@ -121,7 +147,16 @@ go.app = function() {
 
                 choices: go.utils.make_month_choices($, month, 9),
 
-                next: 'states:id_type'
+                next: function(choice) {
+                    self.contact.extra.due_date_month = choice.value;
+
+                    return self.im.contacts.save(self.contact)
+                        .then(function() {
+                            return {
+                                name: 'states:id_type',
+                            };
+                        });
+                }
             });
         });
 
@@ -137,11 +172,16 @@ go.app = function() {
                 ],
 
                 next: function(choice) {
-                    return {
-                        sa_id: 'states:sa_id',
-                        passport: 'states:passport_origin',
-                        none: 'states:birth_year'
-                    } [choice.value];
+                    self.contact.extra.id_type = choice.value;
+
+                    return self.im.contacts.save(self.contact)
+                        .then(function() {
+                            return {
+                                sa_id: 'states:sa_id',
+                                passport: 'states:passport_origin',
+                                none: 'states:birth_year'
+                            } [choice.value];
+                        });
                 }
             });
         });
@@ -167,13 +207,21 @@ go.app = function() {
                     }
                 },
 
-                next: function() {
-                    return {
-                        name: 'states:language',
-                        creator_opts: {
-                            retry: opts.retry
-                        }
-                    };
+                next: function(content) {
+                    self.contact.extra.sa_id = content;
+
+                    var id_date_of_birth = go.utils.extract_id_dob(content);
+                    self.contact.extra.birth_year = moment(id_date_of_birth, 'YYYY-MM-DD').format('YYYY');
+                    self.contact.extra.birth_month = moment(id_date_of_birth, 'YYYY-MM-DD').format('MM');
+                    self.contact.extra.birth_day = moment(id_date_of_birth, 'YYYY-MM-DD').format('DD');
+                    self.contact.extra.dob = id_date_of_birth;
+
+                    return self.im.contacts.save(self.contact)
+                        .then(function() {
+                            return {
+                                name: 'states:language',
+                            };
+                        });
                 }
             });
         });
@@ -192,7 +240,16 @@ go.app = function() {
                     new Choice('other', $('Other')),
                 ],
 
-                next: 'states:passport_no'
+                next: function(choice) {
+                    self.contact.extra.passport_origin = choice.value;
+
+                    return self.im.contacts.save(self.contact)
+                        .then(function() {
+                            return {
+                                name: 'states:passport_no'
+                            };
+                        });
+                }
             });
         });
 
@@ -200,7 +257,16 @@ go.app = function() {
             return new FreeText(name, {
                 question: $('Please enter your Passport number:'),
 
-                next: 'states:language'
+                next: function(content) {
+                    self.contact.extra.passport_no = content;
+
+                    return self.im.contacts.save(self.contact)
+                        .then(function() {
+                            return {
+                                name: 'states:language'
+                            };
+                        });
+                }
             });
         });
 
@@ -222,18 +288,20 @@ go.app = function() {
                 question: question,
 
                 check: function(content) {
-                    if (!go.utils.check_number_in_range(content, 1900, go.utils.get_today(self.im.config.testing_today).getFullYear())) {
+                    if (!go.utils.check_number_in_range(content, 1900, go.utils.get_today(self.im.config).getFullYear())) {
                         return error;
                     }
                 },
 
-                next: function() {
-                    return {
-                        name: 'states:birth_month',
-                        creator_opts: {
-                            retry: opts.retry
-                        }
-                    };
+                next: function(content) {
+                    self.contact.extra.birth_year = content;
+
+                    return self.im.contacts.save(self.contact)
+                        .then(function() {
+                            return {
+                                name: 'states:birth_month'
+                            };
+                        });
                 }
             });
         });
@@ -244,7 +312,16 @@ go.app = function() {
 
                 choices: go.utils.make_month_choices($, 0, 12),
 
-                next: 'states:birth_day'
+                next: function(choice) {
+                    self.contact.extra.birth_month = choice.value;
+
+                    return self.im.contacts.save(self.contact)
+                        .then(function() {
+                            return {
+                                name: 'states:birth_day'
+                            };
+                        });
+                }
             });
         });
 
@@ -271,13 +348,20 @@ go.app = function() {
                     }
                 },
 
-                next: function() {
-                    return {
-                        name: 'states:language',
-                        creator_opts: {
-                            retry: opts.retry
-                        }
-                    };
+                next: function(content) {
+                    if (content.length === 1) {
+                        content = '0' + content;
+                    }
+                    self.contact.extra.birth_day = content;
+                    self.contact.extra.dob = moment({year: self.im.user.answers['states:birth_year'], month: (self.im.user.answers['states:birth_month'] - 1), day: content}).format('YYYY-MM-DD');
+                    // -1 for 0-bound month
+
+                    return self.im.contacts.save(self.contact)
+                        .then(function() {
+                            return {
+                                name: 'states:language'
+                            };
+                        });
                 }
             });
         });
@@ -296,10 +380,22 @@ go.app = function() {
                 ],
 
                 next: function(choice) {
+                    self.contact.extra.language_choice = choice.value;
+
                     return self.im.user.set_lang(choice.value)
-                    .then(function() {
-                        return 'states:end_success';
-                    });
+                    // we may not have to run this for this flow
+                        .then(function() {
+                            return self.im.contacts.save(self.contact);
+                        })
+                        .then(function() {
+                            if (!_.isUndefined(self.user.extra.working_on)) {
+                                self.user.extra.working_on = "";
+                                return self.im.contacts.save(self.user);
+                            }
+                        })
+                        .then(function() {
+                            return 'states:end_success';
+                        });
                 }
             });
         });

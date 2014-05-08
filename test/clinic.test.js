@@ -15,11 +15,7 @@ describe("app", function() {
 
             tester
                 .setup.user.lang('en')
-                .setup.char_limit(180)
-                .setup.config.app({
-                    name: 'test_app',
-                    
-                })
+                .setup.char_limit(160)
                 .setup.config.app({
                     name: 'test_clinic',
                     testing: 'true',
@@ -37,14 +33,14 @@ describe("app", function() {
         describe("when the user starts a session", function() {
             it("should check if no. belongs to pregnant woman", function() {
                 return tester
+                    .setup.user.addr('+27001')
                     .start()
                     .check.interaction({
                         state: 'states:start',
                         reply: [
                             'Welcome to The Department of Health\'s ' +
-                            'MomConnect programme. Is this no. (MSISDN) ' +
-                            'the mobile no. of the pregnant woman to be ' +
-                            'registered?',
+                            'MomConnect. Tell us if this is the no. that ' +
+                            'the mother would like to get SMSs on: 0001',
                             '1. Yes',
                             '2. No'
                         ].join('\n')
@@ -102,6 +98,7 @@ describe("app", function() {
         describe("after entering the pregnant woman's number", function() {
             it("should ask for the clinic code", function() {
                 return tester
+                    .setup.user.addr('+270001')
                     .setup.user.state('states:mobile_no')
                     .input('0821234567')
                     .check.interaction({
@@ -110,37 +107,90 @@ describe("app", function() {
                             'Please enter the clinic code for the facility ' +
                             'where this pregnancy is being registered:')
                     })
+                    .check(function(api) {
+                        var contact = api.contacts.store[0];
+                        assert.equal(contact.extra.working_on, "+27821234567");
+                    })
                     .run();
             });
         });
 
         describe("after entering the clinic code", function() {
-            it("should ask for the month the baby is due", function() {
-                return tester
-                    .setup.user.state('states:clinic_code')
-                    .input('12345')
-                    .check.interaction({
-                        state: 'states:due_date_month',
-                        reply: [
-                            'Please select the month when the baby is due:',
-                            '1. Apr',
-                            '2. May',
-                            '3. Jun',
-                            '4. Jul',
-                            '5. Aug',
-                            '6. Sep',
-                            '7. Oct',
-                            '8. Nov',
-                            '9. Dec'
-                        ].join('\n')
-                    })
-                    .run();
+            describe("if the number used is not the mom's", function() {
+                it("should save clinic code, ask for the month the baby is due", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add( {
+                                msisdn: '+270001',
+                                extra : {
+                                    working_on: '+27821234567'
+                                }
+                            });
+                        })
+                        .setup.user.addr('+270001')
+                        .setup.user.state('states:clinic_code')
+                        .input('12345')
+                        .check.interaction({
+                            state: 'states:due_date_month',
+                            reply: [
+                                'Please select the month when the baby is due:',
+                                '1. Apr',
+                                '2. May',
+                                '3. Jun',
+                                '4. Jul',
+                                '5. Aug',
+                                '6. Sep',
+                                '7. Oct',
+                                '8. Nov',
+                                '9. Dec'
+                            ].join('\n')
+                        })
+                        .check(function(api) {
+                            var contact = _.find(api.contacts.store, {
+                              msisdn: '+27821234567'
+                            });
+                            assert.equal(contact.extra.clinic_code, '12345');
+                        })
+                        .run();
+                });
+            });
+
+            describe("if the number used is the mom's", function() {
+                it("should save the clinic code, ask for the month the baby is due", function() {
+                    return tester
+                        .setup.user.addr('+270001')
+                        .setup.user.state('states:clinic_code')
+                        .input('12345')
+                        .check.interaction({
+                            state: 'states:due_date_month',
+                            reply: [
+                                'Please select the month when the baby is due:',
+                                '1. Apr',
+                                '2. May',
+                                '3. Jun',
+                                '4. Jul',
+                                '5. Aug',
+                                '6. Sep',
+                                '7. Oct',
+                                '8. Nov',
+                                '9. Dec'
+                            ].join('\n')
+                        })
+                        .check(function(api) {
+                            var contact = _.find(api.contacts.store, {
+                              msisdn: '+270001'
+                            });
+                            assert.equal(contact.extra.clinic_code, '12345');
+                        })
+                        .run();
+                });
             });
         });
 
         describe("after the birth month is selected", function() {
             it("should ask for the pregnant woman's id type", function() {
                 return tester
+                    .setup.user.addr('+270001')
                     .setup.user.state('states:due_date_month')
                     .input('1')
                     .check.interaction({
@@ -153,13 +203,20 @@ describe("app", function() {
                             '3. None'
                         ].join('\n')
                     })
+                    .check(function(api) {
+                        var contact = _.find(api.contacts.store, {
+                          msisdn: '+270001'
+                        });
+                        assert.equal(contact.extra.due_date_month, '04');
+                    })
                     .run();
             });
         });
 
         describe("if the user selects SA ID (id type)", function() {
-            it("should ask for their id number", function() {
+            it("should set id type, ask for their id number", function() {
                 return tester
+                    .setup.user.addr('+270001')
                     .setup.user.state('states:id_type')
                     .input('1')
                     .check.interaction({
@@ -168,15 +225,22 @@ describe("app", function() {
                             'Please enter the pregnant mother\'s SA ID ' +
                             'number:')
                     })
+                    .check(function(api) {
+                        var contact = _.find(api.contacts.store, {
+                          msisdn: '+270001'
+                        });
+                        assert.equal(contact.extra.id_type, 'sa_id');
+                    })
                     .run();
             });
         });
 
-        describe("after the user enters the ID number", function() {
-            it("should ask for pregnant woman's msg language", function() {
+        describe("after the user enters the ID number after '50", function() {
+            it("should save ID, extract DOB, ask for pregnant woman's msg language", function() {
                 return tester
+                    .setup.user.addr('+270001')
                     .setup.user.state('states:sa_id')
-                    .input('8001015009087')
+                    .input('5101015009088')
                     .check.interaction({
                         state: 'states:language',
                         reply: ['Please select the language that the ' +
@@ -188,13 +252,58 @@ describe("app", function() {
                             '5. Sotho'
                             ].join('\n')
                     })
+                    .check(function(api) {
+                        var contact = _.find(api.contacts.store, {
+                          msisdn: '+270001'
+                        });
+                        assert.equal(contact.extra.sa_id, '5101015009088');
+                        assert.equal(contact.extra.birth_year, '1951');
+                        assert.equal(contact.extra.birth_month, '01');
+                        assert.equal(contact.extra.birth_day, '01');
+                        assert.equal(contact.extra.dob, '1951-01-01');
+                    })
+                    .run();
+            });
+        });
+
+        describe("after the user enters the ID number before '50", function() {
+            it("should save ID, extract DOB", function() {
+                return tester
+                    .setup.user.addr('+270001')
+                    .setup.user.state('states:sa_id')
+                    .input('2012315678097')
+                    .check(function(api) {
+                        var contact = _.find(api.contacts.store, {
+                          msisdn: '+270001'
+                        });
+                        assert.equal(contact.extra.sa_id, '2012315678097');
+                        assert.equal(contact.extra.dob, '2020-12-31');
+                    })
+                    .run();
+            });
+        });
+
+        describe("after the user enters the ID number on '50", function() {
+            it("should save ID, extract DOB", function() {
+                return tester
+                    .setup.user.addr('+270001')
+                    .setup.user.state('states:sa_id')
+                    .input('5002285000007')
+                    .check(function(api) {
+                        var contact = _.find(api.contacts.store, {
+                          msisdn: '+270001'
+                        });
+                        assert.equal(contact.extra.sa_id, '5002285000007');
+                        assert.equal(contact.extra.dob, '1950-02-28');
+                    })
                     .run();
             });
         });
 
         describe("after the user enters their ID number incorrectly", function() {
-            it("should ask them to try again", function() {
+            it("should not save ID, ask them to try again", function() {
                 return tester
+                    .setup.user.addr('+270001')
                     .setup.user.state('states:sa_id')
                     .input('1234015009087')
                     .check.interaction({
@@ -202,13 +311,20 @@ describe("app", function() {
                         reply: 'Sorry, the mother\'s ID number did not validate. ' +
                           'Please reenter the SA ID number:'
                     })
+                    .check(function(api) {
+                        var contact = _.find(api.contacts.store, {
+                          msisdn: '+270001'
+                        });
+                        assert.equal(contact.extra.sa_id, undefined);
+                    })
                     .run();
             });
         });
 
         describe("if the user selects Passport (id type)", function() {
-            it("should ask for their country of origin", function() {
+            it("should set id type, ask for their country of origin", function() {
                 return tester
+                    .setup.user.addr('+270001')
                     .setup.user.state('states:id_type')
                     .input('2')
                     .check.interaction({
@@ -224,26 +340,40 @@ describe("app", function() {
                             '7. Other'
                         ].join('\n')
                     })
+                    .check(function(api) {
+                        var contact = _.find(api.contacts.store, {
+                          msisdn: '+270001'
+                        });
+                        assert.equal(contact.extra.id_type, 'passport');
+                    })
                     .run();
             });
         });
 
         describe("after the user selects passport country", function() {
-            it("should ask for their passport number", function() {
+            it("should save passport country, ask for their passport number", function() {
                 return tester
+                    .setup.user.addr('+270001')
                     .setup.user.state('states:passport_origin')
                     .input('1')
                     .check.interaction({
                         state: 'states:passport_no',
                         reply: 'Please enter your Passport number:'
                     })
+                    .check(function(api) {
+                        var contact = _.find(api.contacts.store, {
+                          msisdn: '+270001'
+                        });
+                        assert.equal(contact.extra.passport_origin, 'zw');
+                    })
                     .run();
             });
         });
 
         describe("after the user enters the passport number", function() {
-            it("should ask for pregnant woman's msg language", function() {
+            it("should save passport no, ask for pregnant woman's msg language", function() {
                 return tester
+                    .setup.user.addr('+270001')
                     .setup.user.state('states:passport_no')
                     .input('12345')
                     .check.interaction({
@@ -257,19 +387,32 @@ describe("app", function() {
                             '5. Sotho'
                             ].join('\n')
                     })
+                    .check(function(api) {
+                        var contact = _.find(api.contacts.store, {
+                          msisdn: '+270001'
+                        });
+                        assert.equal(contact.extra.passport_no, '12345');
+                    })
                     .run();
             });
         });
 
         describe("if the user selects None (id type)", function() {
-            it("should ask for their birth year", function() {
+            it("should set id type, ask for their birth year", function() {
                 return tester
+                    .setup.user.addr('+270001')
                     .setup.user.state('states:id_type')
                     .input('3')
                     .check.interaction({
                         state: 'states:birth_year',
                         reply: ('Please enter the year that the pregnant mother was born (eg ' +
                                 '1981)')
+                    })
+                    .check(function(api) {
+                        var contact = _.find(api.contacts.store, {
+                          msisdn: '+270001'
+                        });
+                        assert.equal(contact.extra.id_type, 'none');
                     })
                     .run();
             });
@@ -278,6 +421,7 @@ describe("app", function() {
         describe("after the user enters their birth year incorrectly", function() {
             it("should ask for their birth year again", function() {
                 return tester
+                    .setup.user.addr('+270001')
                     .setup.user.state('states:birth_year')
                     .input('Nineteen Eighty One')
                     .check.interaction({
@@ -291,8 +435,9 @@ describe("app", function() {
         });
 
         describe("after the user enters their birth year", function() {
-            it("should ask for their birth month", function() {
+            it("should save birth year, ask for their birth month", function() {
                 return tester
+                    .setup.user.addr('+270001')
                     .setup.user.state('states:birth_year')
                     .input('1981')
                     .check.interaction({
@@ -312,13 +457,20 @@ describe("app", function() {
                             '12. Dec'
                         ].join('\n')
                     })
+                    .check(function(api) {
+                        var contact = _.find(api.contacts.store, {
+                          msisdn: '+270001'
+                        });
+                        assert.equal(contact.extra.birth_year, '1981');
+                    })
                     .run();
             });
         });
 
         describe("after the user enters their birth month", function() {
-            it("should ask for their birth day", function() {
+            it("should save birth month, ask for their birth day", function() {
                 return tester
+                    .setup.user.addr('+270001')
                     .setup.user.state('states:birth_month')
                     .input('1')
                     .check.interaction({
@@ -326,13 +478,20 @@ describe("app", function() {
                         reply: ('Please enter the day that the mother was born ' +
                             '(eg 14).')
                     })
+                    .check(function(api) {
+                        var contact = _.find(api.contacts.store, {
+                          msisdn: '+270001'
+                        });
+                        assert.equal(contact.extra.birth_month, '01');
+                    })
                     .run();
             });
         });
 
         describe("after the user enters their birth day incorrectly", function() {
-            it("should ask them their birth day again", function() {
+            it("should not save birth day, ask them their birth day again", function() {
                 return tester
+                    .setup.user.addr('+270001')
                     .setup.user.state('states:birth_day')
                     .input('fourteen')
                     .check.interaction({
@@ -341,13 +500,25 @@ describe("app", function() {
                         'carefully enter the mother\'s day of birth again (eg ' +
                         '8)')
                     })
+                    .check(function(api) {
+                        var contact = _.find(api.contacts.store, {
+                          msisdn: '+270001'
+                        });
+                        assert.equal(contact.extra.birth_day, undefined);
+                        assert.equal(contact.extra.dob, undefined);
+                    })
                     .run();
             });
         });
 
         describe("after the user enters the birth day", function() {
-            it("should ask for pregnant woman's msg language", function() {
+            it("should save birth day and dob, ask for pregnant woman's msg language", function() {
                 return tester
+                    .setup.user.addr('+270001')
+                    .setup.user.answers({
+                        'states:birth_year': '1981',
+                        'states:birth_month': '01'
+                    })
                     .setup.user.state('states:birth_day')
                     .input('14')
                     .check.interaction({
@@ -361,28 +532,79 @@ describe("app", function() {
                             '5. Sotho'
                             ].join('\n')
                     })
+                    .check(function(api) {
+                        var contact = _.find(api.contacts.store, {
+                          msisdn: '+270001'
+                        });
+                        assert.equal(contact.extra.birth_day, '14');
+                        assert.equal(contact.extra.dob, '1981-01-14');
+                    })
                     .run();
             });
         });
 
         describe("after the mom's msg language is selected", function() {
-            it("should thank them and exit", function() {
-                return tester
-                    .setup.user.state('states:language')
-                    .input('1')
-                    .check.interaction({
-                        state: 'states:end_success',
-                        reply: ('Thank you. The pregnant woman will now ' +
-                            'receive weekly messages about her pregnancy ' +
-                            'from the Department of Health.')
-                    })
-                    .check.reply.ends_session()
-                    .run();
+            describe("if the phone used is not the mom's", function() {
+                it("should save msg language, thank them and exit", function() {
+                    return tester
+                        .setup.user.addr('+270001')
+                        .setup(function(api) {
+                            api.contacts.add( {
+                                msisdn: '+270001',
+                                extra : {
+                                    working_on: '+27821234567'
+                                }
+                            });
+                        })
+                        .setup.user.state('states:language')
+                        .input('1')
+                        .check.interaction({
+                            state: 'states:end_success',
+                            reply: ('Thank you. The pregnant woman will now ' +
+                                'receive weekly messages about her pregnancy ' +
+                                'from the Department of Health.')
+                        })
+                        .check(function(api) {
+                            var contact_mom = _.find(api.contacts.store, {
+                                msisdn: '+27821234567'
+                            });
+                            var contact_user = _.find(api.contacts.store, {
+                                msisdn: '+270001'
+                            });
+                            assert.equal(contact_mom.extra.language_choice, 'en');
+                            assert.equal(contact_user.extra.working_on, '');
+                        })
+                        .check.reply.ends_session()
+                        .run();
+                });
+            });
+            
+            describe("if the phone used is the mom's", function() {
+                it("should save msg language, thank them and exit", function() {
+                    return tester
+                        .setup.user.addr('+270001')
+                        .setup.user.state('states:language')
+                        .input('1')
+                        .check.interaction({
+                            state: 'states:end_success',
+                            reply: ('Thank you. The pregnant woman will now ' +
+                                'receive weekly messages about her pregnancy ' +
+                                'from the Department of Health.')
+                        })
+                        .check(function(api) {
+                            var contact = _.find(api.contacts.store, {
+                              msisdn: '+270001'
+                            });
+                            assert.equal(contact.extra.language_choice, 'en');
+                        })
+                        .check.reply.ends_session()
+                        .run();
+                });
             });
         });
 
         describe("when a session is terminated", function() {
-            describe("when they are not completed registration",function() {
+            describe("when they have not completed registration",function() {
                 describe("when they have already been sent a registration sms",function() {
                     it("should not send them an sms",function() {
                         return tester

@@ -139,7 +139,7 @@ go.app = function() {
         self.init = function() {
             self.metric_prefix = self.im.config.name;
 
-            self.get_unique_users();
+            self.get_and_fire_unique_users();
 
             self.im.on('session:new', function() {
                 self.contact.extra.ussd_sessions = go.utils.incr_user_extra(
@@ -193,7 +193,7 @@ go.app = function() {
         };
 
         // unique users for the account (across conversations)
-        self.get_unique_users = function() {
+        self.get_and_fire_unique_users = function() {
             return self.im
                 .api_request('messagestore.count_inbound_uniques',{})
                 .then(function(result) {

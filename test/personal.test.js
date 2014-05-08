@@ -19,7 +19,7 @@ describe("app", function() {
                 .setup.user.lang('en')
                 .setup.char_limit(160)
                 .setup.config.app({
-                    name: 'test_app',
+                    name: 'test_personal',
                     endpoints: {
                         "sms": {"delivery_class": "sms"}
                     },
@@ -38,6 +38,7 @@ describe("app", function() {
         describe("when the user starts a session", function() {
             it("should ask for their preferred language", function() {
                 return tester
+                    .setup.user.addr('+27001')
                     .start()
                     .check.interaction({
                         state: 'states:start',
@@ -51,6 +52,10 @@ describe("app", function() {
                             '4. Xhosa',
                             '5. Sotho'
                         ].join('\n')
+                    })
+                    .check(function(api) {
+                        var contact = api.contacts.store[0];
+                        assert.equal(contact.extra.ussd_sessions, '1');
                     })
                     .run();
             });
@@ -404,6 +409,14 @@ describe("app", function() {
             it("should save birth day, thank them and exit", function() {
                 return tester
                     .setup.user.addr('+27001')
+                    .setup(function(api) {
+                            api.contacts.add( {
+                                msisdn: '+270001',
+                                extra : {
+                                    ussd_sessions: '4'
+                                }
+                            });
+                        })
                     .setup.user.answers({
                         'states:birth_year': '1981',
                         'states:birth_month': '01'
@@ -421,6 +434,7 @@ describe("app", function() {
                         var contact = api.contacts.store[0];
                         assert.equal(contact.extra.birth_day, '01');
                         assert.equal(contact.extra.dob, '1981-01-01');
+                        assert.equal(contact.extra.ussd_sessions, '0');
                     })
                     .check.reply.ends_session()
                     .run();

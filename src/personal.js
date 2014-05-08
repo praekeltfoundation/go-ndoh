@@ -1,5 +1,6 @@
 go.app = function() {
     var vumigo = require('vumigo_v02');
+    var Q = require('q');
     var App = vumigo.App;
     var Choice = vumigo.states.Choice;
     var ChoiceState = vumigo.states.ChoiceState;
@@ -11,6 +12,17 @@ go.app = function() {
         var $ = self.$;
 
         self.init = function() {
+            self.metric_prefix = self.im.config.name;
+
+            self.im.on('session:new', function() {
+                self.contact.extra.ussd_sessions = go.utils.incr_user_extra(
+                    self.contact.extra.ussd_sessions, 1);
+                
+                return Q.all([
+                    self.im.contacts.save(self.contact)
+                ]);
+
+            });
 
             self.im.on('session:close', function(e) {
                 if (!self.should_send_dialback(e)) { return; }
@@ -308,6 +320,16 @@ go.app = function() {
                         '-' + content);
 
                     return self.im.contacts.save(self.contact)
+                        .then(function() {
+                            return Q.all([
+                                self.im.metrics.fire.avg((self.metric_prefix + ".avg.sessions_to_register"),
+                                    parseInt(self.contact.extra.ussd_sessions))
+                            ]);
+                        })
+                        .then(function() {
+                            self.contact.extra.ussd_sessions = '0';
+                            return self.im.contacts.save(self.contact);
+                        })
                         .then(function() {
                             return {
                                 name: 'states:end_success'

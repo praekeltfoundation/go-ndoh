@@ -35,8 +35,6 @@ go.app = function() {
             });
 
             self.im.user.on('user:new', function(e) {
-                self.im.metrics.fire.inc((self.metric_prefix + ".sum.unique_users"), 1);
-
                 clinic_users = self.incr_kv('clinic.unique_users');
                 chw_users = self.get_kv('chw.unique_users');
                 personal_users = self.get_kv('personal.unique_users');
@@ -48,10 +46,15 @@ go.app = function() {
                 clinic_percentage = (clinic_users / total_users) * 100;
                 chw_percentage = (chw_users / total_users) * 100;
                 personal_percentage = (personal_users / total_users) * 100;
+
+                return Q.all([
+                    self.im.metrics.fire.inc((self.metric_prefix + ".sum.unique_users"), 1),
+                    self.im.metrics.fire('clinic.percentage_users', clinic_percentage),
+                    self.im.metrics.fire('chw.percentage_users', chw_percentage),
+                    self.im.metrics.fire('personal.percentage_users', personal_percentage),
+                ]);
                 
-                self.im.metrics.fire('clinic.percentage_users', clinic_percentage);
-                self.im.metrics.fire('chw.percentage_users', chw_percentage);
-                self.im.metrics.fire('personal.percentage_users', personal_percentage);
+                
             });
 
             return self.im.contacts
@@ -109,6 +112,10 @@ go.app = function() {
                 .then(function(result) {
                     return self.im.api_request('kv.incr', {key: [self.store_name, name].join('.')});
                 });
+        };
+
+        self.get_kv = function(name) {
+            return self.im.api_request('kv.get', {key: [self.store_name, name].join('.')});
         };
 
         self.states.add('states:start', function(name) {

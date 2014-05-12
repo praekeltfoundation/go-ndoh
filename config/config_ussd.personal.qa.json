@@ -1,5 +1,5 @@
 {
-    "name": "ndoh_qa",
+    "name": "personal",
     "metric_store": "ndoh_qa",
     "endpoints": {"sms": {"delivery_class": "sms"}},
     "channel": "*120*550#"

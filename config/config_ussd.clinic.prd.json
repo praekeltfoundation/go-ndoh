@@ -1,5 +1,5 @@
 {
-    "name": "ndoh_prd",
+    "name": "clinic",
     "metric_store": "ndoh_prd",
     "endpoints": {"sms": {"delivery_class": "sms"}},
     "channel": "*120*550*2#"

@@ -20,7 +20,6 @@ describe("app", function() {
                     api.resources.add(new DummyMessageStoreResource());
                     api.resources.attach(api);
                 })
-                .setup.user.lang('en')
                 .setup.char_limit(160)
                 .setup.config.app({
                     name: 'test_chw',
@@ -46,6 +45,7 @@ describe("app", function() {
                     .check(function(api) {
                         var metrics = api.metrics.stores.test_chw;
                         assert.deepEqual(metrics['sum.unique_users'].values, [22]);
+                        assert.deepEqual(metrics['test_chw.sum.unique_users'].values, [1]);
                     }).run();
             });
         });

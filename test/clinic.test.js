@@ -20,10 +20,10 @@ describe("app", function() {
                     api.resources.add(new DummyMessageStoreResource());
                     api.resources.attach(api);
                 })
-                .setup.user.lang('en')
                 .setup.char_limit(160)
                 .setup.config.app({
                     name: 'test_clinic',
+                    metric_store: 'test_metric_store',
                     testing: 'true',
                     testing_today: 'April 4, 2014 07:07:07',
                     endpoints: {
@@ -69,7 +69,7 @@ describe("app", function() {
                     })
                     .start()
                     .check(function(api) {
-                        var metrics = api.metrics.stores.test_clinic;
+                        var metrics = api.metrics.stores.test_metric_store;
                         assert.deepEqual(metrics['sum.unique_users'].values, [22]);
                         assert.deepEqual(metrics['test_clinic.sum.unique_users'].values, [1]);
                     }).run();
@@ -629,7 +629,7 @@ describe("app", function() {
                             assert.equal(contact_user.extra.working_on, '');
                         })
                         .check(function(api) {
-                            var metrics = api.metrics.stores.test_clinic;
+                            var metrics = api.metrics.stores.test_metric_store;
                             assert.deepEqual(metrics['test_clinic.avg.sessions_to_register'].values, [5]);
                         })
                         .check.reply.ends_session()
@@ -665,7 +665,7 @@ describe("app", function() {
                             assert.equal(contact.extra.ussd_sessions, '0');
                         })
                         .check(function(api) {
-                            var metrics = api.metrics.stores.test_clinic;
+                            var metrics = api.metrics.stores.test_metric_store;
                             assert.deepEqual(metrics['test_clinic.avg.sessions_to_register'].values, [5]);
                         })
                         .check.reply.ends_session()

@@ -22,10 +22,10 @@ describe("app", function() {
                     api.resources.add(new DummyMessageStoreResource());
                     api.resources.attach(api);
                 })
-                .setup.user.lang('en')
                 .setup.char_limit(160)
                 .setup.config.app({
                     name: 'test_personal',
+                    metric_store: 'test_metric_store',
                     endpoints: {
                         "sms": {"delivery_class": "sms"}
                     },
@@ -49,8 +49,9 @@ describe("app", function() {
                     })
                     .start()
                     .check(function(api) {
-                        var metrics = api.metrics.stores.test_personal;
+                        var metrics = api.metrics.stores.test_metric_store;
                         assert.deepEqual(metrics['sum.unique_users'].values, [22]);
+                        assert.deepEqual(metrics['test_personal.sum.unique_users'].values, [1]);
                     }).run();
             });
         });

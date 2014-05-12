@@ -31,7 +31,6 @@ go.app = function() {
                 return self.send_dialback();
             });
 
-            // can't get this event-handler to fire in the tests - no tests!
             self.im.user.on('user:new', function(e) {
                 self.im.metrics.fire.inc((self.metric_prefix + ".sum.unique_users"), 1);
             });

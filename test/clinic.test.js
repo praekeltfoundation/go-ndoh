@@ -64,6 +64,12 @@ describe("app", function() {
         describe("when a new unique user logs on", function() {
             it("should increment the no. of unique users by 1", function() {
                 return tester
+                    .setup.user(function(user) {
+                      // Clear the user's data (for eg, lang) set up above.
+                      // If the user contains anything other than its address,
+                      // they exist.
+                      return {};
+                    })
                     .setup(function(api) {
                         api.messagestore.inbound_uniques = 22;
                     })

@@ -116,7 +116,6 @@ go.app = function() {
 
         self.get_kv = function(name) {
             return self.im.api.kv.store[name];
-            // not sure if this will work in production
         };
 
         self.adjust_percentage_registrations = function() {

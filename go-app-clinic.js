@@ -160,6 +160,7 @@ go.app = function() {
             });
 
             self.im.user.on('user:new', function(e) {
+                // Percentage Users Metric
                 self.incr_kv([self.store_name, 'unique_users'].join('.'));
 
                 var clinic_users = self.get_kv('clinic.unique_users');
@@ -167,8 +168,8 @@ go.app = function() {
                 var personal_users = self.get_kv('personal.unique_users');
 
                 var total_users = clinic_users + chw_users + personal_users;
-                // total_users will differ from total unique users in messagestore if same users
-                // are on different lines, but will add up to 100%, reflects distribution
+                /*total_users will differ from total unique users in messagestore if same users
+                are on different lines, but will add up to 100%, reflects distribution*/
                 var clinic_percentage = (clinic_users / total_users) * 100;
                 var chw_percentage = (chw_users / total_users) * 100;
                 var personal_percentage = (personal_users / total_users) * 100;
@@ -237,9 +238,30 @@ go.app = function() {
             // return self.im.api_request('kv.incr', {key: [self.store_name, name].join('.')});
         };
 
+        self.decr_kv = function(name) {
+            var new_kv_value = self.im.api.kv.store[name] - 1;
+            self.im.api.kv.store[name] = new_kv_value;
+            return new_kv_value;
+        };
+
         self.get_kv = function(name) {
             return self.im.api.kv.store[name];
             // return self.im.api_request('kv.get', {key: name});
+        };
+
+        self.adjust_percentage_registrations = function() {
+            var no_incomplete = self.get_kv([self.store_name, 'no_incomplete_registrations'].join('.'));
+            var no_complete = self.get_kv([self.store_name, 'no_complete_registrations'].join('.'));
+
+            var total_attempted = no_incomplete + no_complete;
+
+            var percentage_incomplete = (no_incomplete / total_attempted) * 100;
+            var percentage_complete = (no_complete / total_attempted) * 100;
+
+            return Q.all([
+                self.im.metrics.fire((self.metric_prefix + '.percent_incomplete_registrations'), percentage_incomplete),
+                self.im.metrics.fire((self.metric_prefix + '.percent_complete_registrations'), percentage_complete)
+            ]);
         };
 
         self.states.add('states:start', function(name) {
@@ -257,13 +279,13 @@ go.app = function() {
                 ],
 
                 next: function(choice) {
-                    return self.im.contacts.save(self.contact)
-                        .then(function() {
+                    // return self.im.contacts.save(self.contact)
+                    //     .then(function() {
                             return {
                                 yes: 'states:clinic_code',
                                 no: 'states:mobile_no'
                             } [choice.value];
-                        });
+                        // });
                 }
             });
         });
@@ -275,6 +297,13 @@ go.app = function() {
 
                 next: function(content) {
                     self.contact.extra.clinic_code = content;
+
+                    if (_.isUndefined(self.contact.extra.is_registered)) {
+                        self.incr_kv([self.store_name, 'no_incomplete_registrations'].join('.'));
+                        self.adjust_percentage_registrations();
+                    }
+
+                    self.contact.extra.is_registered = 'false';
 
                     return self.im.contacts.save(self.contact)
                         .then(function() {
@@ -566,7 +595,12 @@ go.app = function() {
 
                 next: function(choice) {
                     self.contact.extra.language_choice = choice.value;
-                    
+
+                    self.incr_kv([self.store_name, 'no_complete_registrations'].join('.'));
+                    self.decr_kv([self.store_name, 'no_incomplete_registrations'].join('.'));
+                    self.adjust_percentage_registrations();
+
+                    self.contact.extra.is_registered = 'true';
 
                     return self.im.user.set_lang(choice.value)
                     // we may not have to run this for this flow

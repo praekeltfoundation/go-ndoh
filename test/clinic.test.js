@@ -35,6 +35,8 @@ describe("app", function() {
                     api.kv.store['clinic.unique_users'] = 0;
                     api.kv.store['chw.unique_users'] = 0;
                     api.kv.store['personal.unique_users'] = 0;
+                    api.kv.store['clinic.no_complete_registrations'] = 2;
+                    api.kv.store['clinic.no_incomplete_registrations'] = 2;
                 })
                 .setup(function(api) {
                     fixtures().forEach(api.http.fixtures.add);
@@ -74,7 +76,6 @@ describe("app", function() {
                     })
                     .start()
                     .check(function(api) {
-                        // console.log(api.kv.store['clinic.unique_users']);
                         var metrics = api.metrics.stores.test_metric_store;
                         assert.deepEqual(metrics['sum.unique_users'].values, [22]);
                         assert.deepEqual(metrics['clinic.sum.unique_users'].values, [1]);
@@ -168,6 +169,7 @@ describe("app", function() {
                     .check(function(api) {
                         var contact = api.contacts.store[0];
                         assert.equal(contact.extra.working_on, "+27821234567");
+                        assert.equal(contact.extra.is_registered, undefined);
                     })
                     .run();
             });
@@ -203,12 +205,17 @@ describe("app", function() {
                                 '9. Dec'
                             ].join('\n')
                         })
-
                         .check(function(api) {
                             var contact = _.find(api.contacts.store, {
                               msisdn: '+27821234567'
                             });
                             assert.equal(contact.extra.clinic_code, '12345');
+                            assert.equal(contact.extra.is_registered, 'false');
+                        })
+                        .check(function(api) {
+                            var metrics = api.metrics.stores.test_metric_store;
+                            assert.deepEqual(metrics['clinic.percent_incomplete_registrations'].values, [60]);
+                            assert.deepEqual(metrics['clinic.percent_complete_registrations'].values, [40]);
                         })
                         .run();
                 });
@@ -240,6 +247,11 @@ describe("app", function() {
                               msisdn: '+270001'
                             });
                             assert.equal(contact.extra.clinic_code, '12345');
+                        })
+                        .check(function(api) {
+                            var metrics = api.metrics.stores.test_metric_store;
+                            assert.deepEqual(metrics['clinic.percent_incomplete_registrations'].values, [60]);
+                            assert.deepEqual(metrics['clinic.percent_complete_registrations'].values, [40]);
                         })
                         .run();
                 });
@@ -670,10 +682,13 @@ describe("app", function() {
                             });
                             assert.equal(contact.extra.language_choice, 'en');
                             assert.equal(contact.extra.ussd_sessions, '0');
+                            assert.equal(contact.extra.is_registered, 'true');
                         })
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
                             assert.deepEqual(metrics['clinic.avg.sessions_to_register'].values, [5]);
+                            assert.deepEqual(metrics['clinic.percent_incomplete_registrations'].values, [25]);
+                            assert.deepEqual(metrics['clinic.percent_complete_registrations'].values, [75]);
                         })
                         .check.reply.ends_session()
                         .run();

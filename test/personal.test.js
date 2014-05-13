@@ -44,13 +44,10 @@ describe("app", function() {
         describe("when a new unique user logs on", function() {
             it("should increment the no. of unique users by 1", function() {
                 return tester
-                    .setup(function(api) {
-                        api.messagestore.inbound_uniques = 22;
-                    })
                     .start()
                     .check(function(api) {
                         var metrics = api.metrics.stores.test_metric_store;
-                        assert.deepEqual(metrics['sum.unique_users'].values, [22]);
+                        assert.deepEqual(metrics['sum.unique_users'].values, [1]);
                         assert.deepEqual(metrics['test_personal.sum.unique_users'].values, [1]);
                     }).run();
             });

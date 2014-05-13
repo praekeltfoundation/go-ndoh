@@ -325,10 +325,9 @@ go.app = function() {
 
                 next: 'states:start',
                 events: {
-                    'state:enter': function(e) {
-                        console.log(e);
-                        console.log("ENTERING! ----------------");
-                        return self.im.congtacts.save(self.contact);
+                    'state:show': function() {
+                            console.log("WHATEVR YOU PILE OF POOP");
+
                         // return go.utils.jembi_api_call(go.utils.build_cda_doc(self.contact, self.user), self.contact, self.im)
                         //     .then(function(result) {
                         //         console.log(self.contact);
@@ -350,8 +349,8 @@ go.app = function() {
             return new EndState(name, {
               text: 'Sorry, something went wrong when saving the data. Please try again.',
               next: 'states:start'
+            });
         });
-  });
 
     });
 

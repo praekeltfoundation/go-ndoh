@@ -57,6 +57,17 @@ go.app = function() {
                 ]);
             });
 
+            
+            self.im.on('state:enter', function(e) {
+                self.im.metrics.fire.inc(([self.metric_prefix, e.state.name, "no_incomplete"].join('.')), 1);
+            });
+            
+            self.im.on('state:exit', function(e) {
+                self.im.metrics.fire.inc(([self.metric_prefix, e.state.name, "no_incomplete"].join('.')), -1);
+            }); // askmike: how do i test this ???
+            // inc value doesn't seem to work!
+
+
             return self.im.contacts
                 .for_user()
                 .then(function(user_contact) {

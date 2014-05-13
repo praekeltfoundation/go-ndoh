@@ -59,11 +59,15 @@ describe("app", function() {
                         ].join('\n')
                     })
                     .check(function(api) {
-                            var contact = _.find(api.contacts.store, {
-                              msisdn: '+270001'
-                            });
-                            assert.equal(contact.extra.ussd_sessions, '1');
-                        })
+                        var contact = _.find(api.contacts.store, {
+                          msisdn: '+270001'
+                        });
+                        assert.equal(contact.extra.ussd_sessions, '1');
+                    })
+                    .check(function(api) {
+                        var metrics = api.metrics.stores.test_metric_store;
+                        assert.deepEqual(metrics['clinic.states:start.no_incomplete'].values, [1]);
+                    })
                     .run();
             });
         });

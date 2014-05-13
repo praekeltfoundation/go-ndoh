@@ -23,7 +23,12 @@ describe("app", function() {
                     endpoints: {
                         "sms": {"delivery_class": "sms"}
                     },
-                    channel: "*120*550#"
+                    channel: "*120*550#",
+                    jembi: {
+                        username: 'foo',
+                        password: 'bar',
+                        url: 'http://test/v2/'
+                    },
                 })
                 .setup(function(api) {
                     api.contacts.add( {
@@ -148,7 +153,17 @@ describe("app", function() {
         describe("after the user enters their ID number after '50", function() {
             it("should set their ID no, extract their DOB, thank them and exit", function() {
                 return tester
-                    .setup.user.addr('+27001')
+                    .setup(function(api) {
+                        api.contacts.add({
+                            msisdn: '+27002',
+                            extra : {
+                                language_choice: 'en',
+                                suspect_pregnancy: 'yes',
+                                id_type: 'sa_id'
+                            }
+                        });
+                    })
+                    .setup.user.addr('+27002')
                     .setup.user.state('states:sa_id')
                     .input('5101015009088')
                     .check.interaction({
@@ -159,7 +174,7 @@ describe("app", function() {
                             'the full set of messages.')
                     })
                     .check(function(api) {
-                        var contact = api.contacts.store[0];
+                        var contact = api.contacts.store[1];
                         assert.equal(contact.extra.sa_id, '5101015009088');
                         assert.equal(contact.extra.birth_year, '1951');
                         assert.equal(contact.extra.birth_month, '01');
@@ -403,7 +418,19 @@ describe("app", function() {
         describe("after the user enters their birth day", function() {
             it("should save birth day, thank them and exit", function() {
                 return tester
-                    .setup.user.addr('+27001')
+                    .setup(function(api) {
+                        api.contacts.add({
+                            msisdn: '+27002',
+                            extra : {
+                                language_choice: 'en',
+                                suspect_pregnancy: 'yes',
+                                id_type: 'passport',
+                                passport_origin: 'zw',
+                                passport_no: '12345'
+                            }
+                        });
+                    })
+                    .setup.user.addr('+27002')
                     .setup.user.answers({
                         'states:birth_year': '1981',
                         'states:birth_month': '01'
@@ -418,7 +445,7 @@ describe("app", function() {
                             'the full set of messages.')
                     })
                     .check(function(api) {
-                        var contact = api.contacts.store[0];
+                        var contact = api.contacts.store[1];
                         assert.equal(contact.extra.birth_day, '01');
                         assert.equal(contact.extra.dob, '1981-01-01');
                     })

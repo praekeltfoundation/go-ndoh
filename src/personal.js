@@ -306,7 +306,6 @@ go.app = function() {
                     self.contact.extra.dob = (self.im.user.answers['states:birth_year'] + 
                         '-' + self.im.user.answers['states:birth_month'] +
                         '-' + content);
-
                     return self.im.contacts.save(self.contact)
                         .then(function() {
                             return {
@@ -324,7 +323,32 @@ go.app = function() {
                         'MomConnect. Visit your nearest clinic to get ' + 
                         'the full set of messages.'),
 
-                next: 'states:start'
+                next: 'states:start',
+                events: {
+                    'state:show': function() {
+                            console.log("WHATEVR YOU PILE OF POOP");
+
+                        // return go.utils.jembi_api_call(go.utils.build_cda_doc(self.contact, self.user), self.contact, self.im)
+                        //     .then(function(result) {
+                        //         console.log(self.contact);
+                        //         if (result.code >= 200 && result.code < 300){
+                        //             // TODO: Log metric
+                        //             console.log('end_success');
+                        //         } else {
+                        //             // TODO: Log metric
+                        //             console.log('error');
+                        //         }
+                        //         return true;         
+                        //     });
+                    }
+                }
+            });
+        });
+
+        self.states.add('states:error', function(name) {
+            return new EndState(name, {
+              text: 'Sorry, something went wrong when saving the data. Please try again.',
+              next: 'states:start'
             });
         });
 

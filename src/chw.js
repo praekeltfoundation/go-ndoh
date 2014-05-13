@@ -16,8 +16,6 @@ go.app = function() {
         self.init = function() {
             self.metric_prefix = self.im.config.name;
 
-            self.get_and_fire_unique_users();
-
             self.im.on('session:new', function() {
                 self.user.extra.ussd_sessions = go.utils.incr_user_extra(
                     self.user.extra.ussd_sessions, 1);
@@ -34,7 +32,11 @@ go.app = function() {
             });
 
             self.im.user.on('user:new', function(e) {
-                self.im.metrics.fire.inc((self.metric_prefix + ".sum.unique_users"), 1);
+                return Q.all([
+                    self.im.metrics.fire.inc((self.metric_prefix + ".sum.unique_users"), 1),
+                    self.im.metrics.fire.inc(("sum.unique_users"))
+                        // probably double counts users if they are in different conversations
+                ]);
             });
 
             return self.im.contacts
@@ -76,16 +78,6 @@ go.app = function() {
                     USSD_number: self.im.config.channel
                 });
         };
-
-        // unique users for the account (across conversations)
-        self.get_and_fire_unique_users = function() {
-            return self.im
-                .api_request('messagestore.count_inbound_uniques',{})
-                .then(function(result) {
-                    return self.im.metrics.fire.last('sum.unique_users', result.count);
-                });
-        };
-
 
         self.states.add('states:start', function(name) {
             var readable_no = go.utils.readable_sa_msisdn(self.im.user.addr);

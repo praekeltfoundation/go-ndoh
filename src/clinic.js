@@ -107,21 +107,16 @@ go.app = function() {
         };
 
         self.incr_kv = function(name) {
-            var new_kv_value = self.im.api.kv.store[name] + 1;
-            self.im.api.kv.store[name] = new_kv_value;
-            return new_kv_value;
-            // return self.im.api_request('kv.incr', {key: [self.store_name, name].join('.')});
+            return self.im.api.kv.incr(name, 1);
         };
 
         self.decr_kv = function(name) {
-            var new_kv_value = self.im.api.kv.store[name] - 1;
-            self.im.api.kv.store[name] = new_kv_value;
-            return new_kv_value;
+            return self.im.api.kv.incr(name, -1);
         };
 
         self.get_kv = function(name) {
             return self.im.api.kv.store[name];
-            // return self.im.api_request('kv.get', {key: name});
+            // not sure if this will work in production
         };
 
         self.adjust_percentage_registrations = function() {

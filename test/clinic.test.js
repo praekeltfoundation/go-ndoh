@@ -22,7 +22,7 @@ describe("app", function() {
                 })
                 .setup.char_limit(160)
                 .setup.config.app({
-                    name: 'test_clinic',
+                    name: 'clinic',
                     metric_store: 'test_metric_store',
                     testing: 'true',
                     testing_today: 'April 4, 2014 07:07:07',
@@ -30,6 +30,11 @@ describe("app", function() {
                         "sms": {"delivery_class": "sms"}
                     },
                     channel: "*120*550*2#"
+                })
+                .setup(function(api) {
+                    api.kv.store['clinic.unique_users'] = 0;
+                    api.kv.store['chw.unique_users'] = 0;
+                    api.kv.store['personal.unique_users'] = 0;
                 })
                 .setup(function(api) {
                     fixtures().forEach(api.http.fixtures.add);
@@ -69,9 +74,11 @@ describe("app", function() {
                     })
                     .start()
                     .check(function(api) {
+                        // console.log(api.kv.store['clinic.unique_users']);
                         var metrics = api.metrics.stores.test_metric_store;
                         assert.deepEqual(metrics['sum.unique_users'].values, [22]);
-                        assert.deepEqual(metrics['test_clinic.sum.unique_users'].values, [1]);
+                        assert.deepEqual(metrics['clinic.sum.unique_users'].values, [1]);
+                        assert.deepEqual(metrics['clinic.percentage_users'].values, [100]);
                     }).run();
             });
         });
@@ -630,7 +637,7 @@ describe("app", function() {
                         })
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
-                            assert.deepEqual(metrics['test_clinic.avg.sessions_to_register'].values, [5]);
+                            assert.deepEqual(metrics['clinic.avg.sessions_to_register'].values, [5]);
                         })
                         .check.reply.ends_session()
                         .run();
@@ -666,7 +673,7 @@ describe("app", function() {
                         })
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
-                            assert.deepEqual(metrics['test_clinic.avg.sessions_to_register'].values, [5]);
+                            assert.deepEqual(metrics['clinic.avg.sessions_to_register'].values, [5]);
                         })
                         .check.reply.ends_session()
                         .run();

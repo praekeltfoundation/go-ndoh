@@ -35,17 +35,18 @@ go.app = function() {
             });
 
             self.im.user.on('user:new', function(e) {
-                clinic_users = self.incr_kv('clinic.unique_users');
-                chw_users = self.get_kv('chw.unique_users');
-                personal_users = self.get_kv('personal.unique_users');
+                self.incr_kv([self.store_name, 'unique_users'].join('.'));
 
-                total_users = clinic_users + chw_users + personal_users;
-                // above will differ from total unique users in messagestore if same users
-                // are on different lines, but will add up to 100%
+                var clinic_users = self.get_kv('clinic.unique_users');
+                var chw_users = self.get_kv('chw.unique_users');
+                var personal_users = self.get_kv('personal.unique_users');
 
-                clinic_percentage = (clinic_users / total_users) * 100;
-                chw_percentage = (chw_users / total_users) * 100;
-                personal_percentage = (personal_users / total_users) * 100;
+                var total_users = clinic_users + chw_users + personal_users;
+                // total_users will differ from total unique users in messagestore if same users
+                // are on different lines, but will add up to 100%, reflects distribution
+                var clinic_percentage = (clinic_users / total_users) * 100;
+                var chw_percentage = (chw_users / total_users) * 100;
+                var personal_percentage = (personal_users / total_users) * 100;
 
                 return Q.all([
                     self.im.metrics.fire.inc((self.metric_prefix + ".sum.unique_users"), 1),
@@ -53,8 +54,6 @@ go.app = function() {
                     self.im.metrics.fire('chw.percentage_users', chw_percentage),
                     self.im.metrics.fire('personal.percentage_users', personal_percentage),
                 ]);
-                
-                
             });
 
             return self.im.contacts
@@ -107,15 +106,15 @@ go.app = function() {
         };
 
         self.incr_kv = function(name) {
-            return self.im
-                .api_request('kv.incr', {key: [self.im.config.kv_group, name].join('.')})
-                .then(function(result) {
-                    return self.im.api_request('kv.incr', {key: [self.store_name, name].join('.')});
-                });
+            var new_kv_value = self.im.api.kv.store[name] + 1;
+            self.im.api.kv.store[name] = new_kv_value;
+            return new_kv_value;
+            // return self.im.api_request('kv.incr', {key: [self.store_name, name].join('.')});
         };
 
         self.get_kv = function(name) {
-            return self.im.api_request('kv.get', {key: [self.store_name, name].join('.')});
+            return self.im.api.kv.store[name];
+            // return self.im.api_request('kv.get', {key: name});
         };
 
         self.states.add('states:start', function(name) {

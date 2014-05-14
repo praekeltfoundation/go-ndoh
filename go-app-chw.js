@@ -140,6 +140,7 @@ go.app = function() {
 
         self.init = function() {
             self.metric_prefix = self.im.config.name;
+            self.store_name = self.im.config.name;
 
             self.im.on('session:new', function() {
                 self.user.extra.ussd_sessions = go.utils.incr_user_extra(
@@ -157,10 +158,23 @@ go.app = function() {
             });
 
             self.im.user.on('user:new', function(e) {
-                return Q.all([
-                    self.im.metrics.fire.inc((self.metric_prefix + ".sum.unique_users"), 1),
-                    self.im.metrics.fire.inc(("sum.unique_users"))
-                ]);
+                self.fire_users_metrics();
+            });
+
+            self.im.on('state:enter', function(e) {
+                var ignore_states = ['states:end_success'];
+
+                if (!_.contains(ignore_states, e.state.name)) {
+                    self.im.metrics.fire.inc(([self.metric_prefix, e.state.name, "no_incomplete"].join('.')), {amount: 1});
+                } 
+            });
+            
+            self.im.on('state:exit', function(e) {
+                var ignore_states = ['states:end_success'];
+
+                if (!_.contains(ignore_states, e.state.name)) {
+                    self.im.metrics.fire.inc(([self.metric_prefix, e.state.name, "no_incomplete"].join('.')), {amount: -1});
+                } 
             });
 
             return self.im.contacts
@@ -201,6 +215,55 @@ go.app = function() {
                 .context({
                     USSD_number: self.im.config.channel
                 });
+        };
+
+        self.incr_kv = function(name) {
+            return self.im.api.kv.incr(name, 1);
+        };
+
+        self.decr_kv = function(name) {
+            return self.im.api.kv.incr(name, -1);
+        };
+
+        self.get_kv = function(name) {
+            return self.im.api.kv.store[name];
+        };
+
+        self.adjust_percentage_registrations = function() {
+            var no_incomplete = self.get_kv([self.store_name, 'no_incomplete_registrations'].join('.'));
+            var no_complete = self.get_kv([self.store_name, 'no_complete_registrations'].join('.'));
+
+            var total_attempted = no_incomplete + no_complete;
+
+            var percentage_incomplete = (no_incomplete / total_attempted) * 100;
+            var percentage_complete = (no_complete / total_attempted) * 100;
+
+            return Q.all([
+                self.im.metrics.fire((self.metric_prefix + '.percent_incomplete_registrations'), percentage_incomplete),
+                self.im.metrics.fire((self.metric_prefix + '.percent_complete_registrations'), percentage_complete)
+            ]);
+        };
+
+        self.fire_users_metrics = function() {
+            self.incr_kv([self.store_name, 'unique_users'].join('.'));
+
+            var clinic_users = self.get_kv('clinic.unique_users');
+            var chw_users = self.get_kv('chw.unique_users');
+            var personal_users = self.get_kv('personal.unique_users');
+
+            var total_users = clinic_users + chw_users + personal_users;
+
+            var clinic_percentage = (clinic_users / total_users) * 100;
+            var chw_percentage = (chw_users / total_users) * 100;
+            var personal_percentage = (personal_users / total_users) * 100;
+
+            return Q.all([
+                self.im.metrics.fire.inc((self.metric_prefix + ".sum.unique_users"), 1),
+                self.im.metrics.fire('clinic.percentage_users', clinic_percentage),
+                self.im.metrics.fire('chw.percentage_users', chw_percentage),
+                self.im.metrics.fire('personal.percentage_users', personal_percentage),
+                self.im.metrics.fire.inc(("sum.unique_users"))
+            ]);
         };
 
         self.states.add('states:start', function(name) {
@@ -277,6 +340,13 @@ go.app = function() {
 
                 next: function(choice) {
                     self.contact.extra.id_type = choice.value;
+
+                    if (_.isUndefined(self.contact.extra.is_registered)) {
+                        self.incr_kv([self.store_name, 'no_incomplete_registrations'].join('.'));
+                        self.adjust_percentage_registrations();
+                    }
+
+                    self.contact.extra.is_registered = 'false';
 
                     return self.im.contacts.save(self.contact)
                         .then(function() {
@@ -486,6 +556,12 @@ go.app = function() {
 
                 next: function(choice) {
                     self.contact.extra.language_choice = choice.value;
+
+                    self.incr_kv([self.store_name, 'no_complete_registrations'].join('.'));
+                    self.decr_kv([self.store_name, 'no_incomplete_registrations'].join('.'));
+                    self.adjust_percentage_registrations();
+
+                    self.contact.extra.is_registered = 'true';
 
                     return self.im.user.set_lang(choice.value)
                     // we may not have to run this for this flow

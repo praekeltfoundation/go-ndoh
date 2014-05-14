@@ -22,7 +22,7 @@ describe("app", function() {
                 })
                 .setup.char_limit(160)
                 .setup.config.app({
-                    name: 'test_chw',
+                    name: 'chw',
                     metric_store: 'test_metric_store',
                     testing: 'true',
                     testing_today: 'April 4, 2014 07:07:07',
@@ -46,7 +46,7 @@ describe("app", function() {
                     .check(function(api) {
                         var metrics = api.metrics.stores.test_metric_store;
                         assert.deepEqual(metrics['sum.unique_users'].values, [22]);
-                        assert.deepEqual(metrics['test_chw.sum.unique_users'].values, [1]);
+                        assert.deepEqual(metrics['chw.sum.unique_users'].values, [1]);
                     }).run();
             });
         });
@@ -572,7 +572,7 @@ describe("app", function() {
                         })
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
-                            assert.deepEqual(metrics['test_chw.avg.sessions_to_register'].values, [5]);
+                            assert.deepEqual(metrics['chw.avg.sessions_to_register'].values, [5]);
                         })
                         .check.reply.ends_session()
                         .run();
@@ -609,7 +609,7 @@ describe("app", function() {
                         })
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
-                            assert.deepEqual(metrics['test_chw.avg.sessions_to_register'].values, [5]);
+                            assert.deepEqual(metrics['chw.avg.sessions_to_register'].values, [5]);
                         })
                         .check.reply.ends_session()
                         .run();

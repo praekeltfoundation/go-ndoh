@@ -72,11 +72,11 @@ describe("app", function() {
                         ].join('\n')
                     })
                     .check(function(api) {
-                            var contact = _.find(api.contacts.store, {
-                              msisdn: '+270001'
-                            });
-                            assert.equal(contact.extra.ussd_sessions, '1');
-                        })
+                        var contact = _.find(api.contacts.store, {
+                          msisdn: '+270001'
+                        });
+                        assert.equal(contact.extra.ussd_sessions, '1');
+                    })
                     .check(function(api) {
                         var metrics = api.metrics.stores.test_metric_store;
                         assert.deepEqual(metrics['chw.states:start.no_incomplete'].values, [1]);
@@ -89,22 +89,22 @@ describe("app", function() {
             it("should increase their number of ussd_sessions by 1", function() {
                 return tester
                     .setup(function(api) {
-                            api.contacts.add( {
-                                msisdn: '+270001',
-                                extra : {
-                                    ussd_sessions: '3',
-                                    working_on: '+2712345'
-                                }
-                            });
-                        })
+                        api.contacts.add( {
+                            msisdn: '+270001',
+                            extra : {
+                                ussd_sessions: '3',
+                                working_on: '+2712345'
+                            }
+                        });
+                    })
                     .setup.user.addr('+270001')
                     .start()
                     .check(function(api) {
-                            var contact = _.find(api.contacts.store, {
-                              msisdn: '+270001'
-                            });
-                            assert.equal(contact.extra.ussd_sessions, '4');
-                        })
+                        var contact = _.find(api.contacts.store, {
+                          msisdn: '+270001'
+                        });
+                        assert.equal(contact.extra.ussd_sessions, '4');
+                    })
                     .run();
             });
         });

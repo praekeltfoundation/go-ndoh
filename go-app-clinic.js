@@ -158,27 +158,8 @@ go.app = function() {
             });
 
             self.im.user.on('user:new', function(e) {
-                // Percentage Users Metric
-                self.incr_kv([self.store_name, 'unique_users'].join('.'));
 
-                var clinic_users = self.get_kv('clinic.unique_users');
-                var chw_users = self.get_kv('chw.unique_users');
-                var personal_users = self.get_kv('personal.unique_users');
-
-                var total_users = clinic_users + chw_users + personal_users;
-                /*total_users will differ from total unique users in messagestore if same users
-                are on different lines, but will add up to 100%, reflects distribution*/
-                var clinic_percentage = (clinic_users / total_users) * 100;
-                var chw_percentage = (chw_users / total_users) * 100;
-                var personal_percentage = (personal_users / total_users) * 100;
-
-                return Q.all([
-                    self.im.metrics.fire.inc((self.metric_prefix + ".sum.unique_users"), 1),
-                    self.im.metrics.fire('clinic.percentage_users', clinic_percentage),
-                    self.im.metrics.fire('chw.percentage_users', chw_percentage),
-                    self.im.metrics.fire('personal.percentage_users', personal_percentage),
-                    self.im.metrics.fire.inc(("sum.unique_users"))
-                ]);
+                self.fire_users_metrics();
             });
 
             self.im.on('state:enter', function(e) {
@@ -261,6 +242,28 @@ go.app = function() {
             return Q.all([
                 self.im.metrics.fire((self.metric_prefix + '.percent_incomplete_registrations'), percentage_incomplete),
                 self.im.metrics.fire((self.metric_prefix + '.percent_complete_registrations'), percentage_complete)
+            ]);
+        };
+
+        self.fire_users_metrics = function() {
+            self.incr_kv([self.store_name, 'unique_users'].join('.'));
+
+            var clinic_users = self.get_kv('clinic.unique_users');
+            var chw_users = self.get_kv('chw.unique_users');
+            var personal_users = self.get_kv('personal.unique_users');
+
+            var total_users = clinic_users + chw_users + personal_users;
+
+            var clinic_percentage = (clinic_users / total_users) * 100;
+            var chw_percentage = (chw_users / total_users) * 100;
+            var personal_percentage = (personal_users / total_users) * 100;
+
+            return Q.all([
+                self.im.metrics.fire.inc((self.metric_prefix + ".sum.unique_users"), 1),
+                self.im.metrics.fire('clinic.percentage_users', clinic_percentage),
+                self.im.metrics.fire('chw.percentage_users', chw_percentage),
+                self.im.metrics.fire('personal.percentage_users', personal_percentage),
+                self.im.metrics.fire.inc(("sum.unique_users"))
             ]);
         };
 

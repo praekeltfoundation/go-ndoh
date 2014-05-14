@@ -158,10 +158,6 @@ describe("app", function() {
                             'Sorry, the mobile number did not validate. ' +
                             'Please reenter the mobile number:')
                     })
-                    // .check(function(api) {
-                    //     var metrics = api.metrics.stores.test_metric_store;
-                    //     assert.deepEqual(metrics['clinic.states:start.no_incomplete'].values, [-1]);
-                    // })
                     .run();
             });
         });

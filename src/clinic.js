@@ -17,8 +17,6 @@ go.app = function() {
             self.metric_prefix = self.im.config.name;
             self.store_name = self.im.config.name;
 
-            self.get_and_fire_unique_users();
-
             self.im.on('session:new', function() {
                 self.user.extra.ussd_sessions = go.utils.incr_user_extra(
                     self.user.extra.ussd_sessions, 1);
@@ -54,6 +52,7 @@ go.app = function() {
                     self.im.metrics.fire('clinic.percentage_users', clinic_percentage),
                     self.im.metrics.fire('chw.percentage_users', chw_percentage),
                     self.im.metrics.fire('personal.percentage_users', personal_percentage),
+                    self.im.metrics.fire.inc(("sum.unique_users"))
                 ]);
             });
 
@@ -105,15 +104,6 @@ go.app = function() {
             return $("Please dial back in to {{ USSD_number }} to complete the pregnancy registration.")
                 .context({
                     USSD_number: self.im.config.channel
-                });
-        };
-
-        // unique users for the account (across conversations)
-        self.get_and_fire_unique_users = function() {
-            return self.im
-                .api_request('messagestore.count_inbound_uniques',{})
-                .then(function(result) {
-                    return self.im.metrics.fire.last('sum.unique_users', result.count);
                 });
         };
 

@@ -281,13 +281,10 @@ go.app = function() {
                 ],
 
                 next: function(choice) {
-                    // return self.im.contacts.save(self.contact)
-                    //     .then(function() {
-                            return {
-                                yes: 'states:clinic_code',
-                                no: 'states:mobile_no'
-                            } [choice.value];
-                        // });
+                    return {
+                        yes: 'states:clinic_code',
+                        no: 'states:mobile_no'
+                    } [choice.value];
                 }
             });
         });

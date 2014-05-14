@@ -134,9 +134,6 @@ describe("app", function() {
                 return tester
                     .setup.user.state('states:start')
                     .input('2')
-                    // .check(function(api) {
-                    //     console.log('1');
-                    // })
                     .check.interaction({
                         state: 'states:mobile_no',
                         reply: (

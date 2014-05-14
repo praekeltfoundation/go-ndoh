@@ -37,6 +37,13 @@ describe("app", function() {
                     });
                 })
                 .setup(function(api) {
+                    api.kv.store['clinic.unique_users'] = 0;
+                    api.kv.store['chw.unique_users'] = 0;
+                    api.kv.store['personal.unique_users'] = 0;
+                    api.kv.store['personal.no_complete_registrations'] = 2;
+                    api.kv.store['personal.no_incomplete_registrations'] = 2;
+                })
+                .setup(function(api) {
                     fixtures().forEach(api.http.fixtures.add);
                 });
         });
@@ -48,6 +55,7 @@ describe("app", function() {
                     .check(function(api) {
                         var metrics = api.metrics.stores.test_metric_store;
                         assert.deepEqual(metrics['personal.sum.unique_users'].values, [1]);
+                        assert.deepEqual(metrics['personal.percentage_users'].values, [100]);
                         assert.deepEqual(metrics['sum.unique_users'].values, [1]);
                     }).run();
             });
@@ -75,6 +83,10 @@ describe("app", function() {
                         var contact = api.contacts.store[0];
                         assert.equal(contact.extra.ussd_sessions, '1');
                     })
+                    .check(function(api) {
+                        var metrics = api.metrics.stores.test_metric_store;
+                        assert.deepEqual(metrics['personal.states:start.no_incomplete'].values, [1]);
+                    })
                     .run();
             });
         });
@@ -100,6 +112,13 @@ describe("app", function() {
                         var contact = api.contacts.store[0];
                         assert.equal(contact.extra.language_choice, 'en');
                     })
+                    .check(function(api) {
+                        var metrics = api.metrics.stores.test_metric_store;
+                        assert.deepEqual(metrics['personal.states:start.no_incomplete'].values, [1, 0]);
+                        assert.deepEqual(metrics['personal.states:suspect_pregnancy.no_incomplete'].values, [1]);
+                        assert.deepEqual(metrics['personal.percent_incomplete_registrations'].values, [60]);
+                        assert.deepEqual(metrics['personal.percent_complete_registrations'].values, [40]);
+                    })
                     .run();
             });
         });
@@ -120,6 +139,11 @@ describe("app", function() {
                     .check(function(api) {
                         var contact = api.contacts.store[0];
                         assert.equal(contact.extra.suspect_pregnancy, 'no');
+                    })
+                    .check(function(api) {
+                        var metrics = api.metrics.stores.test_metric_store;
+                        assert.deepEqual(metrics['personal.states:suspect_pregnancy.no_incomplete'].values, [1, 0]);
+                        assert.equal(metrics['personal.states:end_not_pregnant.no_incomplete'], undefined);
                     })
                     .run();
             });
@@ -426,15 +450,15 @@ describe("app", function() {
         describe("after the user enters their birth day", function() {
             it("should save birth day, thank them and exit", function() {
                 return tester
-                    .setup.user.addr('+27001')
+                    .setup.user.addr('+270001')
                     .setup(function(api) {
-                            api.contacts.add( {
-                                msisdn: '+270001',
-                                extra : {
-                                    ussd_sessions: '4'
-                                }
-                            });
-                        })
+                        api.contacts.add( {
+                            msisdn: '+270001',
+                            extra : {
+                                ussd_sessions: '5'
+                            }
+                        });
+                    })
                     .setup.user.answers({
                         'states:birth_year': '1981',
                         'states:birth_month': '01'
@@ -449,10 +473,18 @@ describe("app", function() {
                             'the full set of messages.')
                     })
                     .check(function(api) {
-                        var contact = api.contacts.store[0];
+                        var contact = api.contacts.store[1];
                         assert.equal(contact.extra.birth_day, '01');
                         assert.equal(contact.extra.dob, '1981-01-01');
                         assert.equal(contact.extra.ussd_sessions, '0');
+                    })
+                    .check(function(api) {
+                        var metrics = api.metrics.stores.test_metric_store;
+                        assert.deepEqual(metrics['personal.avg.sessions_to_register'].values, [5]);
+                        assert.deepEqual(metrics['personal.states:birth_day.no_incomplete'].values, [1, 0]);
+                        assert.equal(metrics['personal.states:end_success.no_incomplete'], undefined);
+                        assert.deepEqual(metrics['personal.percent_incomplete_registrations'].values, [25]);
+                        assert.deepEqual(metrics['personal.percent_complete_registrations'].values, [75]);
                     })
                     .check.reply.ends_session()
                     .run();

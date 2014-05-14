@@ -17,9 +17,14 @@ go.app = function() {
             self.metric_prefix = self.im.config.name;
             self.store_name = self.im.config.name;
 
-            self.im.on('session:new', function() {
+            self.im.on('session:new', function(e) {
                 self.user.extra.ussd_sessions = go.utils.incr_user_extra(
                     self.user.extra.ussd_sessions, 1);
+
+                // should improve firing of state:enter metrics here in event of dial-back - currently will increase no_incomplete
+                // if (_.isUndefined(e.state)) {
+                //     console.log(e.im.state.name);
+                // }
                 
                 return Q.all([
                     self.im.contacts.save(self.user)

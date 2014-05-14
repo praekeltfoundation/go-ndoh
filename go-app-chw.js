@@ -113,11 +113,21 @@ go.utils = {
         return denormalised_no;
     },
 
+    incr_user_extra: function(data_to_increment, amount_to_increment) {
+        if (_.isUndefined(data_to_increment)) {
+            new_data_amount = 1;
+        } else {
+            new_data_amount = parseInt(data_to_increment) + amount_to_increment;
+        }
+        return new_data_amount.toString();
+    },
+
 };
 go.app = function() {
     var vumigo = require('vumigo_v02');
     var _ = require('lodash');
     var moment = require('moment');
+    var Q = require('q');
     var App = vumigo.App;
     var Choice = vumigo.states.Choice;
     var ChoiceState = vumigo.states.ChoiceState;
@@ -129,10 +139,29 @@ go.app = function() {
         var $ = self.$;
 
         self.init = function() {
+            self.metric_prefix = self.im.config.name;
+
+            self.im.on('session:new', function() {
+                self.user.extra.ussd_sessions = go.utils.incr_user_extra(
+                    self.user.extra.ussd_sessions, 1);
+                
+                return Q.all([
+                    self.im.contacts.save(self.user)
+                ]);
+
+            });
 
             self.im.on('session:close', function(e) {
                 if (!self.should_send_dialback(e)) { return; }
                 return self.send_dialback();
+            });
+
+            self.im.user.on('user:new', function(e) {
+                return Q.all([
+                    self.im.metrics.fire.inc((self.metric_prefix + ".sum.unique_users"), 1),
+                    self.im.metrics.fire.inc(("sum.unique_users"))
+                        // probably double counts users if they are in different conversations
+                ]);
             });
 
             return self.im.contacts
@@ -190,10 +219,13 @@ go.app = function() {
                 ],
 
                 next: function(choice) {
-                    return {
-                        yes: 'states:id_type',
-                        no: 'states:mobile_no'
-                    } [choice.value];
+                    return self.im.contacts.save(self.contact)
+                        .then(function() {
+                            return {
+                                yes: 'states:id_type',
+                                no: 'states:mobile_no'
+                            } [choice.value];
+                        });
                 }
             });
         });
@@ -462,10 +494,17 @@ go.app = function() {
                             return self.im.contacts.save(self.contact);
                         })
                         .then(function() {
+                            return Q.all([
+                                self.im.metrics.fire.avg((self.metric_prefix + ".avg.sessions_to_register"),
+                                    parseInt(self.user.extra.ussd_sessions))
+                            ]);
+                        })
+                        .then(function() {
                             if (!_.isUndefined(self.user.extra.working_on)) {
                                 self.user.extra.working_on = "";
-                                return self.im.contacts.save(self.user);
                             }
+                            self.user.extra.ussd_sessions = '0';
+                            return self.im.contacts.save(self.user);
                         })
                         .then(function() {
                             return 'states:end_success';

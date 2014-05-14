@@ -3,6 +3,8 @@ var fixtures = require('./fixtures');
 var AppTester = vumigo.AppTester;
 var _ = require('lodash');
 var assert = require('assert');
+var messagestore = require('./messagestore');
+var DummyMessageStoreResource = messagestore.DummyMessageStoreResource;
 
 
 describe("app", function() {
@@ -16,10 +18,14 @@ describe("app", function() {
             tester = new AppTester(app);
 
             tester
-                .setup.user.lang('en')
+                .setup(function(api) {
+                    api.resources.add(new DummyMessageStoreResource());
+                    api.resources.attach(api);
+                })
                 .setup.char_limit(160)
                 .setup.config.app({
-                    name: 'test_app',
+                    name: 'test_personal',
+                    metric_store: 'test_metric_store',
                     endpoints: {
                         "sms": {"delivery_class": "sms"}
                     },
@@ -35,9 +41,22 @@ describe("app", function() {
                 });
         });
 
+        describe("when a new unique user logs on", function() {
+            it("should increment the no. of unique users by 1", function() {
+                return tester
+                    .start()
+                    .check(function(api) {
+                        var metrics = api.metrics.stores.test_metric_store;
+                        assert.deepEqual(metrics['sum.unique_users'].values, [1]);
+                        assert.deepEqual(metrics['test_personal.sum.unique_users'].values, [1]);
+                    }).run();
+            });
+        });
+
         describe("when the user starts a session", function() {
             it("should ask for their preferred language", function() {
                 return tester
+                    .setup.user.addr('+27001')
                     .start()
                     .check.interaction({
                         state: 'states:start',
@@ -51,6 +70,10 @@ describe("app", function() {
                             '4. Xhosa',
                             '5. Sotho'
                         ].join('\n')
+                    })
+                    .check(function(api) {
+                        var contact = api.contacts.store[0];
+                        assert.equal(contact.extra.ussd_sessions, '1');
                     })
                     .run();
             });
@@ -404,6 +427,14 @@ describe("app", function() {
             it("should save birth day, thank them and exit", function() {
                 return tester
                     .setup.user.addr('+27001')
+                    .setup(function(api) {
+                            api.contacts.add( {
+                                msisdn: '+270001',
+                                extra : {
+                                    ussd_sessions: '4'
+                                }
+                            });
+                        })
                     .setup.user.answers({
                         'states:birth_year': '1981',
                         'states:birth_month': '01'
@@ -421,6 +452,7 @@ describe("app", function() {
                         var contact = api.contacts.store[0];
                         assert.equal(contact.extra.birth_day, '01');
                         assert.equal(contact.extra.dob, '1981-01-01');
+                        assert.equal(contact.extra.ussd_sessions, '0');
                     })
                     .check.reply.ends_session()
                     .run();

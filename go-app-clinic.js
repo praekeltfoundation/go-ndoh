@@ -158,7 +158,6 @@ go.app = function() {
             });
 
             self.im.user.on('user:new', function(e) {
-
                 self.fire_users_metrics();
             });
 

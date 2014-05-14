@@ -190,8 +190,12 @@ go.app = function() {
             });
             
             self.im.on('state:exit', function(e) {
-                self.im.metrics.fire.inc(([self.metric_prefix, e.state.name, "no_incomplete"].join('.')), {amount: -1});
-            }); // askmike: how do i test this ???
+                var ignore_states = ['states:end_success'];
+
+                if (!_.contains(ignore_states, e.state.name)) {
+                    self.im.metrics.fire.inc(([self.metric_prefix, e.state.name, "no_incomplete"].join('.')), {amount: -1});
+                } 
+            });
 
             return self.im.contacts
                 .for_user()

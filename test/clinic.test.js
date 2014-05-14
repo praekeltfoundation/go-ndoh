@@ -120,6 +120,11 @@ describe("app", function() {
                             'Please enter the clinic code for the facility ' +
                             'where this pregnancy is being registered:')
                     })
+                    .check(function(api) {
+                        var metrics = api.metrics.stores.test_metric_store;
+                        assert.deepEqual(metrics['clinic.states:start.no_incomplete'].values, [1, 0]);
+                        assert.deepEqual(metrics['clinic.states:clinic_code.no_incomplete'].values, [1]);
+                    })
                     .run();
             });
         });
@@ -129,6 +134,9 @@ describe("app", function() {
                 return tester
                     .setup.user.state('states:start')
                     .input('2')
+                    // .check(function(api) {
+                    //     console.log('1');
+                    // })
                     .check.interaction({
                         state: 'states:mobile_no',
                         reply: (
@@ -150,6 +158,10 @@ describe("app", function() {
                             'Sorry, the mobile number did not validate. ' +
                             'Please reenter the mobile number:')
                     })
+                    // .check(function(api) {
+                    //     var metrics = api.metrics.stores.test_metric_store;
+                    //     assert.deepEqual(metrics['clinic.states:start.no_incomplete'].values, [-1]);
+                    // })
                     .run();
             });
         });
@@ -651,6 +663,8 @@ describe("app", function() {
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
                             assert.deepEqual(metrics['clinic.avg.sessions_to_register'].values, [5]);
+                            assert.deepEqual(metrics['clinic.states:language.no_incomplete'].values, [1, 0]);
+                            assert.equal(metrics['clinic.states:end_success.no_incomplete'], undefined);
                         })
                         .check.reply.ends_session()
                         .run();

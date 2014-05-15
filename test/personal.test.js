@@ -83,6 +83,7 @@ describe("app", function() {
                         var contact = api.contacts.store[0];
                         assert.equal(contact.extra.ussd_sessions, '1');
                         assert.equal(contact.extra.metric_sum_sessions, '1');
+                        assert.equal(contact.extra.last_stage, 'states:start');
                     })
                     .check(function(api) {
                         var metrics = api.metrics.stores.test_metric_store;
@@ -354,6 +355,7 @@ describe("app", function() {
                     .check(function(api) {
                         var contact = api.contacts.store[0];
                         assert.equal(contact.extra.id_type, 'none');
+                        assert.equal(contact.extra.last_stage, 'states:birth_year');
                     })
                     .run();
             });
@@ -479,6 +481,7 @@ describe("app", function() {
                         assert.equal(contact.extra.birth_day, '01');
                         assert.equal(contact.extra.dob, '1981-01-01');
                         assert.equal(contact.extra.ussd_sessions, '0');
+                        assert.equal(contact.extra.last_stage, 'states:end_success');
                     })
                     .check(function(api) {
                         var metrics = api.metrics.stores.test_metric_store;

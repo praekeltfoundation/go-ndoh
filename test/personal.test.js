@@ -199,7 +199,17 @@ describe("app", function() {
         describe("after the user enters their ID number before '50", function() {
             it("should set their ID no, extract their DOB", function() {
                 return tester
-                    .setup.user.addr('+27001')
+                    .setup(function(api) {
+                        api.contacts.add({
+                            msisdn: '+27002',
+                            extra : {
+                                language_choice: 'en',
+                                suspect_pregnancy: 'yes',
+                                id_type: 'sa_id'
+                            }
+                        });
+                    })
+                    .setup.user.addr('+27002')
                     .setup.user.state('states:sa_id')
                     .input('2012315678097')
                     .check(function(api) {
@@ -215,7 +225,17 @@ describe("app", function() {
         describe("after the user enters their ID number on '50", function() {
             it("should set their ID no, extract their DOB", function() {
                 return tester
-                    .setup.user.addr('+27001')
+                    .setup(function(api) {
+                        api.contacts.add({
+                            msisdn: '+27002',
+                            extra : {
+                                language_choice: 'en',
+                                suspect_pregnancy: 'yes',
+                                id_type: 'sa_id'
+                            }
+                        });
+                    })
+                    .setup.user.addr('+27002')
                     .setup.user.state('states:sa_id')
                     .input('5002285000007')
                     .check(function(api) {

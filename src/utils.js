@@ -239,7 +239,8 @@ go.utils = {
         HERE BE MODERATE DRAGONS
 
         **/
-        var doc = libxml.parseXmlString(go.utils.get_CDA_template());
+        var xml_template = go.utils.get_CDA_template();
+        var doc = libxml.parseXmlString(xml_template);
         var map = {
           '//*[@root="${uniqueId}"]': function (element) {
             return go.utils.update_attr(element, 'root', go.utils.get_uuid());

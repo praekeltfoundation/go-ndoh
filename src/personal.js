@@ -326,15 +326,15 @@ go.app = function() {
                 next: 'states:start',
                 events: {
                     'state:enter': function() {
-                        return go.utils.jembi_api_call(go.utils.build_cda_doc(self.contact, self.user), self.contact, self.im)
+                        var built_doc = go.utils.build_cda_doc(self.contact, self.user);
+                        return go.utils.jembi_api_call(built_doc, self.contact, self.im)
                             .then(function(result) {
-                                console.log(self.contact);
                                 if (result.code >= 200 && result.code < 300){
                                     // TODO: Log metric
-                                    console.log('end_success');
+                                    // console.log('end_success');
                                 } else {
                                     // TODO: Log metric
-                                    console.log('error');
+                                    // console.log('error');
                                 }
                                 return true;         
                             });

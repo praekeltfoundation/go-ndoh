@@ -584,6 +584,7 @@ go.app = function() {
                         .then(function() {
                             if (!_.isUndefined(self.user.extra.working_on)) {
                                 self.user.extra.working_on = "";
+                                self.user.extra.no_registrations = go.utils.incr_user_extra(self.user.extra.no_registrations, 1);
                             }
                             self.user.extra.ussd_sessions = '0';
                             return self.im.contacts.save(self.user);

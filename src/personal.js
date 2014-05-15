@@ -21,7 +21,8 @@ go.app = function() {
                     self.contact.extra.ussd_sessions, 1);
                 
                 return Q.all([
-                    self.im.contacts.save(self.contact)
+                    self.im.contacts.save(self.contact),
+                    self.im.metrics.fire.inc('sum.sessions', 1)
                 ]);
 
             });

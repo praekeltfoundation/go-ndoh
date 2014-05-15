@@ -63,6 +63,7 @@ describe("app", function() {
                           msisdn: '+270001'
                         });
                         assert.equal(contact.extra.ussd_sessions, '1');
+                        assert.equal(contact.extra.metric_sum_sessions, '1');
                     })
                     .check(function(api) {
                         var metrics = api.metrics.stores.test_metric_store;

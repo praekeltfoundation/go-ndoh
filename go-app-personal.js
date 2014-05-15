@@ -535,6 +535,7 @@ go.app = function() {
                     self.adjust_percentage_registrations();
 
                     self.contact.extra.is_registered = 'true';
+                    self.contact.extra.metric_sessions_to_register = self.contact.extra.ussd_sessions;
 
                     return self.im.contacts.save(self.contact)
                         .then(function() {

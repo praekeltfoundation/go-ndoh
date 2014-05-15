@@ -482,6 +482,7 @@ describe("app", function() {
                         assert.equal(contact.extra.dob, '1981-01-01');
                         assert.equal(contact.extra.ussd_sessions, '0');
                         assert.equal(contact.extra.last_stage, 'states:end_success');
+                        assert.equal(contact.extra.metric_sessions_to_register, '5');
                     })
                     .check(function(api) {
                         var metrics = api.metrics.stores.test_metric_store;

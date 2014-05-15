@@ -59,15 +59,11 @@ Analytics produced:
 * self.contact.extra.last_stage (position in menu where each user drops off)
 * self.contact.extra.metric_sessions_to_register (number of sessions needed to complete registration per user)
 * self.user.extra.no_registrations (number of registrations for other numbers)
+* self.contact.extra.opt_out_reason (reasons for optout per person)
+
 
 Metrics required (v1):
 
 * clinic.sum.sent_to_hie (records number of complete registrations sent to HIE)
 * chw.sum.sent_to_hie
 * personal.sum.sent_to_hie
-
-
-Analytics required (v2):
-
-* reasons for optout per person
- - self.gsvr.is.going.home.and.hasn't.gotten.to.this

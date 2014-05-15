@@ -144,6 +144,7 @@ go.app = function() {
             self.im.on('session:new', function() {
                 self.contact.extra.ussd_sessions = go.utils.incr_user_extra(
                     self.contact.extra.ussd_sessions, 1);
+                self.contact.extra.metric_sum_sessions = go.utils.incr_user_extra(self.contact.extra.metric_sum_sessions, 1);
                 
                 return Q.all([
                     self.im.contacts.save(self.contact),

@@ -37,6 +37,19 @@ Metrics produced:
 * chw.avg.sessions_to_register
 * personal.avg.sessions_to_register
 
+* percentage_users (clinic + chw + personal = 100)
+
+* clinic.<state-name>.no_incomplete (1 metric for each state name except end states)
+* chw.<state-name>.no_incomplete
+* personal.<state-name>.no_incomplete
+
+* clinic.percent_incomplete_registrations
+* clinic.percent_complete_registrations
+* chw.percent_incomplete_registrations
+* chw.percent_complete_registrations
+* personal.percent_incomplete_registrations
+* personal.percent_complete_registrations
+
 
 Analytics produced:
 
@@ -52,19 +65,10 @@ Metrics required (v1):
 
 Metrics required (v2):
 
-* percentage_users (clinic + chw + personal = 100)
-
 * clinic.<state-name>.sum.dropoffs (records number of fatal dropoffs for each state - suggest fire an increase when you enter each state and fire a decrease when you exit the state)
 * chw.<state-name>.sum.dropoffs
 * personal.<state-name>.sum.dropoffs
 
-* clinic.percentage_complete_registrations
-* clinic.percentage_incomplete_registrations
- - (complete + incomplete registrations = 100.)
-* chw.percentage_complete_registrations
-* chw.percentage_incomplete_registrations
-* personal.percentage_complete_registrations
-* personal.percentage_incomplete_registrations
 
 Analytics required (v2):
 

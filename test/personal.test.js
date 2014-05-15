@@ -25,6 +25,7 @@ describe("app", function() {
                 .setup.char_limit(160)
                 .setup.config.app({
                     name: 'personal',
+                    testing: 'true',
                     metric_store: 'test_metric_store',
                     endpoints: {
                         "sms": {"delivery_class": "sms"}

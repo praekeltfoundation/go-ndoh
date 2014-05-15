@@ -56,17 +56,6 @@ describe("app", function() {
             });
         });
 
-        describe("when a new session is started", function() {
-            it("should increment the sum.sessions metric", function() {
-                return tester
-                    .start()
-                    .check(function(api) {
-                        var metrics = api.metrics.stores.test_metric_store;
-                        assert.deepEqual(metrics['sum.sessions'].values, [1]);
-                    }).run();
-            });
-        });
-
         describe("when the user starts a session", function() {
             it("should check if no. belongs to pregnant woman", function() {
                 return tester
@@ -91,6 +80,7 @@ describe("app", function() {
                     .check(function(api) {
                         var metrics = api.metrics.stores.test_metric_store;
                         assert.deepEqual(metrics['chw.states:start.no_incomplete'].values, [1]);
+                        assert.deepEqual(metrics['sum.sessions'].values, [1]);
                     })
                     .run();
             });

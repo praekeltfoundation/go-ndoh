@@ -115,18 +115,18 @@ module.exports = function (grunt) {
             options: {
                 reporter: 'spec'
             },
-            test_clinic: {
-                src: ['<%= paths.test.clinic %>']
-            },
-            test_chw: {
-                src: ['<%= paths.test.chw %>']
-            },
+            // test_clinic: {
+            //     src: ['<%= paths.test.clinic %>']
+            // },
+            // test_chw: {
+            //     src: ['<%= paths.test.chw %>']
+            // },
             test_personal: {
                 src: ['<%= paths.test.personal %>']
             },
-            test_optout: {
-                src: ['<%= paths.test.optout %>']
-            }
+            // test_optout: {
+            //     src: ['<%= paths.test.optout %>']
+            // }
         }
     });
 

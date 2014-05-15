@@ -325,21 +325,19 @@ go.app = function() {
 
                 next: 'states:start',
                 events: {
-                    'state:show': function() {
-                            console.log("WHATEVR YOU PILE OF POOP");
-
-                        // return go.utils.jembi_api_call(go.utils.build_cda_doc(self.contact, self.user), self.contact, self.im)
-                        //     .then(function(result) {
-                        //         console.log(self.contact);
-                        //         if (result.code >= 200 && result.code < 300){
-                        //             // TODO: Log metric
-                        //             console.log('end_success');
-                        //         } else {
-                        //             // TODO: Log metric
-                        //             console.log('error');
-                        //         }
-                        //         return true;         
-                        //     });
+                    'state:enter': function() {
+                        return go.utils.jembi_api_call(go.utils.build_cda_doc(self.contact, self.user), self.contact, self.im)
+                            .then(function(result) {
+                                console.log(self.contact);
+                                if (result.code >= 200 && result.code < 300){
+                                    // TODO: Log metric
+                                    console.log('end_success');
+                                } else {
+                                    // TODO: Log metric
+                                    console.log('error');
+                                }
+                                return true;         
+                            });
                     }
                 }
             });

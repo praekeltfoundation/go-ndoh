@@ -144,9 +144,14 @@ go.utils = {
 
     get_oid: function () {
         var uuid = go.utils.get_uuid();
+        console.log(uuid);
         var hex = uuid.replace('-', '');
         var number = parseInt(hex, 16);
         return '2.25.' + go.utils.toFixed(number);
+    },
+
+    get_timestamp: function() {
+        return moment().unix();
     },
 
     // CLARIFY NEW STRATEGY
@@ -240,7 +245,7 @@ go.utils = {
             return go.utils.update_attr(element, 'root', go.utils.get_uuid());
           },
           '//*[@value="${createdTime}"]': function (element) {
-            return go.utils.update_attr(element, 'value', moment().unix());
+            return go.utils.update_attr(element, 'value', go.utils.get_timestamp());
           },
           '//*[@extension="${pidCX}"]': function (element) { // TODO Fix
             return go.utils.update_attr(element, 'extension', go.utils.get_patient_id(contact));
@@ -266,7 +271,7 @@ go.utils = {
           },
           '//*[@value="${time}"]': function (element) {
             return go.utils.update_attr(
-              element, 'value', moment().unix());
+              element, 'value', go.utils.get_timestamp());
           },
           '//*[@value="tel:${hcwCellNumber}"]': function (element) {
             return go.utils.get_hcw_msisdn(contact, element);
@@ -292,13 +297,13 @@ go.utils = {
             return go.utils.null_element(element);
           },
           '//*[@value="${encounterDateTime}"]': function (element) {
-            return go.utils.update_attr(element, 'value', moment().unix().toString().slice(0, 8));
+            return go.utils.update_attr(element, 'value', go.utils.get_timestamp().toString().slice(0, 8));
           },
           '//*[@value="${effectiveTime}"]': function (element) {
-            return go.utils.update_attr(element, 'value', moment().unix().toString().slice(0, 8));
+            return go.utils.update_attr(element, 'value', go.utils.get_timestamp().toString().slice(0, 8));
           },
           '//*[@value="${date}"]': function (element) {
-            return go.utils.update_attr(element, 'value', moment().unix().toString().slice(0, 8));
+            return go.utils.update_attr(element, 'value', go.utils.get_timestamp().toString().slice(0, 8));
           }
         };
         Object.keys(map).forEach(function (key) {
@@ -373,30 +378,30 @@ go.utils = {
         '<!-- Client details -->',
         '<recordTarget>',
         '  <patientRole>',
-        ' <!-- Patient Identifier -->',
-        ' <!-- The value for extension must be specified in HL7 CX format: -->',
-        ' <!-- id^^^assigningAuthority^typeCode -->',
-        ' <!-- The typeCode specified the type of identifier, e.g. NI for National Identifier or PPN for Passport Number -->',
-        ' <!-- The assigningAuthority specifies the issuer of the id, e.g. ZAR for South Africa -->',
-        ' <!-- An example for a South African National ID is: -->',
-        ' <!-- <id extension="7612241234567^^^ZAF^NI" root="526ef9c3-6f18-420a-bc53-9b733920bc67" /> -->',
-        ' <id extension="${pidCX}" root="526ef9c3-6f18-420a-bc53-9b733920bc67"/>',
-        ' <addr/>',
-        ' <!-- Telephone number in RFC3966 format, e.g. tel:+27731234567 -->',
-        ' <telecom value="tel:${cellNumber}"/>',
-        ' <patient>',
-        '   <name>',
-        '   <given>${givenName}</given>',
-        '   <family>${familyName}</family>',
-        '   </name>',
-        '   <administrativeGenderCode code="F" codeSystem="2.16.840.1.113883.5.1"/>',
-        '   <!-- e.g. 19700123 -->',
-        '   <birthTime value="${birthDate}"/>',
-        '   <languageCommunication>',
-        '   <languageCode code="${languageCode}"/>',
-        '   <preferenceInd value="true"/>',
-        '   </languageCommunication>',
-        ' </patient>',
+        '    <!-- Patient Identifier -->',
+        '    <!-- The value for extension must be specified in HL7 CX format: -->',
+        '    <!-- id^^^assigningAuthority^typeCode -->',
+        '    <!-- The typeCode specified the type of identifier, e.g. NI for National Identifier or PPN for Passport Number -->',
+        '    <!-- The assigningAuthority specifies the issuer of the id, e.g. ZAR for South Africa -->',
+        '    <!-- An example for a South African National ID is: -->',
+        '    <!-- <id extension="7612241234567^^^ZAF^NI" root="526ef9c3-6f18-420a-bc53-9b733920bc67" /> -->',
+        '    <id extension="${pidCX}" root="526ef9c3-6f18-420a-bc53-9b733920bc67"/>',
+        '    <addr/>',
+        '    <!-- Telephone number in RFC3966 format, e.g. tel:+27731234567 -->',
+        '    <telecom value="tel:${cellNumber}"/>',
+        '    <patient>',
+        '      <name>',
+        '        <given>${givenName}</given>',
+        '        <family>${familyName}</family>',
+        '      </name>',
+        '      <administrativeGenderCode code="F" codeSystem="2.16.840.1.113883.5.1"/>',
+        '      <!-- e.g. 19700123 -->',
+        '      <birthTime value="${birthDate}"/>',
+        '      <languageCommunication>',
+        '        <languageCode code="${languageCode}"/>',
+        '        <preferenceInd value="true"/>',
+        '      </languageCommunication>',
+        '    </patient>',
         '  </patientRole>',
         '</recordTarget>',
         '<!-- HCW Details -->',

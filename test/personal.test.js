@@ -12,6 +12,16 @@ describe("app", function() {
 
         beforeEach(function() {
             app = new go.app.GoNDOH();
+            go.utils.get_timestamp = function() {
+                return '20130819144811';
+            };
+            go.utils.get_uuid = function() {
+                return 'b18c62b4-828e-4b52-25c9-725a1f43fb37';
+            };
+
+            go.utils.get_oid = function(){
+                return '2.25.169380846032024';
+            };
 
             tester = new AppTester(app);
 
@@ -151,7 +161,7 @@ describe("app", function() {
         });
 
         describe("after the user enters their ID number after '50", function() {
-            it("should set their ID no, extract their DOB, thank them and exit", function() {
+            it.only("should set their ID no, extract their DOB, thank them and exit", function() {
                 return tester
                     .setup(function(api) {
                         api.contacts.add({

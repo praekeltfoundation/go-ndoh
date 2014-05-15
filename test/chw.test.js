@@ -77,6 +77,7 @@ describe("app", function() {
                         });
                         assert.equal(contact.extra.ussd_sessions, '1');
                         assert.equal(contact.extra.metric_sum_sessions, '1');
+                        assert.equal(contact.extra.last_stage, 'states:start');
                     })
                     .check(function(api) {
                         var metrics = api.metrics.stores.test_metric_store;
@@ -208,6 +209,7 @@ describe("app", function() {
                               msisdn: '+270001'
                             });
                             assert.equal(contact.extra.id_type, 'sa_id');
+                            assert.equal(contact.extra.last_stage, 'states:sa_id');
                         })
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
@@ -595,6 +597,8 @@ describe("app", function() {
                             assert.equal(contact_mom.extra.language_choice, 'en');
                             assert.equal(contact_user.extra.ussd_sessions, '0');
                             assert.equal(contact_user.extra.working_on, '');
+                            assert.equal(contact_mom.extra.last_stage, 'states:end_success');
+                            assert.equal(contact_user.extra.last_stage, undefined);
                         })
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;

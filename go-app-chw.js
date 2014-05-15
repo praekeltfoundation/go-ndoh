@@ -146,7 +146,7 @@ go.app = function() {
                 self.user.extra.ussd_sessions = go.utils.incr_user_extra(
                     self.user.extra.ussd_sessions, 1);
                 self.user.extra.metric_sum_sessions = go.utils.incr_user_extra(self.user.extra.metric_sum_sessions, 1);
-                
+
                 return Q.all([
                     self.im.contacts.save(self.user),
                     self.im.metrics.fire.inc('sum.sessions', 1)
@@ -166,9 +166,13 @@ go.app = function() {
             self.im.on('state:enter', function(e) {
                 var ignore_states = ['states:end_success'];
 
+                self.contact.extra.last_stage = e.state.name;
+
                 if (!_.contains(ignore_states, e.state.name)) {
                     self.im.metrics.fire.inc(([self.metric_prefix, e.state.name, "no_incomplete"].join('.')), {amount: 1});
-                } 
+                }
+
+                return self.im.contacts.save(self.contact);
             });
             
             self.im.on('state:exit', function(e) {

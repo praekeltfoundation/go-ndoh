@@ -57,7 +57,7 @@ Analytics produced:
 * sum.sessions (metric) (number of sessions - total)
 * self.user.extra.metric_sum_sessions (number of sessions - per user)
 * self.contact.extra.last_stage (position in menu where each user drops off)
-
+* self.contact.extra.metric_sessions_to_register (number of sessions needed to complete registration per user)
 
 Metrics required (v1):
 
@@ -68,10 +68,6 @@ Metrics required (v1):
 
 Analytics required (v2):
 
-* number of sessions needed to complete registration per user
- - self.contact.extra.metric_ussd_sessions
-
- 
 * number of moms registered per facility/nurse phone
  - self.user.extra.no_registrations (should increase when we set working_on to "")
 * reasons for optout per person

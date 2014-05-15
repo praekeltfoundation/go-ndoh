@@ -486,6 +486,7 @@ go.app = function() {
                     self.adjust_percentage_registrations();
 
                     self.contact.extra.is_registered = 'true';
+                    self.contact.extra.metric_sessions_to_register = self.user.extra.ussd_sessions;
 
                     return self.im.user.set_lang(choice.value)
                     // we may not have to run this for this flow

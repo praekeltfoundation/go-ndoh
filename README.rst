@@ -54,6 +54,8 @@ Metrics produced:
 Analytics produced:
 
 * self.contact.extra.<question>  (responses to each question per user)
+* sum.sessions (metric) (number of sessions - total)
+* self.user.extra.metric_sum_sessions (number of sessions - per user)
 
 
 Metrics required (v1):
@@ -63,18 +65,8 @@ Metrics required (v1):
 * personal.sum.sent_to_hie
 
 
-Metrics required (v2):
-
-* clinic.<state-name>.sum.dropoffs (records number of fatal dropoffs for each state - suggest fire an increase when you enter each state and fire a decrease when you exit the state)
-* chw.<state-name>.sum.dropoffs
-* personal.<state-name>.sum.dropoffs
-
-
 Analytics required (v2):
 
-* number of sessions - total and per user
- - sum.sessions (global metric)
- - self.user.extra.metric_total_sessions
 * position in menu where each user drops off (this is basically last_stage_completed)
  - self.contact.extra.dropoff_state
 * number of sessions needed to complete registration per user

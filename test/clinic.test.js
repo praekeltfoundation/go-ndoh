@@ -659,6 +659,8 @@ describe("app", function() {
                             assert.equal(contact_user.extra.ussd_sessions, '0');
                             assert.equal(contact_user.extra.working_on, '');
                             assert.equal(contact_mom.extra.metric_sessions_to_register, '5');
+                            assert.equal(contact_user.extra.no_registrations, '1');
+                            assert.equal(contact_mom.extra.no_registrations, undefined);
                         })
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
@@ -700,6 +702,7 @@ describe("app", function() {
                             assert.equal(contact.extra.is_registered, 'true');
                             assert.equal(contact.extra.last_stage, 'states:end_success');
                             assert.equal(contact.extra.metric_sessions_to_register, '5');
+                            assert.equal(contact.extra.no_registrations, undefined);
                         })
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;

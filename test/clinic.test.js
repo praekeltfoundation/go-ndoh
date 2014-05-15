@@ -64,6 +64,7 @@ describe("app", function() {
                         });
                         assert.equal(contact.extra.ussd_sessions, '1');
                         assert.equal(contact.extra.metric_sum_sessions, '1');
+                        assert.equal(contact.extra.last_stage, 'states:start');
                     })
                     .check(function(api) {
                         var metrics = api.metrics.stores.test_metric_store;
@@ -178,6 +179,7 @@ describe("app", function() {
                         var contact = api.contacts.store[0];
                         assert.equal(contact.extra.working_on, "+27821234567");
                         assert.equal(contact.extra.is_registered, undefined);
+                        assert.equal(contact.extra.last_stage, 'states:clinic_code');
                     })
                     .run();
             });
@@ -219,6 +221,7 @@ describe("app", function() {
                             });
                             assert.equal(contact.extra.clinic_code, '12345');
                             assert.equal(contact.extra.is_registered, 'false');
+                            assert.equal(contact.extra.last_stage, 'states:due_date_month');
                         })
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
@@ -255,6 +258,7 @@ describe("app", function() {
                               msisdn: '+270001'
                             });
                             assert.equal(contact.extra.clinic_code, '12345');
+                            assert.equal(contact.extra.last_stage, 'states:due_date_month');
                         })
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
@@ -693,6 +697,7 @@ describe("app", function() {
                             assert.equal(contact.extra.language_choice, 'en');
                             assert.equal(contact.extra.ussd_sessions, '0');
                             assert.equal(contact.extra.is_registered, 'true');
+                            assert.equal(contact.extra.last_stage, 'states:end_success');
                         })
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;

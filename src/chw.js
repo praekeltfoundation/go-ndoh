@@ -457,12 +457,17 @@ go.app = function() {
                             ]);
                         })
                         .then(function() {
-                            if (!_.isUndefined(self.user.extra.working_on)) {
+                            if (!_.isUndefined(self.user.extra.working_on) && (self.user.extra.working_on !== "")) {
                                 self.user.extra.working_on = "";
                                 self.user.extra.no_registrations = go.utils.incr_user_extra(self.user.extra.no_registrations, 1);
+                                self.contact.extra.registered_by = self.user.msisdn;
                             }
                             self.user.extra.ussd_sessions = '0';
-                            return self.im.contacts.save(self.user);
+                            
+                            return Q.all([
+                                self.im.contacts.save(self.user),
+                                self.im.contacts.save(self.contact)
+                            ]);
                         })
                         .then(function() {
                             return 'states:end_success';

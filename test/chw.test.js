@@ -395,8 +395,8 @@ describe("app", function() {
                     .input('3')
                     .check.interaction({
                         state: 'states:birth_year',
-                        reply: ('Please enter the year that the pregnant mother was born (eg ' +
-                                '1981)')
+                        reply: ('Please enter the year that the pregnant ' +
+                                'mother was born (for example: 1981)')
                     })
                     .check(function(api) {
                         var contact = _.find(api.contacts.store, {
@@ -417,8 +417,8 @@ describe("app", function() {
                     .check.interaction({
                         state: 'states:birth_year',
                         reply: ('There was an error in your entry. Please ' +
-                        'carefully enter the mother\'s year of birth again (eg ' +
-                        '2001)')
+                        'carefully enter the mother\'s year of birth again ' +
+                        '(for example: 2001)')
                     })
                     .run();
             });
@@ -465,8 +465,8 @@ describe("app", function() {
                     .input('1')
                     .check.interaction({
                         state: 'states:birth_day',
-                        reply: ('Please enter the day that the mother was born ' +
-                            '(eg 14).')
+                        reply: ('Please enter the day that the mother was ' +
+                            'born (for example: 14).')
                     })
                     .check(function(api) {
                         var contact = _.find(api.contacts.store, {
@@ -487,8 +487,8 @@ describe("app", function() {
                     .check.interaction({
                         state: 'states:birth_day',
                         reply: ('There was an error in your entry. Please ' +
-                        'carefully enter the mother\'s day of birth again (eg ' +
-                        '8)')
+                        'carefully enter the mother\'s day of birth again ' +
+                        '(for example: 8)')
                     })
                     .check(function(api) {
                         var contact = _.find(api.contacts.store, {

@@ -144,7 +144,6 @@ go.utils = {
 
     get_oid: function () {
         var uuid = go.utils.get_uuid();
-        console.log(uuid);
         var hex = uuid.replace('-', '');
         var number = parseInt(hex, 16);
         return '2.25.' + go.utils.toFixed(number);

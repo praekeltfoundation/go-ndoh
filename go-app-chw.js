@@ -33,13 +33,13 @@ go.utils = {
                     new Choice('09', $('Sep')),
                     new Choice('10', $('Oct')),
                     new Choice('11', $('Nov')),
-                    new Choice('12', $('Dec')),
+                    new Choice('12', $('Dec'))
                 ];
 
             var choices_show = [];
             var choices_show_count = 0;
             var end = start + limit;
-            
+
             for (var i=start; i<end; i++) {
                 var val = (i >= 12 ? (i-12) : i);
                 choices_show[choices_show_count] = choices[val];
@@ -48,7 +48,7 @@ go.utils = {
 
             return choices_show;
 
-    },  
+    },
 
     get_today: function(config) {
         var today;
@@ -71,7 +71,7 @@ go.utils = {
     },
 
     check_number_in_range: function(input, start, end){
-        return go.utils.check_valid_number(input) && (parseInt(input) >= start) && (parseInt(input) <= end);
+        return go.utils.check_valid_number(input) && (parseInt(input, 10) >= start) && (parseInt(input, 10) <= end);
     },
 
     validate_id_sa: function(id) {
@@ -102,9 +102,9 @@ go.utils = {
         return moment(id.slice(0,6), 'YYMMDD').format('YYYY-MM-DD');
     },
 
-    is_true: function(boolean) {
+    is_true: function(bool) {
         //If is is not undefined and boolean is true
-        return (!_.isUndefined(boolean) && (boolean==='true' || boolean===true));
+        return (!_.isUndefined(bool) && (bool==='true' || bool===true));
     },
 
     readable_sa_msisdn: function(msisdn) {
@@ -122,13 +122,13 @@ go.utils = {
     toFixed: function(x) {
       var e;
       if (Math.abs(x) < 1.0) {
-        e = parseInt(x.toString().split('e-')[1]);
+        e = parseInt(x.toString().split('e-')[1], 10);
         if (e) {
             x *= Math.pow(10,e-1);
             x = '0.' + (new Array(e)).join('0') + x.toString().substring(2);
         }
       } else {
-        e = parseInt(x.toString().split('+')[1]);
+        e = parseInt(x.toString().split('+')[1], 10);
         if (e > 20) {
             e -= 20;
             x /= Math.pow(10,e);
@@ -139,7 +139,7 @@ go.utils = {
     },
 
     // HERE BE SEMI-TAMED DRAGONS
-  
+
 
     get_uuid: function () {
         return utils.uuid();
@@ -254,7 +254,7 @@ go.utils = {
           '//*[@extension="${pidCX}"]': function (element) { // TODO Fix
             return go.utils.update_attr(element, 'extension', go.utils.get_patient_id(contact));
           },
-          '//*[@value="tel:${cellNumber}"]': function (element) { 
+          '//*[@value="tel:${cellNumber}"]': function (element) {
             return go.utils.update_attr(element, 'value', 'tel:' + contact.msisdn);
           },
           // Not in Scope
@@ -501,8 +501,7 @@ go.utils = {
         '</ClinicalDocument>'
       ].join('\n');
       return CDA_Template;
-    },
-
+    }
 };
 go.app = function() {
     var vumigo = require('vumigo_v02');
@@ -537,7 +536,7 @@ go.app = function() {
                     } else {
                         self.user = user_contact;
                         self.contact = user_contact;
-                    }                   
+                    }
                 });
         };
 
@@ -576,7 +575,7 @@ go.app = function() {
 
                 choices: [
                     new Choice('yes', $('Yes')),
-                    new Choice('no', $('No')),
+                    new Choice('no', $('No'))
                 ],
 
                 next: function(choice) {
@@ -616,7 +615,7 @@ go.app = function() {
                     return self.im.contacts.save(self.contact)
                         .then(function() {
                             return {
-                                name: 'states:id_type',
+                                name: 'states:id_type'
                             };
                         });
                 }
@@ -631,7 +630,7 @@ go.app = function() {
                 choices: [
                     new Choice('sa_id', $('SA ID')),
                     new Choice('passport', $('Passport')),
-                    new Choice('none', $('None')),
+                    new Choice('none', $('None'))
                 ],
 
                 next: function(choice) {
@@ -682,7 +681,7 @@ go.app = function() {
                     return self.im.contacts.save(self.contact)
                         .then(function() {
                             return {
-                                name: 'states:language',
+                                name: 'states:language'
                             };
                         });
                 }
@@ -700,7 +699,7 @@ go.app = function() {
                     new Choice('ng', $('Nigeria')),
                     new Choice('cd', $('DRC')),
                     new Choice('so', $('Somalia')),
-                    new Choice('other', $('Other')),
+                    new Choice('other', $('Other'))
                 ],
 
                 next: function(choice) {
@@ -840,7 +839,7 @@ go.app = function() {
                     new Choice('af', $('Afrikaans')),
                     new Choice('zu', $('Zulu')),
                     new Choice('xh', $('Xhosa')),
-                    new Choice('so', $('Sotho')),
+                    new Choice('so', $('Sotho'))
                 ],
 
                 next: function(choice) {

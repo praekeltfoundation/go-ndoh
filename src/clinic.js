@@ -31,7 +31,7 @@ go.app = function() {
                     } else {
                         self.user = user_contact;
                         self.contact = user_contact;
-                    }                   
+                    }
                 });
         };
 
@@ -70,7 +70,7 @@ go.app = function() {
 
                 choices: [
                     new Choice('yes', $('Yes')),
-                    new Choice('no', $('No')),
+                    new Choice('no', $('No'))
                 ],
 
                 next: function(choice) {
@@ -97,7 +97,7 @@ go.app = function() {
                             };
                         });
                 }
-                    
+
             });
         });
 
@@ -129,7 +129,7 @@ go.app = function() {
                     return self.im.contacts.save(self.contact)
                         .then(function() {
                             return {
-                                name: 'states:clinic_code',
+                                name: 'states:clinic_code'
                             };
                         });
                 }
@@ -137,12 +137,12 @@ go.app = function() {
         });
 
         self.states.add('states:due_date_month', function(name) {
-            
+
             var today = go.utils.get_today(self.im.config);
             var month = today.getMonth();   // 0-bound
 
             return new ChoiceState(name, {
-                
+
                 question: $('Please select the month when the baby is due:'),
 
                 choices: go.utils.make_month_choices($, month, 9),
@@ -153,7 +153,7 @@ go.app = function() {
                     return self.im.contacts.save(self.contact)
                         .then(function() {
                             return {
-                                name: 'states:id_type',
+                                name: 'states:id_type'
                             };
                         });
                 }
@@ -168,7 +168,7 @@ go.app = function() {
                 choices: [
                     new Choice('sa_id', $('SA ID')),
                     new Choice('passport', $('Passport')),
-                    new Choice('none', $('None')),
+                    new Choice('none', $('None'))
                 ],
 
                 next: function(choice) {
@@ -219,7 +219,7 @@ go.app = function() {
                     return self.im.contacts.save(self.contact)
                         .then(function() {
                             return {
-                                name: 'states:language',
+                                name: 'states:language'
                             };
                         });
                 }
@@ -237,7 +237,7 @@ go.app = function() {
                     new Choice('ng', $('Nigeria')),
                     new Choice('cd', $('DRC')),
                     new Choice('so', $('Somalia')),
-                    new Choice('other', $('Other')),
+                    new Choice('other', $('Other'))
                 ],
 
                 next: function(choice) {
@@ -376,7 +376,7 @@ go.app = function() {
                     new Choice('af', $('Afrikaans')),
                     new Choice('zu', $('Zulu')),
                     new Choice('xh', $('Xhosa')),
-                    new Choice('so', $('Sotho')),
+                    new Choice('so', $('Sotho'))
                 ],
 
                 next: function(choice) {

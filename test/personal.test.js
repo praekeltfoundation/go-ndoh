@@ -161,7 +161,7 @@ describe("app", function() {
         });
 
         describe("after the user enters their ID number after '50", function() {
-            it.only("should set their ID no, extract their DOB, thank them and exit", function() {
+            it("should set their ID no, extract their DOB, thank them and exit", function() {
                 return tester
                     .setup(function(api) {
                         api.contacts.add({
@@ -190,6 +190,42 @@ describe("app", function() {
                         assert.equal(contact.extra.birth_month, '01');
                         assert.equal(contact.extra.birth_day, '01');
                         assert.equal(contact.extra.dob, '1951-01-01');
+                    })
+                    .check.reply.ends_session()
+                    .run();
+            });
+        });
+
+        describe("after the user enters their ID number after '50 (test 2)", function() {
+            it.only("should set their ID no, extract their DOB, thank them and exit", function() {
+                return tester
+                    .setup(function(api) {
+                        api.contacts.add({
+                            msisdn: '+27002',
+                            extra : {
+                                language_choice: 'en',
+                                suspect_pregnancy: 'yes',
+                                id_type: 'sa_id'
+                            }
+                        });
+                    })
+                    .setup.user.addr('+27002')
+                    .setup.user.state('states:sa_id')
+                    .input('5101025009086')
+                    .check.interaction({
+                        state: 'states:end_success',
+                        reply: ('Thank you for subscribing to MomConnect. ' +
+                            'You will now receive free messages about ' +
+                            'MomConnect. Visit your nearest clinic to get ' + 
+                            'the full set of messages.')
+                    })
+                    .check(function(api) {
+                        var contact = api.contacts.store[1];
+                        assert.equal(contact.extra.sa_id, '5101025009086');
+                        assert.equal(contact.extra.birth_year, '1951');
+                        assert.equal(contact.extra.birth_month, '01');
+                        assert.equal(contact.extra.birth_day, '02');
+                        assert.equal(contact.extra.dob, '1951-01-02');
                     })
                     .check.reply.ends_session()
                     .run();

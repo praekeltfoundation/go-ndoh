@@ -16,47 +16,38 @@ go.app = function() {
             self.metric_prefix = self.im.config.name;
             self.store_name = self.im.config.name;
 
-            self.im.on('session:new', function() {
+            self.im.on('session:new', function(e) {
                 self.contact.extra.ussd_sessions = go.utils.incr_user_extra(
                     self.contact.extra.ussd_sessions, 1);
                 self.contact.extra.metric_sum_sessions = go.utils.incr_user_extra(self.contact.extra.metric_sum_sessions, 1);
                 
                 return Q.all([
                     self.im.contacts.save(self.contact),
-                    self.im.metrics.fire.inc('sum.sessions', 1)
+                    self.im.metrics.fire.inc('sum.sessions', 1),
+                    self.fire_incomplete(e.im.state.name, -1)
                 ]);
 
             });
 
             self.im.on('session:close', function(e) {
-                if (!self.should_send_dialback(e)) { return; }
-                return self.send_dialback();
+                return Q.all([
+                    self.fire_incomplete(e.im.state.name, 1),
+                    self.dial_back(e)
+                ]);
             });
 
             self.im.user.on('user:new', function(e) {
-                self.fire_users_metrics();
+                return Q.all([
+                    self.fire_users_metrics(),
+                    self.fire_incomplete('states:start', 1)
+                ]);
             });
 
             self.im.on('state:enter', function(e) {
-                var ignore_states = ['states:end_success', 'states:end_not_pregnant'];
-
                 self.contact.extra.last_stage = e.state.name;
-
-                if (!_.contains(ignore_states, e.state.name)) {
-                    self.im.metrics.fire.inc(([self.metric_prefix, e.state.name, "no_incomplete"].join('.')), {amount: 1});
-                }
-
                 return self.im.contacts.save(self.contact);
             });
             
-            self.im.on('state:exit', function(e) {
-                var ignore_states = ['states:end_success'];
-
-                if (!_.contains(ignore_states, e.state.name)) {
-                    self.im.metrics.fire.inc(([self.metric_prefix, e.state.name, "no_incomplete"].join('.')), {amount: -1});
-                } 
-            });
-
             return self.im.contacts
                 .for_user()
                 .then(function(user_contact) {
@@ -79,6 +70,11 @@ go.app = function() {
                     self.contact.extra.redial_sms_sent = 'true';
                     return self.im.contacts.save(self.contact);
                 });
+        };
+
+        self.dial_back = function(e) {
+            if (!self.should_send_dialback(e)) { return; }
+            return self.send_dialback();
         };
 
         self.get_finish_reg_sms = function() {
@@ -135,6 +131,14 @@ go.app = function() {
                 self.im.metrics.fire('personal.percentage_users', personal_percentage),
                 self.im.metrics.fire.inc(("sum.unique_users"))
             ]);
+        };
+
+        self.fire_incomplete = function(name, val) {
+            var ignore_states = ['states:end_success', 'states:end_not_pregnant'];
+
+                if (!_.contains(ignore_states, name)) {
+                    return self.im.metrics.fire.inc(([self.metric_prefix, name, "no_incomplete"].join('.')), {amount: val});
+                }
         };
 
         self.states.add('states:start', function(name) {

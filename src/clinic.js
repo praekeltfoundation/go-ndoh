@@ -401,12 +401,31 @@ go.app = function() {
         });
 
         self.states.add('states:end_success', function(name) {
+            // If none passport then only json push
             return new EndState(name, {
                 text: $('Thank you. The pregnant woman will now ' +
                         'receive weekly messages about her pregnancy ' +
                         'from the Department of Health.'),
 
-                next: 'states:start'
+                next: 'states:start',
+
+                events: {
+                    'state:enter': function() {
+                        var built_doc = go.utils.build_cda_doc(self.contact, self.user);
+                        return go.utils.jembi_api_call(built_doc, self.contact, self.im)
+                            .then(function(result) {
+                                if (result.code >= 200 && result.code < 300){
+                                    // TODO: Log metric
+                                    // console.log('end_success');
+                                } else {
+                                    // TODO: Log metric
+                                    // console.log('error');
+                                }
+                                return true;
+                            });
+                    }
+                }
+
             });
         });
 

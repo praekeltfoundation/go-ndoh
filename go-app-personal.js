@@ -147,7 +147,6 @@ go.utils = {
 
     get_oid: function () {
         var uuid = go.utils.get_uuid();
-        console.log(uuid);
         var hex = uuid.replace('-', '');
         var number = parseInt(hex, 16);
         return '2.25.' + go.utils.toFixed(number);
@@ -164,7 +163,7 @@ go.utils = {
             return contact.extra.sa_id + '^^^ZAF^NI';
           },
           'passport': function () {
-            return contact.extra.passport_no + '^^^TODO^FI';
+            return contact.extra.passport_no + '^^^' + contact.extra.passport_origin.toUpperCase() + '^FI';
           },
           'none': function () { // TODO - CHECK
             return 'NI';
@@ -221,6 +220,7 @@ go.utils = {
     },
 
     get_clinic_id: function(contact, element){
+        console.log(contact.extra.clinic_code);
         if (_.isUndefined(contact.extra.clinic_code)){
             return go.utils.null_element(element);
         } else {
@@ -231,6 +231,15 @@ go.utils = {
     get_hcw_msisdn: function(contact, element){
         if (!_.isUndefined(contact.extra.registered_by) && contact.extra.registered_by !== 'self'){
             return go.utils.update_attr(element, 'value', 'tel:' + contact.extra.registered_by);
+        } else {
+            return go.utils.null_element(element);
+        }
+    },
+
+    get_birthdate: function(contact, element){
+        if (!_.isUndefined(contact.extra.dob)){
+            return go.utils.update_attr(
+              element, 'value', moment(contact.extra.dob, 'YYYY-MM-DD').format('YYYYMMDD'));
         } else {
             return go.utils.null_element(element);
         }
@@ -266,8 +275,7 @@ go.utils = {
             return go.utils.null_element(element);
           },
           '//*[@value="${birthDate}"]': function (element) {
-            return go.utils.update_attr(
-              element, 'value', moment(contact.extra.dob, 'YYYY-MM-DD').format('YYYYMMDD'));
+            return go.utils.get_birthdate(contact, element);
           },
           '//*[@code="${languageCode}"]': function (element) {
             return go.utils.update_attr(
@@ -833,18 +841,18 @@ go.app = function() {
                 next: 'states:start',
                 events: {
                     'state:enter': function() {
-                        var built_doc = go.utils.build_cda_doc(self.contact, self.user);
-                        return go.utils.jembi_api_call(built_doc, self.contact, self.im)
-                            .then(function(result) {
-                                if (result.code >= 200 && result.code < 300){
-                                    // TODO: Log metric
-                                    // console.log('end_success');
-                                } else {
-                                    // TODO: Log metric
-                                    // console.log('error');
-                                }
-                                return true;
-                            });
+                        // var built_json_doc = go.utils.build_cda_doc(self.contact, self.user);
+                        // return go.utils.jembi_api_call(built_doc, self.contact, self.im)
+                        //     .then(function(result) {
+                        //         if (result.code >= 200 && result.code < 300){
+                        //             // TODO: Log metric
+                        //             // console.log('end_success');
+                        //         } else {
+                        //             // TODO: Log metric
+                        //             // console.log('error');
+                        //         }
+                        //         return true;
+                        //     });
                     }
                 }
             });

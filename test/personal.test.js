@@ -38,7 +38,7 @@ describe("app", function() {
                         username: 'foo',
                         password: 'bar',
                         url: 'http://test/v2/'
-                    },
+                    }
                 })
                 .setup(function(api) {
                     api.contacts.add( {
@@ -197,7 +197,7 @@ describe("app", function() {
         });
 
         describe("after the user enters their ID number after '50 (test 2)", function() {
-            it.only("should set their ID no, extract their DOB, thank them and exit", function() {
+            it("should set their ID no, extract their DOB, thank them and exit", function() {
                 return tester
                     .setup(function(api) {
                         api.contacts.add({
@@ -249,7 +249,7 @@ describe("app", function() {
                     .setup.user.state('states:sa_id')
                     .input('2012315678097')
                     .check(function(api) {
-                        var contact = api.contacts.store[0];
+                        var contact = api.contacts.store[1];
                         assert.equal(contact.extra.sa_id, '2012315678097');
                         assert.equal(contact.extra.dob, '2020-12-31');
                     })
@@ -275,7 +275,7 @@ describe("app", function() {
                     .setup.user.state('states:sa_id')
                     .input('5002285000007')
                     .check(function(api) {
-                        var contact = api.contacts.store[0];
+                        var contact = api.contacts.store[1];
                         assert.equal(contact.extra.sa_id, '5002285000007');
                         assert.equal(contact.extra.dob, '1950-02-28');
                     })

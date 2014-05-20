@@ -11,6 +11,16 @@ describe("app", function() {
 
         beforeEach(function() {
             app = new go.app.GoNDOH();
+            go.utils.get_timestamp = function() {
+                return '20130819144811';
+            };
+            go.utils.get_uuid = function() {
+                return 'b18c62b4-828e-4b52-25c9-725a1f43fb37';
+            };
+
+            go.utils.get_oid = function(){
+                return '2.25.169380846032024';
+            };
             tester = new AppTester(app);
 
             tester
@@ -23,7 +33,12 @@ describe("app", function() {
                     endpoints: {
                         "sms": {"delivery_class": "sms"}
                     },
-                    channel: "*120*550*2#"
+                    channel: "*120*550*2#",
+                    jembi: {
+                        username: 'foo',
+                        password: 'bar',
+                        url: 'http://test/v2/'
+                    }
                 })
                 .setup(function(api) {
                     fixtures().forEach(api.http.fixtures.add);
@@ -545,7 +560,7 @@ describe("app", function() {
 
         describe("after the mom's msg language is selected", function() {
             describe("if the phone used is not the mom's", function() {
-                it("should save msg language, thank them and exit", function() {
+                it.only("should save msg language, thank them and exit", function() {
                     return tester
                         .setup.user.addr('+270001')
                         .setup(function(api) {
@@ -553,6 +568,19 @@ describe("app", function() {
                                 msisdn: '+270001',
                                 extra : {
                                     working_on: '+27821234567'
+                                }
+                            });
+                            api.contacts.add( {
+                                msisdn: '+27821234567',
+                                extra : {
+                                    clinic_code: '12345',
+                                    suspect_pregnancy: 'yes',
+                                    id_type: 'sa_id',
+                                    sa_id: '5101025009086',
+                                    birth_year: '1951',
+                                    birth_month: '01',
+                                    birth_day: '02',
+                                    dob: '1951-01-02'
                                 }
                             });
                         })
@@ -583,6 +611,17 @@ describe("app", function() {
                 it("should save msg language, thank them and exit", function() {
                     return tester
                         .setup.user.addr('+270001')
+                        .setup(function(api) {
+                            api.contacts.add( {
+                                msisdn: '+270001',
+                                extra : {
+                                    clinic_code: '12345',
+                                    suspect_pregnancy: 'yes',
+                                    id_type: 'sa_id',
+                                    sa_id: '5101015009088'
+                                }
+                            });
+                        })
                         .setup.user.state('states:language')
                         .input('1')
                         .check.interaction({

@@ -49,14 +49,6 @@ go.app = function() {
                 return self.im.contacts.save(self.contact);
             });
             
-            self.im.on('state:exit', function(e) {
-                // var ignore_states = ['states:end_success'];
-
-                // if (!_.contains(ignore_states, e.state.name)) {
-                //     self.im.metrics.fire.inc(([self.metric_prefix, e.state.name, "no_incomplete"].join('.')), {amount: -1});
-                // } 
-            });
-
             return self.im.contacts
                 .for_user()
                 .then(function(user_contact) {

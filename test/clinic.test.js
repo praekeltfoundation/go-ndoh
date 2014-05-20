@@ -166,7 +166,6 @@ describe("app", function() {
                     })
                     .check(function(api) {
                         var metrics = api.metrics.stores.test_metric_store;
-                        // assert.deepEqual(metrics['clinic.states:start.no_incomplete'].values, [1]);
                         assert.deepEqual(metrics['sum.sessions'].values, [1]);
                     })
                     .run();

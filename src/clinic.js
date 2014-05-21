@@ -39,6 +39,7 @@ go.app = function() {
             });
 
             self.im.user.on('user:new', function(e) {
+                console.log("NEW USER");
                 self.fire_users_metrics();
             });
 
@@ -115,18 +116,21 @@ go.app = function() {
         };
 
         self.adjust_percentage_registrations = function() {
-            var no_incomplete = self.get_kv([self.store_name, 'no_incomplete_registrations'].join('.'));
-            var no_complete = self.get_kv([self.store_name, 'no_complete_registrations'].join('.'));
-
-            var total_attempted = no_incomplete + no_complete;
-
-            var percentage_incomplete = (no_incomplete / total_attempted) * 100;
-            var percentage_complete = (no_complete / total_attempted) * 100;
-
-            return Q.all([
-                self.im.metrics.fire((self.metric_prefix + '.percent_incomplete_registrations'), percentage_incomplete),
-                self.im.metrics.fire((self.metric_prefix + '.percent_complete_registrations'), percentage_complete)
-            ]);
+            return self.get_kv([self.env, 'clinic', 'no_incomplete_registrations'].join('.'))
+                .then(function(result){
+                    var no_incomplete = result.value;
+                    return self.get_kv([self.env, 'clinic', 'no_complete_registrations'].join('.'))
+                        .then(function(result){
+                            var no_complete = result.value;
+                            var total_attempted = no_incomplete + no_complete;
+                            var percentage_incomplete = (no_incomplete / total_attempted) * 100;
+                            var percentage_complete = (no_complete / total_attempted) * 100;
+                            return Q.all([
+                                self.im.metrics.fire([self.env, 'clinic', 'percent_incomplete_registrations'].join('.'), percentage_incomplete),
+                                self.im.metrics.fire([self.env, 'clinic', 'percent_complete_registrations'].join('.'), percentage_complete)
+                            ]);
+                        });
+                });
         };
 
         self.fire_users_metrics = function() {

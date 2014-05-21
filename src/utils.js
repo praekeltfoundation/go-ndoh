@@ -114,7 +114,7 @@ go.utils = {
         if (_.isUndefined(data_to_increment)) {
             new_data_amount = 1;
         } else {
-            new_data_amount = parseInt(data_to_increment) + amount_to_increment;
+            new_data_amount = parseInt(data_to_increment, 10) + amount_to_increment;
         }
         return new_data_amount.toString();
     },

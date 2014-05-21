@@ -165,7 +165,7 @@ describe("app", function() {
                 return tester
                     .setup(function(api) {
                         api.contacts.add({
-                            msisdn: '+27002',
+                            msisdn: '+27001',
                             extra : {
                                 language_choice: 'en',
                                 suspect_pregnancy: 'yes',
@@ -173,7 +173,7 @@ describe("app", function() {
                             }
                         });
                     })
-                    .setup.user.addr('+27002')
+                    .setup.user.addr('+27001')
                     .setup.user.state('states:sa_id')
                     .input('5101015009088')
                     .check.interaction({
@@ -184,7 +184,7 @@ describe("app", function() {
                             'the full set of messages.')
                     })
                     .check(function(api) {
-                        var contact = api.contacts.store[1];
+                        var contact = api.contacts.store[0];
                         assert.equal(contact.extra.sa_id, '5101015009088');
                         assert.equal(contact.extra.birth_year, '1951');
                         assert.equal(contact.extra.birth_month, '01');
@@ -237,7 +237,7 @@ describe("app", function() {
                 return tester
                     .setup(function(api) {
                         api.contacts.add({
-                            msisdn: '+27002',
+                            msisdn: '+27001',
                             extra : {
                                 language_choice: 'en',
                                 suspect_pregnancy: 'yes',
@@ -245,11 +245,11 @@ describe("app", function() {
                             }
                         });
                     })
-                    .setup.user.addr('+27002')
+                    .setup.user.addr('+27001')
                     .setup.user.state('states:sa_id')
                     .input('2012315678097')
                     .check(function(api) {
-                        var contact = api.contacts.store[1];
+                        var contact = api.contacts.store[0];
                         assert.equal(contact.extra.sa_id, '2012315678097');
                         assert.equal(contact.extra.dob, '2020-12-31');
                     })
@@ -263,7 +263,7 @@ describe("app", function() {
                 return tester
                     .setup(function(api) {
                         api.contacts.add({
-                            msisdn: '+27002',
+                            msisdn: '+27001',
                             extra : {
                                 language_choice: 'en',
                                 suspect_pregnancy: 'yes',
@@ -271,11 +271,11 @@ describe("app", function() {
                             }
                         });
                     })
-                    .setup.user.addr('+27002')
+                    .setup.user.addr('+27001')
                     .setup.user.state('states:sa_id')
                     .input('5002285000007')
                     .check(function(api) {
-                        var contact = api.contacts.store[1];
+                        var contact = api.contacts.store[0];
                         assert.equal(contact.extra.sa_id, '5002285000007');
                         assert.equal(contact.extra.dob, '1950-02-28');
                     })
@@ -486,7 +486,7 @@ describe("app", function() {
                 return tester
                     .setup(function(api) {
                         api.contacts.add({
-                            msisdn: '+27002',
+                            msisdn: '+27001',
                             extra : {
                                 language_choice: 'en',
                                 suspect_pregnancy: 'yes',
@@ -496,7 +496,7 @@ describe("app", function() {
                             }
                         });
                     })
-                    .setup.user.addr('+27002')
+                    .setup.user.addr('+27001')
                     .setup.user.answers({
                         'states:birth_year': '1981',
                         'states:birth_month': '01'
@@ -511,7 +511,7 @@ describe("app", function() {
                             'the full set of messages.')
                     })
                     .check(function(api) {
-                        var contact = api.contacts.store[1];
+                        var contact = api.contacts.store[0];
                         assert.equal(contact.extra.birth_day, '01');
                         assert.equal(contact.extra.dob, '1981-01-01');
                     })

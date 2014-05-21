@@ -106,7 +106,10 @@ go.app = function() {
         };
 
         self.get_kv = function(name) {
-            return self.im.api.kv.store[name];
+            return self.im.api_request('kv.get',  {key: name})
+                .then(function(reply) {
+                   return reply.value;
+                });
         };
 
         self.adjust_percentage_registrations = function() {

@@ -217,9 +217,9 @@ go.utils = {
     },
 
     get_clinic_id: function(contact, element){
-        console.log(contact.extra.clinic_code);
         if (_.isUndefined(contact.extra.clinic_code)){
-            return go.utils.null_element(element);
+            // temp hardcode instructed
+            return go.utils.update_attr(element, 'extension', '11399');
         } else {
             return go.utils.update_attr(element, 'extension', contact.extra.clinic_code);
         }
@@ -298,7 +298,7 @@ go.utils = {
             return go.utils.null_element(element);
           },
           // Only possible on Clinic line
-          '//*[@extension="${facilityId}"]': function (element) {
+          '//*[@extension="${facilityCode}"]': function (element) {
             return go.utils.get_clinic_id(contact, element);
           },
           // Not in scope

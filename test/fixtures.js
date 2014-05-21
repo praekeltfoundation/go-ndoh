@@ -67,7 +67,7 @@ module.exports = function() {
                 '    <assignedPerson/>',
                 '    <!-- if facility code available, else leave out representedOrganization -->',
                 '    <representedOrganization>',
-                '      <id extension="${facilityCode}" root="9a560d61-85f1-4d7b-8ee2-090d2900f836"/>',
+                '      <id extension="11399" root="9a560d61-85f1-4d7b-8ee2-090d2900f836"/>',
                 '    </representedOrganization>',
                 '  </assignedAuthor>',
                 '</author>',

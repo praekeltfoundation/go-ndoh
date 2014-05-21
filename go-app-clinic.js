@@ -228,11 +228,13 @@ go.utils = {
         }
     },
 
-    get_hcw_msisdn: function(contact, element){
-        if (!_.isUndefined(contact.extra.registered_by) && contact.extra.registered_by !== 'self'){
-            return go.utils.update_attr(element, 'value', 'tel:' + contact.extra.registered_by);
+    get_hcw_msisdn: function(user, contact, element){
+        if (!_.isUndefined(user.extra.working_on)){
+          // user is a hcw
+            return go.utils.update_attr(element, 'value', 'tel:' + user.msisdn);
         } else {
-            return go.utils.null_element(element);
+          // get hcw from the contact
+            return go.utils.update_attr(element, 'value', 'tel:' + contact.extra.registered_by);
         }
     },
 
@@ -286,7 +288,7 @@ go.utils = {
               element, 'value', go.utils.get_timestamp());
           },
           '//*[@value="tel:${hcwCellNumber}"]': function (element) {
-            return go.utils.get_hcw_msisdn(contact, element);
+            return go.utils.get_hcw_msisdn(user, contact, element);
           },
           // Only possible on Clinic line
           '//*[@extension="${hcwCode}"]': function (element) {
@@ -426,6 +428,7 @@ go.utils = {
             '  <time value="${time}"/>',
             '  <assignedAuthor>',
             '    <id root="833f2856-b9e1-4f54-8694-c74c4283755f"/>',
+            '    <telecom value="tel:${hcwCellNumber}"/>',
             '    <assignedPerson/>',
             '    <!-- if facility code available, else leave out representedOrganization -->',
             '    <representedOrganization>',
@@ -639,9 +642,9 @@ go.app = function() {
 
                 next: function(content) {
                     msisdn = go.utils.normalise_sa_msisdn(content);
-                    self.contact.extra.working_on = msisdn;
+                    self.user.extra.working_on = msisdn;
 
-                    return self.im.contacts.save(self.contact)
+                    return self.im.contacts.save(self.user)
                         .then(function() {
                             return {
                                 name: 'states:clinic_code'

@@ -560,7 +560,7 @@ describe("app", function() {
 
         describe("after the mom's msg language is selected", function() {
             describe("if the phone used is not the mom's", function() {
-                it.only("should save msg language, thank them and exit", function() {
+                it("should save msg language, thank them and exit", function() {
                     return tester
                         .setup.user.addr('+270001')
                         .setup(function(api) {
@@ -610,15 +610,24 @@ describe("app", function() {
             describe("if the phone used is the mom's", function() {
                 it("should save msg language, thank them and exit", function() {
                     return tester
-                        .setup.user.addr('+270001')
+                        .setup.user.addr('+27821234567')
                         .setup(function(api) {
                             api.contacts.add( {
                                 msisdn: '+270001',
+                                extra : {}
+                            });
+                            api.contacts.add( {
+                                msisdn: '+27821234567',
                                 extra : {
                                     clinic_code: '12345',
                                     suspect_pregnancy: 'yes',
                                     id_type: 'sa_id',
-                                    sa_id: '5101015009088'
+                                    sa_id: '5101025009086',
+                                    birth_year: '1951',
+                                    birth_month: '01',
+                                    birth_day: '02',
+                                    dob: '1951-01-02',
+                                    registered_by: '+270001'
                                 }
                             });
                         })
@@ -632,7 +641,7 @@ describe("app", function() {
                         })
                         .check(function(api) {
                             var contact = _.find(api.contacts.store, {
-                              msisdn: '+270001'
+                              msisdn: '+27821234567'
                             });
                             assert.equal(contact.extra.language_choice, 'en');
                         })

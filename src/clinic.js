@@ -124,9 +124,9 @@ go.app = function() {
 
                 next: function(content) {
                     msisdn = go.utils.normalise_sa_msisdn(content);
-                    self.contact.extra.working_on = msisdn;
+                    self.user.extra.working_on = msisdn;
 
-                    return self.im.contacts.save(self.contact)
+                    return self.im.contacts.save(self.user)
                         .then(function() {
                             return {
                                 name: 'states:clinic_code'

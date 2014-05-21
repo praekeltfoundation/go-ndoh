@@ -90,7 +90,7 @@ go.app = function() {
 
                 choices: [
                     new Choice('yes', $('Yes')),
-                    new Choice('no', $('No')),
+                    new Choice('no', $('No'))
                 ],
 
                 next: function(choice) {
@@ -120,7 +120,7 @@ go.app = function() {
                             };
                         });
                 }
-            });        
+            });
         });
 
         self.states.add('states:mobile_no', function(name, opts) {
@@ -146,12 +146,12 @@ go.app = function() {
 
                 next: function(content) {
                     msisdn = go.utils.normalise_sa_msisdn(content);
-                    self.contact.extra.working_on = msisdn;
+                    self.user.extra.working_on = msisdn;
 
-                    return self.im.contacts.save(self.contact)
+                    return self.im.contacts.save(self.user)
                         .then(function() {
                             return {
-                                name: 'states:clinic_code',
+                                name: 'states:clinic_code'
                             };
                         });
                 }
@@ -159,12 +159,12 @@ go.app = function() {
         });
 
         self.states.add('states:due_date_month', function(name) {
-            
+
             var today = go.utils.get_today(self.im.config);
             var month = today.getMonth();   // 0-bound
 
             return new ChoiceState(name, {
-                
+
                 question: $('Please select the month when the baby is due:'),
 
                 choices: go.utils.make_month_choices($, month, 9),
@@ -175,7 +175,7 @@ go.app = function() {
                     return self.im.contacts.save(self.contact)
                         .then(function() {
                             return {
-                                name: 'states:id_type',
+                                name: 'states:id_type'
                             };
                         });
                 }
@@ -190,7 +190,7 @@ go.app = function() {
                 choices: [
                     new Choice('sa_id', $('SA ID')),
                     new Choice('passport', $('Passport')),
-                    new Choice('none', $('None')),
+                    new Choice('none', $('None'))
                 ],
 
                 next: function(choice) {
@@ -241,7 +241,7 @@ go.app = function() {
                     return self.im.contacts.save(self.contact)
                         .then(function() {
                             return {
-                                name: 'states:language',
+                                name: 'states:language'
                             };
                         });
                 }
@@ -259,7 +259,7 @@ go.app = function() {
                     new Choice('ng', $('Nigeria')),
                     new Choice('cd', $('DRC')),
                     new Choice('so', $('Somalia')),
-                    new Choice('other', $('Other')),
+                    new Choice('other', $('Other'))
                 ],
 
                 next: function(choice) {
@@ -398,7 +398,7 @@ go.app = function() {
                     new Choice('af', $('Afrikaans')),
                     new Choice('zu', $('Zulu')),
                     new Choice('xh', $('Xhosa')),
-                    new Choice('so', $('Sotho')),
+                    new Choice('so', $('Sotho'))
                 ],
 
                 next: function(choice) {
@@ -431,12 +431,31 @@ go.app = function() {
         });
 
         self.states.add('states:end_success', function(name) {
+            // If none passport then only json push
             return new EndState(name, {
                 text: $('Thank you. The pregnant woman will now ' +
                         'receive weekly messages about her pregnancy ' +
                         'from the Department of Health.'),
 
-                next: 'states:start'
+                next: 'states:start',
+
+                events: {
+                    'state:enter': function() {
+                        var built_doc = go.utils.build_cda_doc(self.contact, self.user);
+                        return go.utils.jembi_api_call(built_doc, self.contact, self.im)
+                            .then(function(result) {
+                                if (result.code >= 200 && result.code < 300){
+                                    // TODO: Log metric
+                                    // console.log('end_success');
+                                } else {
+                                    // TODO: Log metric
+                                    // console.log('error');
+                                }
+                                return true;
+                            });
+                    }
+                }
+
             });
         });
 

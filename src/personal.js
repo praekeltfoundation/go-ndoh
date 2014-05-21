@@ -79,7 +79,7 @@ go.app = function() {
                     new Choice('af', $('Afrikaans')),
                     new Choice('zu', $('Zulu')),
                     new Choice('xh', $('Xhosa')),
-                    new Choice('so', $('Sotho')),
+                    new Choice('so', $('Sotho'))
                 ],
 
                 next: function(choice) {
@@ -104,7 +104,7 @@ go.app = function() {
 
                 choices: [
                     new Choice('yes', $('Yes')),
-                    new Choice('no', $('No')),
+                    new Choice('no', $('No'))
                 ],
 
                 next: function(choice) {
@@ -139,7 +139,7 @@ go.app = function() {
                 choices: [
                     new Choice('sa_id', $('SA ID')),
                     new Choice('passport', $('Passport')),
-                    new Choice('none', $('None')),
+                    new Choice('none', $('None'))
                 ],
 
                 next: function(choice) {
@@ -207,7 +207,7 @@ go.app = function() {
                     new Choice('ng', $('Nigeria')),
                     new Choice('cd', $('DRC')),
                     new Choice('so', $('Somalia')),
-                    new Choice('other', $('Other')),
+                    new Choice('other', $('Other'))
                 ],
 
                 next: function(choice) {
@@ -322,10 +322,9 @@ go.app = function() {
                         content = '0' + content;
                     }
                     self.contact.extra.birth_day = content;
-                    self.contact.extra.dob = (self.im.user.answers['states:birth_year'] + 
+                    self.contact.extra.dob = (self.im.user.answers['states:birth_year'] +
                         '-' + self.im.user.answers['states:birth_month'] +
                         '-' + content);
-
                     return self.im.contacts.save(self.contact)
                         .then(function() {
                             return Q.all([
@@ -350,10 +349,17 @@ go.app = function() {
             return new EndState(name, {
                 text: $('Thank you for subscribing to MomConnect. ' +
                         'You will now receive free messages about ' +
-                        'MomConnect. Visit your nearest clinic to get ' + 
+                        'MomConnect. Visit your nearest clinic to get ' +
                         'the full set of messages.'),
 
                 next: 'states:start'
+            });
+        });
+
+        self.states.add('states:error', function(name) {
+            return new EndState(name, {
+              text: 'Sorry, something went wrong when saving the data. Please try again.',
+              next: 'states:start'
             });
         });
 

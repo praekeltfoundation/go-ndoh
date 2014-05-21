@@ -51,7 +51,7 @@ go.app = function() {
                     } else {
                         self.user = user_contact;
                         self.contact = user_contact;
-                    }                   
+                    }
                 });
         };
 
@@ -90,7 +90,7 @@ go.app = function() {
 
                 choices: [
                     new Choice('yes', $('Yes')),
-                    new Choice('no', $('No')),
+                    new Choice('no', $('No'))
                 ],
 
                 next: function(choice) {
@@ -133,7 +133,7 @@ go.app = function() {
                     return self.im.contacts.save(self.contact)
                         .then(function() {
                             return {
-                                name: 'states:id_type',
+                                name: 'states:id_type'
                             };
                         });
                 }
@@ -148,7 +148,7 @@ go.app = function() {
                 choices: [
                     new Choice('sa_id', $('SA ID')),
                     new Choice('passport', $('Passport')),
-                    new Choice('none', $('None')),
+                    new Choice('none', $('None'))
                 ],
 
                 next: function(choice) {
@@ -199,7 +199,7 @@ go.app = function() {
                     return self.im.contacts.save(self.contact)
                         .then(function() {
                             return {
-                                name: 'states:language',
+                                name: 'states:language'
                             };
                         });
                 }
@@ -217,7 +217,7 @@ go.app = function() {
                     new Choice('ng', $('Nigeria')),
                     new Choice('cd', $('DRC')),
                     new Choice('so', $('Somalia')),
-                    new Choice('other', $('Other')),
+                    new Choice('other', $('Other'))
                 ],
 
                 next: function(choice) {
@@ -357,7 +357,7 @@ go.app = function() {
                     new Choice('af', $('Afrikaans')),
                     new Choice('zu', $('Zulu')),
                     new Choice('xh', $('Xhosa')),
-                    new Choice('so', $('Sotho')),
+                    new Choice('so', $('Sotho'))
                 ],
 
                 next: function(choice) {

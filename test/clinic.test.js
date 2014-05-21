@@ -613,10 +613,6 @@ describe("app", function() {
                         .setup.user.addr('+27821234567')
                         .setup(function(api) {
                             api.contacts.add( {
-                                msisdn: '+270001',
-                                extra : {}
-                            });
-                            api.contacts.add( {
                                 msisdn: '+27821234567',
                                 extra : {
                                     clinic_code: '12345',
@@ -626,8 +622,7 @@ describe("app", function() {
                                     birth_year: '1951',
                                     birth_month: '01',
                                     birth_day: '02',
-                                    dob: '1951-01-02',
-                                    registered_by: '+270001'
+                                    dob: '1951-01-02'
                                 }
                             });
                         })

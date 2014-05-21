@@ -233,8 +233,8 @@ go.utils = {
           // user is a hcw
             return go.utils.update_attr(element, 'value', 'tel:' + user.msisdn);
         } else {
-          // get hcw from the contact
-            return go.utils.update_attr(element, 'value', 'tel:' + contact.extra.registered_by);
+           // user is contact - no way to know hcw currently
+            return go.utils.null_element(element);
         }
     },
 

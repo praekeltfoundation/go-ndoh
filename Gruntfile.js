@@ -55,25 +55,26 @@ module.exports = function (grunt) {
                     'src/utils.js',
                     '<%= paths.src.app.clinic %>',
                     'test/clinic.test.js'
-                ],
-                chw: [
-                    'test/setup.js',
-                    'src/utils.js',
-                    '<%= paths.src.app.chw %>',
-                    'test/chw.test.js'
-                ],
-                personal: [
-                    'test/setup.js',
-                    'src/utils.js',
-                    '<%= paths.src.app.personal %>',
-                    'test/personal.test.js'
-                ],
-                optout: [
-                    'test/setup.js',
-                    'src/utils.js',
-                    '<%= paths.src.app.optout %>',
-                    'test/optout.test.js'
                 ]
+                // ,
+                // chw: [
+                //     'test/setup.js',
+                //     'src/utils.js',
+                //     '<%= paths.src.app.chw %>',
+                //     'test/chw.test.js'
+                // ],
+                // personal: [
+                //     'test/setup.js',
+                //     'src/utils.js',
+                //     '<%= paths.src.app.personal %>',
+                //     'test/personal.test.js'
+                // ],
+                // optout: [
+                //     'test/setup.js',
+                //     'src/utils.js',
+                //     '<%= paths.src.app.optout %>',
+                //     'test/optout.test.js'
+                // ]
             }
         },
 

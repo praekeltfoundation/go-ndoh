@@ -44,7 +44,7 @@ describe("app", function() {
         });
 
         describe("when the user starts a session", function() {
-            it("should check if no. belongs to pregnant woman", function() {
+            it.only("should check if no. belongs to pregnant woman", function() {
                 return tester
                     .setup.user.addr('+270001')
                     .start()

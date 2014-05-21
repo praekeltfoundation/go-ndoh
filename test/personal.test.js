@@ -201,7 +201,7 @@ describe("app", function() {
                 return tester
                     .setup(function(api) {
                         api.contacts.add({
-                            msisdn: '+27002',
+                            msisdn: '+27001',
                             extra : {
                                 language_choice: 'en',
                                 suspect_pregnancy: 'yes',
@@ -209,7 +209,7 @@ describe("app", function() {
                             }
                         });
                     })
-                    .setup.user.addr('+27002')
+                    .setup.user.addr('+27001')
                     .setup.user.state('states:sa_id')
                     .input('5101025009086')
                     .check.interaction({
@@ -220,7 +220,7 @@ describe("app", function() {
                             'the full set of messages.')
                     })
                     .check(function(api) {
-                        var contact = api.contacts.store[1];
+                        var contact = api.contacts.store[0];
                         assert.equal(contact.extra.sa_id, '5101025009086');
                         assert.equal(contact.extra.birth_year, '1951');
                         assert.equal(contact.extra.birth_month, '01');

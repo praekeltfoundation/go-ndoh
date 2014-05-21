@@ -323,23 +323,7 @@ go.app = function() {
                         'MomConnect. Visit your nearest clinic to get ' +
                         'the full set of messages.'),
 
-                next: 'states:start',
-                events: {
-                    'state:enter': function() {
-                        // var built_json_doc = go.utils.build_cda_doc(self.contact, self.user);
-                        // return go.utils.jembi_api_call(built_doc, self.contact, self.im)
-                        //     .then(function(result) {
-                        //         if (result.code >= 200 && result.code < 300){
-                        //             // TODO: Log metric
-                        //             // console.log('end_success');
-                        //         } else {
-                        //             // TODO: Log metric
-                        //             // console.log('error');
-                        //         }
-                        //         return true;
-                        //     });
-                    }
-                }
+                next: 'states:start'
             });
         });
 

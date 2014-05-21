@@ -139,8 +139,9 @@ go.app = function() {
         var $ = self.$;
 
         self.init = function() {
-            self.metric_prefix = self.im.config.name;
-            self.store_name = self.im.config.name;
+            self.env = self.im.config.env;
+            self.metric_prefix = [self.env, self.im.config.name].join('.');
+            self.store_name = [self.env, self.im.config.name].join('.');
 
             self.im.on('session:new', function(e) {
                 self.user.extra.ussd_sessions = go.utils.incr_user_extra(
@@ -223,18 +224,19 @@ go.app = function() {
         };
 
         self.incr_kv = function(name) {
-            return self.im.api.kv.incr(name, 1);
+            return self.im.api_request('kv.incr', {key: name, amount: 1});
         };
 
         self.decr_kv = function(name) {
-            return self.im.api.kv.incr(name, -1);
+            return self.im.api_request('kv.incr', {key: name, amount: -1});
+        };
+
+        self.set_kv = function(name, value) {
+            return self.im.api_request('kv.set',  {key: name, value: value});
         };
 
         self.get_kv = function(name) {
-            return self.im.api_request('kv.get',  {key: name})
-                .then(function(reply) {
-                   return reply.value;
-                });
+            return self.im.api_request('kv.get',  {key: name});
         };
 
         self.adjust_percentage_registrations = function() {
@@ -253,25 +255,32 @@ go.app = function() {
         };
 
         self.fire_users_metrics = function() {
-            self.incr_kv([self.store_name, 'unique_users'].join('.'));
 
-            var clinic_users = self.get_kv('clinic.unique_users');
-            var chw_users = self.get_kv('chw.unique_users');
-            var personal_users = self.get_kv('personal.unique_users');
+            return self.incr_kv([self.store_name, 'unique_users'].join('.'))
+                .then(function(result){
+                    var clinic_users = result.value;
+                    return self.get_kv([self.env, 'chw', 'unique_users'].join('.'))
+                        .then(function(result){
+                            var chw_users = result.value;
+                            return self.get_kv([self.env, 'personal', 'unique_users'].join('.'))
+                                .then(function(result){
+                                    var personal_users = result.value;
+                                    var total_users = clinic_users + chw_users + personal_users;
 
-            var total_users = clinic_users + chw_users + personal_users;
+                                    var clinic_percentage = (clinic_users / total_users) * 100;
+                                    var chw_percentage = (chw_users / total_users) * 100;
+                                    var personal_percentage = (personal_users / total_users) * 100;
 
-            var clinic_percentage = (clinic_users / total_users) * 100;
-            var chw_percentage = (chw_users / total_users) * 100;
-            var personal_percentage = (personal_users / total_users) * 100;
-
-            return Q.all([
-                self.im.metrics.fire.inc((self.metric_prefix + ".sum.unique_users"), 1),
-                self.im.metrics.fire('clinic.percentage_users', clinic_percentage),
-                self.im.metrics.fire('chw.percentage_users', chw_percentage),
-                self.im.metrics.fire('personal.percentage_users', personal_percentage),
-                self.im.metrics.fire.inc(("sum.unique_users"))
-            ]);
+                                    return Q.all([
+                                        self.im.metrics.fire.inc([self.env, 'clinic', 'sum', 'unique_users'].join('.')),
+                                        self.im.metrics.fire([self.env, 'clinic', 'percentage_users'].join('.'), clinic_percentage),
+                                        self.im.metrics.fire([self.env, 'chw', 'percentage_users'].join('.'), chw_percentage),
+                                        self.im.metrics.fire([self.env, 'personal', 'percentage_users'].join('.'), personal_percentage),
+                                        self.im.metrics.fire.inc([self.env, 'sum', 'unique_users'].join('.'))
+                                    ]);
+                                });
+                        });
+                });
         };
 
         self.states.add('states:start', function(name) {

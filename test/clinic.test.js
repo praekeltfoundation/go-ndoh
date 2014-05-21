@@ -23,6 +23,7 @@ describe("app", function() {
                 .setup.char_limit(160)
                 .setup.config.app({
                     name: 'clinic',
+                    env: 'test',
                     metric_store: 'test_metric_store',
                     testing: 'true',
                     testing_today: 'April 4, 2014 07:07:07',
@@ -44,7 +45,7 @@ describe("app", function() {
         });
 
         describe("when the user starts a session", function() {
-            it.only("should check if no. belongs to pregnant woman", function() {
+            it("should check if no. belongs to pregnant woman", function() {
                 return tester
                     .setup.user.addr('+270001')
                     .start()
@@ -66,7 +67,7 @@ describe("app", function() {
                     })
                     .check(function(api) {
                         var metrics = api.metrics.stores.test_metric_store;
-                        assert.deepEqual(metrics['clinic.states:start.no_incomplete'].values, [1]);
+                        assert.deepEqual(metrics['test.test.clinic.states:start.no_incomplete'].values, [1]);
                     })
                     .run();
             });
@@ -78,9 +79,9 @@ describe("app", function() {
                     .start()
                     .check(function(api) {
                         var metrics = api.metrics.stores.test_metric_store;
-                        assert.deepEqual(metrics['clinic.sum.unique_users'].values, [1]);
-                        assert.deepEqual(metrics['clinic.percentage_users'].values, [100]);
-                        assert.deepEqual(metrics['sum.unique_users'].values, [1]);
+                        assert.deepEqual(metrics['test.clinic.sum.unique_users'].values, [1]);
+                        assert.deepEqual(metrics['test.clinic.percentage_users'].values, [100]);
+                        assert.deepEqual(metrics['test.sum.unique_users'].values, [1]);
                     }).run();
             });
         });
@@ -122,8 +123,8 @@ describe("app", function() {
                     })
                     .check(function(api) {
                         var metrics = api.metrics.stores.test_metric_store;
-                        assert.deepEqual(metrics['clinic.states:start.no_incomplete'].values, [1, 0]);
-                        assert.deepEqual(metrics['clinic.states:clinic_code.no_incomplete'].values, [1]);
+                        assert.deepEqual(metrics['test.clinic.states:start.no_incomplete'].values, [1, 0]);
+                        assert.deepEqual(metrics['test.clinic.states:clinic_code.no_incomplete'].values, [1]);
                     })
                     .run();
             });
@@ -220,8 +221,8 @@ describe("app", function() {
                         })
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
-                            assert.deepEqual(metrics['clinic.percent_incomplete_registrations'].values, [60]);
-                            assert.deepEqual(metrics['clinic.percent_complete_registrations'].values, [40]);
+                            assert.deepEqual(metrics['test.clinic.percent_incomplete_registrations'].values, [60]);
+                            assert.deepEqual(metrics['test.clinic.percent_complete_registrations'].values, [40]);
                         })
                         .run();
                 });
@@ -256,8 +257,8 @@ describe("app", function() {
                         })
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
-                            assert.deepEqual(metrics['clinic.percent_incomplete_registrations'].values, [60]);
-                            assert.deepEqual(metrics['clinic.percent_complete_registrations'].values, [40]);
+                            assert.deepEqual(metrics['test.clinic.percent_incomplete_registrations'].values, [60]);
+                            assert.deepEqual(metrics['test.clinic.percent_complete_registrations'].values, [40]);
                         })
                         .run();
                 });
@@ -655,9 +656,9 @@ describe("app", function() {
                         })
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
-                            assert.deepEqual(metrics['clinic.avg.sessions_to_register'].values, [5]);
-                            assert.deepEqual(metrics['clinic.states:language.no_incomplete'].values, [1, 0]);
-                            assert.equal(metrics['clinic.states:end_success.no_incomplete'], undefined);
+                            assert.deepEqual(metrics['test.clinic.avg.sessions_to_register'].values, [5]);
+                            assert.deepEqual(metrics['test.clinic.states:language.no_incomplete'].values, [1, 0]);
+                            assert.equal(metrics['test.clinic.states:end_success.no_incomplete'], undefined);
                         })
                         .check.reply.ends_session()
                         .run();
@@ -694,9 +695,9 @@ describe("app", function() {
                         })
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
-                            assert.deepEqual(metrics['clinic.avg.sessions_to_register'].values, [5]);
-                            assert.deepEqual(metrics['clinic.percent_incomplete_registrations'].values, [25]);
-                            assert.deepEqual(metrics['clinic.percent_complete_registrations'].values, [75]);
+                            assert.deepEqual(metrics['test.clinic.avg.sessions_to_register'].values, [5]);
+                            assert.deepEqual(metrics['test.clinic.percent_incomplete_registrations'].values, [25]);
+                            assert.deepEqual(metrics['test.clinic.percent_complete_registrations'].values, [75]);
                         })
                         .check.reply.ends_session()
                         .run();

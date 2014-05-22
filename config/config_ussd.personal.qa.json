@@ -1,5 +1,6 @@
 {
     "name": "personal",
+    "env": "qa",
     "metric_store": "ndoh_qa",
     "endpoints": {"sms": {"delivery_class": "sms"}},
     "channel": "*120*550#"

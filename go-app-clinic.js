@@ -122,13 +122,43 @@ go.utils = {
         return new_data_amount.toString();
     },
 
+    incr_kv: function(im, name) {
+        return im.api_request('kv.incr', {key: name, amount: 1})
+            .then(function(result){
+                return result.value;
+            });
+    },
+
+    decr_kv: function(im, name) {
+        return im.api_request('kv.incr', {key: name, amount: -1})
+            .then(function(result){
+                return result.value;
+            });
+    },
+
+    set_kv: function(im, name, value) {
+        return im.api_request('kv.set',  {key: name, value: value})
+            .then(function(result){
+                return result.value;
+            });
+    },
+
+    get_kv: function(im, name, default_value) {
+        // returns the default if null/undefined 
+        return im.api_request('kv.get',  {key: name})
+            .then(function(result){
+                if(result.value === null) return default_value;
+                return result.value;
+            });
+    },
+
 };
 go.app = function() {
     var vumigo = require('vumigo_v02');
     var _ = require('lodash');
     var moment = require('moment');
     var Q = require('q');
-    var App = vumigo.App;   
+    var App = vumigo.App;
     var Choice = vumigo.states.Choice;
     var ChoiceState = vumigo.states.ChoiceState;
     var EndState = vumigo.states.EndState;
@@ -164,7 +194,6 @@ go.app = function() {
             });
 
             self.im.user.on('user:new', function(e) {
-                console.log("NEW USER");
                 self.fire_users_metrics();
             });
 
@@ -224,67 +253,39 @@ go.app = function() {
                 });
         };
 
-        self.incr_kv = function(name) {
-            return self.im.api_request('kv.incr', {key: name, amount: 1});
-        };
-
-        self.decr_kv = function(name) {
-            return self.im.api_request('kv.incr', {key: name, amount: -1});
-        };
-
-        self.set_kv = function(name, value) {
-            return self.im.api_request('kv.set',  {key: name, value: value});
-        };
-
-        self.get_kv = function(name) {
-            return self.im.api_request('kv.get',  {key: name});
-        };
-
         self.adjust_percentage_registrations = function() {
-            return self.get_kv([self.env, 'clinic', 'no_incomplete_registrations'].join('.'))
-                .then(function(result){
-                    var no_incomplete = result.value;
-                    return self.get_kv([self.env, 'clinic', 'no_complete_registrations'].join('.'))
-                        .then(function(result){
-                            var no_complete = result.value;
-                            var total_attempted = no_incomplete + no_complete;
-                            var percentage_incomplete = (no_incomplete / total_attempted) * 100;
-                            var percentage_complete = (no_complete / total_attempted) * 100;
-                            return Q.all([
-                                self.im.metrics.fire([self.env, 'clinic', 'percent_incomplete_registrations'].join('.'), percentage_incomplete),
-                                self.im.metrics.fire([self.env, 'clinic', 'percent_complete_registrations'].join('.'), percentage_complete)
-                            ]);
-                        });
-                });
+            return Q.all([
+                go.utils.get_kv(self.im, [self.env, 'clinic', 'no_incomplete_registrations'].join('.')),
+                go.utils.get_kv(self.im, [self.env, 'clinic', 'no_complete_registrations'].join('.'))
+            ]).spread(function(no_incomplete, no_complete){
+                var total_attempted = no_incomplete + no_complete;
+                var percentage_incomplete = (no_incomplete / total_attempted) * 100;
+                var percentage_complete = (no_complete / total_attempted) * 100;
+                return Q.all([
+                    self.im.metrics.fire([self.env, 'clinic', 'percent_incomplete_registrations'].join('.'), percentage_incomplete),
+                    self.im.metrics.fire([self.env, 'clinic', 'percent_complete_registrations'].join('.'), percentage_complete)
+                ]);
+            });
         };
 
         self.fire_users_metrics = function() {
-
-            return self.incr_kv([self.store_name, 'unique_users'].join('.'))
-                .then(function(result){
-                    var clinic_users = result.value;
-                    return self.get_kv([self.env, 'chw', 'unique_users'].join('.'))
-                        .then(function(result){
-                            var chw_users = result.value;
-                            return self.get_kv([self.env, 'personal', 'unique_users'].join('.'))
-                                .then(function(result){
-                                    var personal_users = result.value;
-                                    var total_users = clinic_users + chw_users + personal_users;
-
-                                    var clinic_percentage = (clinic_users / total_users) * 100;
-                                    var chw_percentage = (chw_users / total_users) * 100;
-                                    var personal_percentage = (personal_users / total_users) * 100;
-
-                                    return Q.all([
-                                        self.im.metrics.fire.inc([self.env, 'clinic', 'sum', 'unique_users'].join('.')),
-                                        self.im.metrics.fire([self.env, 'clinic', 'percentage_users'].join('.'), clinic_percentage),
-                                        self.im.metrics.fire([self.env, 'chw', 'percentage_users'].join('.'), chw_percentage),
-                                        self.im.metrics.fire([self.env, 'personal', 'percentage_users'].join('.'), personal_percentage),
-                                        self.im.metrics.fire.inc([self.env, 'sum', 'unique_users'].join('.'))
-                                    ]);
-                                });
-                        });
-                });
+            return Q.all([
+                go.utils.incr_kv(self.im, [self.store_name, 'unique_users'].join('.')),
+                go.utils.get_kv(self.im, [self.env, 'chw', 'unique_users'].join('.'), 0),
+                go.utils.get_kv(self.im, [self.env, 'personal', 'unique_users'].join('.'), 0)
+            ]).spread(function(clinic_users, chw_users, personal_users){
+                var total_users = clinic_users + chw_users + personal_users;
+                var clinic_percentage = (clinic_users / total_users) * 100;
+                var chw_percentage = (chw_users / total_users) * 100;
+                var personal_percentage = (personal_users / total_users) * 100;
+                return Q.all([
+                    self.im.metrics.fire.inc([self.env, 'clinic', 'sum', 'unique_users'].join('.')),
+                    self.im.metrics.fire.last([self.env, 'clinic', 'percentage_users'].join('.'), clinic_percentage),
+                    self.im.metrics.fire.last([self.env, 'chw', 'percentage_users'].join('.'), chw_percentage),
+                    self.im.metrics.fire.last([self.env, 'personal', 'percentage_users'].join('.'), personal_percentage),
+                    self.im.metrics.fire.inc([self.env, 'sum', 'unique_users'].join('.'))
+                ]);
+            });
         };
 
         self.states.add('states:start', function(name) {

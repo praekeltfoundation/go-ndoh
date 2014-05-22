@@ -78,11 +78,10 @@ describe("app", function() {
                 return tester
                     .start()
                     .check(function(api) {
-                        console.log(api.metrics.stores);
                         var metrics = api.metrics.stores.test_metric_store;
                         assert.deepEqual(metrics['test.clinic.sum.unique_users'].values, [1]);
-                        // assert.deepEqual(metrics['test.clinic.percentage_users'].values, [100]);
-                        // assert.deepEqual(metrics['test.sum.unique_users'].values, [1]);
+                        assert.deepEqual(metrics['test.clinic.percentage_users'].values, [100]);
+                        assert.deepEqual(metrics['test.sum.unique_users'].values, [1]);
                     }).run();
             });
         });

@@ -33,11 +33,11 @@ describe("app", function() {
                     channel: "*120*550*2#"
                 })
                 .setup(function(api) {
-                    api.kv.store['clinic.unique_users'] = 0;
-                    api.kv.store['chw.unique_users'] = 0;
-                    api.kv.store['personal.unique_users'] = 0;
-                    api.kv.store['clinic.no_complete_registrations'] = 2;
-                    api.kv.store['clinic.no_incomplete_registrations'] = 2;
+                    api.kv.store['test.clinic.unique_users'] = 0;
+                    api.kv.store['test.chw.unique_users'] = 0;
+                    api.kv.store['test.personal.unique_users'] = 0;
+                    api.kv.store['test.clinic.no_complete_registrations'] = 2;
+                    api.kv.store['test.clinic.no_incomplete_registrations'] = 2;
                 })
                 .setup(function(api) {
                     fixtures().forEach(api.http.fixtures.add);
@@ -74,7 +74,7 @@ describe("app", function() {
         });
 
         describe("when a new unique user logs on", function() {
-            it.only("should increment the no. of unique users by 1", function() {
+            it("should increment the no. of unique users by 1", function() {
                 return tester
                     .start()
                     .check(function(api) {

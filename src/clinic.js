@@ -22,15 +22,9 @@ go.app = function() {
                 self.user.extra.ussd_sessions = go.utils.incr_user_extra(
                     self.user.extra.ussd_sessions, 1);
 
-                // should improve firing of state:enter metrics here in event of dial-back - currently will increase no_incomplete
-                // if (_.isUndefined(e.state)) {
-                //     console.log(e.im.state.name);
-                // }
-                
                 return Q.all([
                     self.im.contacts.save(self.user)
                 ]);
-
             });
 
             self.im.on('session:close', function(e) {
@@ -39,7 +33,7 @@ go.app = function() {
             });
 
             self.im.user.on('user:new', function(e) {
-                self.fire_users_metrics();
+                go.utils.fire_users_metrics(self.im, self.store_name, self.env, self.metric_prefix);
             });
 
             self.im.on('state:enter', function(e) {
@@ -98,41 +92,6 @@ go.app = function() {
                 });
         };
 
-        self.adjust_percentage_registrations = function() {
-            return Q.all([
-                go.utils.get_kv(self.im, [self.env, 'clinic', 'no_incomplete_registrations'].join('.')),
-                go.utils.get_kv(self.im, [self.env, 'clinic', 'no_complete_registrations'].join('.'))
-            ]).spread(function(no_incomplete, no_complete){
-                var total_attempted = no_incomplete + no_complete;
-                var percentage_incomplete = (no_incomplete / total_attempted) * 100;
-                var percentage_complete = (no_complete / total_attempted) * 100;
-                return Q.all([
-                    self.im.metrics.fire([self.env, 'clinic', 'percent_incomplete_registrations'].join('.'), percentage_incomplete),
-                    self.im.metrics.fire([self.env, 'clinic', 'percent_complete_registrations'].join('.'), percentage_complete)
-                ]);
-            });
-        };
-
-        self.fire_users_metrics = function() {
-            return Q.all([
-                go.utils.incr_kv(self.im, [self.store_name, 'unique_users'].join('.')),
-                go.utils.get_kv(self.im, [self.env, 'chw', 'unique_users'].join('.'), 0),
-                go.utils.get_kv(self.im, [self.env, 'personal', 'unique_users'].join('.'), 0)
-            ]).spread(function(clinic_users, chw_users, personal_users){
-                var total_users = clinic_users + chw_users + personal_users;
-                var clinic_percentage = (clinic_users / total_users) * 100;
-                var chw_percentage = (chw_users / total_users) * 100;
-                var personal_percentage = (personal_users / total_users) * 100;
-                return Q.all([
-                    self.im.metrics.fire.inc([self.env, 'clinic', 'sum', 'unique_users'].join('.')),
-                    self.im.metrics.fire.last([self.env, 'clinic', 'percentage_users'].join('.'), clinic_percentage),
-                    self.im.metrics.fire.last([self.env, 'chw', 'percentage_users'].join('.'), chw_percentage),
-                    self.im.metrics.fire.last([self.env, 'personal', 'percentage_users'].join('.'), personal_percentage),
-                    self.im.metrics.fire.inc([self.env, 'sum', 'unique_users'].join('.'))
-                ]);
-            });
-        };
-
         self.states.add('states:start', function(name) {
             var readable_no = go.utils.readable_sa_msisdn(self.im.user.addr);
 
@@ -165,8 +124,8 @@ go.app = function() {
                     self.contact.extra.clinic_code = content;
 
                     if (_.isUndefined(self.contact.extra.is_registered)) {
-                        self.incr_kv([self.store_name, 'no_incomplete_registrations'].join('.'));
-                        self.adjust_percentage_registrations();
+                        go.utils.incr_kv(self.im, [self.store_name, 'no_incomplete_registrations'].join('.'));
+                        go.utils.adjust_percentage_registrations(self.im, self.metric_prefix);
                     }
 
                     self.contact.extra.is_registered = 'false';
@@ -462,9 +421,9 @@ go.app = function() {
                 next: function(choice) {
                     self.contact.extra.language_choice = choice.value;
 
-                    self.incr_kv([self.store_name, 'no_complete_registrations'].join('.'));
-                    self.decr_kv([self.store_name, 'no_incomplete_registrations'].join('.'));
-                    self.adjust_percentage_registrations();
+                    go.utils.incr_kv(self.im, [self.store_name, 'no_complete_registrations'].join('.'));
+                    go.utils.decr_kv(self.im, [self.store_name, 'no_incomplete_registrations'].join('.'));
+                    go.utils.adjust_percentage_registrations(self.im, self.metric_prefix);
 
                     self.contact.extra.is_registered = 'true';
 
@@ -476,7 +435,7 @@ go.app = function() {
                         .then(function() {
                             return Q.all([
                                 self.im.metrics.fire.avg((self.metric_prefix + ".avg.sessions_to_register"),
-                                    parseInt(self.user.extra.ussd_sessions))
+                                    parseInt(self.user.extra.ussd_sessions, 10))
                             ]);
                         })
                         .then(function() {

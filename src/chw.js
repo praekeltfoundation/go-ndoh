@@ -253,13 +253,13 @@ go.app = function() {
 
         self.states.add('states:birth_year', function(name, opts) {
             var error = $('There was an error in your entry. Please ' +
-                        'carefully enter the mother\'s year of birth again (eg ' +
-                        '2001)');
+                        'carefully enter the mother\'s year of birth again ' +
+                        '(for example: 2001)');
 
             var question;
             if (!opts.retry) {
-                question = $('Please enter the year that the pregnant mother was born (eg ' +
-                    '1981)');
+                question = $('Please enter the year that the pregnant ' +
+                    'mother was born (for example: 1981)');
             } else {
                 question = error;
             }
@@ -308,13 +308,13 @@ go.app = function() {
 
         self.states.add('states:birth_day', function(name, opts) {
             var error = $('There was an error in your entry. Please ' +
-                        'carefully enter the mother\'s day of birth again (eg ' +
-                        '8)');
+                        'carefully enter the mother\'s day of birth again ' +
+                        '(for example: 8)');
 
             var question;
             if (!opts.retry) {
                 question = $('Please enter the day that the mother was born ' +
-                    '(eg 14).');
+                    '(for example: 14).');
             } else {
                 question = error;
             }

@@ -403,8 +403,8 @@ describe("app", function() {
                     .check.interaction({
                         state: 'states:birth_year',
                         reply: ('Since you don\'t have an ID or passport, ' +
-                            'please enter the year that you were born (eg ' +
-                            '1981)')
+                            'please enter the year that you were born (for ' +
+                            'example: 1981)')
                     })
                     .check(function(api) {
                         var contact = api.contacts.store[0];
@@ -454,8 +454,8 @@ describe("app", function() {
                     .check.interaction({
                         state: 'states:birth_year',
                         reply: ('There was an error in your entry. Please ' +
-                        'carefully enter your year of birth again (eg ' +
-                        '2001)')
+                        'carefully enter your year of birth again (for ' +
+                        'example: 2001)')
                     })
                     .check(function(api) {
                         var contact = api.contacts.store[0];
@@ -474,7 +474,7 @@ describe("app", function() {
                     .check.interaction({
                         state: 'states:birth_day',
                         reply: ('Please enter the day that you were born ' +
-                            '(eg 14).')
+                            '(for example: 14).')
                     })
                     .check(function(api) {
                         var contact = api.contacts.store[0];
@@ -493,8 +493,8 @@ describe("app", function() {
                     .check.interaction({
                         state: 'states:birth_day',
                         reply: ('There was an error in your entry. Please ' +
-                        'carefully enter your day of birth again (eg ' +
-                        '8)')
+                        'carefully enter your day of birth again (for ' +
+                        'example: 8)')
                     })
                     .check(function(api) {
                         var contact = api.contacts.store[0];

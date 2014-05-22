@@ -43,7 +43,8 @@ describe("app", function() {
                     jembi: {
                         username: 'foo',
                         password: 'bar',
-                        url: 'http://test/v2/'
+                        url: 'http://test/v2/',
+                        url_json: 'http://test/v2/json/'
                     }
                 })
                 .setup(function(api) {
@@ -184,11 +185,11 @@ describe("app", function() {
         });
 
         describe("after the user enters their ID number after '50", function() {
-            it("should set their ID no, extract their DOB, thank them and exit", function() {
+            it.only("should set their ID no, extract their DOB, thank them and exit", function() {
                 return tester
                     .setup(function(api) {
                         api.contacts.add({
-                            msisdn: '+27001',
+                            msisdn: '+270001',
                             extra : {
                                 language_choice: 'en',
                                 suspect_pregnancy: 'yes',
@@ -196,7 +197,7 @@ describe("app", function() {
                             }
                         });
                     })
-                    .setup.user.addr('+27001')
+                    .setup.user.addr('+270001')
                     .setup.user.state('states:sa_id')
                     .input('5101015009088')
                     .check.interaction({

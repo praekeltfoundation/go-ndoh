@@ -9,6 +9,7 @@ var utils = vumigo.utils;
 var libxml = require('libxmljs');
 var crypto = require('crypto');
 var HttpApi = vumigo.http.api.HttpApi;
+var JsonApi = vumigo.http.api.JsonApi;
 
 // override moment default century switch at '68 with '49
 moment.parseTwoDigitYear = function (input) {
@@ -179,6 +180,15 @@ go.utils = {
           }
         }[contact.extra.id_type];
         return formatter();
+    },
+
+    get_subscription_type: function(type){
+      var types = {
+        "subscription": 1,
+        "pre-registration": 2, 
+        "registration": 3
+      };
+      return types[type];
     },
 
     build_metadata: function(cda_docstr, contact) {
@@ -376,6 +386,17 @@ go.utils = {
         ]);
     },
 
+    build_json_doc: function(contact, user) {
+        var JSON_template = go.utils.get_JSON_template();
+        JSON_template.cmsisdn = contact.msisdn;
+        JSON_template.dmsisdn = user.msisdn;
+        JSON_template.id = go.utils.get_patient_id(contact);
+        JSON_template.type = go.utils.get_subscription_type("subscription");
+        JSON_template.lang = contact.extra.language_choice;
+        JSON_template.encdate = go.utils.get_timestamp().toString().slice(0, 8);
+        return JSON_template;
+    },
+
     jembi_api_call: function (doc, contact, im) {
         var http = new HttpApi(im, {
           auth: {
@@ -389,6 +410,32 @@ go.utils = {
             'Content-Type': ['multipart/form-data; boundary=yolo']
           }
         });
+    },
+
+    jembi_json_api_call: function (json_doc, im) {
+        var http = new JsonApi(im, {
+          auth: {
+            username: im.config.jembi.username,
+            password: im.config.jembi.password
+          }
+        });
+        return http.post(im.config.jembi.url_json, {
+          data: JSON.stringify(json_doc)
+        });
+    },
+
+    get_JSON_template: function() {
+      var JSON_template = { 
+        "mha": 1, 
+        "swt": 1, 
+        "dmsisdn": "", 
+        "cmsisdn": "", 
+        "id": "", 
+        "type": 0, 
+        "lang": "", 
+        "encdate": "" 
+      };
+      return JSON_template;
     },
 
     get_CDA_template: function () {
@@ -856,7 +903,7 @@ go.app = function() {
                         .then(function() {
                             return Q.all([
                                 self.im.metrics.fire.avg((self.metric_prefix + ".avg.sessions_to_register"),
-                                    parseInt(self.contact.extra.ussd_sessions))
+                                    parseInt(self.contact.extra.ussd_sessions, 10))
                             ]);
                         })
                         .then(function() {
@@ -879,7 +926,23 @@ go.app = function() {
                         'MomConnect. Visit your nearest clinic to get ' +
                         'the full set of messages.'),
 
-                next: 'states:start'
+                next: 'states:start',
+                events: {
+                    'state:enter': function() {
+                        var built_json = go.utils.build_json_doc(self.contact, self.contact);
+                        return go.utils.jembi_json_api_call(built_json, self.im)
+                            .then(function(result) {
+                                if (result.code >= 200 && result.code < 300){
+                                    // TODO: Log metric
+                                    // console.log('end_success');
+                                } else {
+                                    // TODO: Log metric
+                                    // console.log('error');
+                                }
+                                return true;
+                            });
+                    }
+                }
             });
         });
 

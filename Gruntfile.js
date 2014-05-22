@@ -50,30 +50,31 @@ module.exports = function (grunt) {
                 optout: 'go-app-optout.js'
             },
             test: {
-                clinic: [
-                    'test/setup.js',
-                    'src/utils.js',
-                    '<%= paths.src.app.clinic %>',
-                    'test/clinic.test.js'
-                ],
-                chw: [
-                    'test/setup.js',
-                    'src/utils.js',
-                    '<%= paths.src.app.chw %>',
-                    'test/chw.test.js'
-                ],
+                // clinic: [
+                //     'test/setup.js',
+                //     'src/utils.js',
+                //     '<%= paths.src.app.clinic %>',
+                //     'test/clinic.test.js'
+                // ],
+                // chw: [
+                //     'test/setup.js',
+                //     'src/utils.js',
+                //     '<%= paths.src.app.chw %>',
+                //     'test/chw.test.js'
+                // ],
                 personal: [
                     'test/setup.js',
                     'src/utils.js',
                     '<%= paths.src.app.personal %>',
                     'test/personal.test.js'
-                ],
-                optout: [
-                    'test/setup.js',
-                    'src/utils.js',
-                    '<%= paths.src.app.optout %>',
-                    'test/optout.test.js'
                 ]
+                // ,
+                // optout: [
+                //     'test/setup.js',
+                //     'src/utils.js',
+                //     '<%= paths.src.app.optout %>',
+                //     'test/optout.test.js'
+                // ]
             }
         },
 
@@ -115,18 +116,18 @@ module.exports = function (grunt) {
             options: {
                 reporter: 'spec'
             },
-            test_clinic: {
-                src: ['<%= paths.test.clinic %>']
-            },
-            test_chw: {
-                src: ['<%= paths.test.chw %>']
-            },
+            // test_clinic: {
+            //     src: ['<%= paths.test.clinic %>']
+            // },
+            // test_chw: {
+            //     src: ['<%= paths.test.chw %>']
+            // },
             test_personal: {
                 src: ['<%= paths.test.personal %>']
             },
-            test_optout: {
-                src: ['<%= paths.test.optout %>']
-            }
+            // test_optout: {
+            //     src: ['<%= paths.test.optout %>']
+            // }
         }
     });
 

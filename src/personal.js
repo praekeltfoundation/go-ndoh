@@ -329,7 +329,7 @@ go.app = function() {
                         .then(function() {
                             return Q.all([
                                 self.im.metrics.fire.avg((self.metric_prefix + ".avg.sessions_to_register"),
-                                    parseInt(self.contact.extra.ussd_sessions))
+                                    parseInt(self.contact.extra.ussd_sessions, 10))
                             ]);
                         })
                         .then(function() {
@@ -352,7 +352,23 @@ go.app = function() {
                         'MomConnect. Visit your nearest clinic to get ' +
                         'the full set of messages.'),
 
-                next: 'states:start'
+                next: 'states:start',
+                events: {
+                    'state:enter': function() {
+                        var built_json = go.utils.build_json_doc(self.contact, self.contact);
+                        return go.utils.jembi_json_api_call(built_json, self.im)
+                            .then(function(result) {
+                                if (result.code >= 200 && result.code < 300){
+                                    // TODO: Log metric
+                                    // console.log('end_success');
+                                } else {
+                                    // TODO: Log metric
+                                    // console.log('error');
+                                }
+                                return true;
+                            });
+                    }
+                }
             });
         });
 

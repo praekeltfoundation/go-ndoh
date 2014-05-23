@@ -26,6 +26,7 @@ describe("app", function() {
                 .setup.config.app({
                     name: 'personal',
                     testing: 'true',
+                    env: 'test',
                     metric_store: 'test_metric_store',
                     endpoints: {
                         "sms": {"delivery_class": "sms"}
@@ -38,11 +39,11 @@ describe("app", function() {
                     });
                 })
                 .setup(function(api) {
-                    api.kv.store['clinic.unique_users'] = 0;
-                    api.kv.store['chw.unique_users'] = 0;
-                    api.kv.store['personal.unique_users'] = 0;
-                    api.kv.store['personal.no_complete_registrations'] = 2;
-                    api.kv.store['personal.no_incomplete_registrations'] = 2;
+                    api.kv.store['test.clinic.unique_users'] = 0;
+                    api.kv.store['test.chw.unique_users'] = 0;
+                    api.kv.store['test.personal.unique_users'] = 0;
+                    api.kv.store['test.personal.no_complete_registrations'] = 2;
+                    api.kv.store['test.personal.no_incomplete_registrations'] = 2;
                 })
                 .setup(function(api) {
                     fixtures().forEach(api.http.fixtures.add);
@@ -101,7 +102,7 @@ describe("app", function() {
                         .start()
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
-                            assert.deepEqual(metrics['personal.states:start.no_incomplete'].values, [1, 0]);
+                            assert.deepEqual(metrics['test.personal.states:start.no_incomplete'].values, [1, 0]);
                         })
                         .run();
                 });
@@ -153,9 +154,9 @@ describe("app", function() {
                     .start()
                     .check(function(api) {
                         var metrics = api.metrics.stores.test_metric_store;
-                        assert.deepEqual(metrics['personal.sum.unique_users'].values, [1]);
-                        assert.deepEqual(metrics['personal.percentage_users'].values, [100]);
-                        assert.deepEqual(metrics['sum.unique_users'].values, [1]);
+                        assert.deepEqual(metrics['test.personal.sum.unique_users'].values, [1]);
+                        assert.deepEqual(metrics['test.personal.percentage_users'].values, [100]);
+                        assert.deepEqual(metrics['test.sum.unique_users'].values, [1]);
                     }).run();
             });
         });
@@ -215,8 +216,8 @@ describe("app", function() {
                     })
                     .check(function(api) {
                         var metrics = api.metrics.stores.test_metric_store;
-                        assert.deepEqual(metrics['personal.percent_incomplete_registrations'].values, [60]);
-                        assert.deepEqual(metrics['personal.percent_complete_registrations'].values, [40]);
+                        assert.deepEqual(metrics['test.personal.percent_incomplete_registrations'].values, [60]);
+                        assert.deepEqual(metrics['test.personal.percent_complete_registrations'].values, [40]);
                     })
                     .run();
             });
@@ -577,9 +578,9 @@ describe("app", function() {
                     })
                     .check(function(api) {
                         var metrics = api.metrics.stores.test_metric_store;
-                        assert.deepEqual(metrics['personal.avg.sessions_to_register'].values, [5]);
-                        assert.deepEqual(metrics['personal.percent_incomplete_registrations'].values, [25]);
-                        assert.deepEqual(metrics['personal.percent_complete_registrations'].values, [75]);
+                        assert.deepEqual(metrics['test.personal.avg.sessions_to_register'].values, [5]);
+                        assert.deepEqual(metrics['test.personal.percent_incomplete_registrations'].values, [25]);
+                        assert.deepEqual(metrics['test.personal.percent_complete_registrations'].values, [75]);
                     })
                     .check.reply.ends_session()
                     .run();

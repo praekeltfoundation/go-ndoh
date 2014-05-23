@@ -4,6 +4,7 @@ go;
 var _ = require('lodash');
 var moment = require('moment');
 var vumigo = require('vumigo_v02');
+var Q = require('q');
 var Choice = vumigo.states.Choice;
 
 // override moment default century switch at '68 with '49
@@ -117,12 +118,79 @@ go.utils = {
         if (_.isUndefined(data_to_increment)) {
             new_data_amount = 1;
         } else {
-            new_data_amount = parseInt(data_to_increment) + amount_to_increment;
+            new_data_amount = parseInt(data_to_increment, 10) + amount_to_increment;
         }
         return new_data_amount.toString();
     },
 
+    incr_kv: function(im, name) {
+        return im.api_request('kv.incr', {key: name, amount: 1})
+            .then(function(result){
+                return result.value;
+            });
+    },
+
+    decr_kv: function(im, name) {
+        return im.api_request('kv.incr', {key: name, amount: -1})
+            .then(function(result){
+                return result.value;
+            });
+    },
+
+    set_kv: function(im, name, value) {
+        return im.api_request('kv.set',  {key: name, value: value})
+            .then(function(result){
+                return result.value;
+            });
+    },
+
+    get_kv: function(im, name, default_value) {
+        // returns the default if null/undefined
+        return im.api_request('kv.get',  {key: name})
+            .then(function(result){
+                if(result.value === null) return default_value;
+                return result.value;
+            });
+    },
+
+    adjust_percentage_registrations: function(im, metric_prefix) {
+        return Q.all([
+            go.utils.get_kv(im, [metric_prefix, 'no_incomplete_registrations'].join('.'), 0),
+            go.utils.get_kv(im, [metric_prefix, 'no_complete_registrations'].join('.'), 0)
+        ]).spread(function(no_incomplete, no_complete) {
+            var total_attempted = no_incomplete + no_complete;
+            var percentage_incomplete = (no_incomplete / total_attempted) * 100;
+            var percentage_complete = (no_complete / total_attempted) * 100;
+            return Q.all([
+                im.metrics.fire([metric_prefix, 'percent_incomplete_registrations'].join('.'), percentage_incomplete),
+                im.metrics.fire([metric_prefix, 'percent_complete_registrations'].join('.'), percentage_complete)
+            ]);
+        });
+    },
+
+    fire_users_metrics: function(im, store_name, env, metric_prefix) {
+        return Q.all([
+            go.utils.incr_kv(im, [store_name, 'unique_users'].join('.')),
+            go.utils.get_kv(im, [env, 'clinic', 'unique_users'].join('.'), 0),
+            go.utils.get_kv(im, [env, 'chw', 'unique_users'].join('.'), 0),
+            go.utils.get_kv(im, [env, 'personal', 'unique_users'].join('.'), 0)
+        ]).spread(function(placeholder, clinic_users, chw_users, personal_users) {
+            var total_users = clinic_users + chw_users + personal_users;
+            var clinic_percentage = (clinic_users / total_users) * 100;
+            var chw_percentage = (chw_users / total_users) * 100;
+            var personal_percentage = (personal_users / total_users) * 100;
+            return Q.all([
+                im.metrics.fire.inc([metric_prefix, 'sum', 'unique_users'].join('.')),
+                im.metrics.fire.last([env, 'clinic', 'percentage_users'].join('.'), clinic_percentage),
+                im.metrics.fire.last([env, 'chw', 'percentage_users'].join('.'), chw_percentage),
+                im.metrics.fire.last([env, 'personal', 'percentage_users'].join('.'), personal_percentage),
+                im.metrics.fire.inc([env, 'sum', 'unique_users'].join('.'))
+            ]);
+        });
+    },
+
 };
+
 go.app = function() {
     var vumigo = require('vumigo_v02');
     var App = vumigo.App;

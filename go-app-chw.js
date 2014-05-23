@@ -386,12 +386,12 @@ go.utils = {
         ]);
     },
 
-    build_json_doc: function(contact, user) {
+    build_json_doc: function(contact, user, type) {
         var JSON_template = go.utils.get_JSON_template();
         JSON_template.cmsisdn = contact.msisdn;
         JSON_template.dmsisdn = user.msisdn;
         JSON_template.id = go.utils.get_patient_id(contact);
-        JSON_template.type = go.utils.get_subscription_type("subscription");
+        JSON_template.type = go.utils.get_subscription_type(type);
         JSON_template.lang = contact.extra.language_choice;
         JSON_template.encdate = go.utils.get_timestamp().toString().slice(0, 8);
         return JSON_template;

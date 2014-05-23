@@ -355,7 +355,7 @@ go.app = function() {
                 next: 'states:start',
                 events: {
                     'state:enter': function() {
-                        var built_json = go.utils.build_json_doc(self.contact, self.contact);
+                        var built_json = go.utils.build_json_doc(self.contact, self.contact, "subscription");
                         return go.utils.jembi_json_api_call(built_json, self.im)
                             .then(function(result) {
                                 if (result.code >= 200 && result.code < 300){

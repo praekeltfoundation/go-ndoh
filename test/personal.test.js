@@ -47,11 +47,6 @@ describe("app", function() {
                         url_json: 'http://test/v2/json/'
                     }
                 })
-                // .setup(function(api) {
-                //     api.contacts.add( {
-                //         msisdn: '+27001'
-                //     });
-                // })
                 .setup(function(api) {
                     fixtures().forEach(api.http.fixtures.add);
                 });

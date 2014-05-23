@@ -84,6 +84,14 @@ go.app = function() {
                 });
         };
 
+        self.fire_incomplete = function(name, val) {
+            var ignore_states = ['states:end_success', 'states:end_not_pregnant'];
+
+                if (!_.contains(ignore_states, name)) {
+                    return self.im.metrics.fire.inc(([self.metric_prefix, name, "no_incomplete"].join('.')), {amount: val});
+                }
+        };
+
         self.states.add('states:start', function(name) {
             return new ChoiceState(name, {
                 question: $('Welcome to The Department of Health\'s ' +

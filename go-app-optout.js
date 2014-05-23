@@ -68,7 +68,7 @@ go.utils = {
     },
 
     check_number_in_range: function(input, start, end){
-        return go.utils.check_valid_number(input) && (parseInt(input) >= start) && (parseInt(input) <= end);
+        return go.utils.check_valid_number(input) && (parseInt(input, 10) >= start) && (parseInt(input, 10) <= end);
     },
 
     validate_id_sa: function(id) {

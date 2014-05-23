@@ -60,7 +60,7 @@ describe("app", function() {
                         .input.session_event('close')
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
-                            assert.deepEqual(metrics['personal.states:start.no_incomplete'].values, [1]);
+                            assert.deepEqual(metrics['test.personal.states:start.no_incomplete'].values, [1]);
                         })
                         .run();
                 });
@@ -73,7 +73,7 @@ describe("app", function() {
                         .input.session_event('close')
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
-                            assert.deepEqual(metrics['personal.states:birth_day.no_incomplete'].values, [1]);
+                            assert.deepEqual(metrics['test.personal.states:birth_day.no_incomplete'].values, [1]);
                         })
                         .run();
                 });
@@ -115,7 +115,7 @@ describe("app", function() {
                         .start()
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
-                            assert.deepEqual(metrics['personal.states:start.no_incomplete'].values, [-1]);
+                            assert.deepEqual(metrics['test.personal.states:start.no_incomplete'].values, [-1]);
                         })
                         .run();
                 });
@@ -127,7 +127,7 @@ describe("app", function() {
                         .setup.user.state('states:birth_day')
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
-                            assert.deepEqual(metrics['personal.states:birth_day.no_incomplete'].values, [-1]);
+                            assert.deepEqual(metrics['test.personal.states:birth_day.no_incomplete'].values, [-1]);
                         })
                         .run();
                 });
@@ -187,7 +187,7 @@ describe("app", function() {
                     })
                     .check(function(api) {
                         var metrics = api.metrics.stores.test_metric_store;
-                        assert.deepEqual(metrics['sum.sessions'].values, [1]);
+                        assert.deepEqual(metrics['test.sum.sessions'].values, [1]);
                     })
                     .run();
             });

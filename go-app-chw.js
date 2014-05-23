@@ -68,7 +68,7 @@ go.utils = {
     },
 
     check_number_in_range: function(input, start, end){
-        return go.utils.check_valid_number(input) && (parseInt(input) >= start) && (parseInt(input) <= end);
+        return go.utils.check_valid_number(input) && (parseInt(input, 10) >= start) && (parseInt(input, 10) <= end);
     },
 
     validate_id_sa: function(id) {
@@ -218,7 +218,7 @@ go.app = function() {
 
                 return Q.all([
                     self.im.contacts.save(self.user),
-                    self.im.metrics.fire.inc('sum.sessions', 1),
+                    self.im.metrics.fire.inc([self.env, 'sum.sessions'].join('.'), 1),
                     self.fire_incomplete(e.im.state.name, -1)
                 ]);
             });
@@ -231,14 +231,10 @@ go.app = function() {
             });
 
             self.im.user.on('user:new', function(e) {
-<<<<<<< HEAD
                 return Q.all([
-                    self.fire_users_metrics(),
+                    go.utils.fire_users_metrics(self.im, self.store_name, self.env, self.metric_prefix),
                     self.fire_incomplete('states:start', 1)
                 ]);
-=======
-                go.utils.fire_users_metrics(self.im, self.store_name, self.env, self.metric_prefix);
->>>>>>> feature/issue-27-v2-metrics-usage
             });
 
             self.im.on('state:enter', function(e) {
@@ -291,56 +287,6 @@ go.app = function() {
                 });
         };
 
-<<<<<<< HEAD
-        self.incr_kv = function(name) {
-            return self.im.api.kv.incr(name, 1);
-        };
-
-        self.decr_kv = function(name) {
-            return self.im.api.kv.incr(name, -1);
-        };
-
-        self.get_kv = function(name) {
-            return self.im.api.kv.store[name];
-        };
-
-        self.adjust_percentage_registrations = function() {
-            var no_incomplete = self.get_kv([self.store_name, 'no_incomplete_registrations'].join('.'));
-            var no_complete = self.get_kv([self.store_name, 'no_complete_registrations'].join('.'));
-
-            var total_attempted = no_incomplete + no_complete;
-
-            var percentage_incomplete = (no_incomplete / total_attempted) * 100;
-            var percentage_complete = (no_complete / total_attempted) * 100;
-
-            return Q.all([
-                self.im.metrics.fire((self.metric_prefix + '.percent_incomplete_registrations'), percentage_incomplete),
-                self.im.metrics.fire((self.metric_prefix + '.percent_complete_registrations'), percentage_complete)
-            ]);
-        };
-
-        self.fire_users_metrics = function() {
-            self.incr_kv([self.store_name, 'unique_users'].join('.'));
-
-            var clinic_users = self.get_kv('clinic.unique_users');
-            var chw_users = self.get_kv('chw.unique_users');
-            var personal_users = self.get_kv('personal.unique_users');
-
-            var total_users = clinic_users + chw_users + personal_users;
-
-            var clinic_percentage = (clinic_users / total_users) * 100;
-            var chw_percentage = (chw_users / total_users) * 100;
-            var personal_percentage = (personal_users / total_users) * 100;
-
-            return Q.all([
-                self.im.metrics.fire.inc((self.metric_prefix + ".sum.unique_users"), 1),
-                self.im.metrics.fire('clinic.percentage_users', clinic_percentage),
-                self.im.metrics.fire('chw.percentage_users', chw_percentage),
-                self.im.metrics.fire('personal.percentage_users', personal_percentage),
-                self.im.metrics.fire.inc(("sum.unique_users"))
-            ]);
-        };
-
         self.fire_incomplete = function(name, val) {
             var ignore_states = ['states:end_success'];
 
@@ -349,8 +295,6 @@ go.app = function() {
                 }
         };
 
-=======
->>>>>>> feature/issue-27-v2-metrics-usage
         self.states.add('states:start', function(name) {
             var readable_no = go.utils.readable_sa_msisdn(self.im.user.addr);
 

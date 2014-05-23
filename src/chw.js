@@ -25,7 +25,7 @@ go.app = function() {
 
                 return Q.all([
                     self.im.contacts.save(self.user),
-                    self.im.metrics.fire.inc('sum.sessions', 1),
+                    self.im.metrics.fire.inc([self.env, 'sum.sessions'].join('.'), 1),
                     self.fire_incomplete(e.im.state.name, -1)
                 ]);
             });

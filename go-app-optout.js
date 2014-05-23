@@ -420,7 +420,7 @@ go.utils = {
           }
         });
         return http.post(im.config.jembi.url_json, {
-          data: JSON.stringify(json_doc)
+          data: json_doc
         });
     },
 

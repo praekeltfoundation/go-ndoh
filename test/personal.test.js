@@ -47,11 +47,11 @@ describe("app", function() {
                         url_json: 'http://test/v2/json/'
                     }
                 })
-                .setup(function(api) {
-                    api.contacts.add( {
-                        msisdn: '+27001'
-                    });
-                })
+                // .setup(function(api) {
+                //     api.contacts.add( {
+                //         msisdn: '+27001'
+                //     });
+                // })
                 .setup(function(api) {
                     fixtures().forEach(api.http.fixtures.add);
                 });
@@ -185,11 +185,11 @@ describe("app", function() {
         });
 
         describe("after the user enters their ID number after '50", function() {
-            it.only("should set their ID no, extract their DOB, thank them and exit", function() {
+            it("should set their ID no, extract their DOB, thank them and exit", function() {
                 return tester
                     .setup(function(api) {
                         api.contacts.add({
-                            msisdn: '+270001',
+                            msisdn: '+27001',
                             extra : {
                                 language_choice: 'en',
                                 suspect_pregnancy: 'yes',
@@ -197,7 +197,7 @@ describe("app", function() {
                             }
                         });
                     })
-                    .setup.user.addr('+270001')
+                    .setup.user.addr('+27001')
                     .setup.user.state('states:sa_id')
                     .input('5101015009088')
                     .check.interaction({
@@ -376,6 +376,17 @@ describe("app", function() {
         describe("after the user enters their passport number", function() {
             it("should set their passport number, thank them and exit", function() {
                 return tester
+                    .setup(function(api) {
+                        api.contacts.add({
+                            msisdn: '+27001',
+                            extra : {
+                                language_choice: 'en',
+                                suspect_pregnancy: 'yes',
+                                id_type: 'passport',
+                                passport_origin: 'zw'
+                            }
+                        });
+                    })
                     .setup.user.addr('+27001')
                     .setup.user.state('states:passport_no')
                     .input('12345')

@@ -387,13 +387,16 @@ go.utils = {
     },
 
     build_json_doc: function(contact, user, type) {
-        var JSON_template = go.utils.get_JSON_template();
-        JSON_template.cmsisdn = contact.msisdn;
-        JSON_template.dmsisdn = user.msisdn;
-        JSON_template.id = go.utils.get_patient_id(contact);
-        JSON_template.type = go.utils.get_subscription_type(type);
-        JSON_template.lang = contact.extra.language_choice;
-        JSON_template.encdate = go.utils.get_timestamp();
+        var JSON_template = { 
+          "mha": 1, 
+          "swt": 1, 
+          "dmsisdn": user.msisdn, 
+          "cmsisdn": contact.msisdn, 
+          "id": go.utils.get_patient_id(contact), 
+          "type": go.utils.get_subscription_type(type), 
+          "lang": contact.extra.language_choice, 
+          "encdate": go.utils.get_timestamp() 
+        };
         return JSON_template;
     },
 
@@ -422,20 +425,6 @@ go.utils = {
         return http.post(im.config.jembi.url_json, {
           data: json_doc
         });
-    },
-
-    get_JSON_template: function() {
-      var JSON_template = { 
-        "mha": 1, 
-        "swt": 1, 
-        "dmsisdn": "", 
-        "cmsisdn": "", 
-        "id": "", 
-        "type": 0, 
-        "lang": "", 
-        "encdate": "" 
-      };
-      return JSON_template;
     },
 
     get_CDA_template: function () {

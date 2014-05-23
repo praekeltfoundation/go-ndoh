@@ -325,7 +325,7 @@ module.exports = function() {
                 "id": "5101015009088^^^ZAF^NI",
                 "type": 1,
                 "lang": "en",
-                "encdate": "20130819"
+                "encdate": "20130819144811"
             },
         },
         'response': {
@@ -351,7 +351,7 @@ module.exports = function() {
                 "id": "5101025009086^^^ZAF^NI",
                 "type": 1,
                 "lang": "en",
-                "encdate": "20130819"
+                "encdate": "20130819144811"
             },
         },
         'response': {
@@ -377,7 +377,7 @@ module.exports = function() {
                 "id": "12345^^^ZW^FI",
                 "type": 1,
                 "lang": "en",
-                "encdate": "20130819"
+                "encdate": "20130819144811"
             },
         },
         'response': {
@@ -403,7 +403,7 @@ module.exports = function() {
                 "id": "2012315678097^^^ZAF^NI",
                 "type": 1,
                 "lang": "en",
-                "encdate": "20130819"
+                "encdate": "20130819144811"
             },
         },
         'response': {
@@ -429,7 +429,7 @@ module.exports = function() {
                 "id": "5002285000007^^^ZAF^NI",
                 "type": 1,
                 "lang": "en",
-                "encdate": "20130819"
+                "encdate": "20130819144811"
             },
         },
         'response': {
@@ -455,7 +455,7 @@ module.exports = function() {
                 "id": "5101025009086^^^ZAF^NI",
                 "type": 3,
                 "lang": "en",
-                "encdate": "20130819"
+                "encdate": "20130819144811"
             },
         },
         'response': {
@@ -481,7 +481,7 @@ module.exports = function() {
                 "id": "5101025009086^^^ZAF^NI",
                 "type": 3,
                 "lang": "en",
-                "encdate": "20130819"
+                "encdate": "20130819144811"
             },
         },
         'response': {
@@ -507,7 +507,7 @@ module.exports = function() {
                 "id": "12345^^^ZW^FI",
                 "type": 2,
                 "lang": "en",
-                "encdate": "20130819"
+                "encdate": "20130819144811"
             },
         },
         'response': {
@@ -533,7 +533,7 @@ module.exports = function() {
                 "id": "12345^^^ZW^FI",
                 "type": 2,
                 "lang": "en",
-                "encdate": "20130819"
+                "encdate": "20130819144811"
             },
         },
         'response': {

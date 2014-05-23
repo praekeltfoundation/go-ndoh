@@ -390,7 +390,7 @@ go.utils = {
         JSON_template.id = go.utils.get_patient_id(contact);
         JSON_template.type = go.utils.get_subscription_type(type);
         JSON_template.lang = contact.extra.language_choice;
-        JSON_template.encdate = go.utils.get_timestamp().toString().slice(0, 8);
+        JSON_template.encdate = go.utils.get_timestamp();
         return JSON_template;
     },
 

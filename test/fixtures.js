@@ -313,19 +313,20 @@ module.exports = function() {
         'request': {
             'method': 'POST',
             'headers': {
-                'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')]
+                'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
+                'Content-Type': ['application/json']
             },
             'url': 'http://test/v2/json/',
-            'body': ['{',
-                '"mha":1,',
-                '"swt":1,',
-                '"dmsisdn":"+27001",',
-                '"cmsisdn":"+27001",',
-                '"id":"5101015009088^^^ZAF^NI",',
-                '"type":1,',
-                '"lang":"en",',
-                '"encdate":"20130819"',
-            '}'].join(''),
+            'data': {
+                "mha": 1,
+                "swt": 1,
+                "dmsisdn": "+27001",
+                "cmsisdn": "+27001",
+                "id": "5101015009088^^^ZAF^NI",
+                "type": 1,
+                "lang": "en",
+                "encdate": "20130819"
+            },
         },
         'response': {
             "code": 200,
@@ -338,19 +339,20 @@ module.exports = function() {
         'request': {
             'method': 'POST',
             'headers': {
-                'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')]
+                'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
+                'Content-Type': ['application/json']
             },
             'url': 'http://test/v2/json/',
-            'body': ['{',
-                '"mha":1,',
-                '"swt":1,',
-                '"dmsisdn":"+27001",',
-                '"cmsisdn":"+27001",',
-                '"id":"5101025009086^^^ZAF^NI",',
-                '"type":1,',
-                '"lang":"en",',
-                '"encdate":"20130819"',
-            '}'].join(''),
+            'data': {
+                "mha": 1,
+                "swt": 1,
+                "dmsisdn": "+27001",
+                "cmsisdn": "+27001",
+                "id": "5101025009086^^^ZAF^NI",
+                "type": 1,
+                "lang": "en",
+                "encdate": "20130819"
+            },
         },
         'response': {
             "code": 200,
@@ -363,19 +365,20 @@ module.exports = function() {
         'request': {
             'method': 'POST',
             'headers': {
-                'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')]
+                'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
+                'Content-Type': ['application/json']
             },
             'url': 'http://test/v2/json/',
-            'body': ['{',
-                '"mha":1,',
-                '"swt":1,',
-                '"dmsisdn":"+27001",',
-                '"cmsisdn":"+27001",',
-                '"id":"12345^^^ZW^FI",',
-                '"type":1,',
-                '"lang":"en",',
-                '"encdate":"20130819"',
-            '}'].join(''),
+            'data': {
+                "mha": 1,
+                "swt": 1,
+                "dmsisdn": "+27001",
+                "cmsisdn": "+27001",
+                "id": "12345^^^ZW^FI",
+                "type": 1,
+                "lang": "en",
+                "encdate": "20130819"
+            },
         },
         'response': {
             "code": 200,
@@ -388,19 +391,20 @@ module.exports = function() {
         'request': {
             'method': 'POST',
             'headers': {
-                'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')]
+                'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
+                'Content-Type': ['application/json']
             },
             'url': 'http://test/v2/json/',
-            'body': ['{',
-                '"mha":1,',
-                '"swt":1,',
-                '"dmsisdn":"+27001",',
-                '"cmsisdn":"+27001",',
-                '"id":"2012315678097^^^ZAF^NI",',
-                '"type":1,',
-                '"lang":"en",',
-                '"encdate":"20130819"',
-            '}'].join(''),
+            'data': {
+                "mha": 1,
+                "swt": 1,
+                "dmsisdn": "+27001",
+                "cmsisdn": "+27001",
+                "id": "2012315678097^^^ZAF^NI",
+                "type": 1,
+                "lang": "en",
+                "encdate": "20130819"
+            },
         },
         'response': {
             "code": 200,
@@ -413,19 +417,20 @@ module.exports = function() {
         'request': {
             'method': 'POST',
             'headers': {
-                'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')]
+                'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
+                'Content-Type': ['application/json']
             },
             'url': 'http://test/v2/json/',
-            'body': ['{',
-                '"mha":1,',
-                '"swt":1,',
-                '"dmsisdn":"+27001",',
-                '"cmsisdn":"+27001",',
-                '"id":"5002285000007^^^ZAF^NI",',
-                '"type":1,',
-                '"lang":"en",',
-                '"encdate":"20130819"',
-            '}'].join(''),
+            'data': {
+                "mha": 1,
+                "swt": 1,
+                "dmsisdn": "+27001",
+                "cmsisdn": "+27001",
+                "id": "5002285000007^^^ZAF^NI",
+                "type": 1,
+                "lang": "en",
+                "encdate": "20130819"
+            },
         },
         'response': {
             "code": 200,

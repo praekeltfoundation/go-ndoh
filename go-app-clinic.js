@@ -1016,17 +1016,27 @@ go.app = function() {
                 events: {
                     'state:enter': function() {
                         var built_doc = go.utils.build_cda_doc(self.contact, self.user);
-                        return go.utils.jembi_api_call(built_doc, self.contact, self.im)
-                            .then(function(result) {
-                                if (result.code >= 200 && result.code < 300){
-                                    // TODO: Log metric
-                                    // console.log('end_success');
-                                } else {
-                                    // TODO: Log metric
-                                    // console.log('error');
-                                }
-                                return true;
-                            });
+                        var built_json = go.utils.build_json_doc(self.contact, self.user, "registration");
+                        return Q.all([
+                            go.utils.jembi_api_call(built_doc, self.contact, self.im),
+                            go.utils.jembi_json_api_call(built_json, self.im)
+                        ]).spread(function(doc_result, json_result) {
+                            if (doc_result.code >= 200 && doc_result.code < 300){
+                                // TODO: Log metric
+                                // console.log('end_success');
+                            } else {
+                                // TODO: Log metric
+                                // console.log('error');
+                            }
+                            if (json_result.code >= 200 && json_result.code < 300){
+                                // TODO: Log metric
+                                // console.log('end_success');
+
+                            } else {
+                                // TODO: Log metric
+                                // console.log('error');
+                            }
+                        });
                     }
                 }
 

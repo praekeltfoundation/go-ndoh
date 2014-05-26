@@ -307,5 +307,240 @@ module.exports = function() {
         'response': {
             'body': ''
         }
+    },
+    // PERSONAL SUBSCRIPTION
+    {
+        'request': {
+            'method': 'POST',
+            'headers': {
+                'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
+                'Content-Type': ['application/json']
+            },
+            'url': 'http://test/v2/json/',
+            'data': {
+                "mha": 1,
+                "swt": 1,
+                "dmsisdn": "+27001",
+                "cmsisdn": "+27001",
+                "id": "5101015009088^^^ZAF^NI",
+                "type": 1,
+                "lang": "en",
+                "encdate": "20130819144811"
+            },
+        },
+        'response': {
+            "code": 200,
+            "data": {
+                "success": "true"
+            }
+        }
+    },
+    {
+        'request': {
+            'method': 'POST',
+            'headers': {
+                'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
+                'Content-Type': ['application/json']
+            },
+            'url': 'http://test/v2/json/',
+            'data': {
+                "mha": 1,
+                "swt": 1,
+                "dmsisdn": "+27001",
+                "cmsisdn": "+27001",
+                "id": "5101025009086^^^ZAF^NI",
+                "type": 1,
+                "lang": "en",
+                "encdate": "20130819144811"
+            },
+        },
+        'response': {
+            "code": 200,
+            "data": {
+                "success": "true"
+            }
+        }
+    },
+    {
+        'request': {
+            'method': 'POST',
+            'headers': {
+                'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
+                'Content-Type': ['application/json']
+            },
+            'url': 'http://test/v2/json/',
+            'data': {
+                "mha": 1,
+                "swt": 1,
+                "dmsisdn": "+27001",
+                "cmsisdn": "+27001",
+                "id": "12345^^^ZW^FI",
+                "type": 1,
+                "lang": "en",
+                "encdate": "20130819144811"
+            },
+        },
+        'response': {
+            "code": 200,
+            "data": {
+                "success": "true"
+            }
+        }
+    },
+    {
+        'request': {
+            'method': 'POST',
+            'headers': {
+                'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
+                'Content-Type': ['application/json']
+            },
+            'url': 'http://test/v2/json/',
+            'data': {
+                "mha": 1,
+                "swt": 1,
+                "dmsisdn": "+27001",
+                "cmsisdn": "+27001",
+                "id": "2012315678097^^^ZAF^NI",
+                "type": 1,
+                "lang": "en",
+                "encdate": "20130819144811"
+            },
+        },
+        'response': {
+            "code": 200,
+            "data": {
+                "success": "true"
+            }
+        }
+    },
+    {
+        'request': {
+            'method': 'POST',
+            'headers': {
+                'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
+                'Content-Type': ['application/json']
+            },
+            'url': 'http://test/v2/json/',
+            'data': {
+                "mha": 1,
+                "swt": 1,
+                "dmsisdn": "+27001",
+                "cmsisdn": "+27001",
+                "id": "5002285000007^^^ZAF^NI",
+                "type": 1,
+                "lang": "en",
+                "encdate": "20130819144811"
+            },
+        },
+        'response': {
+            "code": 200,
+            "data": {
+                "success": "true"
+            }
+        }
+    },
+    {
+        'request': {
+            'method': 'POST',
+            'headers': {
+                'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
+                'Content-Type': ['application/json']
+            },
+            'url': 'http://test/v2/json/',
+            'data': {
+                "mha": 1,
+                "swt": 1,
+                "dmsisdn": "+27821234567",
+                "cmsisdn": "+27821234567",
+                "id": "5101025009086^^^ZAF^NI",
+                "type": 3,
+                "lang": "en",
+                "encdate": "20130819144811"
+            },
+        },
+        'response': {
+            "code": 200,
+            "data": {
+                "success": "true"
+            }
+        }
+    },
+    {
+        'request': {
+            'method': 'POST',
+            'headers': {
+                'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
+                'Content-Type': ['application/json']
+            },
+            'url': 'http://test/v2/json/',
+            'data': {
+                "mha": 1,
+                "swt": 1,
+                "dmsisdn": "+270001",
+                "cmsisdn": "+27821234567",
+                "id": "5101025009086^^^ZAF^NI",
+                "type": 3,
+                "lang": "en",
+                "encdate": "20130819144811"
+            },
+        },
+        'response': {
+            "code": 200,
+            "data": {
+                "success": "true"
+            }
+        }
+    },
+    {
+        'request': {
+            'method': 'POST',
+            'headers': {
+                'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
+                'Content-Type': ['application/json']
+            },
+            'url': 'http://test/v2/json/',
+            'data': {
+                "mha": 1,
+                "swt": 1,
+                "dmsisdn": "+27001",
+                "cmsisdn": "+27001",
+                "id": "12345^^^ZW^FI",
+                "type": 2,
+                "lang": "en",
+                "encdate": "20130819144811"
+            },
+        },
+        'response': {
+            "code": 200,
+            "data": {
+                "success": "true"
+            }
+        }
+    },
+    {
+        'request': {
+            'method': 'POST',
+            'headers': {
+                'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
+                'Content-Type': ['application/json']
+            },
+            'url': 'http://test/v2/json/',
+            'data': {
+                "mha": 1,
+                "swt": 1,
+                "dmsisdn": "+27001",
+                "cmsisdn": "+27821234567",
+                "id": "12345^^^ZW^FI",
+                "type": 2,
+                "lang": "en",
+                "encdate": "20130819144811"
+            },
+        },
+        'response': {
+            "code": 200,
+            "data": {
+                "success": "true"
+            }
+        }
     }];
 };

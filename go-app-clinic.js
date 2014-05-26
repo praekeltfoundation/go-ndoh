@@ -9,6 +9,7 @@ var utils = vumigo.utils;
 var libxml = require('libxmljs');
 var crypto = require('crypto');
 var HttpApi = vumigo.http.api.HttpApi;
+var JsonApi = vumigo.http.api.JsonApi;
 
 // override moment default century switch at '68 with '49
 moment.parseTwoDigitYear = function (input) {
@@ -179,6 +180,15 @@ go.utils = {
           }
         }[contact.extra.id_type];
         return formatter();
+    },
+
+    get_subscription_type: function(type){
+      var types = {
+        "subscription": 1,
+        "pre-registration": 2, 
+        "registration": 3
+      };
+      return types[type];
     },
 
     build_metadata: function(cda_docstr, contact) {
@@ -376,6 +386,20 @@ go.utils = {
         ]);
     },
 
+    build_json_doc: function(contact, user, type) {
+        var JSON_template = { 
+          "mha": 1, 
+          "swt": 1, 
+          "dmsisdn": user.msisdn, 
+          "cmsisdn": contact.msisdn, 
+          "id": go.utils.get_patient_id(contact), 
+          "type": go.utils.get_subscription_type(type), 
+          "lang": contact.extra.language_choice, 
+          "encdate": go.utils.get_timestamp() 
+        };
+        return JSON_template;
+    },
+
     jembi_api_call: function (doc, contact, im) {
         var http = new HttpApi(im, {
           auth: {
@@ -388,6 +412,18 @@ go.utils = {
           headers: {
             'Content-Type': ['multipart/form-data; boundary=yolo']
           }
+        });
+    },
+
+    jembi_json_api_call: function (json_doc, im) {
+        var http = new JsonApi(im, {
+          auth: {
+            username: im.config.jembi.username,
+            password: im.config.jembi.password
+          }
+        });
+        return http.post(im.config.jembi.url_json, {
+          data: json_doc
         });
     },
 
@@ -969,17 +1005,27 @@ go.app = function() {
                 events: {
                     'state:enter': function() {
                         var built_doc = go.utils.build_cda_doc(self.contact, self.user);
-                        return go.utils.jembi_api_call(built_doc, self.contact, self.im)
-                            .then(function(result) {
-                                if (result.code >= 200 && result.code < 300){
-                                    // TODO: Log metric
-                                    // console.log('end_success');
-                                } else {
-                                    // TODO: Log metric
-                                    // console.log('error');
-                                }
-                                return true;
-                            });
+                        var built_json = go.utils.build_json_doc(self.contact, self.user, "registration");
+                        return Q.all([
+                            go.utils.jembi_api_call(built_doc, self.contact, self.im),
+                            go.utils.jembi_json_api_call(built_json, self.im)
+                        ]).spread(function(doc_result, json_result) {
+                            if (doc_result.code >= 200 && doc_result.code < 300){
+                                // TODO: Log metric
+                                // console.log('end_success');
+                            } else {
+                                // TODO: Log metric
+                                // console.log('error');
+                            }
+                            if (json_result.code >= 200 && json_result.code < 300){
+                                // TODO: Log metric
+                                // console.log('end_success');
+
+                            } else {
+                                // TODO: Log metric
+                                // console.log('error');
+                            }
+                        });
                     }
                 }
 

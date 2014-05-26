@@ -29,7 +29,13 @@ describe("app", function() {
                     endpoints: {
                         "sms": {"delivery_class": "sms"}
                     },
-                    channel: "*120*550*3#"
+                    channel: "*120*550*3#",
+                    jembi: {
+                        username: 'foo',
+                        password: 'bar',
+                        url: 'http://test/v2/',
+                        url_json: 'http://test/v2/json/'
+                    }
                 })
                 .setup(function(api) {
                     fixtures().forEach(api.http.fixtures.add);
@@ -537,13 +543,22 @@ describe("app", function() {
             describe("if the phone used is not the mom's", function() {
                 it("should save msg language, thank them and exit", function() {
                     return tester
-                        .setup.user.addr('+270001')
+                        .setup.user.addr('+27001')
                         .setup(function(api) {
                             api.contacts.add( {
-                                msisdn: '+270001',
+                                msisdn: '+27001',
                                 extra : {
                                     working_on: '+27821234567',
                                     ussd_sessions: '5'
+                                }
+                            });
+                            api.contacts.add( {
+                                msisdn: '+27821234567',
+                                extra : {
+                                    language_choice: 'en',
+                                    id_type: 'passport',
+                                    passport_origin: 'zw',
+                                    passport_no: '12345'
                                 }
                             });
                         })
@@ -561,7 +576,7 @@ describe("app", function() {
                                 msisdn: '+27821234567'
                             });
                             var contact_user = _.find(api.contacts.store, {
-                                msisdn: '+270001'
+                                msisdn: '+27001'
                             });
                             assert.equal(contact_mom.extra.language_choice, 'en');
                             assert.equal(contact_user.extra.ussd_sessions, '0');
@@ -581,13 +596,17 @@ describe("app", function() {
                     return tester
                         .setup(function(api) {
                             api.contacts.add( {
-                                msisdn: '+270001',
+                                msisdn: '+27001',
                                 extra : {
-                                    ussd_sessions: '5'
+                                    ussd_sessions: '5',
+                                    language_choice: 'en',
+                                    id_type: 'passport',
+                                    passport_origin: 'zw',
+                                    passport_no: '12345'
                                 }
                             });
                         })
-                        .setup.user.addr('+270001')
+                        .setup.user.addr('+27001')
                         .setup.user.state('states:language')
                         .input('1')
                         .check.interaction({
@@ -599,7 +618,7 @@ describe("app", function() {
                         })
                         .check(function(api) {
                             var contact = _.find(api.contacts.store, {
-                              msisdn: '+270001'
+                              msisdn: '+27001'
                             });
                             assert.equal(contact.extra.language_choice, 'en');
                             assert.equal(contact.extra.ussd_sessions, '0');

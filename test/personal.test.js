@@ -43,13 +43,9 @@ describe("app", function() {
                     jembi: {
                         username: 'foo',
                         password: 'bar',
-                        url: 'http://test/v2/'
+                        url: 'http://test/v2/',
+                        url_json: 'http://test/v2/json/'
                     }
-                })
-                .setup(function(api) {
-                    api.contacts.add( {
-                        msisdn: '+27001'
-                    });
                 })
                 .setup(function(api) {
                     fixtures().forEach(api.http.fixtures.add);
@@ -375,6 +371,17 @@ describe("app", function() {
         describe("after the user enters their passport number", function() {
             it("should set their passport number, thank them and exit", function() {
                 return tester
+                    .setup(function(api) {
+                        api.contacts.add({
+                            msisdn: '+27001',
+                            extra : {
+                                language_choice: 'en',
+                                suspect_pregnancy: 'yes',
+                                id_type: 'passport',
+                                passport_origin: 'zw'
+                            }
+                        });
+                    })
                     .setup.user.addr('+27001')
                     .setup.user.state('states:passport_no')
                     .input('12345')

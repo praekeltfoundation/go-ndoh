@@ -20,7 +20,7 @@ go.app = function() {
                     new Choice('not_pregnant', $('Not pregnant')),
                     new Choice('not_useful', $('Messages not useful')),
                     new Choice('had_baby', $('Had my baby')),
-                    new Choice('other', $('Other')),
+                    new Choice('other', $('Other'))
                 ],
 
                 next: function(choice) {

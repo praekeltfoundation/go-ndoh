@@ -1,5 +1,6 @@
 go.app = function() {
     var vumigo = require('vumigo_v02');
+    var Q = require('q');
     var App = vumigo.App;
     var Choice = vumigo.states.Choice;
     var ChoiceState = vumigo.states.ChoiceState;
@@ -11,10 +12,29 @@ go.app = function() {
         var $ = self.$;
 
         self.init = function() {
+            self.metric_prefix = self.im.config.name;
+
+            self.im.on('session:new', function() {
+                self.contact.extra.ussd_sessions = go.utils.incr_user_extra(
+                    self.contact.extra.ussd_sessions, 1);
+                
+                return Q.all([
+                    self.im.contacts.save(self.contact)
+                ]);
+
+            });
 
             self.im.on('session:close', function(e) {
                 if (!self.should_send_dialback(e)) { return; }
                 return self.send_dialback();
+            });
+
+            self.im.user.on('user:new', function(e) {
+                return Q.all([
+                    self.im.metrics.fire.inc((self.metric_prefix + ".sum.unique_users"), 1),
+                    self.im.metrics.fire.inc(("sum.unique_users"))
+                        // probably double counts users if they are in different conversations
+                ]);
             });
 
             return self.im.contacts
@@ -48,7 +68,6 @@ go.app = function() {
                 });
         };
 
-
         self.states.add('states:start', function(name) {
             return new ChoiceState(name, {
                 question: $('Welcome to The Department of Health\'s ' +
@@ -60,7 +79,7 @@ go.app = function() {
                     new Choice('af', $('Afrikaans')),
                     new Choice('zu', $('Zulu')),
                     new Choice('xh', $('Xhosa')),
-                    new Choice('so', $('Sotho')),
+                    new Choice('so', $('Sotho'))
                 ],
 
                 next: function(choice) {
@@ -85,7 +104,7 @@ go.app = function() {
 
                 choices: [
                     new Choice('yes', $('Yes')),
-                    new Choice('no', $('No')),
+                    new Choice('no', $('No'))
                 ],
 
                 next: function(choice) {
@@ -120,7 +139,7 @@ go.app = function() {
                 choices: [
                     new Choice('sa_id', $('SA ID')),
                     new Choice('passport', $('Passport')),
-                    new Choice('none', $('None')),
+                    new Choice('none', $('None'))
                 ],
 
                 next: function(choice) {
@@ -188,7 +207,7 @@ go.app = function() {
                     new Choice('ng', $('Nigeria')),
                     new Choice('cd', $('DRC')),
                     new Choice('so', $('Somalia')),
-                    new Choice('other', $('Other')),
+                    new Choice('other', $('Other'))
                 ],
 
                 next: function(choice) {
@@ -223,14 +242,14 @@ go.app = function() {
 
         self.states.add('states:birth_year', function(name, opts) {
             var error = $('There was an error in your entry. Please ' +
-                        'carefully enter your year of birth again (eg ' +
-                        '2001)');
+                        'carefully enter your year of birth again (for ' +
+                        'example: 2001)');
 
             var question;
             if (!opts.retry) {
                 question = $('Since you don\'t have an ID or passport, ' +
-                            'please enter the year that you were born (eg ' +
-                            '1981)');
+                            'please enter the year that you were born (for ' +
+                            'example: 1981)');
             } else {
                 question = error;
             }
@@ -278,13 +297,13 @@ go.app = function() {
 
         self.states.add('states:birth_day', function(name, opts) {
             var error = $('There was an error in your entry. Please ' +
-                        'carefully enter your day of birth again (eg ' +
-                        '8)');
+                        'carefully enter your day of birth again (for ' +
+                        'example: 8)');
 
             var question;
             if (!opts.retry) {
                 question = $('Please enter the day that you were born ' +
-                    '(eg 14).');
+                    '(for example: 14).');
             } else {
                 question = error;
             }
@@ -303,11 +322,20 @@ go.app = function() {
                         content = '0' + content;
                     }
                     self.contact.extra.birth_day = content;
-                    self.contact.extra.dob = (self.im.user.answers['states:birth_year'] + 
+                    self.contact.extra.dob = (self.im.user.answers['states:birth_year'] +
                         '-' + self.im.user.answers['states:birth_month'] +
                         '-' + content);
-
                     return self.im.contacts.save(self.contact)
+                        .then(function() {
+                            return Q.all([
+                                self.im.metrics.fire.avg((self.metric_prefix + ".avg.sessions_to_register"),
+                                    parseInt(self.contact.extra.ussd_sessions))
+                            ]);
+                        })
+                        .then(function() {
+                            self.contact.extra.ussd_sessions = '0';
+                            return self.im.contacts.save(self.contact);
+                        })
                         .then(function() {
                             return {
                                 name: 'states:end_success'
@@ -321,10 +349,17 @@ go.app = function() {
             return new EndState(name, {
                 text: $('Thank you for subscribing to MomConnect. ' +
                         'You will now receive free messages about ' +
-                        'MomConnect. Visit your nearest clinic to get ' + 
+                        'MomConnect. Visit your nearest clinic to get ' +
                         'the full set of messages.'),
 
                 next: 'states:start'
+            });
+        });
+
+        self.states.add('states:error', function(name) {
+            return new EndState(name, {
+              text: 'Sorry, something went wrong when saving the data. Please try again.',
+              next: 'states:start'
             });
         });
 

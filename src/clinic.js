@@ -2,7 +2,8 @@ go.app = function() {
     var vumigo = require('vumigo_v02');
     var _ = require('lodash');
     var moment = require('moment');
-    var App = vumigo.App;
+    var Q = require('q');
+    var App = vumigo.App;   
     var Choice = vumigo.states.Choice;
     var ChoiceState = vumigo.states.ChoiceState;
     var EndState = vumigo.states.EndState;
@@ -13,10 +14,29 @@ go.app = function() {
         var $ = self.$;
 
         self.init = function() {
+            self.metric_prefix = self.im.config.name;
+
+            self.im.on('session:new', function() {
+                self.user.extra.ussd_sessions = go.utils.incr_user_extra(
+                    self.user.extra.ussd_sessions, 1);
+                
+                return Q.all([
+                    self.im.contacts.save(self.user)
+                ]);
+
+            });
 
             self.im.on('session:close', function(e) {
                 if (!self.should_send_dialback(e)) { return; }
                 return self.send_dialback();
+            });
+
+            self.im.user.on('user:new', function(e) {
+                return Q.all([
+                    self.im.metrics.fire.inc((self.metric_prefix + ".sum.unique_users"), 1),
+                    self.im.metrics.fire.inc(("sum.unique_users"))
+                        // probably double counts users if they are in different conversations
+                ]);
             });
 
             return self.im.contacts
@@ -31,7 +51,7 @@ go.app = function() {
                     } else {
                         self.user = user_contact;
                         self.contact = user_contact;
-                    }                   
+                    }
                 });
         };
 
@@ -70,14 +90,17 @@ go.app = function() {
 
                 choices: [
                     new Choice('yes', $('Yes')),
-                    new Choice('no', $('No')),
+                    new Choice('no', $('No'))
                 ],
 
                 next: function(choice) {
-                    return {
-                        yes: 'states:clinic_code',
-                        no: 'states:mobile_no'
-                    } [choice.value];
+                    return self.im.contacts.save(self.contact)
+                        .then(function() {
+                            return {
+                                yes: 'states:clinic_code',
+                                no: 'states:mobile_no'
+                            } [choice.value];
+                        });
                 }
             });
         });
@@ -97,7 +120,6 @@ go.app = function() {
                             };
                         });
                 }
-                    
             });
         });
 
@@ -124,12 +146,12 @@ go.app = function() {
 
                 next: function(content) {
                     msisdn = go.utils.normalise_sa_msisdn(content);
-                    self.contact.extra.working_on = msisdn;
+                    self.user.extra.working_on = msisdn;
 
-                    return self.im.contacts.save(self.contact)
+                    return self.im.contacts.save(self.user)
                         .then(function() {
                             return {
-                                name: 'states:clinic_code',
+                                name: 'states:clinic_code'
                             };
                         });
                 }
@@ -137,12 +159,12 @@ go.app = function() {
         });
 
         self.states.add('states:due_date_month', function(name) {
-            
+
             var today = go.utils.get_today(self.im.config);
             var month = today.getMonth();   // 0-bound
 
             return new ChoiceState(name, {
-                
+
                 question: $('Please select the month when the baby is due:'),
 
                 choices: go.utils.make_month_choices($, month, 9),
@@ -153,7 +175,7 @@ go.app = function() {
                     return self.im.contacts.save(self.contact)
                         .then(function() {
                             return {
-                                name: 'states:id_type',
+                                name: 'states:id_type'
                             };
                         });
                 }
@@ -168,7 +190,7 @@ go.app = function() {
                 choices: [
                     new Choice('sa_id', $('SA ID')),
                     new Choice('passport', $('Passport')),
-                    new Choice('none', $('None')),
+                    new Choice('none', $('None'))
                 ],
 
                 next: function(choice) {
@@ -219,7 +241,7 @@ go.app = function() {
                     return self.im.contacts.save(self.contact)
                         .then(function() {
                             return {
-                                name: 'states:language',
+                                name: 'states:language'
                             };
                         });
                 }
@@ -237,7 +259,7 @@ go.app = function() {
                     new Choice('ng', $('Nigeria')),
                     new Choice('cd', $('DRC')),
                     new Choice('so', $('Somalia')),
-                    new Choice('other', $('Other')),
+                    new Choice('other', $('Other'))
                 ],
 
                 next: function(choice) {
@@ -273,13 +295,13 @@ go.app = function() {
 
         self.states.add('states:birth_year', function(name, opts) {
             var error = $('There was an error in your entry. Please ' +
-                        'carefully enter the mother\'s year of birth again (eg ' +
-                        '2001)');
+                        'carefully enter the mother\'s year of birth again ' +
+                        '(for example: 2001)');
 
             var question;
             if (!opts.retry) {
-                question = $('Please enter the year that the pregnant mother was born (eg ' +
-                    '1981)');
+                question = $('Please enter the year that the pregnant ' +
+                    'mother was born (for example: 1981)');
             } else {
                 question = error;
             }
@@ -328,13 +350,13 @@ go.app = function() {
 
         self.states.add('states:birth_day', function(name, opts) {
             var error = $('There was an error in your entry. Please ' +
-                        'carefully enter the mother\'s day of birth again (eg ' +
-                        '8)');
+                        'carefully enter the mother\'s day of birth again ' +
+                        '(for example: 8)');
 
             var question;
             if (!opts.retry) {
                 question = $('Please enter the day that the mother was born ' +
-                    '(eg 14).');
+                    '(for example: 14).');
             } else {
                 question = error;
             }
@@ -376,11 +398,12 @@ go.app = function() {
                     new Choice('af', $('Afrikaans')),
                     new Choice('zu', $('Zulu')),
                     new Choice('xh', $('Xhosa')),
-                    new Choice('so', $('Sotho')),
+                    new Choice('so', $('Sotho'))
                 ],
 
                 next: function(choice) {
                     self.contact.extra.language_choice = choice.value;
+                    
 
                     return self.im.user.set_lang(choice.value)
                     // we may not have to run this for this flow
@@ -388,10 +411,17 @@ go.app = function() {
                             return self.im.contacts.save(self.contact);
                         })
                         .then(function() {
+                            return Q.all([
+                                self.im.metrics.fire.avg((self.metric_prefix + ".avg.sessions_to_register"),
+                                    parseInt(self.user.extra.ussd_sessions))
+                            ]);
+                        })
+                        .then(function() {
                             if (!_.isUndefined(self.user.extra.working_on)) {
                                 self.user.extra.working_on = "";
-                                return self.im.contacts.save(self.user);
                             }
+                            self.user.extra.ussd_sessions = '0';
+                            return self.im.contacts.save(self.user);
                         })
                         .then(function() {
                             return 'states:end_success';
@@ -401,12 +431,31 @@ go.app = function() {
         });
 
         self.states.add('states:end_success', function(name) {
+            // If none passport then only json push
             return new EndState(name, {
                 text: $('Thank you. The pregnant woman will now ' +
                         'receive weekly messages about her pregnancy ' +
                         'from the Department of Health.'),
 
-                next: 'states:start'
+                next: 'states:start',
+
+                events: {
+                    'state:enter': function() {
+                        var built_doc = go.utils.build_cda_doc(self.contact, self.user);
+                        return go.utils.jembi_api_call(built_doc, self.contact, self.im)
+                            .then(function(result) {
+                                if (result.code >= 200 && result.code < 300){
+                                    // TODO: Log metric
+                                    // console.log('end_success');
+                                } else {
+                                    // TODO: Log metric
+                                    // console.log('error');
+                                }
+                                return true;
+                            });
+                    }
+                }
+
             });
         });
 

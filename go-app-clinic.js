@@ -728,10 +728,9 @@ go.app = function() {
 
         self.fire_incomplete = function(name, val) {
             var ignore_states = ['states:end_success'];
-
-                if (!_.contains(ignore_states, name)) {
-                    return self.im.metrics.fire.inc(([self.metric_prefix, name, "no_incomplete"].join('.')), {amount: val});
-                }
+            if (!_.contains(ignore_states, name)) {
+                return self.im.metrics.fire.inc(([self.metric_prefix, name, "no_incomplete"].join('.')), {amount: val});
+            }
         };
 
         self.states.add('states:start', function(name) {

@@ -676,10 +676,11 @@ go.app = function() {
                 next: function(choice) {
                     self.contact.extra.opt_out_reason = choice.value;
 
-                    return self.im.contacts.save(self.contact)
-                    .then(function() {
-                        return 'states:end';
-                    });
+                    return self.im.contacts
+                        .save(self.contact)
+                        .then(function() {
+                            return 'states:end';
+                        });
                 }
 
             });

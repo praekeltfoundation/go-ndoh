@@ -3,7 +3,7 @@ go.app = function() {
     var _ = require('lodash');
     var moment = require('moment');
     var Q = require('q');
-    var App = vumigo.App;   
+    var App = vumigo.App;
     var Choice = vumigo.states.Choice;
     var ChoiceState = vumigo.states.ChoiceState;
     var EndState = vumigo.states.EndState;
@@ -14,16 +14,17 @@ go.app = function() {
         var $ = self.$;
 
         self.init = function() {
-            self.metric_prefix = self.im.config.name;
+            self.env = self.im.config.env;
+            self.metric_prefix = [self.env, self.im.config.name].join('.');
+            self.store_name = [self.env, self.im.config.name].join('.');
 
-            self.im.on('session:new', function() {
+            self.im.on('session:new', function(e) {
                 self.user.extra.ussd_sessions = go.utils.incr_user_extra(
                     self.user.extra.ussd_sessions, 1);
-                
+
                 return Q.all([
                     self.im.contacts.save(self.user)
                 ]);
-
             });
 
             self.im.on('session:close', function(e) {
@@ -32,11 +33,23 @@ go.app = function() {
             });
 
             self.im.user.on('user:new', function(e) {
-                return Q.all([
-                    self.im.metrics.fire.inc((self.metric_prefix + ".sum.unique_users"), 1),
-                    self.im.metrics.fire.inc(("sum.unique_users"))
-                        // probably double counts users if they are in different conversations
-                ]);
+                go.utils.fire_users_metrics(self.im, self.store_name, self.env, self.metric_prefix);
+            });
+
+            self.im.on('state:enter', function(e) {
+                var ignore_states = ['states:end_success'];
+
+                if (!_.contains(ignore_states, e.state.name)) {
+                    self.im.metrics.fire.inc(([self.metric_prefix, e.state.name, "no_incomplete"].join('.')), {amount: 1});
+                } 
+            });
+            
+            self.im.on('state:exit', function(e) {
+                var ignore_states = ['states:end_success'];
+
+                if (!_.contains(ignore_states, e.state.name)) {
+                    self.im.metrics.fire.inc(([self.metric_prefix, e.state.name, "no_incomplete"].join('.')), {amount: -1});
+                } 
             });
 
             return self.im.contacts
@@ -94,13 +107,10 @@ go.app = function() {
                 ],
 
                 next: function(choice) {
-                    return self.im.contacts.save(self.contact)
-                        .then(function() {
-                            return {
-                                yes: 'states:clinic_code',
-                                no: 'states:mobile_no'
-                            } [choice.value];
-                        });
+                    return {
+                        yes: 'states:clinic_code',
+                        no: 'states:mobile_no'
+                    } [choice.value];
                 }
             });
         });
@@ -115,6 +125,15 @@ go.app = function() {
 
                     return self.im.contacts.save(self.contact)
                         .then(function() {
+                            if (_.isUndefined(self.contact.extra.is_registered)) {
+                                return Q.all([
+                                    go.utils.incr_kv(self.im, [self.store_name, 'no_incomplete_registrations'].join('.')),
+                                    go.utils.adjust_percentage_registrations(self.im, self.metric_prefix)
+                                ]);
+                            }
+                        })
+                        .then(function() {
+                            self.contact.extra.is_registered = 'false';
                             return {
                                 name: 'states:due_date_month'
                             };
@@ -403,7 +422,7 @@ go.app = function() {
 
                 next: function(choice) {
                     self.contact.extra.language_choice = choice.value;
-                    
+                    self.contact.extra.is_registered = 'true';
 
                     return self.im.user.set_lang(choice.value)
                     // we may not have to run this for this flow
@@ -413,7 +432,10 @@ go.app = function() {
                         .then(function() {
                             return Q.all([
                                 self.im.metrics.fire.avg((self.metric_prefix + ".avg.sessions_to_register"),
-                                    parseInt(self.user.extra.ussd_sessions))
+                                    parseInt(self.user.extra.ussd_sessions, 10)),
+                                go.utils.incr_kv(self.im, [self.store_name, 'no_complete_registrations'].join('.')),
+                                go.utils.decr_kv(self.im, [self.store_name, 'no_incomplete_registrations'].join('.')),
+                                go.utils.adjust_percentage_registrations(self.im, self.metric_prefix)
                             ]);
                         })
                         .then(function() {

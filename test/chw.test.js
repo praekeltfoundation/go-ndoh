@@ -22,7 +22,8 @@ describe("app", function() {
                 })
                 .setup.char_limit(160)
                 .setup.config.app({
-                    name: 'test_chw',
+                    name: 'chw',
+                    env: 'test',
                     metric_store: 'test_metric_store',
                     testing: 'true',
                     testing_today: 'April 4, 2014 07:07:07',
@@ -38,6 +39,13 @@ describe("app", function() {
                     }
                 })
                 .setup(function(api) {
+                    api.kv.store['test.clinic.unique_users'] = 0;
+                    api.kv.store['test.chw.unique_users'] = 0;
+                    api.kv.store['test.personal.unique_users'] = 0;
+                    api.kv.store['test.chw.no_complete_registrations'] = 2;
+                    api.kv.store['test.chw.no_incomplete_registrations'] = 2;
+                })
+                .setup(function(api) {
                     fixtures().forEach(api.http.fixtures.add);
                 });
         });
@@ -48,8 +56,9 @@ describe("app", function() {
                     .start()
                     .check(function(api) {
                         var metrics = api.metrics.stores.test_metric_store;
-                        assert.deepEqual(metrics['sum.unique_users'].values, [1]);
-                        assert.deepEqual(metrics['test_chw.sum.unique_users'].values, [1]);
+                        assert.deepEqual(metrics['test.chw.sum.unique_users'].values, [1]);
+                        assert.deepEqual(metrics['test.chw.percentage_users'].values, [100]);
+                        assert.deepEqual(metrics['test.sum.unique_users'].values, [1]);
                     }).run();
             });
         });
@@ -70,11 +79,15 @@ describe("app", function() {
                         ].join('\n')
                     })
                     .check(function(api) {
-                            var contact = _.find(api.contacts.store, {
-                              msisdn: '+270001'
-                            });
-                            assert.equal(contact.extra.ussd_sessions, '1');
-                        })
+                        var contact = _.find(api.contacts.store, {
+                          msisdn: '+270001'
+                        });
+                        assert.equal(contact.extra.ussd_sessions, '1');
+                    })
+                    .check(function(api) {
+                        var metrics = api.metrics.stores.test_metric_store;
+                        assert.deepEqual(metrics['test.chw.states:start.no_incomplete'].values, [1]);
+                    })
                     .run();
             });
         });
@@ -83,22 +96,22 @@ describe("app", function() {
             it("should increase their number of ussd_sessions by 1", function() {
                 return tester
                     .setup(function(api) {
-                            api.contacts.add( {
-                                msisdn: '+270001',
-                                extra : {
-                                    ussd_sessions: '3',
-                                    working_on: '+2712345'
-                                }
-                            });
-                        })
+                        api.contacts.add( {
+                            msisdn: '+270001',
+                            extra : {
+                                ussd_sessions: '3',
+                                working_on: '+2712345'
+                            }
+                        });
+                    })
                     .setup.user.addr('+270001')
                     .start()
                     .check(function(api) {
-                            var contact = _.find(api.contacts.store, {
-                              msisdn: '+270001'
-                            });
-                            assert.equal(contact.extra.ussd_sessions, '4');
-                        })
+                        var contact = _.find(api.contacts.store, {
+                          msisdn: '+270001'
+                        });
+                        assert.equal(contact.extra.ussd_sessions, '4');
+                    })
                     .run();
             });
         });
@@ -117,6 +130,11 @@ describe("app", function() {
                             '2. Passport',
                             '3. None'
                         ].join('\n')
+                    })
+                    .check(function(api) {
+                        var metrics = api.metrics.stores.test_metric_store;
+                        assert.deepEqual(metrics['test.chw.states:start.no_incomplete'].values, [1, 0]);
+                        assert.deepEqual(metrics['test.chw.states:id_type.no_incomplete'].values, [1]);
                     })
                     .run();
             });
@@ -196,6 +214,11 @@ describe("app", function() {
                             });
                             assert.equal(contact.extra.id_type, 'sa_id');
                         })
+                        .check(function(api) {
+                            var metrics = api.metrics.stores.test_metric_store;
+                            assert.deepEqual(metrics['test.chw.percent_incomplete_registrations'].values, [60]);
+                            assert.deepEqual(metrics['test.chw.percent_complete_registrations'].values, [40]);
+                        })
                         .run();
                 });
             });
@@ -225,6 +248,11 @@ describe("app", function() {
                               msisdn: '+27821234567'
                             });
                             assert.equal(contact.extra.id_type, 'sa_id');
+                        })
+                        .check(function(api) {
+                            var metrics = api.metrics.stores.test_metric_store;
+                            assert.deepEqual(metrics['test.chw.percent_incomplete_registrations'].values, [60]);
+                            assert.deepEqual(metrics['test.chw.percent_complete_registrations'].values, [40]);
                         })
                         .run();
                 });
@@ -584,7 +612,9 @@ describe("app", function() {
                         })
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
-                            assert.deepEqual(metrics['test_chw.avg.sessions_to_register'].values, [5]);
+                            assert.deepEqual(metrics['test.chw.avg.sessions_to_register'].values, [5]);
+                            assert.deepEqual(metrics['test.chw.states:language.no_incomplete'].values, [1, 0]);
+                            assert.equal(metrics['test.chw.states:end_success.no_incomplete'], undefined);
                         })
                         .check.reply.ends_session()
                         .run();
@@ -625,7 +655,9 @@ describe("app", function() {
                         })
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
-                            assert.deepEqual(metrics['test_chw.avg.sessions_to_register'].values, [5]);
+                            assert.deepEqual(metrics['test.chw.avg.sessions_to_register'].values, [5]);
+                            assert.deepEqual(metrics['test.chw.percent_incomplete_registrations'].values, [25]);
+                            assert.deepEqual(metrics['test.chw.percent_complete_registrations'].values, [75]);
                         })
                         .check.reply.ends_session()
                         .run();

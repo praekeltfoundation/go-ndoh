@@ -4,6 +4,7 @@ go;
 var _ = require('lodash');
 var moment = require('moment');
 var vumigo = require('vumigo_v02');
+var Q = require('q');
 var Choice = vumigo.states.Choice;
 var utils = vumigo.utils;
 var libxml = require('libxmljs');
@@ -559,8 +560,76 @@ go.utils = {
             '</ClinicalDocument>'
         ].join('\n');
         return CDA_Template;
-    }
+    },
+
+    incr_kv: function(im, name) {
+        return im.api_request('kv.incr', {key: name, amount: 1})
+            .then(function(result){
+                return result.value;
+            });
+    },
+
+    decr_kv: function(im, name) {
+        return im.api_request('kv.incr', {key: name, amount: -1})
+            .then(function(result){
+                return result.value;
+            });
+    },
+
+    set_kv: function(im, name, value) {
+        return im.api_request('kv.set',  {key: name, value: value})
+            .then(function(result){
+                return result.value;
+            });
+    },
+
+    get_kv: function(im, name, default_value) {
+        // returns the default if null/undefined
+        return im.api_request('kv.get',  {key: name})
+            .then(function(result){
+                if(result.value === null) return default_value;
+                return result.value;
+            });
+    },
+
+    adjust_percentage_registrations: function(im, metric_prefix) {
+        return Q.all([
+            go.utils.get_kv(im, [metric_prefix, 'no_incomplete_registrations'].join('.'), 0),
+            go.utils.get_kv(im, [metric_prefix, 'no_complete_registrations'].join('.'), 0)
+        ]).spread(function(no_incomplete, no_complete) {
+            var total_attempted = no_incomplete + no_complete;
+            var percentage_incomplete = (no_incomplete / total_attempted) * 100;
+            var percentage_complete = (no_complete / total_attempted) * 100;
+            return Q.all([
+                im.metrics.fire([metric_prefix, 'percent_incomplete_registrations'].join('.'), percentage_incomplete),
+                im.metrics.fire([metric_prefix, 'percent_complete_registrations'].join('.'), percentage_complete)
+            ]);
+        });
+    },
+
+    fire_users_metrics: function(im, store_name, env, metric_prefix) {
+        return Q.all([
+            go.utils.incr_kv(im, [store_name, 'unique_users'].join('.')),
+            go.utils.get_kv(im, [env, 'clinic', 'unique_users'].join('.'), 0),
+            go.utils.get_kv(im, [env, 'chw', 'unique_users'].join('.'), 0),
+            go.utils.get_kv(im, [env, 'personal', 'unique_users'].join('.'), 0)
+        ]).spread(function(placeholder, clinic_users, chw_users, personal_users) {
+            var total_users = clinic_users + chw_users + personal_users;
+            var clinic_percentage = (clinic_users / total_users) * 100;
+            var chw_percentage = (chw_users / total_users) * 100;
+            var personal_percentage = (personal_users / total_users) * 100;
+            return Q.all([
+                im.metrics.fire.inc([metric_prefix, 'sum', 'unique_users'].join('.')),
+                im.metrics.fire.last([env, 'clinic', 'percentage_users'].join('.'), clinic_percentage),
+                im.metrics.fire.last([env, 'chw', 'percentage_users'].join('.'), chw_percentage),
+                im.metrics.fire.last([env, 'personal', 'percentage_users'].join('.'), personal_percentage),
+                im.metrics.fire.inc([env, 'sum', 'unique_users'].join('.'))
+            ]);
+        });
+    },
+
 };
+
 go.app = function() {
     var vumigo = require('vumigo_v02');
     var _ = require('lodash');
@@ -577,7 +646,9 @@ go.app = function() {
         var $ = self.$;
 
         self.init = function() {
-            self.metric_prefix = self.im.config.name;
+            self.env = self.im.config.env;
+            self.metric_prefix = [self.env, self.im.config.name].join('.');
+            self.store_name = [self.env, self.im.config.name].join('.');
 
             self.im.on('session:new', function() {
                 self.user.extra.ussd_sessions = go.utils.incr_user_extra(
@@ -586,7 +657,6 @@ go.app = function() {
                 return Q.all([
                     self.im.contacts.save(self.user)
                 ]);
-
             });
 
             self.im.on('session:close', function(e) {
@@ -595,11 +665,23 @@ go.app = function() {
             });
 
             self.im.user.on('user:new', function(e) {
-                return Q.all([
-                    self.im.metrics.fire.inc((self.metric_prefix + ".sum.unique_users"), 1),
-                    self.im.metrics.fire.inc(("sum.unique_users"))
-                        // probably double counts users if they are in different conversations
-                ]);
+                go.utils.fire_users_metrics(self.im, self.store_name, self.env, self.metric_prefix);
+            });
+
+            self.im.on('state:enter', function(e) {
+                var ignore_states = ['states:end_success'];
+
+                if (!_.contains(ignore_states, e.state.name)) {
+                    self.im.metrics.fire.inc(([self.metric_prefix, e.state.name, "no_incomplete"].join('.')), {amount: 1});
+                } 
+            });
+            
+            self.im.on('state:exit', function(e) {
+                var ignore_states = ['states:end_success'];
+
+                if (!_.contains(ignore_states, e.state.name)) {
+                    self.im.metrics.fire.inc(([self.metric_prefix, e.state.name, "no_incomplete"].join('.')), {amount: -1});
+                } 
             });
 
             return self.im.contacts
@@ -719,6 +801,15 @@ go.app = function() {
 
                     return self.im.contacts.save(self.contact)
                         .then(function() {
+                            if (_.isUndefined(self.contact.extra.is_registered)) {
+                                return Q.all([
+                                    go.utils.incr_kv(self.im, [self.store_name, 'no_incomplete_registrations'].join('.')),
+                                    go.utils.adjust_percentage_registrations(self.im, self.metric_prefix)
+                                ]);
+                            }
+                        })
+                        .then(function() {
+                            self.contact.extra.is_registered = 'false';
                             return {
                                 sa_id: 'states:sa_id',
                                 passport: 'states:passport_origin',
@@ -813,7 +904,6 @@ go.app = function() {
             });
         });
 
-
         self.states.add('states:birth_year', function(name, opts) {
             var error = $('There was an error in your entry. Please ' +
                         'carefully enter the mother\'s year of birth again ' +
@@ -867,7 +957,6 @@ go.app = function() {
                 }
             });
         });
-
 
         self.states.add('states:birth_day', function(name, opts) {
             var error = $('There was an error in your entry. Please ' +
@@ -925,6 +1014,7 @@ go.app = function() {
 
                 next: function(choice) {
                     self.contact.extra.language_choice = choice.value;
+                    self.contact.extra.is_registered = 'true';
 
                     return self.im.user.set_lang(choice.value)
                     // we may not have to run this for this flow
@@ -934,7 +1024,10 @@ go.app = function() {
                         .then(function() {
                             return Q.all([
                                 self.im.metrics.fire.avg((self.metric_prefix + ".avg.sessions_to_register"),
-                                    parseInt(self.user.extra.ussd_sessions, 10))
+                                    parseInt(self.user.extra.ussd_sessions, 10)),
+                                go.utils.incr_kv(self.im, [self.store_name, 'no_complete_registrations'].join('.')),
+                                go.utils.decr_kv(self.im, [self.store_name, 'no_incomplete_registrations'].join('.')),
+                                go.utils.adjust_percentage_registrations(self.im, self.metric_prefix)
                             ]);
                         })
                         .then(function() {

@@ -1,5 +1,6 @@
 go.app = function() {
     var vumigo = require('vumigo_v02');
+    var _ = require('lodash');
     var Q = require('q');
     var App = vumigo.App;
     var Choice = vumigo.states.Choice;
@@ -12,7 +13,9 @@ go.app = function() {
         var $ = self.$;
 
         self.init = function() {
-            self.metric_prefix = self.im.config.name;
+            self.env = self.im.config.env;
+            self.metric_prefix = [self.env, self.im.config.name].join('.');
+            self.store_name = [self.env, self.im.config.name].join('.');
 
             self.im.on('session:new', function() {
                 self.contact.extra.ussd_sessions = go.utils.incr_user_extra(
@@ -21,7 +24,6 @@ go.app = function() {
                 return Q.all([
                     self.im.contacts.save(self.contact)
                 ]);
-
             });
 
             self.im.on('session:close', function(e) {
@@ -30,11 +32,23 @@ go.app = function() {
             });
 
             self.im.user.on('user:new', function(e) {
-                return Q.all([
-                    self.im.metrics.fire.inc((self.metric_prefix + ".sum.unique_users"), 1),
-                    self.im.metrics.fire.inc(("sum.unique_users"))
-                        // probably double counts users if they are in different conversations
-                ]);
+                go.utils.fire_users_metrics(self.im, self.store_name, self.env, self.metric_prefix);
+            });
+
+            self.im.on('state:enter', function(e) {
+                var ignore_states = ['states:end_success', 'states:end_not_pregnant'];
+
+                if (!_.contains(ignore_states, e.state.name)) {
+                    self.im.metrics.fire.inc(([self.metric_prefix, e.state.name, "no_incomplete"].join('.')), {amount: 1});
+                } 
+            });
+            
+            self.im.on('state:exit', function(e) {
+                var ignore_states = ['states:end_success'];
+
+                if (!_.contains(ignore_states, e.state.name)) {
+                    self.im.metrics.fire.inc(([self.metric_prefix, e.state.name, "no_incomplete"].join('.')), {amount: -1});
+                } 
             });
 
             return self.im.contacts
@@ -87,6 +101,15 @@ go.app = function() {
 
                     return self.im.user.set_lang(choice.value)
                         .then(function() {
+                            if (_.isUndefined(self.contact.extra.is_registered)) {
+                                return Q.all([
+                                    go.utils.incr_kv(self.im, [self.store_name, 'no_incomplete_registrations'].join('.')),
+                                    go.utils.adjust_percentage_registrations(self.im, self.metric_prefix)
+                                ]);
+                            }
+                        })
+                        .then(function() {
+                            self.contact.extra.is_registered = 'false';
                             return self.im.contacts.save(self.contact);
                         })
                         .then(function() {
@@ -325,11 +348,16 @@ go.app = function() {
                     self.contact.extra.dob = (self.im.user.answers['states:birth_year'] +
                         '-' + self.im.user.answers['states:birth_month'] +
                         '-' + content);
+                    self.contact.extra.is_registered = 'true';
+
                     return self.im.contacts.save(self.contact)
                         .then(function() {
                             return Q.all([
                                 self.im.metrics.fire.avg((self.metric_prefix + ".avg.sessions_to_register"),
-                                    parseInt(self.contact.extra.ussd_sessions, 10))
+                                    parseInt(self.contact.extra.ussd_sessions, 10)),
+                                go.utils.incr_kv(self.im, [self.store_name, 'no_complete_registrations'].join('.')),
+                                go.utils.decr_kv(self.im, [self.store_name, 'no_incomplete_registrations'].join('.')),
+                                go.utils.adjust_percentage_registrations(self.im, self.metric_prefix)
                             ]);
                         })
                         .then(function() {

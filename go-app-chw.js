@@ -601,8 +601,8 @@ go.utils = {
             var percentage_incomplete = (no_incomplete / total_attempted) * 100;
             var percentage_complete = (no_complete / total_attempted) * 100;
             return Q.all([
-                im.metrics.fire([metric_prefix, 'percent_incomplete_registrations'].join('.'), percentage_incomplete),
-                im.metrics.fire([metric_prefix, 'percent_complete_registrations'].join('.'), percentage_complete)
+                im.metrics.fire.last([metric_prefix, 'percent_incomplete_registrations'].join('.'), percentage_incomplete),
+                im.metrics.fire.last([metric_prefix, 'percent_complete_registrations'].join('.'), percentage_complete)
             ]);
         });
     },
@@ -728,10 +728,9 @@ go.app = function() {
 
         self.fire_incomplete = function(name, val) {
             var ignore_states = ['states:end_success'];
-
-                if (!_.contains(ignore_states, name)) {
-                    return self.im.metrics.fire.inc(([self.metric_prefix, name, "no_incomplete"].join('.')), {amount: val});
-                }
+            if (!_.contains(ignore_states, name)) {
+                return self.im.metrics.fire.inc(([self.metric_prefix, name, "no_incomplete"].join('.')), {amount: val});
+            }
         };
 
         self.states.add('states:start', function(name) {

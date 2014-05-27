@@ -2,6 +2,9 @@ var vumigo = require('vumigo_v02');
 var fixtures = require('./fixtures');
 var AppTester = vumigo.AppTester;
 
+var messagestore = require('./optoutstore');
+var DummyOptoutResource = messagestore.DummyOptoutResource;
+
 
 describe("app", function() {
     describe("for opting out of messages", function() {
@@ -19,6 +22,10 @@ describe("app", function() {
                 })
                 .setup(function(api) {
                     fixtures().forEach(api.http.fixtures.add);
+                })
+                .setup(function(api) {
+                    api.resources.add(new DummyOptoutResource());
+                    api.resources.attach(api);
                 });
         });
 

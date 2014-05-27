@@ -9,6 +9,7 @@ go.app = function() {
         App.call(self, 'states:start');
         var $ = self.$;
 
+
         self.states.add('states:start', function(name) {
             return new ChoiceState(name, {
                 question: $('Welcome to MomConnect. Why do you want to ' +
@@ -21,6 +22,15 @@ go.app = function() {
                     new Choice('had_baby', $('Had my baby')),
                     new Choice('other', $('Other'))
                 ],
+
+                events: {
+                    'state:enter': function() {
+                        return self.im.api_request('optout.optout', {
+                            address_type: "msisdn",
+                            address_value: self.im.user_addr
+                        });
+                    }
+                },
 
                 next: 'states:end'
             });
@@ -42,3 +52,4 @@ go.app = function() {
         GoNDOH: GoNDOH
     };
 }();
+

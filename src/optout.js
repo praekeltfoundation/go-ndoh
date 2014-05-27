@@ -9,6 +9,7 @@ go.app = function() {
         App.call(self, 'states:start');
         var $ = self.$;
 
+
         self.init = function() {
             return self.im.contacts
                 .for_user()
@@ -16,6 +17,7 @@ go.app = function() {
                    self.contact = user_contact;
                 });
         };
+
 
         self.states.add('states:start', function(name) {
             return new ChoiceState(name, {
@@ -27,8 +29,17 @@ go.app = function() {
                     new Choice('not_pregnant', $('Not pregnant')),
                     new Choice('not_useful', $('Messages not useful')),
                     new Choice('had_baby', $('Had my baby')),
-                    new Choice('other', $('Other')),
+                    new Choice('other', $('Other'))
                 ],
+
+                events: {
+                    'state:enter': function() {
+                        return self.im.api_request('optout.optout', {
+                            address_type: "msisdn",
+                            address_value: self.im.user_addr
+                        });
+                    }
+                },
 
                 next: function(choice) {
                     self.contact.extra.opt_out_reason = choice.value;
@@ -38,6 +49,7 @@ go.app = function() {
                         return 'states:end';
                     });
                 }
+
             });
         });
 
@@ -57,3 +69,4 @@ go.app = function() {
         GoNDOH: GoNDOH
     };
 }();
+

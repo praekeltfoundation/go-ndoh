@@ -72,5 +72,5 @@ var DummyMessageStoreResource = DummyResource.extend(function(self) {
     };
 });
 
-
 this.DummyMessageStoreResource = DummyMessageStoreResource;
+

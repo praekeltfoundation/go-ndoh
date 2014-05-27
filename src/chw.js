@@ -61,7 +61,7 @@ go.app = function() {
                     } else {
                         self.user = user_contact;
                         self.contact = user_contact;
-                    }                   
+                    }
                 });
         };
 
@@ -113,7 +113,7 @@ go.app = function() {
 
                 choices: [
                     new Choice('yes', $('Yes')),
-                    new Choice('no', $('No')),
+                    new Choice('no', $('No'))
                 ],
 
                 next: function(choice) {
@@ -156,7 +156,7 @@ go.app = function() {
                     return self.im.contacts.save(self.contact)
                         .then(function() {
                             return {
-                                name: 'states:id_type',
+                                name: 'states:id_type'
                             };
                         });
                 }
@@ -171,7 +171,7 @@ go.app = function() {
                 choices: [
                     new Choice('sa_id', $('SA ID')),
                     new Choice('passport', $('Passport')),
-                    new Choice('none', $('None')),
+                    new Choice('none', $('None'))
                 ],
 
                 next: function(choice) {
@@ -231,7 +231,7 @@ go.app = function() {
                     return self.im.contacts.save(self.contact)
                         .then(function() {
                             return {
-                                name: 'states:language',
+                                name: 'states:language'
                             };
                         });
                 }
@@ -249,7 +249,7 @@ go.app = function() {
                     new Choice('ng', $('Nigeria')),
                     new Choice('cd', $('DRC')),
                     new Choice('so', $('Somalia')),
-                    new Choice('other', $('Other')),
+                    new Choice('other', $('Other'))
                 ],
 
                 next: function(choice) {
@@ -284,13 +284,13 @@ go.app = function() {
 
         self.states.add('states:birth_year', function(name, opts) {
             var error = $('There was an error in your entry. Please ' +
-                        'carefully enter the mother\'s year of birth again (eg ' +
-                        '2001)');
+                        'carefully enter the mother\'s year of birth again ' +
+                        '(for example: 2001)');
 
             var question;
             if (!opts.retry) {
-                question = $('Please enter the year that the pregnant mother was born (eg ' +
-                    '1981)');
+                question = $('Please enter the year that the pregnant ' +
+                    'mother was born (for example: 1981)');
             } else {
                 question = error;
             }
@@ -338,13 +338,13 @@ go.app = function() {
 
         self.states.add('states:birth_day', function(name, opts) {
             var error = $('There was an error in your entry. Please ' +
-                        'carefully enter the mother\'s day of birth again (eg ' +
-                        '8)');
+                        'carefully enter the mother\'s day of birth again ' +
+                        '(for example: 8)');
 
             var question;
             if (!opts.retry) {
                 question = $('Please enter the day that the mother was born ' +
-                    '(eg 14).');
+                    '(for example: 14).');
             } else {
                 question = error;
             }
@@ -387,7 +387,7 @@ go.app = function() {
                     new Choice('af', $('Afrikaans')),
                     new Choice('zu', $('Zulu')),
                     new Choice('xh', $('Xhosa')),
-                    new Choice('so', $('Sotho')),
+                    new Choice('so', $('Sotho'))
                 ],
 
                 next: function(choice) {
@@ -435,7 +435,23 @@ go.app = function() {
                         'woman will now receive messages to encourage her ' +
                         'to register at her nearest clinic.'),
 
-                next: 'states:start'
+                next: 'states:start',
+                events: {
+                    'state:enter': function() {
+                        var built_json = go.utils.build_json_doc(self.contact, self.user, "pre-registration");
+                        return go.utils.jembi_json_api_call(built_json, self.im)
+                            .then(function(result) {
+                                if (result.code >= 200 && result.code < 300){
+                                    // TODO: Log metric
+                                    // console.log('end_success');
+                                } else {
+                                    // TODO: Log metric
+                                    // console.log('error');
+                                }
+                                return true;
+                            });
+                    }
+                }
             });
         });
 

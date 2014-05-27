@@ -13,6 +13,16 @@ describe("app", function() {
 
         beforeEach(function() {
             app = new go.app.GoNDOH();
+            go.utils.get_timestamp = function() {
+                return '20130819144811';
+            };
+            go.utils.get_uuid = function() {
+                return 'b18c62b4-828e-4b52-25c9-725a1f43fb37';
+            };
+
+            go.utils.get_oid = function(){
+                return '2.25.169380846032024';
+            };
             tester = new AppTester(app);
 
             tester
@@ -30,7 +40,13 @@ describe("app", function() {
                     endpoints: {
                         "sms": {"delivery_class": "sms"}
                     },
-                    channel: "*120*550*2#"
+                    channel: "*120*550*2#",
+                    jembi: {
+                        username: 'foo',
+                        password: 'bar',
+                        url: 'http://test/v2/',
+                        url_json: 'http://test/v2/json/'
+                    }
                 })
                 .setup(function(api) {
                     api.kv.store['test.clinic.unique_users'] = 0;
@@ -74,8 +90,25 @@ describe("app", function() {
             });
 
             describe("when the last state is states:end_success", function() {
-                it("should not fire a metric", function() {
+                it.skip("should not fire a metric", function() {
                     return tester
+                        .setup.user.addr('+27821234567')
+                        .setup(function(api) {
+                            api.contacts.add( {
+                                msisdn: '+27821234567',
+                                extra : {
+                                    clinic_code: '12345',
+                                    suspect_pregnancy: 'yes',
+                                    id_type: 'sa_id',
+                                    sa_id: '5101025009086',
+                                    birth_year: '1951',
+                                    birth_month: '01',
+                                    birth_day: '02',
+                                    dob: '1951-01-02',
+                                    ussd_sessions: '5'
+                                }
+                            });
+                        })
                         .setup.user.state('states:end_success')
                         .input.session_event('close')
                         .check(function(api) {
@@ -581,8 +614,8 @@ describe("app", function() {
                     .input('3')
                     .check.interaction({
                         state: 'states:birth_year',
-                        reply: ('Please enter the year that the pregnant mother was born (eg ' +
-                                '1981)')
+                        reply: ('Please enter the year that the pregnant ' +
+                                'mother was born (for example: 1981)')
                     })
                     .check(function(api) {
                         var contact = _.find(api.contacts.store, {
@@ -603,8 +636,8 @@ describe("app", function() {
                     .check.interaction({
                         state: 'states:birth_year',
                         reply: ('There was an error in your entry. Please ' +
-                        'carefully enter the mother\'s year of birth again (eg ' +
-                        '2001)')
+                        'carefully enter the mother\'s year of birth again ' +
+                        '(for example: 2001)')
                     })
                     .run();
             });
@@ -651,8 +684,8 @@ describe("app", function() {
                     .input('1')
                     .check.interaction({
                         state: 'states:birth_day',
-                        reply: ('Please enter the day that the mother was born ' +
-                            '(eg 14).')
+                        reply: ('Please enter the day that the mother was ' +
+                            'born (for example: 14).')
                     })
                     .check(function(api) {
                         var contact = _.find(api.contacts.store, {
@@ -673,8 +706,8 @@ describe("app", function() {
                     .check.interaction({
                         state: 'states:birth_day',
                         reply: ('There was an error in your entry. Please ' +
-                        'carefully enter the mother\'s day of birth again (eg ' +
-                        '8)')
+                        'carefully enter the mother\'s day of birth again ' +
+                        '(for example: 8)')
                     })
                     .check(function(api) {
                         var contact = _.find(api.contacts.store, {
@@ -732,6 +765,19 @@ describe("app", function() {
                                     ussd_sessions: '5'
                                 }
                             });
+                            api.contacts.add( {
+                                msisdn: '+27821234567',
+                                extra : {
+                                    clinic_code: '12345',
+                                    suspect_pregnancy: 'yes',
+                                    id_type: 'sa_id',
+                                    sa_id: '5101025009086',
+                                    birth_year: '1951',
+                                    birth_month: '01',
+                                    birth_day: '02',
+                                    dob: '1951-01-02'
+                                }
+                            });
                         })
                         .setup.user.state('states:language')
                         .input('1')
@@ -768,15 +814,23 @@ describe("app", function() {
             describe("if the phone used is the mom's", function() {
                 it("should save msg language, thank them and exit", function() {
                     return tester
+                        .setup.user.addr('+27821234567')
                         .setup(function(api) {
                             api.contacts.add( {
-                                msisdn: '+270001',
+                                msisdn: '+27821234567',
                                 extra : {
+                                    clinic_code: '12345',
+                                    suspect_pregnancy: 'yes',
+                                    id_type: 'sa_id',
+                                    sa_id: '5101025009086',
+                                    birth_year: '1951',
+                                    birth_month: '01',
+                                    birth_day: '02',
+                                    dob: '1951-01-02',
                                     ussd_sessions: '5'
                                 }
                             });
                         })
-                        .setup.user.addr('+270001')
                         .setup.user.state('states:language')
                         .input('1')
                         .check.interaction({
@@ -787,7 +841,7 @@ describe("app", function() {
                         })
                         .check(function(api) {
                             var contact = _.find(api.contacts.store, {
-                              msisdn: '+270001'
+                              msisdn: '+27821234567'
                             });
                             assert.equal(contact.extra.language_choice, 'en');
                             assert.equal(contact.extra.ussd_sessions, '0');

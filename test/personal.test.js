@@ -14,6 +14,16 @@ describe("app", function() {
 
         beforeEach(function() {
             app = new go.app.GoNDOH();
+            go.utils.get_timestamp = function() {
+                return '20130819144811';
+            };
+            go.utils.get_uuid = function() {
+                return 'b18c62b4-828e-4b52-25c9-725a1f43fb37';
+            };
+
+            go.utils.get_oid = function(){
+                return '2.25.169380846032024';
+            };
 
             tester = new AppTester(app);
 
@@ -31,12 +41,13 @@ describe("app", function() {
                     endpoints: {
                         "sms": {"delivery_class": "sms"}
                     },
-                    channel: "*120*550#"
-                })
-                .setup(function(api) {
-                    api.contacts.add( {
-                        msisdn: '+27001'
-                    });
+                    channel: "*120*550#",
+                    jembi: {
+                        username: 'foo',
+                        password: 'bar',
+                        url: 'http://test/v2/',
+                        url_json: 'http://test/v2/json/'
+                    }
                 })
                 .setup(function(api) {
                     api.kv.store['test.clinic.unique_users'] = 0;
@@ -80,7 +91,7 @@ describe("app", function() {
             });
 
             describe("when the last state is states:end_success", function() {
-                it("should not fire a metric", function() {
+                it.skip("should not fire a metric", function() {
                     return tester
                         .setup.user.state('states:end_success')
                         .input.session_event('close')
@@ -290,6 +301,16 @@ describe("app", function() {
         describe("after the user enters their ID number after '50", function() {
             it("should set their ID no, extract their DOB, thank them and exit", function() {
                 return tester
+                    .setup(function(api) {
+                        api.contacts.add({
+                            msisdn: '+27001',
+                            extra : {
+                                language_choice: 'en',
+                                suspect_pregnancy: 'yes',
+                                id_type: 'sa_id'
+                            }
+                        });
+                    })
                     .setup.user.addr('+27001')
                     .setup.user.state('states:sa_id')
                     .input('5101015009088')
@@ -313,9 +334,55 @@ describe("app", function() {
             });
         });
 
+        describe("after the user enters their ID number after '50 (test 2)", function() {
+            it("should set their ID no, extract their DOB, thank them and exit", function() {
+                return tester
+                    .setup(function(api) {
+                        api.contacts.add({
+                            msisdn: '+27001',
+                            extra : {
+                                language_choice: 'en',
+                                suspect_pregnancy: 'yes',
+                                id_type: 'sa_id'
+                            }
+                        });
+                    })
+                    .setup.user.addr('+27001')
+                    .setup.user.state('states:sa_id')
+                    .input('5101025009086')
+                    .check.interaction({
+                        state: 'states:end_success',
+                        reply: ('Thank you for subscribing to MomConnect. ' +
+                            'You will now receive free messages about ' +
+                            'MomConnect. Visit your nearest clinic to get ' + 
+                            'the full set of messages.')
+                    })
+                    .check(function(api) {
+                        var contact = api.contacts.store[0];
+                        assert.equal(contact.extra.sa_id, '5101025009086');
+                        assert.equal(contact.extra.birth_year, '1951');
+                        assert.equal(contact.extra.birth_month, '01');
+                        assert.equal(contact.extra.birth_day, '02');
+                        assert.equal(contact.extra.dob, '1951-01-02');
+                    })
+                    .check.reply.ends_session()
+                    .run();
+            });
+        });
+
         describe("after the user enters their ID number before '50", function() {
             it("should set their ID no, extract their DOB", function() {
                 return tester
+                    .setup(function(api) {
+                        api.contacts.add({
+                            msisdn: '+27001',
+                            extra : {
+                                language_choice: 'en',
+                                suspect_pregnancy: 'yes',
+                                id_type: 'sa_id'
+                            }
+                        });
+                    })
                     .setup.user.addr('+27001')
                     .setup.user.state('states:sa_id')
                     .input('2012315678097')
@@ -332,6 +399,16 @@ describe("app", function() {
         describe("after the user enters their ID number on '50", function() {
             it("should set their ID no, extract their DOB", function() {
                 return tester
+                    .setup(function(api) {
+                        api.contacts.add({
+                            msisdn: '+27001',
+                            extra : {
+                                language_choice: 'en',
+                                suspect_pregnancy: 'yes',
+                                id_type: 'sa_id'
+                            }
+                        });
+                    })
                     .setup.user.addr('+27001')
                     .setup.user.state('states:sa_id')
                     .input('5002285000007')
@@ -413,6 +490,17 @@ describe("app", function() {
         describe("after the user enters their passport number", function() {
             it("should set their passport number, thank them and exit", function() {
                 return tester
+                    .setup(function(api) {
+                        api.contacts.add({
+                            msisdn: '+27001',
+                            extra : {
+                                language_choice: 'en',
+                                suspect_pregnancy: 'yes',
+                                id_type: 'passport',
+                                passport_origin: 'zw'
+                            }
+                        });
+                    })
                     .setup.user.addr('+27001')
                     .setup.user.state('states:passport_no')
                     .input('12345')
@@ -441,8 +529,8 @@ describe("app", function() {
                     .check.interaction({
                         state: 'states:birth_year',
                         reply: ('Since you don\'t have an ID or passport, ' +
-                            'please enter the year that you were born (eg ' +
-                            '1981)')
+                            'please enter the year that you were born (for ' +
+                            'example: 1981)')
                     })
                     .check(function(api) {
                         var contact = api.contacts.store[0];
@@ -493,8 +581,8 @@ describe("app", function() {
                     .check.interaction({
                         state: 'states:birth_year',
                         reply: ('There was an error in your entry. Please ' +
-                        'carefully enter your year of birth again (eg ' +
-                        '2001)')
+                        'carefully enter your year of birth again (for ' +
+                        'example: 2001)')
                     })
                     .check(function(api) {
                         var contact = api.contacts.store[0];
@@ -513,7 +601,7 @@ describe("app", function() {
                     .check.interaction({
                         state: 'states:birth_day',
                         reply: ('Please enter the day that you were born ' +
-                            '(eg 14).')
+                            '(for example: 14).')
                     })
                     .check(function(api) {
                         var contact = api.contacts.store[0];
@@ -532,8 +620,8 @@ describe("app", function() {
                     .check.interaction({
                         state: 'states:birth_day',
                         reply: ('There was an error in your entry. Please ' +
-                        'carefully enter your day of birth again (eg ' +
-                        '8)')
+                        'carefully enter your day of birth again (for ' +
+                        'example: 8)')
                     })
                     .check(function(api) {
                         var contact = api.contacts.store[0];
@@ -546,15 +634,20 @@ describe("app", function() {
         describe("after the user enters their birth day", function() {
             it("should save birth day, thank them and exit", function() {
                 return tester
-                    .setup.user.addr('+270001')
                     .setup(function(api) {
-                        api.contacts.add( {
-                            msisdn: '+270001',
+                        api.contacts.add({
+                            msisdn: '+27001',
                             extra : {
+                                language_choice: 'en',
+                                suspect_pregnancy: 'yes',
+                                id_type: 'passport',
+                                passport_origin: 'zw',
+                                passport_no: '12345',
                                 ussd_sessions: '5'
                             }
                         });
                     })
+                    .setup.user.addr('+27001')
                     .setup.user.answers({
                         'states:birth_year': '1981',
                         'states:birth_month': '01'
@@ -569,7 +662,7 @@ describe("app", function() {
                             'the full set of messages.')
                     })
                     .check(function(api) {
-                        var contact = api.contacts.store[1];
+                        var contact = api.contacts.store[0];
                         assert.equal(contact.extra.birth_day, '01');
                         assert.equal(contact.extra.dob, '1981-01-01');
                         assert.equal(contact.extra.ussd_sessions, '0');

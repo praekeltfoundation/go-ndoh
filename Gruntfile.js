@@ -84,7 +84,7 @@ module.exports = function (grunt) {
                 '<%= paths.src.all %>'
             ]
         },
- 
+
         watch: {
             src: {
                 files: ['<%= paths.src.all %>'],
@@ -137,7 +137,7 @@ module.exports = function (grunt) {
     ]);
 
     grunt.registerTask('build', [
-        'concat',
+        'concat'
     ]);
 
     grunt.registerTask('default', [

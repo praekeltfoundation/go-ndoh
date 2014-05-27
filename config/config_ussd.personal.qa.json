@@ -3,7 +3,7 @@
     "env": "qa",
     "metric_store": "ndoh_qa",
     "endpoints": {"sms": {"delivery_class": "sms"}},
-    "channel": "*120*550#",
+    "channel": "*120*550*10#",
     "jembi": {
         "username": "test",
         "password": "test",

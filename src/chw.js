@@ -167,15 +167,17 @@ go.app = function() {
                 next: function(choice) {
                     self.contact.extra.id_type = choice.value;
 
-                    if (_.isUndefined(self.contact.extra.is_registered)) {
-                        go.utils.incr_kv(self.im, [self.store_name, 'no_incomplete_registrations'].join('.'));
-                        go.utils.adjust_percentage_registrations(self.im, self.metric_prefix);
-                    }
-
-                    self.contact.extra.is_registered = 'false';
-
                     return self.im.contacts.save(self.contact)
                         .then(function() {
+                            if (_.isUndefined(self.contact.extra.is_registered)) {
+                                return Q.all([
+                                    go.utils.incr_kv(self.im, [self.store_name, 'no_incomplete_registrations'].join('.')),
+                                    go.utils.adjust_percentage_registrations(self.im, self.metric_prefix)
+                                ]);
+                            }
+                        })
+                        .then(function() {
+                            self.contact.extra.is_registered = 'false';
                             return {
                                 sa_id: 'states:sa_id',
                                 passport: 'states:passport_origin',
@@ -380,11 +382,6 @@ go.app = function() {
 
                 next: function(choice) {
                     self.contact.extra.language_choice = choice.value;
-
-                    go.utils.incr_kv(self.im, [self.store_name, 'no_complete_registrations'].join('.'));
-                    go.utils.decr_kv(self.im, [self.store_name, 'no_incomplete_registrations'].join('.'));
-                    go.utils.adjust_percentage_registrations(self.im, self.metric_prefix);
-
                     self.contact.extra.is_registered = 'true';
 
                     return self.im.user.set_lang(choice.value)
@@ -395,7 +392,10 @@ go.app = function() {
                         .then(function() {
                             return Q.all([
                                 self.im.metrics.fire.avg((self.metric_prefix + ".avg.sessions_to_register"),
-                                    parseInt(self.user.extra.ussd_sessions, 10))
+                                    parseInt(self.user.extra.ussd_sessions, 10)),
+                                go.utils.incr_kv(self.im, [self.store_name, 'no_complete_registrations'].join('.')),
+                                go.utils.decr_kv(self.im, [self.store_name, 'no_incomplete_registrations'].join('.')),
+                                go.utils.adjust_percentage_registrations(self.im, self.metric_prefix)
                             ]);
                         })
                         .then(function() {

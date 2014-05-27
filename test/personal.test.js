@@ -57,6 +57,10 @@ describe("app", function() {
                     api.kv.store['test.personal.no_incomplete_registrations'] = 2;
                 })
                 .setup(function(api) {
+                    api.metrics.stores = {'test_metric_store': {}};
+                })
+                
+                .setup(function(api) {
                     fixtures().forEach(api.http.fixtures.add);
                 });
         });
@@ -91,13 +95,31 @@ describe("app", function() {
             });
 
             describe("when the last state is states:end_success", function() {
-                it.skip("should not fire a metric", function() {
+                it("should not fire a metric", function() {
                     return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27001',
+                                extra : {
+                                    language_choice: 'en',
+                                    suspect_pregnancy: 'yes',
+                                    id_type: 'passport',
+                                    passport_origin: 'zw',
+                                    passport_no: '12345',
+                                    ussd_sessions: '5'
+                                }
+                            });
+                        })
+                        .setup.user.addr('+27001')
+                        .setup.user.answers({
+                            'states:birth_year': '1981',
+                            'states:birth_month': '01'
+                        })
                         .setup.user.state('states:end_success')
                         .input.session_event('close')
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
-                            assert.equal(metrics, undefined);
+                            assert.deepEqual(metrics['test.personal.states:end_success.no_incomplete'], undefined);
                         })
                         .run();
                 });
@@ -151,7 +173,7 @@ describe("app", function() {
                         .input('2') // make sure session is not new
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
-                            assert.equal(metrics, undefined);
+                            assert.equal(metrics['test.personal.states:birth_month.no_incomplete'], undefined);
                         })
                         .run();
                 });

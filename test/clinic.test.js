@@ -56,6 +56,9 @@ describe("app", function() {
                     api.kv.store['test.clinic.no_incomplete_registrations'] = 2;
                 })
                 .setup(function(api) {
+                    api.metrics.stores = {'test_metric_store': {}};
+                })
+                .setup(function(api) {
                     fixtures().forEach(api.http.fixtures.add);
                 });
         });
@@ -89,35 +92,35 @@ describe("app", function() {
                 });
             });
 
-            describe("when the last state is states:end_success", function() {
-                it.skip("should not fire a metric", function() {
-                    return tester
-                        .setup.user.addr('+27821234567')
-                        .setup(function(api) {
-                            api.contacts.add( {
-                                msisdn: '+27821234567',
-                                extra : {
-                                    clinic_code: '12345',
-                                    suspect_pregnancy: 'yes',
-                                    id_type: 'sa_id',
-                                    sa_id: '5101025009086',
-                                    birth_year: '1951',
-                                    birth_month: '01',
-                                    birth_day: '02',
-                                    dob: '1951-01-02',
-                                    ussd_sessions: '5'
-                                }
-                            });
-                        })
-                        .setup.user.state('states:end_success')
-                        .input.session_event('close')
-                        .check(function(api) {
-                            var metrics = api.metrics.stores.test_metric_store;
-                            assert.equal(metrics, undefined);
-                        })
-                        .run();
-                });
-            });
+            // describe("when the last state is states:end_success", function() {
+            //     it.skip("should not fire a metric", function() {
+            //         return tester
+            //             .setup.user.addr('+27821234567')
+            //             .setup(function(api) {
+            //                 api.contacts.add( {
+            //                     msisdn: '+27821234567',
+            //                     extra : {
+            //                         clinic_code: '12345',
+            //                         suspect_pregnancy: 'yes',
+            //                         id_type: 'sa_id',
+            //                         sa_id: '5101025009086',
+            //                         birth_year: '1951',
+            //                         birth_month: '01',
+            //                         birth_day: '02',
+            //                         dob: '1951-01-02',
+            //                         ussd_sessions: '5'
+            //                     }
+            //                 });
+            //             })
+            //             .setup.user.state('states:end_success')
+            //             .input.session_event('close')
+            //             .check(function(api) {
+            //                 var metrics = api.metrics.stores.test_metric_store;
+                            
+            //             })
+            //             .run();
+            //     });
+            // });
         });
 
         describe("when a new session is started", function() {
@@ -167,7 +170,7 @@ describe("app", function() {
                         .input('2') // make sure session is not new
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
-                            assert.equal(metrics, undefined);
+                            assert.deepEqual(metrics['test.clinic.states:birth_day.no_incomplete'], undefined);
                         })
                         .run();
                 });
@@ -805,6 +808,7 @@ describe("app", function() {
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
                             assert.deepEqual(metrics['test.clinic.avg.sessions_to_register'].values, [5]);
+                            assert.deepEqual(metrics['test.clinic.states:end_success.no_incomplete'], undefined);
                         })
                         .check.reply.ends_session()
                         .run();
@@ -856,6 +860,7 @@ describe("app", function() {
                             assert.deepEqual(metrics['test.clinic.avg.sessions_to_register'].values, [5]);
                             assert.deepEqual(metrics['test.clinic.percent_incomplete_registrations'].values, [25]);
                             assert.deepEqual(metrics['test.clinic.percent_complete_registrations'].values, [75]);
+                            assert.deepEqual(metrics['test.clinic.states:end_success.no_incomplete'], undefined);
                         })
                         .check.reply.ends_session()
                         .run();

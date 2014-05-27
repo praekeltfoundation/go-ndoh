@@ -1,0 +1,6 @@
+{
+    "name": "optout",
+    "env": "prd",
+    "metric_store": "ndoh_prd",
+    "channel": "*120*550*1#"
+}

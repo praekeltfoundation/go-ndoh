@@ -1,0 +1,6 @@
+{
+    "name": "optout",
+    "env": "qa",
+    "metric_store": "ndoh_qa",
+    "channel": "*120*550*11#"
+}

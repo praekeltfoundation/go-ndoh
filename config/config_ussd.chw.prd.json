@@ -3,5 +3,11 @@
     "env": "prd",
     "metric_store": "ndoh_prd",
     "endpoints": {"sms": {"delivery_class": "sms"}},
-    "channel": "*120*550*3#"
+    "channel": "*120*550*3#",
+    "jembi": {
+        "username": "test",
+        "password": "test",
+        "url": "http://npr-him.jembi.org:5001/ws/rest/v1/registration/net.ihe/DocumentDossier",
+        "url_json": "http://npr-him.jembi.org:5001/ws/rest/v1/subscription"
+    }
 }

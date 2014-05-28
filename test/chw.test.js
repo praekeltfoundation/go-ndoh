@@ -82,6 +82,26 @@ describe("app", function() {
                 });
             });
 
+            describe("when the last state is states:birth_day", function() {
+                it("and no_incomplete was 1 should increase states:birth_day.no_incomplete metric to 2", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.metrics.stores.test_metric_store = {
+                                'test.chw.states:birth_day.no_incomplete': { agg: 'last', values: [ 1 ] } 
+                            };
+                        })
+                        .setup.user.state('states:birth_day')
+                        .input.session_event('close')
+                        .check(function(api) {
+                            var metrics = api.metrics.stores.test_metric_store;
+                            // console.log(metrics);
+                            // outputs ... { 'test.chw.states:birth_day.no_incomplete': { agg: 'last', values: [ 1, 1 ] } }
+                            assert.deepEqual(metrics['test.chw.states:birth_day.no_incomplete'].values, [2]);
+                        })
+                        .run();
+                });
+            });
+
             describe("when the last state is states:end_success", function() {
                 it("should not fire a metric", function() {
                     return tester

@@ -7,7 +7,6 @@ var utils = vumigo.utils;
 var libxml = require('libxmljs');
 var crypto = require('crypto');
 var HttpApi = vumigo.http.api.HttpApi;
-// var JsonApi = vumigo.http.api.JsonApi;
 
 // override moment default century switch at '68 with '49
 moment.parseTwoDigitYear = function (input) {

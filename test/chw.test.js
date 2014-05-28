@@ -89,14 +89,13 @@ describe("app", function() {
                             api.metrics.stores.test_metric_store = {
                                 'test.chw.states:birth_day.no_incomplete': { agg: 'last', values: [ 1 ] } 
                             };
+                            api.kv.store['test_metric_store.test.chw.states:birth_day.no_incomplete'] = 1;
                         })
                         .setup.user.state('states:birth_day')
                         .input.session_event('close')
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
-                            // console.log(metrics);
-                            // outputs ... { 'test.chw.states:birth_day.no_incomplete': { agg: 'last', values: [ 1, 1 ] } }
-                            assert.deepEqual(metrics['test.chw.states:birth_day.no_incomplete'].values, [2]);
+                            assert.deepEqual(metrics['test.chw.states:birth_day.no_incomplete'].values, [1, 2]);
                         })
                         .run();
                 });

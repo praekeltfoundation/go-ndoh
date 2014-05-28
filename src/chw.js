@@ -54,7 +54,8 @@ go.app = function() {
                 .then(function(user_contact) {
                     if ((!_.isUndefined(user_contact.extra.working_on)) && (user_contact.extra.working_on !== "")){
                         self.user = user_contact;
-                        return self.im.contacts.get(user_contact.extra.working_on, {create: true})
+                        return self.im.contacts
+                            .get(user_contact.extra.working_on, {create: true})
                             .then(function(working_on){
                                 self.contact = working_on;
                             });
@@ -116,7 +117,8 @@ go.app = function() {
                 ],
 
                 next: function(choice) {
-                    return self.im.contacts.save(self.contact)
+                    return self.im.contacts
+                        .save(self.contact)
                         .then(function() {
                             return {
                                 yes: 'states:id_type',
@@ -152,7 +154,8 @@ go.app = function() {
                     msisdn = go.utils.normalise_sa_msisdn(content);
                     self.contact.extra.working_on = msisdn;
 
-                    return self.im.contacts.save(self.contact)
+                    return self.im.contacts
+                        .save(self.contact)
                         .then(function() {
                             return {
                                 name: 'states:id_type'
@@ -176,7 +179,8 @@ go.app = function() {
                 next: function(choice) {
                     self.contact.extra.id_type = choice.value;
 
-                    return self.im.contacts.save(self.contact)
+                    return self.im.contacts
+                        .save(self.contact)
                         .then(function() {
                             if (_.isUndefined(self.contact.extra.is_registered)) {
                                 return Q.all([
@@ -227,7 +231,8 @@ go.app = function() {
                     self.contact.extra.birth_day = moment(id_date_of_birth, 'YYYY-MM-DD').format('DD');
                     self.contact.extra.dob = id_date_of_birth;
 
-                    return self.im.contacts.save(self.contact)
+                    return self.im.contacts
+                        .save(self.contact)
                         .then(function() {
                             return {
                                 name: 'states:language'
@@ -254,7 +259,8 @@ go.app = function() {
                 next: function(choice) {
                     self.contact.extra.passport_origin = choice.value;
 
-                    return self.im.contacts.save(self.contact)
+                    return self.im.contacts
+                        .save(self.contact)
                         .then(function() {
                             return {
                                 name: 'states:passport_no'
@@ -271,7 +277,8 @@ go.app = function() {
                 next: function(content) {
                     self.contact.extra.passport_no = content;
 
-                    return self.im.contacts.save(self.contact)
+                    return self.im.contacts
+                        .save(self.contact)
                         .then(function() {
                             return {
                                 name: 'states:language'
@@ -306,7 +313,8 @@ go.app = function() {
                 next: function(content) {
                     self.contact.extra.birth_year = content;
 
-                    return self.im.contacts.save(self.contact)
+                    return self.im.contacts
+                        .save(self.contact)
                         .then(function() {
                             return {
                                 name: 'states:birth_month'
@@ -325,7 +333,8 @@ go.app = function() {
                 next: function(choice) {
                     self.contact.extra.birth_month = choice.value;
 
-                    return self.im.contacts.save(self.contact)
+                    return self.im.contacts
+                        .save(self.contact)
                         .then(function() {
                             return {
                                 name: 'states:birth_day'
@@ -366,7 +375,8 @@ go.app = function() {
                     // -1 for 0-bound month
 
 
-                    return self.im.contacts.save(self.contact)
+                    return self.im.contacts
+                        .save(self.contact)
                         .then(function() {
                             return {
                                 name: 'states:language'
@@ -394,8 +404,9 @@ go.app = function() {
                     self.contact.extra.is_registered = 'true';
                     self.contact.extra.metric_sessions_to_register = self.user.extra.ussd_sessions;
 
-                    return self.im.user.set_lang(choice.value)
-                    // we may not have to run this for this flow
+                    return self.im.user
+                        .set_lang(choice.value)
+                        // we may not have to run this for this flow
                         .then(function() {
                             return self.im.contacts.save(self.contact);
                         })
@@ -438,7 +449,8 @@ go.app = function() {
                 events: {
                     'state:enter': function() {
                         var built_json = go.utils.build_json_doc(self.contact, self.user, "pre-registration");
-                        return go.utils.jembi_json_api_call(built_json, self.im)
+                        return go.utils
+                            .jembi_json_api_call(built_json, self.im)
                             .then(function(result) {
                                 if (result.code >= 200 && result.code < 300){
                                     // TODO: Log metric

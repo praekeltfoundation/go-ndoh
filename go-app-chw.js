@@ -677,7 +677,7 @@ go.app = function() {
             });
 
             self.im.on('state:enter', function(e) {
-                self.contact.extra.last_stage = e.state.name;
+                self.contact.extra.last_state = e.state.name;
                 return self.im.contacts.save(self.contact);
             });
             

@@ -1,6 +1,7 @@
 var vumigo = require('vumigo_v02');
 var fixtures = require('./fixtures');
 var AppTester = vumigo.AppTester;
+var assert = require('assert');
 
 var messagestore = require('./optoutstore');
 var DummyOptoutResource = messagestore.DummyOptoutResource;
@@ -17,8 +18,15 @@ describe("app", function() {
 
             tester
                 .setup.config.app({
-                    name: 'test_optout',
-                    testing: 'true'
+                    name: 'optout',
+                    testing: 'true',
+                    channel: "*120*550#1"
+                })
+                .setup.char_limit(160)
+                .setup(function(api) {
+                    api.contacts.add( {
+                        msisdn: '+27001'
+                    });
                 })
                 .setup(function(api) {
                     fixtures().forEach(api.http.fixtures.add);
@@ -52,6 +60,7 @@ describe("app", function() {
         describe("when the user selects a reason for opting out", function() {
             it("should thank them and exit", function() {
                 return tester
+                    .setup.user.addr('+27001')
                     .setup.user.state('states:start')
                     .input('1')
                     .check.interaction({
@@ -59,6 +68,10 @@ describe("app", function() {
                         reply: ('Thank you. You will no longer receive ' +
                             'messages from us. If you have any medical ' +
                             'concerns please visit your nearest clinic.')
+                    })
+                    .check(function(api) {
+                        var contact = api.contacts.store[0];
+                        assert.equal(contact.extra.opt_out_reason, 'miscarriage');
                     })
                     .check.reply.ends_session()
                     .run();

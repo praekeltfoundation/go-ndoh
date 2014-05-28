@@ -35,6 +35,7 @@ describe("app", function() {
                 .setup.char_limit(160)
                 .setup.config.app({
                     name: 'personal',
+                    testing: 'true',
                     env: 'test',
                     metric_store: 'test_metric_store',
                     endpoints: {
@@ -56,9 +57,129 @@ describe("app", function() {
                     api.kv.store['test.personal.no_incomplete_registrations'] = 2;
                 })
                 .setup(function(api) {
+                    api.metrics.stores = {'test_metric_store': {}};
+                })
+                
+                .setup(function(api) {
                     fixtures().forEach(api.http.fixtures.add);
                 });
         });
+
+        // no_incomplete metric tests
+        describe("when a session is terminated", function() {
+
+            describe("when the last state is states:start", function() {
+                it("should increase states:start.no_incomplete metric by 1", function() {
+                    return tester
+                        .setup.user.state('states:start')
+                        .input.session_event('close')
+                        .check(function(api) {
+                            var metrics = api.metrics.stores.test_metric_store;
+                            assert.deepEqual(metrics['test.personal.states:start.no_incomplete'].values, [1]);
+                        })
+                        .run();
+                });
+            });
+
+            describe("when the last state is states:birth_day", function() {
+                it("should increase states:birth_day.no_incomplete metric by 1", function() {
+                    return tester
+                        .setup.user.state('states:birth_day')
+                        .input.session_event('close')
+                        .check(function(api) {
+                            var metrics = api.metrics.stores.test_metric_store;
+                            assert.deepEqual(metrics['test.personal.states:birth_day.no_incomplete'].values, [1]);
+                        })
+                        .run();
+                });
+            });
+
+            describe("when the last state is states:end_success", function() {
+                it("should not fire a metric", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27001',
+                                extra : {
+                                    language_choice: 'en',
+                                    suspect_pregnancy: 'yes',
+                                    id_type: 'passport',
+                                    passport_origin: 'zw',
+                                    passport_no: '12345',
+                                    ussd_sessions: '5'
+                                }
+                            });
+                        })
+                        .setup.user.addr('+27001')
+                        .setup.user.answers({
+                            'states:birth_year': '1981',
+                            'states:birth_month': '01'
+                        })
+                        .setup.user.state('states:end_success')
+                        .input.session_event('close')
+                        .check(function(api) {
+                            var metrics = api.metrics.stores.test_metric_store;
+                            assert.deepEqual(metrics['test.personal.states:end_success.no_incomplete'], undefined);
+                        })
+                        .run();
+                });
+            });
+        });
+
+        describe("when a new session is started", function() {
+
+            describe("when it is a new user logging on", function() {
+                it("should set the last metric value in states:start.no_incomplete to 0", function() {
+                    return tester
+                        .setup.user.addr('+275678')
+                        .start()
+                        .check(function(api) {
+                            var metrics = api.metrics.stores.test_metric_store;
+                            assert.deepEqual(metrics['test.personal.states:start.no_incomplete'].values, [1, 0]);
+                        })
+                        .run();
+                });
+            });
+
+            describe("when it is an existing user logging on at states:start", function() {
+                it("should decrease the metric states:start.no_incomplete by 1", function() {
+                    return tester
+                        .setup.user.lang('en')  // make sure user is not seen as new
+                        .start()
+                        .check(function(api) {
+                            var metrics = api.metrics.stores.test_metric_store;
+                            assert.deepEqual(metrics['test.personal.states:start.no_incomplete'].values, [-1]);
+                        })
+                        .run();
+                });
+            });
+
+            describe("when it is an existing starting a session at states:birth_day", function() {
+                it("should decrease the metric states:birth_day.no_incomplete by 1", function() {
+                    return tester
+                        .setup.user.state('states:birth_day')
+                        .check(function(api) {
+                            var metrics = api.metrics.stores.test_metric_store;
+                            assert.deepEqual(metrics['test.personal.states:birth_day.no_incomplete'].values, [-1]);
+                        })
+                        .run();
+                });
+            });
+
+            describe("when it is an existing user continuing a session at states:birth_month", function() {
+                it("should not fire metric states:birth_month.no_incomplete", function() {
+                    return tester
+                        .setup.user.state('states:birth_month')
+                        .input('2') // make sure session is not new
+                        .check(function(api) {
+                            var metrics = api.metrics.stores.test_metric_store;
+                            assert.equal(metrics['test.personal.states:birth_month.no_incomplete'], undefined);
+                        })
+                        .run();
+                });
+            });
+        });
+        // end no_incomplete metrics tests
 
         describe("when a new unique user logs on", function() {
             it("should increment the no. of unique users by 1", function() {
@@ -94,10 +215,12 @@ describe("app", function() {
                     .check(function(api) {
                         var contact = api.contacts.store[0];
                         assert.equal(contact.extra.ussd_sessions, '1');
+                        assert.equal(contact.extra.metric_sum_sessions, '1');
+                        assert.equal(contact.extra.last_stage, 'states:start');
                     })
                     .check(function(api) {
                         var metrics = api.metrics.stores.test_metric_store;
-                        assert.deepEqual(metrics['test.personal.states:start.no_incomplete'].values, [1]);
+                        assert.deepEqual(metrics['test.sum.sessions'].values, [1]);
                     })
                     .run();
             });
@@ -126,8 +249,6 @@ describe("app", function() {
                     })
                     .check(function(api) {
                         var metrics = api.metrics.stores.test_metric_store;
-                        assert.deepEqual(metrics['test.personal.states:start.no_incomplete'].values, [1, 0]);
-                        assert.deepEqual(metrics['test.personal.states:suspect_pregnancy.no_incomplete'].values, [1]);
                         assert.deepEqual(metrics['test.personal.percent_incomplete_registrations'].values, [60]);
                         assert.deepEqual(metrics['test.personal.percent_complete_registrations'].values, [40]);
                     })
@@ -151,11 +272,6 @@ describe("app", function() {
                     .check(function(api) {
                         var contact = api.contacts.store[0];
                         assert.equal(contact.extra.suspect_pregnancy, 'no');
-                    })
-                    .check(function(api) {
-                        var metrics = api.metrics.stores.test_metric_store;
-                        assert.deepEqual(metrics['test.personal.states:suspect_pregnancy.no_incomplete'].values, [1, 0]);
-                        assert.equal(metrics['test.personal.states:end_not_pregnant.no_incomplete'], undefined);
                     })
                     .run();
             });
@@ -441,6 +557,7 @@ describe("app", function() {
                     .check(function(api) {
                         var contact = api.contacts.store[0];
                         assert.equal(contact.extra.id_type, 'none');
+                        assert.equal(contact.extra.last_stage, 'states:birth_year');
                     })
                     .run();
             });
@@ -571,12 +688,12 @@ describe("app", function() {
                         assert.equal(contact.extra.birth_day, '01');
                         assert.equal(contact.extra.dob, '1981-01-01');
                         assert.equal(contact.extra.ussd_sessions, '0');
+                        assert.equal(contact.extra.last_stage, 'states:end_success');
+                        assert.equal(contact.extra.metric_sessions_to_register, '5');
                     })
                     .check(function(api) {
                         var metrics = api.metrics.stores.test_metric_store;
                         assert.deepEqual(metrics['test.personal.avg.sessions_to_register'].values, [5]);
-                        assert.deepEqual(metrics['test.personal.states:birth_day.no_incomplete'].values, [1, 0]);
-                        assert.equal(metrics['test.personal.states:end_success.no_incomplete'], undefined);
                         assert.deepEqual(metrics['test.personal.percent_incomplete_registrations'].values, [25]);
                         assert.deepEqual(metrics['test.personal.percent_complete_registrations'].values, [75]);
                     })

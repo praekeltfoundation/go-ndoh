@@ -598,8 +598,8 @@ go.utils = {
             var percentage_incomplete = (no_incomplete / total_attempted) * 100;
             var percentage_complete = (no_complete / total_attempted) * 100;
             return Q.all([
-                im.metrics.fire([metric_prefix, 'percent_incomplete_registrations'].join('.'), percentage_incomplete),
-                im.metrics.fire([metric_prefix, 'percent_complete_registrations'].join('.'), percentage_complete)
+                im.metrics.fire.last([metric_prefix, 'percent_incomplete_registrations'].join('.'), percentage_incomplete),
+                im.metrics.fire.last([metric_prefix, 'percent_complete_registrations'].join('.'), percentage_complete)
             ]);
         });
     },

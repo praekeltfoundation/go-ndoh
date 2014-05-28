@@ -19,45 +19,42 @@ go.app = function() {
             self.store_name = [self.env, self.im.config.name].join('.');
 
             self.im.on('session:new', function(e) {
-                self.user.extra.ussd_sessions = go.utils.incr_user_extra(
-                    self.user.extra.ussd_sessions, 1);
+                self.user.extra.ussd_sessions = go.utils.incr_user_extra(self.user.extra.ussd_sessions, 1);
+                self.user.extra.metric_sum_sessions = go.utils.incr_user_extra(self.user.extra.metric_sum_sessions, 1);
 
                 return Q.all([
-                    self.im.contacts.save(self.user)
+                    self.im.contacts.save(self.user),
+                    self.im.metrics.fire.inc([self.env, 'sum.sessions'].join('.'), 1),
+                    self.fire_incomplete(e.im.state.name, -1)
                 ]);
             });
 
             self.im.on('session:close', function(e) {
-                if (!self.should_send_dialback(e)) { return; }
-                return self.send_dialback();
+                return Q.all([
+                    self.fire_incomplete(e.im.state.name, 1),
+                    self.dial_back(e)
+                ]);
             });
 
             self.im.user.on('user:new', function(e) {
-                go.utils.fire_users_metrics(self.im, self.store_name, self.env, self.metric_prefix);
+                return Q.all([
+                    self.fire_incomplete('states:start', 1),
+                    go.utils.fire_users_metrics(self.im, self.store_name, self.env, self.metric_prefix)
+                ]);
             });
 
             self.im.on('state:enter', function(e) {
-                var ignore_states = ['states:end_success'];
-
-                if (!_.contains(ignore_states, e.state.name)) {
-                    self.im.metrics.fire.inc(([self.metric_prefix, e.state.name, "no_incomplete"].join('.')), {amount: 1});
-                } 
+                self.contact.extra.last_stage = e.state.name;
+                return self.im.contacts.save(self.contact);
             });
             
-            self.im.on('state:exit', function(e) {
-                var ignore_states = ['states:end_success'];
-
-                if (!_.contains(ignore_states, e.state.name)) {
-                    self.im.metrics.fire.inc(([self.metric_prefix, e.state.name, "no_incomplete"].join('.')), {amount: -1});
-                } 
-            });
-
             return self.im.contacts
                 .for_user()
                 .then(function(user_contact) {
                     if ((!_.isUndefined(user_contact.extra.working_on)) && (user_contact.extra.working_on !== "")){
                         self.user = user_contact;
-                        return self.im.contacts.get(user_contact.extra.working_on, {create: true})
+                        return self.im.contacts
+                            .get(user_contact.extra.working_on, {create: true})
                             .then(function(working_on){
                                 self.contact = working_on;
                             });
@@ -85,11 +82,23 @@ go.app = function() {
                 });
         };
 
+        self.dial_back = function(e) {
+            if (!self.should_send_dialback(e)) { return; }
+            return self.send_dialback();
+        };
+
         self.get_finish_reg_sms = function() {
             return $("Please dial back in to {{ USSD_number }} to complete the pregnancy registration.")
                 .context({
                     USSD_number: self.im.config.channel
                 });
+        };
+
+        self.fire_incomplete = function(name, val) {
+            var ignore_states = ['states:end_success'];
+            if (!_.contains(ignore_states, name)) {
+                return self.im.metrics.fire.inc(([self.metric_prefix, name, "no_incomplete"].join('.')), {amount: val});
+            }
         };
 
         self.states.add('states:start', function(name) {
@@ -123,7 +132,8 @@ go.app = function() {
                 next: function(content) {
                     self.contact.extra.clinic_code = content;
 
-                    return self.im.contacts.save(self.contact)
+                    return self.im.contacts
+                        .save(self.contact)
                         .then(function() {
                             if (_.isUndefined(self.contact.extra.is_registered)) {
                                 return Q.all([
@@ -167,7 +177,8 @@ go.app = function() {
                     msisdn = go.utils.normalise_sa_msisdn(content);
                     self.user.extra.working_on = msisdn;
 
-                    return self.im.contacts.save(self.user)
+                    return self.im.contacts
+                        .save(self.user)
                         .then(function() {
                             return {
                                 name: 'states:clinic_code'
@@ -191,7 +202,8 @@ go.app = function() {
                 next: function(choice) {
                     self.contact.extra.due_date_month = choice.value;
 
-                    return self.im.contacts.save(self.contact)
+                    return self.im.contacts
+                        .save(self.contact)
                         .then(function() {
                             return {
                                 name: 'states:id_type'
@@ -215,7 +227,8 @@ go.app = function() {
                 next: function(choice) {
                     self.contact.extra.id_type = choice.value;
 
-                    return self.im.contacts.save(self.contact)
+                    return self.im.contacts
+                        .save(self.contact)
                         .then(function() {
                             return {
                                 sa_id: 'states:sa_id',
@@ -257,7 +270,8 @@ go.app = function() {
                     self.contact.extra.birth_day = moment(id_date_of_birth, 'YYYY-MM-DD').format('DD');
                     self.contact.extra.dob = id_date_of_birth;
 
-                    return self.im.contacts.save(self.contact)
+                    return self.im.contacts
+                        .save(self.contact)
                         .then(function() {
                             return {
                                 name: 'states:language'
@@ -284,7 +298,8 @@ go.app = function() {
                 next: function(choice) {
                     self.contact.extra.passport_origin = choice.value;
 
-                    return self.im.contacts.save(self.contact)
+                    return self.im.contacts
+                        .save(self.contact)
                         .then(function() {
                             return {
                                 name: 'states:passport_no'
@@ -301,7 +316,8 @@ go.app = function() {
                 next: function(content) {
                     self.contact.extra.passport_no = content;
 
-                    return self.im.contacts.save(self.contact)
+                    return self.im.contacts
+                        .save(self.contact)
                         .then(function() {
                             return {
                                 name: 'states:language'
@@ -337,7 +353,8 @@ go.app = function() {
                 next: function(content) {
                     self.contact.extra.birth_year = content;
 
-                    return self.im.contacts.save(self.contact)
+                    return self.im.contacts
+                        .save(self.contact)
                         .then(function() {
                             return {
                                 name: 'states:birth_month'
@@ -356,7 +373,8 @@ go.app = function() {
                 next: function(choice) {
                     self.contact.extra.birth_month = choice.value;
 
-                    return self.im.contacts.save(self.contact)
+                    return self.im.contacts
+                        .save(self.contact)
                         .then(function() {
                             return {
                                 name: 'states:birth_day'
@@ -397,7 +415,8 @@ go.app = function() {
                     self.contact.extra.dob = moment({year: self.im.user.answers['states:birth_year'], month: (self.im.user.answers['states:birth_month'] - 1), day: content}).format('YYYY-MM-DD');
                     // -1 for 0-bound month
 
-                    return self.im.contacts.save(self.contact)
+                    return self.im.contacts
+                        .save(self.contact)
                         .then(function() {
                             return {
                                 name: 'states:language'
@@ -423,9 +442,11 @@ go.app = function() {
                 next: function(choice) {
                     self.contact.extra.language_choice = choice.value;
                     self.contact.extra.is_registered = 'true';
+                    self.contact.extra.metric_sessions_to_register = self.user.extra.ussd_sessions;
 
-                    return self.im.user.set_lang(choice.value)
-                    // we may not have to run this for this flow
+                    return self.im.user
+                        .set_lang(choice.value)
+                        // we may not have to run this for this flow
                         .then(function() {
                             return self.im.contacts.save(self.contact);
                         })
@@ -439,11 +460,17 @@ go.app = function() {
                             ]);
                         })
                         .then(function() {
-                            if (!_.isUndefined(self.user.extra.working_on)) {
+                            if (!_.isUndefined(self.user.extra.working_on) && (self.user.extra.working_on !== "")) {
                                 self.user.extra.working_on = "";
+                                self.user.extra.no_registrations = go.utils.incr_user_extra(self.user.extra.no_registrations, 1);
+                                self.contact.extra.registered_by = self.user.msisdn;
                             }
                             self.user.extra.ussd_sessions = '0';
-                            return self.im.contacts.save(self.user);
+                            
+                            return Q.all([
+                                self.im.contacts.save(self.user),
+                                self.im.contacts.save(self.contact)
+                            ]);
                         })
                         .then(function() {
                             return 'states:end_success';

@@ -10,6 +10,15 @@ go.app = function() {
         var $ = self.$;
 
 
+        self.init = function() {
+            return self.im.contacts
+                .for_user()
+                .then(function(user_contact) {
+                   self.contact = user_contact;
+                });
+        };
+
+
         self.states.add('states:start', function(name) {
             return new ChoiceState(name, {
                 question: $('Welcome to MomConnect. Why do you want to ' +
@@ -32,7 +41,16 @@ go.app = function() {
                     }
                 },
 
-                next: 'states:end'
+                next: function(choice) {
+                    self.contact.extra.opt_out_reason = choice.value;
+
+                    return self.im.contacts
+                        .save(self.contact)
+                        .then(function() {
+                            return 'states:end';
+                        });
+                }
+
             });
         });
 

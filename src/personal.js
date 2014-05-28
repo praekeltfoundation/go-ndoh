@@ -17,40 +17,37 @@ go.app = function() {
             self.metric_prefix = [self.env, self.im.config.name].join('.');
             self.store_name = [self.env, self.im.config.name].join('.');
 
-            self.im.on('session:new', function() {
+            self.im.on('session:new', function(e) {
                 self.contact.extra.ussd_sessions = go.utils.incr_user_extra(
                     self.contact.extra.ussd_sessions, 1);
+                self.contact.extra.metric_sum_sessions = go.utils.incr_user_extra(self.contact.extra.metric_sum_sessions, 1);
                 
                 return Q.all([
-                    self.im.contacts.save(self.contact)
+                    self.im.contacts.save(self.contact),
+                    self.im.metrics.fire.inc([self.env, 'sum.sessions'].join('.'), 1),
+                    self.fire_incomplete(e.im.state.name, -1)
                 ]);
             });
 
             self.im.on('session:close', function(e) {
-                if (!self.should_send_dialback(e)) { return; }
-                return self.send_dialback();
+                return Q.all([
+                    self.fire_incomplete(e.im.state.name, 1),
+                    self.dial_back(e)
+                ]);
             });
 
             self.im.user.on('user:new', function(e) {
-                go.utils.fire_users_metrics(self.im, self.store_name, self.env, self.metric_prefix);
+                return Q.all([
+                    go.utils.fire_users_metrics(self.im, self.store_name, self.env, self.metric_prefix),
+                    self.fire_incomplete('states:start', 1)
+                ]);
             });
 
             self.im.on('state:enter', function(e) {
-                var ignore_states = ['states:end_success', 'states:end_not_pregnant'];
-
-                if (!_.contains(ignore_states, e.state.name)) {
-                    self.im.metrics.fire.inc(([self.metric_prefix, e.state.name, "no_incomplete"].join('.')), {amount: 1});
-                } 
+                self.contact.extra.last_stage = e.state.name;
+                return self.im.contacts.save(self.contact);
             });
             
-            self.im.on('state:exit', function(e) {
-                var ignore_states = ['states:end_success'];
-
-                if (!_.contains(ignore_states, e.state.name)) {
-                    self.im.metrics.fire.inc(([self.metric_prefix, e.state.name, "no_incomplete"].join('.')), {amount: -1});
-                } 
-            });
-
             return self.im.contacts
                 .for_user()
                 .then(function(user_contact) {
@@ -75,11 +72,23 @@ go.app = function() {
                 });
         };
 
+        self.dial_back = function(e) {
+            if (!self.should_send_dialback(e)) { return; }
+            return self.send_dialback();
+        };
+
         self.get_finish_reg_sms = function() {
             return $("Please dial back in to {{ USSD_number }} to complete the pregnancy registration.")
                 .context({
                     USSD_number: self.im.config.channel
                 });
+        };
+
+        self.fire_incomplete = function(name, val) {
+            var ignore_states = ['states:end_success', 'states:end_not_pregnant'];
+            if (!_.contains(ignore_states, name)) {
+                return self.im.metrics.fire.inc(([self.metric_prefix, name, "no_incomplete"].join('.')), {amount: val});
+            }
         };
 
         self.states.add('states:start', function(name) {
@@ -99,7 +108,8 @@ go.app = function() {
                 next: function(choice) {
                     self.contact.extra.language_choice = choice.value;
 
-                    return self.im.user.set_lang(choice.value)
+                    return self.im.user
+                        .set_lang(choice.value)
                         .then(function() {
                             if (_.isUndefined(self.contact.extra.is_registered)) {
                                 return Q.all([
@@ -133,7 +143,8 @@ go.app = function() {
                 next: function(choice) {
                     self.contact.extra.suspect_pregnancy = choice.value;
 
-                    return self.im.contacts.save(self.contact)
+                    return self.im.contacts
+                        .save(self.contact)
                         .then(function() {
                             return {
                                 yes: 'states:id_type',
@@ -168,7 +179,8 @@ go.app = function() {
                 next: function(choice) {
                     self.contact.extra.id_type = choice.value;
 
-                    return self.im.contacts.save(self.contact)
+                    return self.im.contacts
+                        .save(self.contact)
                         .then(function() {
                             return {
                                 sa_id: 'states:sa_id',
@@ -209,7 +221,8 @@ go.app = function() {
                     self.contact.extra.birth_day = id_date_of_birth.slice(8,10);
                     self.contact.extra.dob = id_date_of_birth;
 
-                    return self.im.contacts.save(self.contact)
+                    return self.im.contacts
+                        .save(self.contact)
                         .then(function() {
                             return {
                                 name: 'states:end_success'
@@ -236,7 +249,8 @@ go.app = function() {
                 next: function(choice) {
                     self.contact.extra.passport_origin = choice.value;
 
-                    return self.im.contacts.save(self.contact)
+                    return self.im.contacts
+                        .save(self.contact)
                         .then(function() {
                             return {
                                 name: 'states:passport_no'
@@ -253,7 +267,8 @@ go.app = function() {
                 next: function(content) {
                     self.contact.extra.passport_no = content;
 
-                    return self.im.contacts.save(self.contact)
+                    return self.im.contacts
+                        .save(self.contact)
                         .then(function() {
                             return {
                                 name: 'states:end_success'
@@ -289,7 +304,8 @@ go.app = function() {
                 next: function(content) {
                     self.contact.extra.birth_year = content;
 
-                    return self.im.contacts.save(self.contact)
+                    return self.im.contacts
+                        .save(self.contact)
                         .then(function() {
                             return {
                                 name: 'states:birth_month'
@@ -308,7 +324,8 @@ go.app = function() {
                 next: function(choice) {
                     self.contact.extra.birth_month = choice.value;
 
-                    return self.im.contacts.save(self.contact)
+                    return self.im.contacts
+                        .save(self.contact)
                         .then(function() {
                             return {
                                 name: 'states:birth_day'
@@ -349,8 +366,10 @@ go.app = function() {
                         '-' + self.im.user.answers['states:birth_month'] +
                         '-' + content);
                     self.contact.extra.is_registered = 'true';
+                    self.contact.extra.metric_sessions_to_register = self.contact.extra.ussd_sessions;
 
-                    return self.im.contacts.save(self.contact)
+                    return self.im.contacts
+                        .save(self.contact)
                         .then(function() {
                             return Q.all([
                                 self.im.metrics.fire.avg((self.metric_prefix + ".avg.sessions_to_register"),
@@ -384,7 +403,8 @@ go.app = function() {
                 events: {
                     'state:enter': function() {
                         var built_json = go.utils.build_json_doc(self.contact, self.contact, "subscription");
-                        return go.utils.jembi_json_api_call(built_json, self.im)
+                        return go.utils
+                            .jembi_json_api_call(built_json, self.im)
                             .then(function(result) {
                                 if (result.code >= 200 && result.code < 300){
                                     // TODO: Log metric

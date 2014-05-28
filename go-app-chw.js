@@ -164,7 +164,7 @@ go.utils = {
     },
 
     get_timestamp: function() {
-        return moment().unix();
+        return moment().format("YYYYMMDDhhmmss");
     },
 
     // CLARIFY NEW STRATEGY
@@ -331,13 +331,13 @@ go.utils = {
             return go.utils.null_element(element);
           },
           '//*[@value="${encounterDateTime}"]': function (element) {
-            return go.utils.update_attr(element, 'value', go.utils.get_timestamp().toString().slice(0, 8));
+            return go.utils.update_attr(element, 'value', go.utils.get_timestamp());
           },
           '//*[@value="${effectiveTime}"]': function (element) {
-            return go.utils.update_attr(element, 'value', go.utils.get_timestamp().toString().slice(0, 8));
+            return go.utils.update_attr(element, 'value', go.utils.get_timestamp());
           },
           '//*[@value="${date}"]': function (element) {
-            return go.utils.update_attr(element, 'value', go.utils.get_timestamp().toString().slice(0, 8));
+            return go.utils.update_attr(element, 'value', go.utils.get_timestamp());
           },
           '//*[@code="${mobileHealthApplicationCode}"]': function (element) {
             return go.utils.update_attr(element, 'code', 'PF');

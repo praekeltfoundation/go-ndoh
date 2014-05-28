@@ -13,6 +13,10 @@ describe("app", function() {
 
         beforeEach(function() {
             app = new go.app.GoNDOH();
+            go.utils.get_timestamp = function() {
+                return '20130819144811';
+            };
+            
             tester = new AppTester(app);
 
             tester

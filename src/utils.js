@@ -7,7 +7,7 @@ var utils = vumigo.utils;
 var libxml = require('libxmljs');
 var crypto = require('crypto');
 var HttpApi = vumigo.http.api.HttpApi;
-var JsonApi = vumigo.http.api.JsonApi;
+// var JsonApi = vumigo.http.api.JsonApi;
 
 // override moment default century switch at '68 with '49
 moment.parseTwoDigitYear = function (input) {
@@ -414,14 +414,17 @@ go.utils = {
     },
 
     jembi_json_api_call: function (json_doc, im) {
-        var http = new JsonApi(im, {
+        var http = new HttpApi(im, {
           auth: {
             username: im.config.jembi.username,
             password: im.config.jembi.password
+          },
+          headers: {
+            'Content-Type': ['application/json']
           }
         });
         return http.post(im.config.jembi.url_json, {
-          data: json_doc
+          data: JSON.stringify(json_doc)
         });
     },
 

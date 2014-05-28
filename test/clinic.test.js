@@ -66,27 +66,27 @@ describe("app", function() {
         // no_incomplete metric tests
         describe("when a session is terminated", function() {
 
-            describe("when the last state is states:start", function() {
-                it("should increase states:start.no_incomplete metric by 1", function() {
+            describe("when the last state is states_start", function() {
+                it("should increase states_start.no_incomplete metric by 1", function() {
                     return tester
-                        .setup.user.state('states:start')
+                        .setup.user.state('states_start')
                         .input.session_event('close')
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
-                            assert.deepEqual(metrics['test.clinic.states:start.no_incomplete'].values, [1]);
+                            assert.deepEqual(metrics['test.clinic.states_start.no_incomplete'].values, [1]);
                         })
                         .run();
                 });
             });
 
-            describe("when the last state is states:birth_day", function() {
-                it("should increase states:birth_day.no_incomplete metric by 1", function() {
+            describe("when the last state is states_birth_day", function() {
+                it("should increase states_birth_day.no_incomplete metric by 1", function() {
                     return tester
-                        .setup.user.state('states:birth_day')
+                        .setup.user.state('states_birth_day')
                         .input.session_event('close')
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
-                            assert.deepEqual(metrics['test.clinic.states:birth_day.no_incomplete'].values, [1]);
+                            assert.deepEqual(metrics['test.clinic.states_birth_day.no_incomplete'].values, [1]);
                         })
                         .run();
                 });
@@ -97,51 +97,51 @@ describe("app", function() {
         describe("when a new session is started", function() {
 
             describe("when it is a new user logging on", function() {
-                it("should set the last metric value in states:start.no_incomplete to 0", function() {
+                it("should set the last metric value in states_start.no_incomplete to 0", function() {
                     return tester
                         .setup.user.addr('+275678')
                         .start()
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
-                            assert.deepEqual(metrics['test.clinic.states:start.no_incomplete'].values, [1, 0]);
+                            assert.deepEqual(metrics['test.clinic.states_start.no_incomplete'].values, [1, 0]);
                         })
                         .run();
                 });
             });
 
-            describe("when it is an existing user logging on at states:start", function() {
-                it("should decrease the metric states:start.no_incomplete by 1", function() {
+            describe("when it is an existing user logging on at states_start", function() {
+                it("should decrease the metric states_start.no_incomplete by 1", function() {
                     return tester
                         .setup.user.lang('en')  // make sure user is not seen as new
                         .start()
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
-                            assert.deepEqual(metrics['test.clinic.states:start.no_incomplete'].values, [-1]);
+                            assert.deepEqual(metrics['test.clinic.states_start.no_incomplete'].values, [-1]);
                         })
                         .run();
                 });
             });
 
-            describe("when it is an existing starting a session at states:birth_day", function() {
-                it("should decrease the metric states:birth_day.no_incomplete by 1", function() {
+            describe("when it is an existing starting a session at states_birth_day", function() {
+                it("should decrease the metric states_birth_day.no_incomplete by 1", function() {
                     return tester
-                        .setup.user.state('states:birth_day')
+                        .setup.user.state('states_birth_day')
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
-                            assert.deepEqual(metrics['test.clinic.states:birth_day.no_incomplete'].values, [-1]);
+                            assert.deepEqual(metrics['test.clinic.states_birth_day.no_incomplete'].values, [-1]);
                         })
                         .run();
                 });
             });
 
-            describe("when it is an existing user continuing a session at states:birth_day", function() {
-                it("should not fire metric states:birth_day.no_incomplete", function() {
+            describe("when it is an existing user continuing a session at states_birth_day", function() {
+                it("should not fire metric states_birth_day.no_incomplete", function() {
                     return tester
-                        .setup.user.state('states:birth_day')
+                        .setup.user.state('states_birth_day')
                         .input('2') // make sure session is not new
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
-                            assert.deepEqual(metrics['test.clinic.states:birth_day.no_incomplete'], undefined);
+                            assert.deepEqual(metrics['test.clinic.states_birth_day.no_incomplete'], undefined);
                         })
                         .run();
                 });
@@ -155,7 +155,7 @@ describe("app", function() {
                     .setup.user.addr('+270001')
                     .start()
                     .check.interaction({
-                        state: 'states:start',
+                        state: 'states_start',
                         reply: [
                             'Welcome to The Department of Health\'s ' +
                             'MomConnect. Tell us if this is the no. that ' +
@@ -170,7 +170,7 @@ describe("app", function() {
                         });
                         assert.equal(contact.extra.ussd_sessions, '1');
                         assert.equal(contact.extra.metric_sum_sessions, '1');
-                        assert.equal(contact.extra.last_stage, 'states:start');
+                        assert.equal(contact.extra.last_stage, 'states_start');
                     })
                     .check(function(api) {
                         var metrics = api.metrics.stores.test_metric_store;
@@ -220,10 +220,10 @@ describe("app", function() {
         describe("when the no. is the pregnant woman's no.", function() {
             it("should ask for the clinic code", function() {
                 return tester
-                    .setup.user.state('states:start')
+                    .setup.user.state('states_start')
                     .input('1')
                     .check.interaction({
-                        state: 'states:clinic_code',
+                        state: 'states_clinic_code',
                         reply: (
                             'Please enter the clinic code for the facility ' +
                             'where this pregnancy is being registered:')
@@ -235,10 +235,10 @@ describe("app", function() {
         describe("when the no. is not the pregnant woman's no.", function() {
             it("should ask for the pregnant woman's no.", function() {
                 return tester
-                    .setup.user.state('states:start')
+                    .setup.user.state('states_start')
                     .input('2')
                     .check.interaction({
-                        state: 'states:mobile_no',
+                        state: 'states_mobile_no',
                         reply: (
                             'Please input the mobile number of the ' +
                             'pregnant woman to be registered:')
@@ -250,10 +250,10 @@ describe("app", function() {
         describe("after entering the pregnant woman's number incorrectly", function() {
             it("should ask for the mobile number again", function() {
                 return tester
-                    .setup.user.state('states:mobile_no')
+                    .setup.user.state('states_mobile_no')
                     .input('08212345AB')
                     .check.interaction({
-                        state: 'states:mobile_no',
+                        state: 'states_mobile_no',
                         reply: (
                             'Sorry, the mobile number did not validate. ' +
                             'Please reenter the mobile number:')
@@ -267,10 +267,10 @@ describe("app", function() {
             it("should ask for the clinic code", function() {
                 return tester
                     .setup.user.addr('+270001')
-                    .setup.user.state('states:mobile_no')
+                    .setup.user.state('states_mobile_no')
                     .input('0821234567')
                     .check.interaction({
-                        state: 'states:clinic_code',
+                        state: 'states_clinic_code',
                         reply: (
                             'Please enter the clinic code for the facility ' +
                             'where this pregnancy is being registered:')
@@ -279,7 +279,7 @@ describe("app", function() {
                         var contact = api.contacts.store[0];
                         assert.equal(contact.extra.working_on, "+27821234567");
                         assert.equal(contact.extra.is_registered, undefined);
-                        assert.equal(contact.extra.last_stage, 'states:clinic_code');
+                        assert.equal(contact.extra.last_stage, 'states_clinic_code');
                     })
                     .run();
             });
@@ -298,10 +298,10 @@ describe("app", function() {
                             });
                         })
                         .setup.user.addr('+270001')
-                        .setup.user.state('states:clinic_code')
+                        .setup.user.state('states_clinic_code')
                         .input('12345')
                         .check.interaction({
-                            state: 'states:due_date_month',
+                            state: 'states_due_date_month',
                             reply: [
                                 'Please select the month when the baby is due:',
                                 '1. Apr',
@@ -321,7 +321,7 @@ describe("app", function() {
                             });
                             assert.equal(contact.extra.clinic_code, '12345');
                             assert.equal(contact.extra.is_registered, 'false');
-                            assert.equal(contact.extra.last_stage, 'states:due_date_month');
+                            assert.equal(contact.extra.last_stage, 'states_due_date_month');
                         })
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
@@ -336,10 +336,10 @@ describe("app", function() {
                 it("should save the clinic code, ask for the month the baby is due", function() {
                     return tester
                         .setup.user.addr('+270001')
-                        .setup.user.state('states:clinic_code')
+                        .setup.user.state('states_clinic_code')
                         .input('12345')
                         .check.interaction({
-                            state: 'states:due_date_month',
+                            state: 'states_due_date_month',
                             reply: [
                                 'Please select the month when the baby is due:',
                                 '1. Apr',
@@ -358,7 +358,7 @@ describe("app", function() {
                               msisdn: '+270001'
                             });
                             assert.equal(contact.extra.clinic_code, '12345');
-                            assert.equal(contact.extra.last_stage, 'states:due_date_month');
+                            assert.equal(contact.extra.last_stage, 'states_due_date_month');
                         })
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
@@ -374,10 +374,10 @@ describe("app", function() {
             it("should ask for the pregnant woman's id type", function() {
                 return tester
                     .setup.user.addr('+270001')
-                    .setup.user.state('states:due_date_month')
+                    .setup.user.state('states_due_date_month')
                     .input('1')
                     .check.interaction({
-                        state: 'states:id_type',
+                        state: 'states_id_type',
                         reply: [
                             'What kind of identification does the pregnant ' +
                             'mother have?',
@@ -400,10 +400,10 @@ describe("app", function() {
             it("should set id type, ask for their id number", function() {
                 return tester
                     .setup.user.addr('+270001')
-                    .setup.user.state('states:id_type')
+                    .setup.user.state('states_id_type')
                     .input('1')
                     .check.interaction({
-                        state: 'states:sa_id',
+                        state: 'states_sa_id',
                         reply: (
                             'Please enter the pregnant mother\'s SA ID ' +
                             'number:')
@@ -422,10 +422,10 @@ describe("app", function() {
             it("should save ID, extract DOB, ask for pregnant woman's msg language", function() {
                 return tester
                     .setup.user.addr('+270001')
-                    .setup.user.state('states:sa_id')
+                    .setup.user.state('states_sa_id')
                     .input('5101015009088')
                     .check.interaction({
-                        state: 'states:language',
+                        state: 'states_language',
                         reply: ['Please select the language that the ' +
                             'pregnant mother would like to get messages in:',
                             '1. English',
@@ -453,7 +453,7 @@ describe("app", function() {
             it("should save ID, extract DOB", function() {
                 return tester
                     .setup.user.addr('+270001')
-                    .setup.user.state('states:sa_id')
+                    .setup.user.state('states_sa_id')
                     .input('2012315678097')
                     .check(function(api) {
                         var contact = _.find(api.contacts.store, {
@@ -470,7 +470,7 @@ describe("app", function() {
             it("should save ID, extract DOB", function() {
                 return tester
                     .setup.user.addr('+270001')
-                    .setup.user.state('states:sa_id')
+                    .setup.user.state('states_sa_id')
                     .input('5002285000007')
                     .check(function(api) {
                         var contact = _.find(api.contacts.store, {
@@ -487,10 +487,10 @@ describe("app", function() {
             it("should not save ID, ask them to try again", function() {
                 return tester
                     .setup.user.addr('+270001')
-                    .setup.user.state('states:sa_id')
+                    .setup.user.state('states_sa_id')
                     .input('1234015009087')
                     .check.interaction({
-                        state: 'states:sa_id',
+                        state: 'states_sa_id',
                         reply: 'Sorry, the mother\'s ID number did not validate. ' +
                           'Please reenter the SA ID number:'
                     })
@@ -508,10 +508,10 @@ describe("app", function() {
             it("should set id type, ask for their country of origin", function() {
                 return tester
                     .setup.user.addr('+270001')
-                    .setup.user.state('states:id_type')
+                    .setup.user.state('states_id_type')
                     .input('2')
                     .check.interaction({
-                        state: 'states:passport_origin',
+                        state: 'states_passport_origin',
                         reply: ['What is the country of origin of the ' +
                             'passport?',
                             '1. Zimbabwe',
@@ -537,10 +537,10 @@ describe("app", function() {
             it("should save passport country, ask for their passport number", function() {
                 return tester
                     .setup.user.addr('+270001')
-                    .setup.user.state('states:passport_origin')
+                    .setup.user.state('states_passport_origin')
                     .input('1')
                     .check.interaction({
-                        state: 'states:passport_no',
+                        state: 'states_passport_no',
                         reply: 'Please enter your Passport number:'
                     })
                     .check(function(api) {
@@ -557,10 +557,10 @@ describe("app", function() {
             it("should save passport no, ask for pregnant woman's msg language", function() {
                 return tester
                     .setup.user.addr('+270001')
-                    .setup.user.state('states:passport_no')
+                    .setup.user.state('states_passport_no')
                     .input('12345')
                     .check.interaction({
-                        state: 'states:language',
+                        state: 'states_language',
                         reply: ['Please select the language that the ' +
                             'pregnant mother would like to get messages in:',
                             '1. English',
@@ -584,10 +584,10 @@ describe("app", function() {
             it("should set id type, ask for their birth year", function() {
                 return tester
                     .setup.user.addr('+270001')
-                    .setup.user.state('states:id_type')
+                    .setup.user.state('states_id_type')
                     .input('3')
                     .check.interaction({
-                        state: 'states:birth_year',
+                        state: 'states_birth_year',
                         reply: ('Please enter the year that the pregnant ' +
                                 'mother was born (for example: 1981)')
                     })
@@ -605,10 +605,10 @@ describe("app", function() {
             it("should ask for their birth year again", function() {
                 return tester
                     .setup.user.addr('+270001')
-                    .setup.user.state('states:birth_year')
+                    .setup.user.state('states_birth_year')
                     .input('Nineteen Eighty One')
                     .check.interaction({
-                        state: 'states:birth_year',
+                        state: 'states_birth_year',
                         reply: ('There was an error in your entry. Please ' +
                         'carefully enter the mother\'s year of birth again ' +
                         '(for example: 2001)')
@@ -621,10 +621,10 @@ describe("app", function() {
             it("should save birth year, ask for their birth month", function() {
                 return tester
                     .setup.user.addr('+270001')
-                    .setup.user.state('states:birth_year')
+                    .setup.user.state('states_birth_year')
                     .input('1981')
                     .check.interaction({
-                        state: 'states:birth_month',
+                        state: 'states_birth_month',
                         reply: ['Please enter the month that you were born.',
                             '1. Jan',
                             '2. Feb',
@@ -654,10 +654,10 @@ describe("app", function() {
             it("should save birth month, ask for their birth day", function() {
                 return tester
                     .setup.user.addr('+270001')
-                    .setup.user.state('states:birth_month')
+                    .setup.user.state('states_birth_month')
                     .input('1')
                     .check.interaction({
-                        state: 'states:birth_day',
+                        state: 'states_birth_day',
                         reply: ('Please enter the day that the mother was ' +
                             'born (for example: 14).')
                     })
@@ -675,10 +675,10 @@ describe("app", function() {
             it("should not save birth day, ask them their birth day again", function() {
                 return tester
                     .setup.user.addr('+270001')
-                    .setup.user.state('states:birth_day')
+                    .setup.user.state('states_birth_day')
                     .input('fourteen')
                     .check.interaction({
-                        state: 'states:birth_day',
+                        state: 'states_birth_day',
                         reply: ('There was an error in your entry. Please ' +
                         'carefully enter the mother\'s day of birth again ' +
                         '(for example: 8)')
@@ -699,13 +699,13 @@ describe("app", function() {
                 return tester
                     .setup.user.addr('+270001')
                     .setup.user.answers({
-                        'states:birth_year': '1981',
-                        'states:birth_month': '01'
+                        'states_birth_year': '1981',
+                        'states_birth_month': '01'
                     })
-                    .setup.user.state('states:birth_day')
+                    .setup.user.state('states_birth_day')
                     .input('14')
                     .check.interaction({
-                        state: 'states:language',
+                        state: 'states_language',
                         reply: ['Please select the language that the ' +
                             'pregnant mother would like to get messages in:',
                             '1. English',
@@ -753,10 +753,10 @@ describe("app", function() {
                                 }
                             });
                         })
-                        .setup.user.state('states:language')
+                        .setup.user.state('states_language')
                         .input('1')
                         .check.interaction({
-                            state: 'states:end_success',
+                            state: 'states_end_success',
                             reply: ('Thank you. The pregnant woman will now ' +
                                 'receive weekly messages about her pregnancy ' +
                                 'from the Department of Health.')
@@ -779,7 +779,7 @@ describe("app", function() {
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
                             assert.deepEqual(metrics['test.clinic.avg.sessions_to_register'].values, [5]);
-                            assert.deepEqual(metrics['test.clinic.states:end_success.no_incomplete'], undefined);
+                            assert.deepEqual(metrics['test.clinic.states_end_success.no_incomplete'], undefined);
                         })
                         .check.reply.ends_session()
                         .run();
@@ -806,10 +806,10 @@ describe("app", function() {
                                 }
                             });
                         })
-                        .setup.user.state('states:language')
+                        .setup.user.state('states_language')
                         .input('1')
                         .check.interaction({
-                            state: 'states:end_success',
+                            state: 'states_end_success',
                             reply: ('Thank you. The pregnant woman will now ' +
                                 'receive weekly messages about her pregnancy ' +
                                 'from the Department of Health.')
@@ -821,7 +821,7 @@ describe("app", function() {
                             assert.equal(contact.extra.language_choice, 'en');
                             assert.equal(contact.extra.ussd_sessions, '0');
                             assert.equal(contact.extra.is_registered, 'true');
-                            assert.equal(contact.extra.last_stage, 'states:end_success');
+                            assert.equal(contact.extra.last_stage, 'states_end_success');
                             assert.equal(contact.extra.metric_sessions_to_register, '5');
                             assert.equal(contact.extra.no_registrations, undefined);
                             assert.equal(contact.extra.registered_by, undefined);
@@ -831,7 +831,7 @@ describe("app", function() {
                             assert.deepEqual(metrics['test.clinic.avg.sessions_to_register'].values, [5]);
                             assert.deepEqual(metrics['test.clinic.percent_incomplete_registrations'].values, [25]);
                             assert.deepEqual(metrics['test.clinic.percent_complete_registrations'].values, [75]);
-                            assert.deepEqual(metrics['test.clinic.states:end_success.no_incomplete'], undefined);
+                            assert.deepEqual(metrics['test.clinic.states_end_success.no_incomplete'], undefined);
                         })
                         .check.reply.ends_session()
                         .run();
@@ -853,7 +853,7 @@ describe("app", function() {
                                 });
                             })
                             .setup.user.addr('+273444')
-                            .setup.user.state('states:start')
+                            .setup.user.state('states_start')
                             .input('1')
                             .input.session_event('close')
                             .check(function(api) {
@@ -864,7 +864,7 @@ describe("app", function() {
                             })
                             .check(function(api) {
                                 var metrics = api.metrics.stores.test_metric_store;
-                                assert.deepEqual(metrics['test.clinic.states:start.no_incomplete'].values, [1]);
+                                assert.deepEqual(metrics['test.clinic.states_start.no_incomplete'].values, [1]);
                             })
                             .run();
                     });
@@ -880,7 +880,7 @@ describe("app", function() {
                                 });
                             })
                             .setup.user.addr('+273323')
-                            .setup.user.state('states:start')
+                            .setup.user.state('states_start')
                             .input(1)
                             .input.session_event('close')
                             .check(function(api) {

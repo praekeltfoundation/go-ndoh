@@ -638,7 +638,7 @@ go.app = function() {
     var EndState = vumigo.states.EndState;
 
     var GoNDOH = App.extend(function(self) {
-        App.call(self, 'states:start');
+        App.call(self, 'states_start');
         var $ = self.$;
 
 
@@ -651,7 +651,7 @@ go.app = function() {
         };
 
 
-        self.states.add('states:start', function(name) {
+        self.states.add('states_start', function(name) {
             return new ChoiceState(name, {
                 question: $('Welcome to MomConnect. Why do you want to ' +
                             'stop receiving our messages?'),
@@ -679,20 +679,20 @@ go.app = function() {
                     return self.im.contacts
                         .save(self.contact)
                         .then(function() {
-                            return 'states:end';
+                            return 'states_end';
                         });
                 }
 
             });
         });
 
-        self.states.add('states:end', function(name) {
+        self.states.add('states_end', function(name) {
             return new EndState(name, {
                 text: $('Thank you. You will no longer receive ' +
                         'messages from us. If you have any medical ' +
                         'concerns please visit your nearest clinic.'),
 
-                next: 'states:start'
+                next: 'states_start'
             });
         });
 

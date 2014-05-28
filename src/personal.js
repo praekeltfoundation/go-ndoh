@@ -9,7 +9,7 @@ go.app = function() {
     var FreeText = vumigo.states.FreeText;
 
     var GoNDOH = App.extend(function(self) {
-        App.call(self, 'states:start');
+        App.call(self, 'states_start');
         var $ = self.$;
 
         self.init = function() {
@@ -39,7 +39,7 @@ go.app = function() {
             self.im.user.on('user:new', function(e) {
                 return Q.all([
                     go.utils.fire_users_metrics(self.im, self.store_name, self.env, self.metric_prefix),
-                    self.fire_incomplete('states:start', 1)
+                    self.fire_incomplete('states_start', 1)
                 ]);
             });
 
@@ -85,13 +85,13 @@ go.app = function() {
         };
 
         self.fire_incomplete = function(name, val) {
-            var ignore_states = ['states:end_success', 'states:end_not_pregnant'];
+            var ignore_states = ['states_end_success', 'states_end_not_pregnant'];
             if (!_.contains(ignore_states, name)) {
                 return self.im.metrics.fire.inc(([self.metric_prefix, name, "no_incomplete"].join('.')), {amount: val});
             }
         };
 
-        self.states.add('states:start', function(name) {
+        self.states.add('states_start', function(name) {
             return new ChoiceState(name, {
                 question: $('Welcome to The Department of Health\'s ' +
                     'MomConnect programme. Please select your preferred ' +
@@ -123,13 +123,13 @@ go.app = function() {
                             return self.im.contacts.save(self.contact);
                         })
                         .then(function() {
-                            return 'states:suspect_pregnancy';
+                            return 'states_suspect_pregnancy';
                         });
                 }
             });
         });
 
-        self.states.add('states:suspect_pregnancy', function(name) {
+        self.states.add('states_suspect_pregnancy', function(name) {
             return new ChoiceState(name, {
                 question: $('MomConnect sends free support SMSs to ' +
                     'pregnant mothers. Are you or do you suspect that you ' +
@@ -147,24 +147,24 @@ go.app = function() {
                         .save(self.contact)
                         .then(function() {
                             return {
-                                yes: 'states:id_type',
-                                no: 'states:end_not_pregnant'
+                                yes: 'states_id_type',
+                                no: 'states_end_not_pregnant'
                             } [choice.value];
                         });
                 }
             });
         });
 
-        self.states.add('states:end_not_pregnant', function(name) {
+        self.states.add('states_end_not_pregnant', function(name) {
             return new EndState(name, {
                 text: $('We are sorry but this service is only for ' +
                     'pregnant mothers. If you have other health concerns ' +
                     'please visit your nearest clinic.'),
-                next: 'states:start'
+                next: 'states_start'
             });
         });
 
-        self.states.add('states:id_type', function(name) {
+        self.states.add('states_id_type', function(name) {
             return new ChoiceState(name, {
                 question: $('We need some info to message you. This ' +
                     'is private and will only be used to help you at a ' +
@@ -183,16 +183,16 @@ go.app = function() {
                         .save(self.contact)
                         .then(function() {
                             return {
-                                sa_id: 'states:sa_id',
-                                passport: 'states:passport_origin',
-                                none: 'states:birth_year'
+                                sa_id: 'states_sa_id',
+                                passport: 'states_passport_origin',
+                                none: 'states_birth_year'
                             } [choice.value];
                         });
                 }
             });
         });
 
-        self.states.add('states:sa_id', function(name, opts) {
+        self.states.add('states_sa_id', function(name, opts) {
             var error = $('Sorry, your ID number did not validate. ' +
                           'Please reenter your SA ID number:');
 
@@ -225,14 +225,14 @@ go.app = function() {
                         .save(self.contact)
                         .then(function() {
                             return {
-                                name: 'states:end_success'
+                                name: 'states_end_success'
                             };
                         });
                 }
             });
         });
 
-        self.states.add('states:passport_origin', function(name) {
+        self.states.add('states_passport_origin', function(name) {
             return new ChoiceState(name, {
                 question: $('What is the country of origin of the passport?'),
 
@@ -253,14 +253,14 @@ go.app = function() {
                         .save(self.contact)
                         .then(function() {
                             return {
-                                name: 'states:passport_no'
+                                name: 'states_passport_no'
                             };
                         });
                 }
             });
         });
 
-        self.states.add('states:passport_no', function(name) {
+        self.states.add('states_passport_no', function(name) {
             return new FreeText(name, {
                 question: $('Please enter your Passport number:'),
 
@@ -271,14 +271,14 @@ go.app = function() {
                         .save(self.contact)
                         .then(function() {
                             return {
-                                name: 'states:end_success'
+                                name: 'states_end_success'
                             };
                         });
                 }
             });
         });
 
-        self.states.add('states:birth_year', function(name, opts) {
+        self.states.add('states_birth_year', function(name, opts) {
             var error = $('There was an error in your entry. Please ' +
                         'carefully enter your year of birth again (for ' +
                         'example: 2001)');
@@ -308,14 +308,14 @@ go.app = function() {
                         .save(self.contact)
                         .then(function() {
                             return {
-                                name: 'states:birth_month'
+                                name: 'states_birth_month'
                             };
                         });
                 }
             });
         });
 
-        self.states.add('states:birth_month', function(name) {
+        self.states.add('states_birth_month', function(name) {
             return new ChoiceState(name, {
                 question: $('Please enter the month that you were born.'),
 
@@ -328,14 +328,14 @@ go.app = function() {
                         .save(self.contact)
                         .then(function() {
                             return {
-                                name: 'states:birth_day'
+                                name: 'states_birth_day'
                             };
                         });
                 }
             });
         });
 
-        self.states.add('states:birth_day', function(name, opts) {
+        self.states.add('states_birth_day', function(name, opts) {
             var error = $('There was an error in your entry. Please ' +
                         'carefully enter your day of birth again (for ' +
                         'example: 8)');
@@ -362,8 +362,8 @@ go.app = function() {
                         content = '0' + content;
                     }
                     self.contact.extra.birth_day = content;
-                    self.contact.extra.dob = (self.im.user.answers['states:birth_year'] +
-                        '-' + self.im.user.answers['states:birth_month'] +
+                    self.contact.extra.dob = (self.im.user.answers.states_birth_year +
+                        '-' + self.im.user.answers.states_birth_month +
                         '-' + content);
                     self.contact.extra.is_registered = 'true';
                     self.contact.extra.metric_sessions_to_register = self.contact.extra.ussd_sessions;
@@ -385,21 +385,21 @@ go.app = function() {
                         })
                         .then(function() {
                             return {
-                                name: 'states:end_success'
+                                name: 'states_end_success'
                             };
                         });
                 }
             });
         });
 
-        self.states.add('states:end_success', function(name) {
+        self.states.add('states_end_success', function(name) {
             return new EndState(name, {
                 text: $('Thank you for subscribing to MomConnect. ' +
                         'You will now receive free messages about ' +
                         'MomConnect. Visit your nearest clinic to get ' +
                         'the full set of messages.'),
 
-                next: 'states:start',
+                next: 'states_start',
                 events: {
                     'state:enter': function() {
                         var built_json = go.utils.build_json_doc(self.contact, self.contact, "subscription");
@@ -420,10 +420,10 @@ go.app = function() {
             });
         });
 
-        self.states.add('states:error', function(name) {
+        self.states.add('states_error', function(name) {
             return new EndState(name, {
               text: 'Sorry, something went wrong when saving the data. Please try again.',
-              next: 'states:start'
+              next: 'states_start'
             });
         });
 

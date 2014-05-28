@@ -642,7 +642,7 @@ go.app = function() {
     var FreeText = vumigo.states.FreeText;
 
     var GoNDOH = App.extend(function(self) {
-        App.call(self, 'states:start');
+        App.call(self, 'states_start');
         var $ = self.$;
 
         self.init = function() {
@@ -670,7 +670,7 @@ go.app = function() {
 
             self.im.user.on('user:new', function(e) {
                 return Q.all([
-                    self.fire_incomplete('states:start', 1),
+                    self.fire_incomplete('states_start', 1),
                     go.utils.fire_users_metrics(self.im, self.store_name, self.env, self.metric_prefix)
                 ]);
             });
@@ -727,13 +727,13 @@ go.app = function() {
         };
 
         self.fire_incomplete = function(name, val) {
-            var ignore_states = ['states:end_success'];
+            var ignore_states = ['states_end_success'];
             if (!_.contains(ignore_states, name)) {
                 return self.im.metrics.fire.inc(([self.metric_prefix, name, "no_incomplete"].join('.')), {amount: val});
             }
         };
 
-        self.states.add('states:start', function(name) {
+        self.states.add('states_start', function(name) {
             var readable_no = go.utils.readable_sa_msisdn(self.im.user.addr);
 
             return new ChoiceState(name, {
@@ -749,14 +749,14 @@ go.app = function() {
 
                 next: function(choice) {
                     return {
-                        yes: 'states:clinic_code',
-                        no: 'states:mobile_no'
+                        yes: 'states_clinic_code',
+                        no: 'states_mobile_no'
                     } [choice.value];
                 }
             });
         });
 
-        self.states.add('states:clinic_code', function(name) {
+        self.states.add('states_clinic_code', function(name) {
             return new FreeText(name, {
                 question: $('Please enter the clinic code for the facility ' +
                             'where this pregnancy is being registered:'),
@@ -777,14 +777,14 @@ go.app = function() {
                         .then(function() {
                             self.contact.extra.is_registered = 'false';
                             return {
-                                name: 'states:due_date_month'
+                                name: 'states_due_date_month'
                             };
                         });
                 }
             });
         });
 
-        self.states.add('states:mobile_no', function(name, opts) {
+        self.states.add('states_mobile_no', function(name, opts) {
             var error = $('Sorry, the mobile number did not validate. ' +
                           'Please reenter the mobile number:');
 
@@ -813,14 +813,14 @@ go.app = function() {
                         .save(self.user)
                         .then(function() {
                             return {
-                                name: 'states:clinic_code'
+                                name: 'states_clinic_code'
                             };
                         });
                 }
             });
         });
 
-        self.states.add('states:due_date_month', function(name) {
+        self.states.add('states_due_date_month', function(name) {
 
             var today = go.utils.get_today(self.im.config);
             var month = today.getMonth();   // 0-bound
@@ -838,14 +838,14 @@ go.app = function() {
                         .save(self.contact)
                         .then(function() {
                             return {
-                                name: 'states:id_type'
+                                name: 'states_id_type'
                             };
                         });
                 }
             });
         });
 
-        self.states.add('states:id_type', function(name) {
+        self.states.add('states_id_type', function(name) {
             return new ChoiceState(name, {
                 question: $('What kind of identification does the pregnant ' +
                             'mother have?'),
@@ -863,16 +863,16 @@ go.app = function() {
                         .save(self.contact)
                         .then(function() {
                             return {
-                                sa_id: 'states:sa_id',
-                                passport: 'states:passport_origin',
-                                none: 'states:birth_year'
+                                sa_id: 'states_sa_id',
+                                passport: 'states_passport_origin',
+                                none: 'states_birth_year'
                             } [choice.value];
                         });
                 }
             });
         });
 
-        self.states.add('states:sa_id', function(name, opts) {
+        self.states.add('states_sa_id', function(name, opts) {
             var error = $('Sorry, the mother\'s ID number did not validate. ' +
                           'Please reenter the SA ID number:');
 
@@ -906,14 +906,14 @@ go.app = function() {
                         .save(self.contact)
                         .then(function() {
                             return {
-                                name: 'states:language'
+                                name: 'states_language'
                             };
                         });
                 }
             });
         });
 
-        self.states.add('states:passport_origin', function(name) {
+        self.states.add('states_passport_origin', function(name) {
             return new ChoiceState(name, {
                 question: $('What is the country of origin of the passport?'),
 
@@ -934,14 +934,14 @@ go.app = function() {
                         .save(self.contact)
                         .then(function() {
                             return {
-                                name: 'states:passport_no'
+                                name: 'states_passport_no'
                             };
                         });
                 }
             });
         });
 
-        self.states.add('states:passport_no', function(name) {
+        self.states.add('states_passport_no', function(name) {
             return new FreeText(name, {
                 question: $('Please enter your Passport number:'),
 
@@ -952,7 +952,7 @@ go.app = function() {
                         .save(self.contact)
                         .then(function() {
                             return {
-                                name: 'states:language'
+                                name: 'states_language'
                             };
                         });
                 }
@@ -960,7 +960,7 @@ go.app = function() {
         });
 
 
-        self.states.add('states:birth_year', function(name, opts) {
+        self.states.add('states_birth_year', function(name, opts) {
             var error = $('There was an error in your entry. Please ' +
                         'carefully enter the mother\'s year of birth again ' +
                         '(for example: 2001)');
@@ -989,14 +989,14 @@ go.app = function() {
                         .save(self.contact)
                         .then(function() {
                             return {
-                                name: 'states:birth_month'
+                                name: 'states_birth_month'
                             };
                         });
                 }
             });
         });
 
-        self.states.add('states:birth_month', function(name) {
+        self.states.add('states_birth_month', function(name) {
             return new ChoiceState(name, {
                 question: $('Please enter the month that you were born.'),
 
@@ -1009,7 +1009,7 @@ go.app = function() {
                         .save(self.contact)
                         .then(function() {
                             return {
-                                name: 'states:birth_day'
+                                name: 'states_birth_day'
                             };
                         });
                 }
@@ -1017,7 +1017,7 @@ go.app = function() {
         });
 
 
-        self.states.add('states:birth_day', function(name, opts) {
+        self.states.add('states_birth_day', function(name, opts) {
             var error = $('There was an error in your entry. Please ' +
                         'carefully enter the mother\'s day of birth again ' +
                         '(for example: 8)');
@@ -1044,21 +1044,21 @@ go.app = function() {
                         content = '0' + content;
                     }
                     self.contact.extra.birth_day = content;
-                    self.contact.extra.dob = moment({year: self.im.user.answers['states:birth_year'], month: (self.im.user.answers['states:birth_month'] - 1), day: content}).format('YYYY-MM-DD');
+                    self.contact.extra.dob = moment({year: self.im.user.answers.states_birth_year, month: (self.im.user.answers.states_birth_month - 1), day: content}).format('YYYY-MM-DD');
                     // -1 for 0-bound month
 
                     return self.im.contacts
                         .save(self.contact)
                         .then(function() {
                             return {
-                                name: 'states:language'
+                                name: 'states_language'
                             };
                         });
                 }
             });
         });
 
-        self.states.add('states:language', function(name) {
+        self.states.add('states_language', function(name) {
             return new ChoiceState(name, {
                 question: $('Please select the language that the ' +
                             'pregnant mother would like to get messages in:'),
@@ -1105,20 +1105,20 @@ go.app = function() {
                             ]);
                         })
                         .then(function() {
-                            return 'states:end_success';
+                            return 'states_end_success';
                         });
                 }
             });
         });
 
-        self.states.add('states:end_success', function(name) {
+        self.states.add('states_end_success', function(name) {
             // If none passport then only json push
             return new EndState(name, {
                 text: $('Thank you. The pregnant woman will now ' +
                         'receive weekly messages about her pregnancy ' +
                         'from the Department of Health.'),
 
-                next: 'states:start',
+                next: 'states_start',
 
                 events: {
                     'state:enter': function() {

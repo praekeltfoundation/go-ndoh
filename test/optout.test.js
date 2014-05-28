@@ -42,7 +42,7 @@ describe("app", function() {
                 return tester
                     .start()
                     .check.interaction({
-                        state: 'states:start',
+                        state: 'states_start',
                         reply: [
                             'Welcome to MomConnect. Why do you want to ' +
                             'stop receiving our messages?',
@@ -61,10 +61,10 @@ describe("app", function() {
             it("should thank them and exit", function() {
                 return tester
                     .setup.user.addr('+27001')
-                    .setup.user.state('states:start')
+                    .setup.user.state('states_start')
                     .input('1')
                     .check.interaction({
-                        state: 'states:end',
+                        state: 'states_end',
                         reply: ('Thank you. You will no longer receive ' +
                             'messages from us. If you have any medical ' +
                             'concerns please visit your nearest clinic.')

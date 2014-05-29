@@ -407,13 +407,10 @@ go.app = function() {
                             .jembi_json_api_call(built_json, self.im)
                             .then(function(result) {
                                 if (result.code >= 200 && result.code < 300){
-                                    // TODO: Log metric
-                                    // console.log('end_success');
+                                    return self.im.metrics.fire.inc((([self.metric_prefix, "sum", "json_to_jembi_success"].join('.'))), {amount: 1});
                                 } else {
-                                    // TODO: Log metric
-                                    // console.log('error');
+                                    return self.im.metrics.fire.inc((([self.metric_prefix, "sum", "json_to_jembi_fail"].join('.'))), {amount: 1});
                                 }
-                                return true;
                             });
                     }
                 }

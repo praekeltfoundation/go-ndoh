@@ -696,8 +696,47 @@ describe("app", function() {
                         assert.deepEqual(metrics['test.personal.avg.sessions_to_register'].values, [5]);
                         assert.deepEqual(metrics['test.personal.percent_incomplete_registrations'].values, [25]);
                         assert.deepEqual(metrics['test.personal.percent_complete_registrations'].values, [75]);
+                        assert.deepEqual(metrics['test.personal.sum.json_to_jembi_success'].values, [1]);
                     })
                     .check.reply.ends_session()
+                    .run();
+            });
+        });
+
+        describe("if the jembi send fails", function() {
+            it.skip("should fire fail metric", function() {
+                return tester
+                    .setup(function(api) {
+                        api.contacts.add({
+                            msisdn: '+27001',
+                            extra : {
+                                language_choice: 'en',
+                                suspect_pregnancy: 'yes',
+                                id_type: 'passport',
+                                passport_origin: 'zw',
+                                passport_no: '12345',
+                                ussd_sessions: '5'
+                            }
+                        });
+                    })
+                    .setup.user.addr('+27001')
+                    .setup.user.answers({
+                        'states:birth_year': '1981',
+                        'states:birth_month': '01'
+                    })
+                    .setup.user.state('states:birth_day')
+                    .input('1')
+                    .check.interaction({
+                        state: 'states:end_success',
+                        reply: ('Thank you for subscribing to MomConnect. ' +
+                            'You will now receive free messages about ' +
+                            'MomConnect. Visit your nearest clinic to get ' + 
+                            'the full set of messages.')
+                    })
+                    .check(function(api) {
+                        var metrics = api.metrics.stores.test_metric_store;
+                        assert.deepEqual(metrics['test.personal.sum.json_to_jembi_fail'].values, [1]);
+                    })
                     .run();
             });
         });

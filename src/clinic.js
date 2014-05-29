@@ -496,21 +496,22 @@ go.app = function() {
                             go.utils.jembi_api_call(built_doc, self.contact, self.im),
                             go.utils.jembi_json_api_call(built_json, self.im)
                         ]).spread(function(doc_result, json_result) {
+                            var doc_to_fire;
+                            var json_to_fire;
                             if (doc_result.code >= 200 && doc_result.code < 300){
-                                // TODO: Log metric
-                                // console.log('end_success');
+                                doc_to_fire = (([self.metric_prefix, "sum", "doc_to_jembi_success"].join('.')));
                             } else {
-                                // TODO: Log metric
-                                // console.log('error');
+                                doc_to_fire = (([self.metric_prefix, "sum", "doc_to_jembi_fail"].join('.')));
                             }
                             if (json_result.code >= 200 && json_result.code < 300){
-                                // TODO: Log metric
-                                // console.log('end_success');
-
+                                json_to_fire = (([self.metric_prefix, "sum", "json_to_jembi_success"].join('.')));
                             } else {
-                                // TODO: Log metric
-                                // console.log('error');
+                                json_to_fire = (([self.metric_prefix, "sum", "json_to_jembi_fail"].join('.')));
                             }
+                            return Q.all([
+                                self.im.metrics.fire.inc(doc_to_fire, {amount: 1}),
+                                self.im.metrics.fire.inc(json_to_fire, {amount: 1}),
+                                ]);
                         });
                     }
                 }

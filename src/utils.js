@@ -173,7 +173,7 @@ go.utils = {
             return contact.extra.passport_no + '^^^' + contact.extra.passport_origin.toUpperCase() + '^FI';
           },
           'none': function () { // TODO - CHECK
-            return 'NI';
+            return null;
           }
         }[contact.extra.id_type];
         return formatter();

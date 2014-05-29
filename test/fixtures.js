@@ -400,7 +400,7 @@ module.exports = function() {
                 "swt": 1,
                 "dmsisdn": "+27001",
                 "cmsisdn": "+27001",
-                "id": "NI",
+                "id": null,
                 "type": 3,
                 "lang": "en",
                 "encdate": "20130819144811"

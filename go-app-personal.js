@@ -643,7 +643,22 @@ go.utils = {
                 }
                 return im.metrics.fire.inc(json_to_fire, {amount: 1});
         });
-    }
+    },
+
+    jembi_send_doc: function(contact, user, im, metric_prefix) {
+        var built_doc = go.utils.build_cda_doc(contact, user);
+        return go.utils
+            .jembi_api_call(built_doc, contact, im)
+            .then(function(doc_result) {
+                var doc_to_fire;
+                if (doc_result.code >= 200 && doc_result.code < 300){
+                    doc_to_fire = (([metric_prefix, "sum", "doc_to_jembi_success"].join('.')));
+                } else {
+                    doc_to_fire = (([metric_prefix, "sum", "doc_to_jembi_fail"].join('.')));
+                }
+                return im.metrics.fire.inc(doc_to_fire, {amount: 1});
+        });
+    },
 
 };
 

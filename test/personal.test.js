@@ -542,6 +542,36 @@ describe("app", function() {
             });
         });
 
+        describe("if the user enters their passport incorrectly (non alpha-numeric)", function() {
+            it("should ask for their passport number again", function() {
+                return tester
+                    .setup.user.addr('+270001')
+                    .setup.user.state('states_passport_no')
+                    .input('algeria 1234')
+                    .check.interaction({
+                        state: 'states_passport_no',
+                        reply: ('There was an error in your entry. Please ' +
+                        'carefully enter your passport number again.')
+                    })
+                    .run();
+            });
+        });
+
+        describe("if the user enters their passport incorrectly (too short)", function() {
+            it("should ask for their passport number again", function() {
+                return tester
+                    .setup.user.addr('+270001')
+                    .setup.user.state('states_passport_no')
+                    .input('1234')
+                    .check.interaction({
+                        state: 'states_passport_no',
+                        reply: ('There was an error in your entry. Please ' +
+                        'carefully enter your passport number again.')
+                    })
+                    .run();
+            });
+        });
+
         describe("if the user selects None (id type)", function() {
             it("should set id type, ask for their birth year", function() {
                 return tester

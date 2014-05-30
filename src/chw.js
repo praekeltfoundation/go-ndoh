@@ -271,8 +271,18 @@ go.app = function() {
         });
 
         self.states.add('states_passport_no', function(name) {
+            var error = $('There was an error in your entry. Please ' +
+                        'carefully enter your passport number again.');
+            var question = $('Please enter your Passport number:');
+
             return new FreeText(name, {
-                question: $('Please enter your Passport number:'),
+                question: question,
+
+                check: function(content) {
+                    if (!go.utils.is_alpha_numeric_only(content) || content.length <= 4) {
+                        return error;
+                    }
+                },
 
                 next: function(content) {
                     self.contact.extra.passport_no = content;

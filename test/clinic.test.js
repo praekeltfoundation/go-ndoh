@@ -670,7 +670,7 @@ describe("app", function() {
                     .input('1981')
                     .check.interaction({
                         state: 'states_birth_month',
-                        reply: ['Please enter the month that you were born.',
+                        reply: ['Please enter the month that the mom was born.',
                             '1. Jan',
                             '2. Feb',
                             '3. Mar',

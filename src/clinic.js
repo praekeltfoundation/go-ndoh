@@ -506,27 +506,12 @@ go.app = function() {
                             });
                         }
 
-                        function jembi_send_json() {
-                            var built_json = go.utils.build_json_doc(self.contact, self.user, "registration");
-                            return go.utils
-                                .jembi_json_api_call(built_json, self.im)
-                                .then(function(json_result) {
-                                    var json_to_fire;
-                                    if (json_result.code >= 200 && json_result.code < 300){
-                                        json_to_fire = (([self.metric_prefix, "sum", "json_to_jembi_success"].join('.')));
-                                    } else {
-                                        json_to_fire = (([self.metric_prefix, "sum", "json_to_jembi_fail"].join('.')));
-                                    }
-                                    return self.im.metrics.fire.inc(json_to_fire, {amount: 1});
-                            });
-                        }
-
                         if (self.contact.extra.id_type === 'none') {
-                            return jembi_send_json();
+                            return go.utils.jembi_send_json(self.contact, self.user, 'registration', self.im, self.metric_prefix);
                         } else {
                             return Q.all([
                                 jembi_send_doc(),
-                                jembi_send_json()
+                                go.utils.jembi_send_json(self.contact, self.user, 'registration', self.im, self.metric_prefix)
                             ]);
                         }
                     }

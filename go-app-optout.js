@@ -175,7 +175,7 @@ go.utils = {
           'passport': function () {
             return contact.extra.passport_no + '^^^' + contact.extra.passport_origin.toUpperCase() + '^FI';
           },
-          'none': function () { // TODO - CHECK
+          'none': function () {
             return null;
           }
         }[contact.extra.id_type];
@@ -629,6 +629,21 @@ go.utils = {
             ]);
         });
     },
+
+    jembi_send_json: function(contact, user, type, im, metric_prefix) {
+        var built_json = go.utils.build_json_doc(contact, user, type);
+        return go.utils
+            .jembi_json_api_call(built_json, im)
+            .then(function(json_result) {
+                var json_to_fire;
+                if (json_result.code >= 200 && json_result.code < 300){
+                    json_to_fire = (([metric_prefix, "sum", "json_to_jembi_success"].join('.')));
+                } else {
+                    json_to_fire = (([metric_prefix, "sum", "json_to_jembi_fail"].join('.')));
+                }
+                return im.metrics.fire.inc(json_to_fire, {amount: 1});
+        });
+    }
 
 };
 

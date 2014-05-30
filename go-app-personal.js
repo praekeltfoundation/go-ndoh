@@ -631,7 +631,7 @@ go.utils = {
     },
 
     is_alpha_numeric_only: function(input) {
-        alpha_numeric = new RegExp('^[A-Za-z0-9]*$');
+        alpha_numeric = new RegExp('^[A-Za-z0-9]+$');
         return alpha_numeric.test(input);
     },
 
@@ -908,7 +908,7 @@ go.app = function() {
                 question: question,
 
                 check: function(content) {
-                    if (!go.utils.is_alpha_numeric_only(content)) {
+                    if (!go.utils.is_alpha_numeric_only(content) || content.length <= 4) {
                         return error;
                     }
                 },

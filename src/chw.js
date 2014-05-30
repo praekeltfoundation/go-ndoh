@@ -279,7 +279,7 @@ go.app = function() {
                 question: question,
 
                 check: function(content) {
-                    if (!go.utils.is_alpha_numeric_only(content)) {
+                    if (!go.utils.is_alpha_numeric_only(content) || content.length <= 4) {
                         return error;
                     }
                 },

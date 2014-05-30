@@ -631,7 +631,7 @@ go.utils = {
     },
 
     is_alpha_numeric_only: function(input) {
-        alpha_numeric = new RegExp('^[A-Za-z0-9]*$');
+        alpha_numeric = new RegExp('^[A-Za-z0-9]+$');
         return alpha_numeric.test(input);
     },
 

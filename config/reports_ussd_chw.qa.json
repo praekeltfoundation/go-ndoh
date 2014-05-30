@@ -171,28 +171,6 @@
         {
             "type": "diamondash.widgets.lvalue.LValueWidget",
             "time_range": "30d",
-            "name": "Jembi Successful Docs Transmissions",
-            "target": {
-                "metric_type": "account",
-                "store": "ndoh_qa",
-                "name": "qa.chw.sum.doc_to_jembi_success",
-                "aggregator": "last"
-                }
-        },
-        {
-            "type": "diamondash.widgets.lvalue.LValueWidget",
-            "time_range": "30d",
-            "name": "Jembi Failed Docs Transmissions",
-            "target": {
-                "metric_type": "account",
-                "store": "ndoh_qa",
-                "name": "qa.chw.sum.doc_to_jembi_fail",
-                "aggregator": "last"
-                }
-        },
-        {
-            "type": "diamondash.widgets.lvalue.LValueWidget",
-            "time_range": "30d",
             "name": "Jembi Successful Json Transmissions",
             "target": {
                 "metric_type": "account",

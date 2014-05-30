@@ -1,38 +1,6 @@
 {
     "layout": [
-        {
-            "type": "diamondash.widgets.pie.PieWidget",
-            "name": "Percentage Users Across Lines",
-            "time_range": "30d",
-            "width": 18,
-            "metrics": [
-              {
-                "target": {
-                  "metric_type": "account",
-                  "store": "ndoh_qa",
-                  "name": "qa.clinic.sum.unique_users",
-                  "aggregator": "last"
-                }
-              },
-              {
-                "target": {
-                  "metric_type": "account",
-                  "store": "ndoh_qa",
-                  "name": "qa.chw.sum.unique_users",
-                  "aggregator": "last"
-                }
-              },
-              {
-                "target": {
-                  "metric_type": "account",
-                  "store": "ndoh_qa",
-                  "name": "qa.personal.sum.unique_users",
-                  "aggregator": "last"
-                }
-              },
-            ]
-        },
-        "new_row",
+        
         {
             "type": "diamondash.widgets.lvalue.LValueWidget",
             "time_range": "30d",

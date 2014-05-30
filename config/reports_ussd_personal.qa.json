@@ -1,0 +1,184 @@
+{
+    "layout": [
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "Public Line Unique Users",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.personal.sum.unique_users",
+                "aggregator": "last"
+                }
+        },
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "Average Sessions to Register",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.personal.avg.sessions_to_register",
+                "aggregator": "avg"
+                }
+        },
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "Percentage Users This Line",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.personal.percentage_users",
+                "aggregator": "last"
+                }
+        },
+        "new_row",
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "Percentage Complete Registrations",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.personal.percent_complete_registrations",
+                "aggregator": "last"
+                }
+        },
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "Percentage Incomplete Registrations",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.personal.percent_incomplete_registrations",
+                "aggregator": "last"
+                }
+        },
+        "new_row",
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "Dropoffs: states_start",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.personal.states_start.no_incomplete",
+                "aggregator": "last"
+                }
+        },
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "Dropoffs: states_suspect_pregnancy",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.personal.states_suspect_pregnancy.no_incomplete",
+                "aggregator": "last"
+                }
+        },
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "Dropoffs: states_id_type",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.personal.states_id_type.no_incomplete",
+                "aggregator": "last"
+                }
+        },
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "Dropoffs: states_sa_id",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.personal.states_sa_id.no_incomplete",
+                "aggregator": "last"
+                }
+        },
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "Dropoffs: states_passport_origin",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.personal.states_passport_origin.no_incomplete",
+                "aggregator": "last"
+                }
+        },
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "Dropoffs: states_passport_no",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.personal.states_passport_no.no_incomplete",
+                "aggregator": "last"
+                }
+        },
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "Dropoffs: states_birth_year",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.personal.states_birth_year.no_incomplete",
+                "aggregator": "last"
+                }
+        },
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "Dropoffs: states_birth_month",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.personal.states_birth_month.no_incomplete",
+                "aggregator": "last"
+                }
+        },
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "Dropoffs: states_birth_day",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.personal.states_birth_day.no_incomplete",
+                "aggregator": "last"
+                }
+        },
+        
+        "new_row",
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "Jembi Successful Json Transmissions",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.personal.sum.json_to_jembi_success",
+                "aggregator": "last"
+                }
+        },
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "Jembi Failed Json Transmissions",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.personal.sum.json_to_jembi_fail",
+                "aggregator": "last"
+                }
+        }
+    ]
+}

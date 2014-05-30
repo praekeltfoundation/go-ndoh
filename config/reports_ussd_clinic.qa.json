@@ -11,7 +11,6 @@
                 "aggregator": "last"
                 }
         },
-
         {
             "type": "diamondash.widgets.lvalue.LValueWidget",
             "time_range": "30d",
@@ -23,7 +22,6 @@
                 "aggregator": "avg"
                 }
         },
-
         {
             "type": "diamondash.widgets.lvalue.LValueWidget",
             "time_range": "30d",
@@ -35,7 +33,6 @@
                 "aggregator": "last"
                 }
         },
-
         "new_row",
         {
             "type": "diamondash.widgets.lvalue.LValueWidget",
@@ -48,7 +45,6 @@
                 "aggregator": "last"
                 }
         },
-
         {
             "type": "diamondash.widgets.lvalue.LValueWidget",
             "time_range": "30d",
@@ -60,7 +56,6 @@
                 "aggregator": "last"
                 }
         },
-
         "new_row",
         {
             "type": "diamondash.widgets.lvalue.LValueWidget",
@@ -73,7 +68,6 @@
                 "aggregator": "last"
                 }
         },
-
         {
             "type": "diamondash.widgets.lvalue.LValueWidget",
             "time_range": "30d",
@@ -85,7 +79,6 @@
                 "aggregator": "last"
                 }
         },
-
         {
             "type": "diamondash.widgets.lvalue.LValueWidget",
             "time_range": "30d",
@@ -97,7 +90,6 @@
                 "aggregator": "last"
                 }
         },
-
         {
             "type": "diamondash.widgets.lvalue.LValueWidget",
             "time_range": "30d",
@@ -109,7 +101,6 @@
                 "aggregator": "last"
                 }
         },
-
         {
             "type": "diamondash.widgets.lvalue.LValueWidget",
             "time_range": "30d",
@@ -121,7 +112,6 @@
                 "aggregator": "last"
                 }
         },
-
         {
             "type": "diamondash.widgets.lvalue.LValueWidget",
             "time_range": "30d",
@@ -133,7 +123,6 @@
                 "aggregator": "last"
                 }
         },
-
         {
             "type": "diamondash.widgets.lvalue.LValueWidget",
             "time_range": "30d",
@@ -145,7 +134,6 @@
                 "aggregator": "last"
                 }
         },
-
         {
             "type": "diamondash.widgets.lvalue.LValueWidget",
             "time_range": "30d",
@@ -157,7 +145,6 @@
                 "aggregator": "last"
                 }
         },
-
         {
             "type": "diamondash.widgets.lvalue.LValueWidget",
             "time_range": "30d",
@@ -169,7 +156,6 @@
                 "aggregator": "last"
                 }
         },
-
         {
             "type": "diamondash.widgets.lvalue.LValueWidget",
             "time_range": "30d",
@@ -181,7 +167,6 @@
                 "aggregator": "last"
                 }
         },
-
         {
             "type": "diamondash.widgets.lvalue.LValueWidget",
             "time_range": "30d",
@@ -193,7 +178,6 @@
                 "aggregator": "last"
                 }
         },
-
         {
             "type": "diamondash.widgets.lvalue.LValueWidget",
             "time_range": "30d",
@@ -205,9 +189,6 @@
                 "aggregator": "last"
                 }
         },
-
-
-
         "new_row",
         {
             "type": "diamondash.widgets.lvalue.LValueWidget",
@@ -220,7 +201,6 @@
                 "aggregator": "last"
                 }
         },
-
         {
             "type": "diamondash.widgets.lvalue.LValueWidget",
             "time_range": "30d",
@@ -232,7 +212,6 @@
                 "aggregator": "last"
                 }
         },
-
         {
             "type": "diamondash.widgets.lvalue.LValueWidget",
             "time_range": "30d",
@@ -244,7 +223,6 @@
                 "aggregator": "last"
                 }
         },
-
         {
             "type": "diamondash.widgets.lvalue.LValueWidget",
             "time_range": "30d",

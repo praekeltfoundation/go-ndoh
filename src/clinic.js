@@ -500,32 +500,16 @@ go.app = function() {
 
                 events: {
                     'state:enter': function() {
-                        var built_doc = go.utils.build_cda_doc(self.contact, self.user);
-                        var built_json = go.utils.build_json_doc(self.contact, self.user, "registration");
-                        return Q.all([
-                            go.utils.jembi_api_call(built_doc, self.contact, self.im),
-                            go.utils.jembi_json_api_call(built_json, self.im)
-                        ]).spread(function(doc_result, json_result) {
-                            var doc_to_fire;
-                            var json_to_fire;
-                            if (doc_result.code >= 200 && doc_result.code < 300){
-                                doc_to_fire = (([self.metric_prefix, "sum", "doc_to_jembi_success"].join('.')));
-                            } else {
-                                doc_to_fire = (([self.metric_prefix, "sum", "doc_to_jembi_fail"].join('.')));
-                            }
-                            if (json_result.code >= 200 && json_result.code < 300){
-                                json_to_fire = (([self.metric_prefix, "sum", "json_to_jembi_success"].join('.')));
-                            } else {
-                                json_to_fire = (([self.metric_prefix, "sum", "json_to_jembi_fail"].join('.')));
-                            }
+                        if (self.contact.extra.id_type === 'none') {
+                            return go.utils.jembi_send_json(self.contact, self.user, 'registration', self.im, self.metric_prefix);
+                        } else {
                             return Q.all([
-                                self.im.metrics.fire.inc(doc_to_fire, {amount: 1}),
-                                self.im.metrics.fire.inc(json_to_fire, {amount: 1}),
-                                ]);
-                        });
+                                go.utils.jembi_send_doc(self.contact, self.user, self.im, self.metric_prefix),
+                                go.utils.jembi_send_json(self.contact, self.user, 'registration', self.im, self.metric_prefix)
+                            ]);
+                        }
                     }
                 }
-
             });
         });
 

@@ -887,6 +887,55 @@ describe("app", function() {
                         .run();
                 });
             });
+
+            describe("if user did not provide an sa_id number", function() {
+                it("should not try to send jembi doc - send json only", function() {
+                    return tester
+                        .setup.user.addr('+27001')
+                        .setup(function(api) {
+                            api.contacts.add( {
+                                msisdn: '+27001',
+                                extra : {
+                                    clinic_code: '12345',
+                                    suspect_pregnancy: 'yes',
+                                    id_type: 'none',
+                                    ussd_sessions: '5'
+                                }
+                            });
+                        })
+                        .setup.user.state('states_language')
+                        .input('1')
+                        .check.interaction({
+                            state: 'states_end_success',
+                            reply: ('Thank you. The pregnant woman will now ' +
+                                'receive weekly messages about her pregnancy ' +
+                                'from the Department of Health.')
+                        })
+                        .check(function(api) {
+                            var contact = _.find(api.contacts.store, {
+                              msisdn: '+27001'
+                            });
+                            assert.equal(contact.extra.language_choice, 'en');
+                            assert.equal(contact.extra.ussd_sessions, '0');
+                            assert.equal(contact.extra.is_registered, 'true');
+                            assert.equal(contact.extra.last_stage, 'states_end_success');
+                            assert.equal(contact.extra.metric_sessions_to_register, '5');
+                            assert.equal(contact.extra.no_registrations, undefined);
+                            assert.equal(contact.extra.registered_by, undefined);
+                        })
+                        .check(function(api) {
+                            var metrics = api.metrics.stores.test_metric_store;
+                            assert.deepEqual(metrics['test.clinic.avg.sessions_to_register'].values, [5]);
+                            assert.deepEqual(metrics['test.clinic.percent_incomplete_registrations'].values, [25]);
+                            assert.deepEqual(metrics['test.clinic.percent_complete_registrations'].values, [75]);
+                            assert.deepEqual(metrics['test.clinic.states_end_success.no_incomplete'], undefined);
+                            assert.deepEqual(metrics['test.clinic.sum.doc_to_jembi_success'], undefined);
+                            assert.deepEqual(metrics['test.clinic.sum.json_to_jembi_success'].values, [1]);
+                        })
+                        .check.reply.ends_session()
+                        .run();
+                });
+            });
             
             describe("if jembi sends fail", function() {
                 it.skip("should fire fail metrics", function() {

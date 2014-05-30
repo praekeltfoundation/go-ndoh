@@ -456,18 +456,10 @@ go.app = function() {
                         'to register at her nearest clinic.'),
 
                 next: 'states_start',
+
                 events: {
                     'state:enter': function() {
-                        var built_json = go.utils.build_json_doc(self.contact, self.user, "pre-registration");
-                        return go.utils
-                            .jembi_json_api_call(built_json, self.im)
-                            .then(function(result) {
-                                if (result.code >= 200 && result.code < 300){
-                                    return self.im.metrics.fire.inc((([self.metric_prefix, "sum", "json_to_jembi_success"].join('.'))), {amount: 1});
-                                } else {
-                                    return self.im.metrics.fire.inc((([self.metric_prefix, "sum", "json_to_jembi_fail"].join('.'))), {amount: 1});
-                                }
-                            });
+                        return go.utils.jembi_send_json(self.contact, self.user, 'pre-registration', self.im, self.metric_prefix);
                     }
                 }
             });

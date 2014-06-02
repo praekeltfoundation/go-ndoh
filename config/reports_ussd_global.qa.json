@@ -1,6 +1,34 @@
 {
     "layout": [
 
+        // {
+        //     "type": "diamondash.widgets.pie.PieWidget",
+        //     "name": "User spread",
+        //     "time_range": "30d",
+        //     "width": 6,
+        //     "metrics": [
+        //         {
+        //             "target": {
+        //               "metric_type": "account",
+        //               "store": "ndoh_qa",
+        //               "name": "qa.clinic.sum.unique_users",
+        //               "aggregator": "last"
+        //             }
+        //         }
+        //     ]
+        // },
+
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "Total Unique Users",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.sum.unique_users",
+                "aggregator": "last"
+            }
+        },
         
         {
             "type": "diamondash.widgets.lvalue.LValueWidget",

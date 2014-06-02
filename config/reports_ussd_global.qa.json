@@ -8,7 +8,6 @@
             "width": 6,
             "metrics": [
               {
-                "name": "classy",
                 "target": {
                   "metric_type": "account",
                   "store": "ndoh_qa",
@@ -17,7 +16,7 @@
                 }
               }
             ]
-        }
+        },
         
         {
             "type": "diamondash.widgets.lvalue.LValueWidget",

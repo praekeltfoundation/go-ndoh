@@ -45,6 +45,43 @@
                 "aggregator": "last"
             }
         },
+
+        "new_row",
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "Percentage Users Clinic Line",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.clinic.percentage_users",
+                "aggregator": "last"
+                }
+        },
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "Percentage Users CHW Line",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.clinic.percentage_users",
+                "aggregator": "last"
+                }
+        },
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "Percentage Users Public Line",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.clinic.percentage_users",
+                "aggregator": "last"
+                }
+        },
+
+        "new_row",
         {
             "type": "diamondash.widgets.lvalue.LValueWidget",
             "time_range": "30d",

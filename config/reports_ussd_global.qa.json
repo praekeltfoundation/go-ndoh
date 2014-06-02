@@ -157,7 +157,7 @@
         {
             "type": "diamondash.widgets.lvalue.LValueWidget",
             "time_range": "30d",
-            "name": "Percentage Complete Registrations",
+            "name": "Clinic Percentage Complete Registrations",
             "target": {
                 "metric_type": "account",
                 "store": "ndoh_qa",
@@ -168,7 +168,7 @@
         {
             "type": "diamondash.widgets.lvalue.LValueWidget",
             "time_range": "30d",
-            "name": "Percentage Incomplete Registrations",
+            "name": "Clinic Percentage Incomplete Registrations",
             "target": {
                 "metric_type": "account",
                 "store": "ndoh_qa",
@@ -176,6 +176,51 @@
                 "aggregator": "last"
             }
         },
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "CHW Percentage Complete Registrations",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.chw.percent_complete_registrations",
+                "aggregator": "last"
+            }
+        },
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "CHW Percentage Incomplete Registrations",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.chw.percent_incomplete_registrations",
+                "aggregator": "last"
+            }
+        },
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "Public Percentage Complete Registrations",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.personal.percent_complete_registrations",
+                "aggregator": "last"
+            }
+        },
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "Public Percentage Incomplete Registrations",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.personal.percent_incomplete_registrations",
+                "aggregator": "last"
+            }
+        },
+
         "new_row",
         {
             "type": "diamondash.widgets.lvalue.LValueWidget",

@@ -82,18 +82,6 @@
         },
 
         {
-            "type": "diamondash.widgets.lvalue.LValueWidget",
-            "time_range": "30d",
-            "name": "Dropoffs: states_start",
-            "target": {
-                "metric_type": "account",
-                "store": "ndoh_qa",
-                "name": "qa.clinic.states_start.no_incomplete",
-                "aggregator": "last"
-                }
-        },
-
-        {
             "type": "diamondash.widgets.graph.GraphWidget",
             "name": "Clinic Dropoffs",
             "width": 12,
@@ -142,17 +130,7 @@
                 "aggregator": "avg"
             }
         },
-        {
-            "type": "diamondash.widgets.lvalue.LValueWidget",
-            "time_range": "30d",
-            "name": "Percentage Users This Line",
-            "target": {
-                "metric_type": "account",
-                "store": "ndoh_qa",
-                "name": "qa.clinic.percentage_users",
-                "aggregator": "last"
-            }
-        },
+        
         "new_row",
         {
             "type": "diamondash.widgets.lvalue.LValueWidget",

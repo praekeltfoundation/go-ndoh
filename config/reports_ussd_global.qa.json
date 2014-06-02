@@ -13,7 +13,6 @@
                 "aggregator": "last"
             }
         },
-        
         {
             "type": "diamondash.widgets.lvalue.LValueWidget",
             "time_range": "30d",
@@ -22,6 +21,28 @@
                 "metric_type": "account",
                 "store": "ndoh_qa",
                 "name": "qa.clinic.sum.unique_users",
+                "aggregator": "last"
+            }
+        },
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "CHW Unique Users",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.chw.sum.unique_users",
+                "aggregator": "last"
+            }
+        },
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "Public Unique Users",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.personal.sum.unique_users",
                 "aggregator": "last"
             }
         },

@@ -2,6 +2,23 @@
     "layout": [
 
         {
+            "type": "diamondash.widgets.pie.PieWidget",
+            "name": "Unique Users Pie",
+            "time_range": "30d",
+            "width": 6,
+            "metrics": [
+                {
+                "target": {
+                    "metric_type": "account",
+                    "store": "ndoh_qa",
+                    "name": "qa.clinic.sum.unique_users",
+                    "aggregator": "last"
+                    }
+                }
+            ]
+        },
+
+        {
             "type": "diamondash.widgets.lvalue.LValueWidget",
             "time_range": "30d",
             "name": "Total Unique Users",

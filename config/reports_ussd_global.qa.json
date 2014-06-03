@@ -8,13 +8,29 @@
             "width": 6,
             "metrics": [
                 {
-                "name": "Clinic",
-                "target": {
-                    "metric_type": "account",
-                    "store": "ndoh_qa",
-                    "name": "qa.clinic.sum.unique_users",
-                    "aggregator": "last"
-                    }
+                    "name": "Clinic",
+                    "target": {
+                        "metric_type": "account",
+                        "store": "ndoh_qa",
+                        "name": "qa.clinic.sum.unique_users",
+                        "aggregator": "last"
+                        }
+                },{
+                    "name": "CHW",
+                    "target": {
+                        "metric_type": "account",
+                        "store": "ndoh_qa",
+                        "name": "qa.chw.sum.unique_users",
+                        "aggregator": "last"
+                        }    
+                },{
+                    "name": "Public",
+                    "target": {
+                        "metric_type": "account",
+                        "store": "ndoh_qa",
+                        "name": "qa.personal.sum.unique_users",
+                        "aggregator": "last"
+                        }    
                 }
             ]
         },

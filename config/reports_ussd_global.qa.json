@@ -1,0 +1,315 @@
+{
+    "layout": [
+
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "Total Unique Users",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.sum.unique_users",
+                "aggregator": "last"
+            }
+        },
+        {
+            "type": "diamondash.widgets.pie.PieWidget",
+            "name": "Unique Users Per Line",
+            "time_range": "30d",
+            "width": 3,
+            "metrics": [
+                {
+                    "name": "Clinic",
+                    "target": {
+                        "metric_type": "account",
+                        "store": "ndoh_qa",
+                        "name": "qa.clinic.sum.unique_users",
+                        "aggregator": "last"
+                        }
+                },{
+                    "name": "CHW",
+                    "target": {
+                        "metric_type": "account",
+                        "store": "ndoh_qa",
+                        "name": "qa.chw.sum.unique_users",
+                        "aggregator": "last"
+                        }    
+                },{
+                    "name": "Public",
+                    "target": {
+                        "metric_type": "account",
+                        "store": "ndoh_qa",
+                        "name": "qa.personal.sum.unique_users",
+                        "aggregator": "last"
+                        }    
+                }
+            ]
+        },
+        {
+            "type": "diamondash.widgets.pie.PieWidget",
+            "name": "Unique User Distribution Percentages",
+            "time_range": "30d",
+            "width": 3,
+            "metrics": [
+                {
+                    "name": "Clinic",
+                    "target": {
+                        "metric_type": "account",
+                        "store": "ndoh_qa",
+                        "name": "qa.clinic.percentage_users",
+                        "aggregator": "last"
+                        }
+                },{
+                    "name": "CHW",
+                    "target": {
+                        "metric_type": "account",
+                        "store": "ndoh_qa",
+                        "name": "qa.chw.percentage_users",
+                        "aggregator": "last"
+                        }    
+                },{
+                    "name": "Public",
+                    "target": {
+                        "metric_type": "account",
+                        "store": "ndoh_qa",
+                        "name": "qa.personal.percentage_users",
+                        "aggregator": "last"
+                        }    
+                }
+            ]
+        },
+
+        "new_row",
+        {
+            "type": "diamondash.widgets.graph.GraphWidget",
+            "name": "Clinic Dropoffs",
+            "width": 12,
+            "time_range": "30d",
+            "bucket_size": "7d",
+            "metrics": [
+                {
+                    "name": "Dropoffs: states_start",
+                    "target": {
+                        "metric_type": "account",
+                        "store": "ndoh_qa",
+                        "name": "qa.clinic.states_start.no_incomplete",
+                        "aggregator": "last"
+                    }
+                },
+                {
+                    "name": "Dropoffs: states_clinic_code",
+                    "target": {
+                        "metric_type": "account",
+                        "store": "ndoh_qa",
+                        "name": "qa.clinic.states_clinic_code.no_incomplete",
+                        "aggregator": "last"
+                        }
+                },
+                {
+                    "name": "Dropoffs: states_mobile_no",
+                    "target": {
+                        "metric_type": "account",
+                        "store": "ndoh_qa",
+                        "name": "qa.clinic.states_mobile_no.no_incomplete",
+                        "aggregator": "last"
+                        }
+                }
+            ]
+        },
+
+        "new_row",
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "Clinic Average Sessions to Register",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.clinic.avg.sessions_to_register",
+                "aggregator": "avg"
+            }
+        },
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "CHW Average Sessions to Register",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.chw.avg.sessions_to_register",
+                "aggregator": "avg"
+            }
+        },
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "Public Average Sessions to Register",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.personal.avg.sessions_to_register",
+                "aggregator": "avg"
+            }
+        },
+
+        "new_row",
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "Clinic Percentage Complete Registrations",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.clinic.percent_complete_registrations",
+                "aggregator": "last"
+            }
+        },
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "Clinic Percentage Incomplete Registrations",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.clinic.percent_incomplete_registrations",
+                "aggregator": "last"
+            }
+        },
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "CHW Percentage Complete Registrations",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.chw.percent_complete_registrations",
+                "aggregator": "last"
+            }
+        },
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "CHW Percentage Incomplete Registrations",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.chw.percent_incomplete_registrations",
+                "aggregator": "last"
+            }
+        },
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "Public Percentage Complete Registrations",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.personal.percent_complete_registrations",
+                "aggregator": "last"
+            }
+        },
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "Public Percentage Incomplete Registrations",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.personal.percent_incomplete_registrations",
+                "aggregator": "last"
+            }
+        },
+
+        "new_row",
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "Clinic Jembi Successful Docs Transmissions",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.clinic.sum.doc_to_jembi_success",
+                "aggregator": "last"
+            }
+        },
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "Clinic Jembi Failed Docs Transmissions",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.clinic.sum.doc_to_jembi_fail",
+                "aggregator": "last"
+            }
+        },
+
+        "new_row",
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "Clinic Jembi Successful Json Transmissions",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.clinic.sum.json_to_jembi_success",
+                "aggregator": "last"
+            }
+        },
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "Clinic Jembi Failed Json Transmissions",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.clinic.sum.json_to_jembi_fail",
+                "aggregator": "last"
+            }
+        },
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "CHW Jembi Successful Json Transmissions",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.chw.sum.json_to_jembi_success",
+                "aggregator": "last"
+            }
+        },
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "CHW Jembi Failed Json Transmissions",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.chw.sum.json_to_jembi_fail",
+                "aggregator": "last"
+            }
+        },
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "Public Jembi Successful Json Transmissions",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.personal.sum.json_to_jembi_success",
+                "aggregator": "last"
+            }
+        },
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "Public Jembi Failed Json Transmissions",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.personal.sum.json_to_jembi_fail",
+                "aggregator": "last"
+            }
+        }
+    ]
+}

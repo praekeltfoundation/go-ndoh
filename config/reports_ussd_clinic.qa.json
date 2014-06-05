@@ -1,0 +1,238 @@
+{
+    "layout": [
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "Clinic Unique Users",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.clinic.sum.unique_users",
+                "aggregator": "last"
+                }
+        },
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "Average Sessions to Register",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.clinic.avg.sessions_to_register",
+                "aggregator": "avg"
+                }
+        },
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "Percentage Users This Line",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.clinic.percentage_users",
+                "aggregator": "last"
+                }
+        },
+        "new_row",
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "Percentage Complete Registrations",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.clinic.percent_complete_registrations",
+                "aggregator": "last"
+                }
+        },
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "Percentage Incomplete Registrations",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.clinic.percent_incomplete_registrations",
+                "aggregator": "last"
+                }
+        },
+        "new_row",
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "Dropoffs: states_start",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.clinic.states_start.no_incomplete",
+                "aggregator": "last"
+                }
+        },
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "Dropoffs: states_clinic_code",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.clinic.states_clinic_code.no_incomplete",
+                "aggregator": "last"
+                }
+        },
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "Dropoffs: states_mobile_no",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.clinic.states_mobile_no.no_incomplete",
+                "aggregator": "last"
+                }
+        },
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "Dropoffs: states_due_date_month",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.clinic.states_due_date_month.no_incomplete",
+                "aggregator": "last"
+                }
+        },
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "Dropoffs: states_id_type",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.clinic.states_id_type.no_incomplete",
+                "aggregator": "last"
+                }
+        },
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "Dropoffs: states_sa_id",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.clinic.states_sa_id.no_incomplete",
+                "aggregator": "last"
+                }
+        },
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "Dropoffs: states_passport_origin",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.clinic.states_passport_origin.no_incomplete",
+                "aggregator": "last"
+                }
+        },
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "Dropoffs: states_passport_no",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.clinic.states_passport_no.no_incomplete",
+                "aggregator": "last"
+                }
+        },
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "Dropoffs: states_birth_year",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.clinic.states_birth_year.no_incomplete",
+                "aggregator": "last"
+                }
+        },
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "Dropoffs: states_birth_month",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.clinic.states_birth_month.no_incomplete",
+                "aggregator": "last"
+                }
+        },
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "Dropoffs: states_birth_day",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.clinic.states_birth_day.no_incomplete",
+                "aggregator": "last"
+                }
+        },
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "Dropoffs: states_language",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.clinic.states_language.no_incomplete",
+                "aggregator": "last"
+                }
+        },
+        "new_row",
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "Jembi Successful Docs Transmissions",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.clinic.sum.doc_to_jembi_success",
+                "aggregator": "last"
+                }
+        },
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "Jembi Failed Docs Transmissions",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.clinic.sum.doc_to_jembi_fail",
+                "aggregator": "last"
+                }
+        },
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "Jembi Successful Json Transmissions",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.clinic.sum.json_to_jembi_success",
+                "aggregator": "last"
+                }
+        },
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "Jembi Failed Json Transmissions",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_qa",
+                "name": "qa.clinic.sum.json_to_jembi_fail",
+                "aggregator": "last"
+                }
+        }
+    ]
+}

@@ -50,6 +50,17 @@ Metrics produced:
 * personal.percent_incomplete_registrations
 * personal.percent_complete_registrations
 
+* clinic.sum.doc_to_jembi_success
+* clinic.sum.json_to_jembi_success
+* chw.sum.json_to_jembi_success
+* personal.sum.json_to_jembi_success
+
+* clinic.sum.doc_to_jembi_fail
+* clinic.sum.json_to_jembi_fail
+* chw.sum.json_to_jembi_fail
+* personal.sum.json_to_jembi_fail
+
+
 
 Analytics produced:
 
@@ -60,10 +71,3 @@ Analytics produced:
 * self.contact.extra.metric_sessions_to_register (number of sessions needed to complete registration per user)
 * self.user.extra.no_registrations (number of registrations for other numbers)
 * self.contact.extra.opt_out_reason (reasons for optout per person)
-
-
-Metrics required (v1):
-
-* clinic.sum.sent_to_hie (records number of complete registrations sent to HIE)
-* chw.sum.sent_to_hie
-* personal.sum.sent_to_hie

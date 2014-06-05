@@ -981,8 +981,8 @@ go.app = function() {
 
         self.states.add('states_passport_no', function(name) {
             var error = $('There was an error in your entry. Please ' +
-                        'carefully enter your passport number again.');
-            var question = $('Please enter your Passport number:');
+                        'carefully enter the passport number again.');
+            var question = $('Please enter the pregnant mother\'s Passport number:');
 
             return new FreeText(name, {
                 question: question,

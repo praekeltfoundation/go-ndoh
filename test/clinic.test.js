@@ -541,7 +541,7 @@ describe("app", function() {
                     .input('1')
                     .check.interaction({
                         state: 'states_passport_no',
-                        reply: 'Please enter your Passport number:'
+                        reply: 'Please enter the pregnant mother\'s Passport number:'
                     })
                     .check(function(api) {
                         var contact = _.find(api.contacts.store, {
@@ -589,7 +589,7 @@ describe("app", function() {
                     .check.interaction({
                         state: 'states_passport_no',
                         reply: ('There was an error in your entry. Please ' +
-                        'carefully enter your passport number again.')
+                        'carefully enter the passport number again.')
                     })
                     .run();
             });
@@ -604,7 +604,7 @@ describe("app", function() {
                     .check.interaction({
                         state: 'states_passport_no',
                         reply: ('There was an error in your entry. Please ' +
-                        'carefully enter your passport number again.')
+                        'carefully enter the passport number again.')
                     })
                     .run();
             });
@@ -619,7 +619,7 @@ describe("app", function() {
                     .check.interaction({
                         state: 'states_passport_no',
                         reply: ('There was an error in your entry. Please ' +
-                        'carefully enter your passport number again.')
+                        'carefully enter the passport number again.')
                     })
                     .run();
             });

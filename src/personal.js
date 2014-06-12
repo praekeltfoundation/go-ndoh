@@ -196,12 +196,7 @@ go.app = function() {
             var error = $('Sorry, your ID number did not validate. ' +
                           'Please reenter your SA ID number:');
 
-            var question;
-            if (!opts.retry) {
-                question = $('Please enter your SA ID number:');
-            } else {
-                question = error;
-            }
+            var question = $('Please enter your SA ID number:');
 
             return new FreeText(name, {
                 question: question,
@@ -293,14 +288,9 @@ go.app = function() {
                         'carefully enter your year of birth again (for ' +
                         'example: 2001)');
 
-            var question;
-            if (!opts.retry) {
-                question = $('Since you don\'t have an ID or passport, ' +
+            var question = $('Since you don\'t have an ID or passport, ' +
                             'please enter the year that you were born (for ' +
                             'example: 1981)');
-            } else {
-                question = error;
-            }
 
             return new FreeText(name, {
                 question: question,
@@ -350,13 +340,8 @@ go.app = function() {
                         'carefully enter your day of birth again (for ' +
                         'example: 8)');
 
-            var question;
-            if (!opts.retry) {
-                question = $('Please enter the day that you were born ' +
+            var question = $('Please enter the day that you were born ' +
                     '(for example: 14).');
-            } else {
-                question = error;
-            }
 
             return new FreeText(name, {
                 question: question,

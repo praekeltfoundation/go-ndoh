@@ -288,7 +288,7 @@ describe("app", function() {
 
         describe("after entering the clinic code", function() {
             describe("if the clinic code is not valid", function() {
-                it("should ask for the clinic_code again", function() {
+                it.only("should ask for the clinic_code again", function() {
                     return tester
                         .setup.user.addr('+270001')
                         .setup.user.state('states_clinic_code')
@@ -296,8 +296,8 @@ describe("app", function() {
                         .check.interaction({
                         state: 'states_clinic_code',
                         reply: (
-                            'Please enter the clinic code for the facility ' +
-                            'where this pregnancy is being registered:')
+                            'Sorry, the clinic number did not validate. ' +
+                            'Please reenter the clinic number:')
                         })
                         .run();
                 });

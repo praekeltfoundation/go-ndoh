@@ -156,13 +156,8 @@ go.app = function() {
             var error = $('Sorry, the mobile number did not validate. ' +
                           'Please reenter the mobile number:');
 
-            var question;
-            if (!opts.retry) {
-                question = $('Please input the mobile number of the ' +
+            var question = $('Please input the mobile number of the ' +
                             'pregnant woman to be registered:');
-            } else {
-                question = error;
-            }
 
             return new FreeText(name, {
                 question: question,
@@ -244,13 +239,8 @@ go.app = function() {
             var error = $('Sorry, the mother\'s ID number did not validate. ' +
                           'Please reenter the SA ID number:');
 
-            var question;
-            if (!opts.retry) {
-                question = $('Please enter the pregnant mother\'s SA ID ' +
+            var question = $('Please enter the pregnant mother\'s SA ID ' +
                             'number:');
-            } else {
-                question = error;
-            }
 
             return new FreeText(name, {
                 question: question,
@@ -337,19 +327,13 @@ go.app = function() {
             });
         });
 
-
         self.states.add('states_birth_year', function(name, opts) {
             var error = $('There was an error in your entry. Please ' +
                         'carefully enter the mother\'s year of birth again ' +
                         '(for example: 2001)');
 
-            var question;
-            if (!opts.retry) {
-                question = $('Please enter the year that the pregnant ' +
+            var question = $('Please enter the year that the pregnant ' +
                     'mother was born (for example: 1981)');
-            } else {
-                question = error;
-            }
 
             return new FreeText(name, {
                 question: question,
@@ -400,13 +384,8 @@ go.app = function() {
                         'carefully enter the mother\'s day of birth again ' +
                         '(for example: 8)');
 
-            var question;
-            if (!opts.retry) {
-                question = $('Please enter the day that the mother was born ' +
+            var question = $('Please enter the day that the mother was born ' +
                     '(for example: 14).');
-            } else {
-                question = error;
-            }
 
             return new FreeText(name, {
                 question: question,

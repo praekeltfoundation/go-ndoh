@@ -795,9 +795,20 @@ go.app = function() {
         });
 
         self.states.add('states_clinic_code', function(name) {
+            var error = $('Sorry, the clinic number did not validate. ' +
+                          'Please reenter the clinic number:');
+            var question = $('Please enter the clinic code for the facility ' +
+                            'where this pregnancy is being registered:');
+
+
             return new FreeText(name, {
-                question: $('Please enter the clinic code for the facility ' +
-                            'where this pregnancy is being registered:'),
+                question: question,
+
+                check: function(content) {
+                    if (!_.contains(self.im.config.clinic_codes, content.trim())) {
+                        return error;
+                    }
+                },
 
                 next: function(content) {
                     self.contact.extra.clinic_code = content;

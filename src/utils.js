@@ -408,7 +408,8 @@ go.utils = {
           data: go.utils.build_request_data(doc, 'yolo', contact),
           headers: {
             'Content-Type': ['multipart/form-data; boundary=yolo']
-          }
+          },
+          ssl_method: "SSLv3"
         });
     },
 
@@ -423,6 +424,7 @@ go.utils = {
           }
         });
         return http.post(im.config.jembi.url_json, {
+          ssl_method: "SSLv3",
           data: JSON.stringify(json_doc)
         });
     },

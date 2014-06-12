@@ -9,5 +9,6 @@
         "password": "test",
         "url": "http://npr-him.jembi.org:5001/ws/rest/v1/registration/net.ihe/DocumentDossier",
         "url_json": "http://npr-him.jembi.org:5001/ws/rest/v1/subscription"
-    }
+    },
+    "clinic_codes": ["123456", "234567"]
 }

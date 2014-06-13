@@ -36,7 +36,8 @@ go.app = function() {
                     'state:enter': function() {
                         return self.im.api_request('optout.optout', {
                             address_type: "msisdn",
-                            address_value: self.im.user_addr
+                            address_value: self.im.user.addr,
+                            message_id: self.im.msg.message_id
                         });
                     }
                 },

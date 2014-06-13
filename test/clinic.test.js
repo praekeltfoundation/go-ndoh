@@ -71,11 +71,11 @@ describe("app", function() {
                     .setup.user.lang('so')
                     .setup.user.answers({
                         "states_start": "yes",
-                        "states_sa_id": "6601220446180",
+                        "states_sa_id": "5101015009088",
                         "states_birth_year": "1991",
                         "states_birth_month": "10",
                         "states_due_date_month": "09",
-                        "states_mobile_no": "0217124090",
+                        "states_mobile_no": "0800000000",
                         "states_passport_origin": "mz",
                         "states_id_type": "none",
                         "states_clinic_code": "123456",

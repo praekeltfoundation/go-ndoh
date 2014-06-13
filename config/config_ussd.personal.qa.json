@@ -1,5 +1,5 @@
 {
-    "name": "personal",
+    "name": "personal_qa",
     "env": "qa",
     "metric_store": "ndoh_qa",
     "endpoints": {"sms": {"delivery_class": "sms"}},

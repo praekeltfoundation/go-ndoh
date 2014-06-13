@@ -64,6 +64,41 @@ describe("app", function() {
                 });
         });
 
+        describe("when the user is missing extras", function() {
+            it("will fail on extras missing", function() {
+                return tester
+                    .setup.user.addr('+270001')
+                    .setup.user.lang('so')
+                    .setup.user.answers({
+                        "states_start": "yes",
+                        "states_sa_id": "5101015009088",
+                        "states_birth_year": "1991",
+                        "states_birth_month": "10",
+                        "states_due_date_month": "09",
+                        "states_mobile_no": "0800000000",
+                        "states_passport_origin": "mz",
+                        "states_id_type": "none",
+                        "states_clinic_code": "123456",
+                        "states_birth_day": "3",
+                        "states_language": "so",
+                        "states_passport_no": "123456789"
+                    })
+                    .setup.user.state('states_end_success')
+                    .input(null)
+                    .check.interaction({
+                        state: 'states_start',
+                        reply: [
+                            'Welcome to The Department of Health\'s ' +
+                            'MomConnect. Tell us if this is the no. that ' +
+                            'the mother would like to get SMSs on: 00001',
+                            '1. Yes',
+                            '2. No'
+                        ].join('\n')
+                    })
+                    .run();
+            });
+        });
+
         // no_incomplete metric tests
         describe("when a session is terminated", function() {
 
@@ -288,7 +323,7 @@ describe("app", function() {
 
         describe("after entering the clinic code", function() {
             describe("if the clinic code is not valid", function() {
-                it.only("should ask for the clinic_code again", function() {
+                it("should ask for the clinic_code again", function() {
                     return tester
                         .setup.user.addr('+270001')
                         .setup.user.state('states_clinic_code')
@@ -790,7 +825,7 @@ describe("app", function() {
 
         describe("after the mom's msg language is selected", function() {
             describe("if the phone used is not the mom's", function() {
-                it("should save msg language, thank them and exit", function() {
+                it.skip("should save msg language, thank them and exit", function() {
                     return tester
                         .setup.user.addr('+270001')
                         .setup(function(api) {
@@ -851,7 +886,7 @@ describe("app", function() {
             });
             
             describe("if the phone used is the mom's", function() {
-                it("should save msg language, thank them and exit", function() {
+                it.skip("should save msg language, thank them and exit", function() {
                     return tester
                         .setup.user.addr('+27821234567')
                         .setup(function(api) {

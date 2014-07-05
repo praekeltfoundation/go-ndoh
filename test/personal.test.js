@@ -47,6 +47,27 @@ describe("app", function() {
                         password: 'bar',
                         url: 'http://test/v2/',
                         url_json: 'http://test/v2/json/'
+                    },
+                    control: {
+                        username: 'test_user',
+                        api_key: 'test_key',
+                        url: 'http://ndoh-control/api/v1/'
+                    },
+                    subscription: {
+                        standard: 1,
+                        later: 2,
+                        accelerated: 3,
+                        baby1: 4,
+                        baby2: 5,
+                        miscarriage: 6,
+                        stillbirth: 7,
+                        babyloss: 8
+                    },
+                    rate: {
+                        daily: 1,
+                        one_per_week: 2,
+                        two_per_week: 3,
+                        three_per_week: 4,
                     }
                 })
                 .setup(function(api) {

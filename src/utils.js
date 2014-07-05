@@ -665,4 +665,53 @@ go.utils = {
         });
     },
 
+    control_api_call: function (payload, endpoint, im) {
+        var http = new HttpApi(im, {
+          headers: {
+            'Content-Type': ['application/json'],
+            'Authorization': ['ApiKey ' + im.config.control.username + ':' + im.config.control.api_key]
+          }
+        });
+        return http.post(im.config.control.url + endpoint, {
+          data: JSON.stringify(payload)
+        });
+    },
+
+    subscription_type: function(contact, im) {
+      // Stub for when logic is defined by strategist
+      return im.config.subscription.standard;
+    },
+
+    subscription_rate: function(contact, im) {
+      // Stub for when logic is defined by strategist
+      return im.config.rate.one_per_week;
+    },
+
+    subscription_send_doc: function(contact, im, metric_prefix) {
+        sub_type = go.utils.subscription_type(contact);
+        sub_rate = go.utils.subscription_rate(contact);
+        var payload = {
+          contact_key: contact.key,
+          lang: contact.extra.language_choice,
+          message_set: "/api/v1/message_set/" + sub_type + "/",
+          next_sequence_number: 1,
+          schedule: "/api/v1/periodic_task/" + sub_rate + "/",
+          to_addr: contact.msisdn,
+          user_account: contact.user_account
+        };
+
+        go.utils.build_cda_doc(contact, user);
+        return go.utils
+            .control_api_call(payload, 'subscription/', im)
+            .then(function(doc_result) {
+                var metric;
+                if (doc_result.code == 201){
+                    metric = (([metric_prefix, "sum", "subscription_to_control_success"].join('.')));
+                } else {
+                    metric = (([metric_prefix, "sum", "subscription_to_control_fail"].join('.')));
+                }
+                return im.metrics.fire.inc(metric, {amount: 1});
+        });
+    },
+
 };

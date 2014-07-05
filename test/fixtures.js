@@ -568,5 +568,43 @@ module.exports = function() {
                 "success": "true"
             }
         }
-    }];
+    },
+    {
+        "request": {
+          "method": "POST",
+          'headers': {
+                'Authorization': ['ApiKey test_user:test_key'],
+                'Content-Type': ['application/json']
+            },
+          "url": "http://ndoh-control/api/v1/subscription/",
+          "data": {
+            "contact_key": "82309423098",
+            "lang": "en",
+            "message_set": "/api/v1/message_set/3/",
+            "next_sequence_number": 1,
+            "schedule": "/api/v1/periodic_task/1/",
+            "to_addr": "+271234",
+            "user_account": "80493284823"
+          }
+        },
+        "response": {
+          "code": 201,
+          "data": {
+            "active": true,
+            "completed": false,
+            "contact_key": "82309423098",
+            "created_at": "2014-07-05T11:01:54.497870",
+            "id": 8,
+            "lang": "en",
+            "message_set": "/api/v1/message_set/3/",
+            "next_sequence_number": 1,
+            "resource_uri": "/api/v1/subscription/8/",
+            "schedule": "/api/v1/periodic_task/1/",
+            "to_addr": "+271234",
+            "updated_at": "2014-07-05T11:01:54.498122",
+            "user_account": "80493284823"
+          }
+        }
+      }
+    ];
 };

@@ -10,5 +10,29 @@
         "url": "http://npr-him.jembi.org:5001/ws/rest/v1/registration/net.ihe/DocumentDossier",
         "url_json": "http://npr-him.jembi.org:5001/ws/rest/v1/subscription"
     },
-    "clinic_codes": ["123456", "234567"]
+    "clinic_codes": ["123456", "234567"],
+    "control": {
+        "username": "test_user",
+        "api_key": "test_key",
+        "url": "http://qa-ndoh-control.za.prk-host.net/api/v1/"
+    },
+    "subscription": {
+        "standard": 1,
+        "later": 2,
+        "accelerated": 3,
+        "baby1": 4,
+        "baby2": 5,
+        "miscarriage": 6,
+        "stillbirth": 7,
+        "babyloss": 8,
+        "subscription": 9,
+        "chw": 10
+    },
+    "rate": {
+        "daily": 1,
+        "one_per_week": 2,
+        "two_per_week": 3,
+        "three_per_week": 4,
+    }
+}
 }

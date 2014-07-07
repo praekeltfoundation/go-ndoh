@@ -398,7 +398,10 @@ go.app = function() {
 
                 events: {
                     'state:enter': function() {
-                        return go.utils.jembi_send_json(self.contact, self.contact, 'subscription', self.im, self.metric_prefix);
+                        return Q.all([
+                            go.utils.jembi_send_json(self.contact, self.contact, 'subscription', self.im, self.metric_prefix),
+                            go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix)
+                        ]);
                     }
                 }
             });

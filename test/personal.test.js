@@ -47,6 +47,29 @@ describe("app", function() {
                         password: 'bar',
                         url: 'http://test/v2/',
                         url_json: 'http://test/v2/json/'
+                    },
+                    control: {
+                        username: 'test_user',
+                        api_key: 'test_key',
+                        url: 'http://ndoh-control/api/v1/'
+                    },
+                    subscription: {
+                        standard: 1,
+                        later: 2,
+                        accelerated: 3,
+                        baby1: 4,
+                        baby2: 5,
+                        miscarriage: 6,
+                        stillbirth: 7,
+                        babyloss: 8,
+                        subscription: 9,
+                        chw: 10
+                    },
+                    rate: {
+                        daily: 1,
+                        one_per_week: 2,
+                        two_per_week: 3,
+                        three_per_week: 4,
                     }
                 })
                 .setup(function(api) {
@@ -107,7 +130,9 @@ describe("app", function() {
                                     passport_origin: 'zw',
                                     passport_no: '12345',
                                     ussd_sessions: '5'
-                                }
+                                },
+                                key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                                user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
                             });
                         })
                         .setup.user.addr('+27001')
@@ -330,7 +355,9 @@ describe("app", function() {
                                 language_choice: 'en',
                                 suspect_pregnancy: 'yes',
                                 id_type: 'sa_id'
-                            }
+                            },
+                            key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
                         });
                     })
                     .setup.user.addr('+27001')
@@ -366,7 +393,9 @@ describe("app", function() {
                                 language_choice: 'en',
                                 suspect_pregnancy: 'yes',
                                 id_type: 'sa_id'
-                            }
+                            },
+                            key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
                         });
                     })
                     .setup.user.addr('+27001')
@@ -402,7 +431,9 @@ describe("app", function() {
                                 language_choice: 'en',
                                 suspect_pregnancy: 'yes',
                                 id_type: 'sa_id'
-                            }
+                            },
+                            key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
                         });
                     })
                     .setup.user.addr('+27001')
@@ -428,7 +459,9 @@ describe("app", function() {
                                 language_choice: 'en',
                                 suspect_pregnancy: 'yes',
                                 id_type: 'sa_id'
-                            }
+                            },
+                            key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
                         });
                     })
                     .setup.user.addr('+27001')
@@ -520,7 +553,9 @@ describe("app", function() {
                                 suspect_pregnancy: 'yes',
                                 id_type: 'passport',
                                 passport_origin: 'zw'
-                            }
+                            },
+                            key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
                         });
                     })
                     .setup.user.addr('+27001')
@@ -696,7 +731,9 @@ describe("app", function() {
                                 passport_origin: 'zw',
                                 passport_no: '12345',
                                 ussd_sessions: '5'
-                            }
+                            },
+                            key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
                         });
                     })
                     .setup.user.addr('+27001')
@@ -746,7 +783,9 @@ describe("app", function() {
                                 passport_origin: 'zw',
                                 passport_no: '12345',
                                 ussd_sessions: '5'
-                            }
+                            },
+                            key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
                         });
                     })
                     .setup.user.addr('+27001')

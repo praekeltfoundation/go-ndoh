@@ -716,9 +716,10 @@ go.utils = {
             .control_api_call(payload, 'subscription/', im)
             .then(function(doc_result) {
                 var metric;
-                if (doc_result.code == 201){
+                if (doc_result.code >= 200 && doc_result.code < 300){
                     metric = (([metric_prefix, "sum", "subscription_to_protocol_success"].join('.')));
                 } else {
+                    //TODO - implement proper fail issue #36
                     metric = (([metric_prefix, "sum", "subscription_to_protocol_fail"].join('.')));
                 }
                 return im.metrics.fire.inc(metric, {amount: 1});

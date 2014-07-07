@@ -668,6 +668,63 @@ go.utils = {
         });
     },
 
+    control_api_call: function (payload, endpoint, im) {
+        var http = new HttpApi(im, {
+          headers: {
+            'Content-Type': ['application/json'],
+            'Authorization': ['ApiKey ' + im.config.control.username + ':' + im.config.control.api_key]
+          }
+        });
+        return http.post(im.config.control.url + endpoint, {
+          data: JSON.stringify(payload)
+        });
+    },
+
+    subscription_type_and_rate: function(contact, im) {
+      var response = {
+          sub_type: null,
+          sub_rate: null
+      };
+      // substrings because QA names are appended with _qa
+      if (im.config.name.substring(0,8) == "personal") {
+          response.sub_type = im.config.subscription.subscription;
+          response.sub_rate = im.config.rate.two_per_week;
+      } else if (im.config.name.substring(0,3) == "chw") {
+          response.sub_type = im.config.subscription.chw;
+          response.sub_rate = im.config.rate.two_per_week;
+      } else {
+        // clinic line
+        // Stub for when logic is confirmed by strategist
+          response.sub_type = im.config.subscription.standard;
+          response.sub_rate = im.config.rate.one_per_week;
+      }
+      return response;
+    },
+
+    subscription_send_doc: function(contact, im, metric_prefix) {
+        opts = go.utils.subscription_type_and_rate(contact, im);
+        var payload = {
+          contact_key: contact.key,
+          lang: contact.extra.language_choice,
+          message_set: "/api/v1/message_set/" + opts.sub_type + "/",
+          next_sequence_number: 1,
+          schedule: "/api/v1/periodic_task/" + opts.sub_rate + "/",
+          to_addr: contact.msisdn,
+          user_account: contact.user_account
+        };
+        return go.utils
+            .control_api_call(payload, 'subscription/', im)
+            .then(function(doc_result) {
+                var metric;
+                if (doc_result.code == 201){
+                    metric = (([metric_prefix, "sum", "subscription_to_protocol_success"].join('.')));
+                } else {
+                    metric = (([metric_prefix, "sum", "subscription_to_protocol_fail"].join('.')));
+                }
+                return im.metrics.fire.inc(metric, {amount: 1});
+        });
+    },
+
 };
 
 go.app = function() {
@@ -1070,7 +1127,10 @@ go.app = function() {
 
                 events: {
                     'state:enter': function() {
-                        return go.utils.jembi_send_json(self.contact, self.contact, 'subscription', self.im, self.metric_prefix);
+                        return Q.all([
+                            go.utils.jembi_send_json(self.contact, self.contact, 'subscription', self.im, self.metric_prefix),
+                            go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix)
+                        ]);
                     }
                 }
             });

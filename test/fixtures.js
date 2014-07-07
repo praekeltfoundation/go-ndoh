@@ -578,13 +578,13 @@ module.exports = function() {
             },
           "url": "http://ndoh-control/api/v1/subscription/",
           "data": {
-            "contact_key": "82309423098",
+            "contact_key": "63ee4fa9-6888-4f0c-065a-939dc2473a99",
             "lang": "en",
-            "message_set": "/api/v1/message_set/3/",
+            "message_set": "/api/v1/message_set/9/",
             "next_sequence_number": 1,
-            "schedule": "/api/v1/periodic_task/1/",
-            "to_addr": "+271234",
-            "user_account": "80493284823"
+            "schedule": "/api/v1/periodic_task/3/",
+            "to_addr": "+27001",
+            "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
           }
         },
         "response": {
@@ -592,17 +592,17 @@ module.exports = function() {
           "data": {
             "active": true,
             "completed": false,
-            "contact_key": "82309423098",
+            "contact_key": "63ee4fa9-6888-4f0c-065a-939dc2473a99",
             "created_at": "2014-07-05T11:01:54.497870",
             "id": 8,
             "lang": "en",
-            "message_set": "/api/v1/message_set/3/",
+            "message_set": "/api/v1/message_set/9/",
             "next_sequence_number": 1,
             "resource_uri": "/api/v1/subscription/8/",
-            "schedule": "/api/v1/periodic_task/1/",
+            "schedule": "/api/v1/periodic_task/3/",
             "to_addr": "+271234",
             "updated_at": "2014-07-05T11:01:54.498122",
-            "user_account": "80493284823"
+            "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
           }
         }
       }

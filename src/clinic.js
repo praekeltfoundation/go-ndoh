@@ -492,11 +492,15 @@ go.app = function() {
                     'state:enter': function() {
                         if (self.contact.extra.id_type !== undefined){
                             if (self.contact.extra.id_type === 'none') {
-                                return go.utils.jembi_send_json(self.contact, self.user, 'registration', self.im, self.metric_prefix);
+                                return Q.all([
+                                    go.utils.jembi_send_json(self.contact, self.user, 'registration', self.im, self.metric_prefix),
+                                    go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix)
+                                ]);
                             } else {
                                 return Q.all([
                                     go.utils.jembi_send_doc(self.contact, self.user, self.im, self.metric_prefix),
-                                    go.utils.jembi_send_json(self.contact, self.user, 'registration', self.im, self.metric_prefix)
+                                    go.utils.jembi_send_json(self.contact, self.user, 'registration', self.im, self.metric_prefix),
+                                    go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix)
                                 ]);
                             }
                         }

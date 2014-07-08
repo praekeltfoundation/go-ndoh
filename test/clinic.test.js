@@ -6,6 +6,46 @@ var _ = require('lodash');
 var messagestore = require('./messagestore');
 var DummyMessageStoreResource = messagestore.DummyMessageStoreResource;
 
+describe("utils", function() {
+    describe("for clinic use", function() {
+        it('should tell us whether a month is this year or not', function(done) {
+            assert.equal(
+                go.utils.is_month_this_year(new Date('2014-08-01'), 10),
+                true);
+            assert.equal(
+                go.utils.is_month_this_year(new Date('2014-08-01'), 8),
+                true);
+            assert.equal(
+                go.utils.is_month_this_year(new Date('2015-08-01'), 7),
+                false);
+            done();
+        });
+        it('should tell us what week of pregnancy date is using month', function(done) {
+            // full term
+            assert.equal(
+                go.utils.calc_weeks(new Date('2014-07-13'), '07', '14'),
+                40);
+            // -1 week
+            assert.equal(
+                go.utils.calc_weeks(new Date('2014-07-06'), '07', '14'),
+                39);
+            // -2 weeks
+            assert.equal(
+                go.utils.calc_weeks(new Date('2014-06-29'), '07', '14'),
+                38);
+            // -37 weeks
+            assert.equal(
+                go.utils.calc_weeks(new Date('2014-01-01'), '09', '21'),
+                3);
+            // Can't be less than 2 weeks preg
+            assert.equal(
+                go.utils.calc_weeks(new Date('2014-01-01'), '10', '03'),
+                false);
+            done();
+        });
+    });
+});
+
 describe("app", function() {
     describe("for clinic use", function() {
         var app;
@@ -47,7 +87,30 @@ describe("app", function() {
                         url: 'http://test/v2/',
                         url_json: 'http://test/v2/json/'
                     },
-                    clinic_codes: ['123456', '234567']
+                    clinic_codes: ['123456', '234567'],
+                    control: {
+                        username: 'test_user',
+                        api_key: 'test_key',
+                        url: 'http://ndoh-control/api/v1/'
+                    },                    
+                    subscription: {
+                        standard: 1,
+                        later: 2,
+                        accelerated: 3,
+                        baby1: 4,
+                        baby2: 5,
+                        miscarriage: 6,
+                        stillbirth: 7,
+                        babyloss: 8,
+                        subscription: 9,
+                        chw: 10
+                    },
+                    rate: {
+                        daily: 1,
+                        one_per_week: 2,
+                        two_per_week: 3,
+                        three_per_week: 4,
+                    }
                 })
                 .setup(function(api) {
                     api.kv.store['test.clinic.unique_users'] = 0;
@@ -951,8 +1014,11 @@ describe("app", function() {
                                     clinic_code: '123456',
                                     suspect_pregnancy: 'yes',
                                     id_type: 'none',
-                                    ussd_sessions: '5'
-                                }
+                                    ussd_sessions: '5',
+                                    due_date_month: '05'
+                                },
+                                key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                                user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
                             });
                         })
                         .setup.user.state('states_language')

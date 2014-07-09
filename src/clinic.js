@@ -212,6 +212,37 @@ go.app = function() {
                         .save(self.contact)
                         .then(function() {
                             return {
+                                name: 'states_due_date_day'
+                            };
+                        });
+                }
+            });
+        });
+
+        self.states.add('states_due_date_day', function(name, opts) {
+            var error = $('Sorry, the number did not validate. ' +
+                          'Please enter the estimated day that the baby ' +
+                          'is due (For example 12):');
+
+            var question = $('Please enter the estimated day that the baby ' +
+                             'is due (For example 12):');
+
+            return new FreeText(name, {
+                question: question,
+
+                check: function(content) {
+                    if (!go.utils.check_valid_number(content)) {
+                        return error;
+                    }
+                },
+
+                next: function(content) {
+                    self.user.extra.due_date_day = content;
+
+                    return self.im.contacts
+                        .save(self.user)
+                        .then(function() {
+                            return {
                                 name: 'states_id_type'
                             };
                         });

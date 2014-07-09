@@ -110,6 +110,8 @@ describe("app", function() {
                         one_per_week: 2,
                         two_per_week: 3,
                         three_per_week: 4,
+                        four_per_week: 5,
+                        five_per_week: 6
                     }
                 })
                 .setup(function(api) {
@@ -482,15 +484,35 @@ describe("app", function() {
                         })
                         .run();
                 });
+
+                it("should save the due month, ask for the day the baby is due", function() {
+                    return tester
+                        .setup.user.addr('+270001')
+                        .setup.user.state('states_due_date_month')
+                        .input('2')
+                        .check.interaction({
+                            state: 'states_due_date_day',
+                            reply: 'Please enter the estimated day that the baby is due (For example 12):'
+                        })
+                        .check(function(api) {
+                            var contact = _.find(api.contacts.store, {
+                              msisdn: '+270001'
+                            });
+                            assert.equal(contact.extra.due_date_month, '05');
+                            assert.equal(contact.extra.last_stage, 'states_due_date_day');
+                        })
+                        .run();
+                });
             });
+
         });
 
-        describe("after the birth month is selected", function() {
+        describe("after the birth day is selected", function() {
             it("should ask for the pregnant woman's id type", function() {
                 return tester
                     .setup.user.addr('+270001')
-                    .setup.user.state('states_due_date_month')
-                    .input('1')
+                    .setup.user.state('states_due_date_day')
+                    .input('10')
                     .check.interaction({
                         state: 'states_id_type',
                         reply: [
@@ -505,7 +527,7 @@ describe("app", function() {
                         var contact = _.find(api.contacts.store, {
                           msisdn: '+270001'
                         });
-                        assert.equal(contact.extra.due_date_month, '04');
+                        assert.equal(contact.extra.due_date_day, '10');
                     })
                     .run();
             });
@@ -1015,7 +1037,8 @@ describe("app", function() {
                                     suspect_pregnancy: 'yes',
                                     id_type: 'none',
                                     ussd_sessions: '5',
-                                    due_date_month: '05'
+                                    due_date_month: '05',
+                                    due_date_day: ''
                                 },
                                 key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                                 user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"

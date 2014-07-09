@@ -763,6 +763,33 @@ go.utils = {
         }
     },
 
+    protocol_mapper: function(weeks) {
+        // defines which message set at what rate for weeks
+      var response = {
+          sub_type: null,
+          sub_rate: null
+      };
+      if (weeks <= 31) { 
+        response.sub_type = im.config.subscription.standard;
+        response.sub_rate = im.config.rate.two_per_week;
+      } else if (weeks <= 35) {
+        response.sub_type = im.config.subscription.later;
+        response.sub_rate = im.config.rate.three_per_week;
+      } else if (weeks <= 36) {
+        response.sub_type = im.config.subscription.accelerated;
+        response.sub_rate = im.config.rate.three_per_week;
+      } else if (weeks <= 37) {
+        response.sub_type = im.config.subscription.accelerated;
+        response.sub_rate = im.config.rate.four_per_week;
+      } else if (weeks <= 38) {
+        response.sub_type = im.config.subscription.accelerated;
+        response.sub_rate = im.config.rate.five_per_week;
+      } else {
+        response.sub_type = im.config.subscription.accelerated;
+        response.sub_rate = im.config.rate.daily;
+      } 
+    }
+
 };
 
 go.app = function() {
@@ -977,6 +1004,37 @@ go.app = function() {
 
                     return self.im.contacts
                         .save(self.contact)
+                        .then(function() {
+                            return {
+                                name: 'states_due_date_day'
+                            };
+                        });
+                }
+            });
+        });
+
+        self.states.add('states_due_date_day', function(name, opts) {
+            var error = $('Sorry, the number did not validate. ' +
+                          'Please enter the estimated day that the baby ' +
+                          'is due (For example 12):');
+
+            var question = $('Please enter the estimated day that the baby ' +
+                             'is due (For example 12):');
+
+            return new FreeText(name, {
+                question: question,
+
+                check: function(content) {
+                    if (!go.utils.check_valid_number(content)) {
+                        return error;
+                    }
+                },
+
+                next: function(content) {
+                    self.user.extra.due_date_day = content;
+
+                    return self.im.contacts
+                        .save(self.user)
                         .then(function() {
                             return {
                                 name: 'states_id_type'

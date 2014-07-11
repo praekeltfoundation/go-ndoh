@@ -767,6 +767,18 @@ describe("app", function() {
                         assert.deepEqual(metrics['test.personal.percent_complete_registrations'].values, [75]);
                         assert.deepEqual(metrics['test.personal.sum.json_to_jembi_success'].values, [1]);
                     })
+                    .check(function(api) {
+                        var smses = _.where(api.outbound.store, {
+                            endpoint: 'sms'
+                        });
+                        var sms = smses[0];
+                        assert.equal(smses.length,1);
+                        assert.equal(sms.content, 
+                            "Congratulations on your pregnancy. You will now get free SMSs about MomConnect. " +
+                            "You can register for the full set of FREE helpful messages at a clinic."
+                        );
+                        assert.equal(sms.to_addr,'+27001');
+                    })
                     .check.reply.ends_session()
                     .run();
             });

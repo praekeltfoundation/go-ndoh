@@ -761,7 +761,7 @@ describe("app", function() {
 
         describe("after the mom's msg language is selected", function() {
             describe("if the phone used is not the mom's", function() {
-                it.only("should save msg language, thank them and exit", function() {
+                it("should save msg language, thank them and exit", function() {
                     return tester
                         .setup.user.addr('+27001')
                         .setup(function(api) {

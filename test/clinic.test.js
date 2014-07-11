@@ -87,7 +87,7 @@ describe("app", function() {
                         url: 'http://test/v2/',
                         url_json: 'http://test/v2/json/'
                     },
-                    clinic_codes: ['123456', '234567'],
+                    clinic_codes: ['12345', '234567'],
                     control: {
                         username: 'test_user',
                         api_key: 'test_key',
@@ -143,7 +143,7 @@ describe("app", function() {
                         "states_mobile_no": "0800000000",
                         "states_passport_origin": "mz",
                         "states_id_type": "none",
-                        "states_clinic_code": "123456",
+                        "states_clinic_code": "12345",
                         "states_birth_day": "3",
                         "states_language": "so",
                         "states_passport_no": "123456789"
@@ -416,7 +416,7 @@ describe("app", function() {
                         })
                         .setup.user.addr('+270001')
                         .setup.user.state('states_clinic_code')
-                        .input('123456')
+                        .input('12345')
                         .check.interaction({
                             state: 'states_due_date_month',
                             reply: [
@@ -436,7 +436,7 @@ describe("app", function() {
                             var contact = _.find(api.contacts.store, {
                               msisdn: '+27821234567'
                             });
-                            assert.equal(contact.extra.clinic_code, '123456');
+                            assert.equal(contact.extra.clinic_code, '12345');
                             assert.equal(contact.extra.is_registered, 'false');
                             assert.equal(contact.extra.last_stage, 'states_due_date_month');
                         })
@@ -910,7 +910,7 @@ describe("app", function() {
 
         describe("after the mom's msg language is selected", function() {
             describe("if the phone used is not the mom's", function() {
-                it.skip("should save msg language, thank them and exit", function() {
+                it("should save msg language, thank them and exit", function() {
                     return tester
                         .setup.user.addr('+270001')
                         .setup(function(api) {
@@ -924,7 +924,7 @@ describe("app", function() {
                             api.contacts.add( {
                                 msisdn: '+27821234567',
                                 extra : {
-                                    clinic_code: '123456',
+                                    clinic_code: '12345',
                                     suspect_pregnancy: 'yes',
                                     id_type: 'sa_id',
                                     sa_id: '5101025009086',
@@ -932,7 +932,9 @@ describe("app", function() {
                                     birth_month: '01',
                                     birth_day: '02',
                                     dob: '1951-01-02'
-                                }
+                                },
+                                key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                                user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
                             });
                         })
                         .setup.user.state('states_language')
@@ -971,14 +973,14 @@ describe("app", function() {
             });
             
             describe("if the phone used is the mom's", function() {
-                it.skip("should save msg language, thank them and exit", function() {
+                it("should save msg language, thank them and exit", function() {
                     return tester
                         .setup.user.addr('+27821234567')
                         .setup(function(api) {
                             api.contacts.add( {
                                 msisdn: '+27821234567',
                                 extra : {
-                                    clinic_code: '123456',
+                                    clinic_code: '12345',
                                     suspect_pregnancy: 'yes',
                                     id_type: 'sa_id',
                                     sa_id: '5101025009086',
@@ -987,7 +989,9 @@ describe("app", function() {
                                     birth_day: '02',
                                     dob: '1951-01-02',
                                     ussd_sessions: '5'
-                                }
+                                },
+                                key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                                user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
                             });
                         })
                         .setup.user.state('states_language')
@@ -1033,7 +1037,7 @@ describe("app", function() {
                             api.contacts.add( {
                                 msisdn: '+27001',
                                 extra : {
-                                    clinic_code: '123456',
+                                    clinic_code: '12345',
                                     suspect_pregnancy: 'yes',
                                     id_type: 'none',
                                     ussd_sessions: '5',
@@ -1086,7 +1090,7 @@ describe("app", function() {
                             api.contacts.add( {
                                 msisdn: '+27821234567',
                                 extra : {
-                                    clinic_code: '123456',
+                                    clinic_code: '12345',
                                     suspect_pregnancy: 'yes',
                                     id_type: 'sa_id',
                                     sa_id: '5101025009086',

@@ -694,10 +694,11 @@ go.utils = {
           response.sub_rate = im.config.rate.two_per_week;
       } else {
         // clinic line
-        // Stub for when logic is confirmed by strategist
-
-          response.sub_type = im.config.subscription.standard;
-          response.sub_rate = im.config.rate.one_per_week;
+          var week = go.utils.calc_weeks(go.utils.get_today(im.config),
+                  contact.extra.due_date_month, contact.extra.due_date_day);
+          var mapped = go.utils.protocol_mapper(week, im);
+          response.sub_type = mapped.sub_type;
+          response.sub_rate = mapped.sub_rate;
       }
       return response;
     },
@@ -762,6 +763,34 @@ go.utils = {
             return preg_week;
         }
     },
+
+    protocol_mapper: function(weeks, im) {
+        // defines which message set at what rate for weeks
+      var response = {
+          sub_type: null,
+          sub_rate: null
+      };
+      if (weeks <= 31) {
+        response.sub_type = im.config.subscription.standard;
+        response.sub_rate = im.config.rate.two_per_week;
+      } else if (weeks <= 35) {
+        response.sub_type = im.config.subscription.later;
+        response.sub_rate = im.config.rate.three_per_week;
+      } else if (weeks <= 36) {
+        response.sub_type = im.config.subscription.accelerated;
+        response.sub_rate = im.config.rate.three_per_week;
+      } else if (weeks <= 37) {
+        response.sub_type = im.config.subscription.accelerated;
+        response.sub_rate = im.config.rate.four_per_week;
+      } else if (weeks <= 38) {
+        response.sub_type = im.config.subscription.accelerated;
+        response.sub_rate = im.config.rate.five_per_week;
+      } else {
+        response.sub_type = im.config.subscription.accelerated;
+        response.sub_rate = im.config.rate.daily;
+      }
+      return response;
+    }
 
 };
 

@@ -101,6 +101,15 @@ go.app = function() {
             }
         };
 
+        self.send_registration_thanks = function() {
+            return self.im.outbound.send({
+                to: self.contact,
+                endpoint: 'sms',
+                content: "Congratulations on your pregnancy. You will now get free SMSs about MomConnect. " +
+                         "You can register for the full set of FREE helpful messages at a clinic."
+            });
+        };
+
         self.states.add('states_start', function(name) {
             var readable_no = go.utils.readable_sa_msisdn(self.im.user.addr);
 
@@ -525,13 +534,15 @@ go.app = function() {
                             if (self.contact.extra.id_type === 'none') {
                                 return Q.all([
                                     go.utils.jembi_send_json(self.contact, self.user, 'registration', self.im, self.metric_prefix),
-                                    go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix)
+                                    go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix),
+                                    self.send_registration_thanks()
                                 ]);
                             } else {
                                 return Q.all([
                                     go.utils.jembi_send_doc(self.contact, self.user, self.im, self.metric_prefix),
                                     go.utils.jembi_send_json(self.contact, self.user, 'registration', self.im, self.metric_prefix),
-                                    go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix)
+                                    go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix),
+                                    self.send_registration_thanks()
                                 ]);
                             }
                         }

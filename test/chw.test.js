@@ -761,7 +761,7 @@ describe("app", function() {
 
         describe("after the mom's msg language is selected", function() {
             describe("if the phone used is not the mom's", function() {
-                it.only("should save msg language, thank them and exit", function() {
+                it("should save msg language, thank them and exit", function() {
                     return tester
                         .setup.user.addr('+27001')
                         .setup(function(api) {
@@ -819,6 +819,47 @@ describe("app", function() {
                         .check.reply.ends_session()
                         .run();
                 });
+                
+                it("should send them an SMS on completion", function() {
+                    return tester
+                        .setup.user.addr('+27001')
+                        .setup(function(api) {
+                            api.contacts.add( {
+                                msisdn: '+27001',
+                                extra : {
+                                    working_on: '+27821234567',
+                                    ussd_sessions: '5'
+                                }
+                            });
+                            api.contacts.add( {
+                                msisdn: '+27821234567',
+                                extra : {
+                                    language_choice: 'en',
+                                    id_type: 'passport',
+                                    passport_origin: 'zw',
+                                    passport_no: '12345'
+                                },
+                                key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                                user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
+                            });
+                        })
+                        .setup.user.state('states_language')
+                        .input('1')
+                        .check(function(api) {
+                            var smses = _.where(api.outbound.store, {
+                                endpoint: 'sms'
+                            });
+                            var sms = smses[0];
+                            assert.equal(smses.length,1);
+                            assert.equal(sms.content, 
+                                "Congratulations on your pregnancy. You will now get free SMSs about MomConnect. " +
+                                "You can register for the full set of FREE helpful messages at a clinic."
+                            );
+                            assert.equal(sms.to_addr,'+27821234567');
+                        })
+                        .run();
+                });
+
             });
             
             describe("if the phone used is the mom's", function() {
@@ -864,6 +905,41 @@ describe("app", function() {
                             assert.deepEqual(metrics['test.chw.percent_incomplete_registrations'].values, [25]);
                             assert.deepEqual(metrics['test.chw.percent_complete_registrations'].values, [75]);
                             assert.deepEqual(metrics['test.chw.sum.json_to_jembi_success'].values, [1]);
+                        })
+                        .check.reply.ends_session()
+                        .run();
+                });
+
+                it("should send them SMS on completion", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add( {
+                                msisdn: '+27001',
+                                extra : {
+                                    ussd_sessions: '5',
+                                    language_choice: 'en',
+                                    id_type: 'passport',
+                                    passport_origin: 'zw',
+                                    passport_no: '12345'
+                                },
+                                key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                                user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
+                            });
+                        })
+                        .setup.user.addr('+27001')
+                        .setup.user.state('states_language')
+                        .input('1')
+                        .check(function(api) {
+                            var smses = _.where(api.outbound.store, {
+                                endpoint: 'sms'
+                            });
+                            var sms = smses[0];
+                            assert.equal(smses.length,1);
+                            assert.equal(sms.content, 
+                                "Congratulations on your pregnancy. You will now get free SMSs about MomConnect. " +
+                                "You can register for the full set of FREE helpful messages at a clinic."
+                            );
+                            assert.equal(sms.to_addr,'+27001');
                         })
                         .check.reply.ends_session()
                         .run();

@@ -33,6 +33,7 @@
         "one_per_week": 2,
         "two_per_week": 3,
         "three_per_week": 4,
+        "four_per_week": 5,
+        "five_per_week": 6
     }
-}
 }

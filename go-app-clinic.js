@@ -694,9 +694,11 @@ go.utils = {
           response.sub_rate = im.config.rate.two_per_week;
       } else {
         // clinic line
-        // Stub for when logic is confirmed by strategist
-          response.sub_type = im.config.subscription.standard;
-          response.sub_rate = im.config.rate.one_per_week;
+          var week = go.utils.calc_weeks(go.utils.get_today(im.config),
+                  contact.extra.due_date_month, contact.extra.due_date_day);
+          var mapped = go.utils.protocol_mapper(week, im);
+          response.sub_type = mapped.sub_type;
+          response.sub_rate = mapped.sub_rate;
       }
       return response;
     },
@@ -725,6 +727,70 @@ go.utils = {
                 return im.metrics.fire.inc(metric, {amount: 1});
         });
     },
+
+    is_month_this_year: function(today, month) {
+        return ((today.getMonth() + 1)) <= month;
+    },
+
+    calc_weeks: function(today, due_month, due_day) {
+        // Taken from MAMA USSD
+        // today should be var today = new Date();
+        // due_month should be 1 bound (1 = Jan)
+        // check if month provided is this year
+        // console.log("Today:", today);
+        // console.log("Due Month:", due_month);
+        var month_is_this_year = go.utils.is_month_this_year(today, due_month);
+        // console.log("Month this year?", month_is_this_year);
+        // set the due year to this or next
+        var due_year = (month_is_this_year ? today.getFullYear() : today.getFullYear()+1);
+        // console.log("Due Year:", due_year);
+        // due dates are estimated at mid-month
+        var due_date = new Date(due_month+"/" + due_day + "/"+due_year);
+        // console.log("Due date:", due_date);
+        // calc diff betwen now and due day
+        var diff = (due_date - today);
+        // console.log("Dates diff:", diff);
+        // get it in weeks
+        var diff_weeks = Math.floor((diff / (1000*7*24*60*60)));
+        // console.log("Dates diff in weeks:", diff_weeks);
+        // get preg week
+        var preg_week = 40-diff_weeks;
+        // console.log("Week of preg:", preg_week);
+        // You can't be less than two week preg
+        if (preg_week <= 1) {
+            return false;
+        } else {
+            return preg_week;
+        }
+    },
+
+    protocol_mapper: function(weeks, im) {
+        // defines which message set at what rate for weeks
+      var response = {
+          sub_type: null,
+          sub_rate: null
+      };
+      if (weeks <= 31) {
+        response.sub_type = im.config.subscription.standard;
+        response.sub_rate = im.config.rate.two_per_week;
+      } else if (weeks <= 35) {
+        response.sub_type = im.config.subscription.later;
+        response.sub_rate = im.config.rate.three_per_week;
+      } else if (weeks <= 36) {
+        response.sub_type = im.config.subscription.accelerated;
+        response.sub_rate = im.config.rate.three_per_week;
+      } else if (weeks <= 37) {
+        response.sub_type = im.config.subscription.accelerated;
+        response.sub_rate = im.config.rate.four_per_week;
+      } else if (weeks <= 38) {
+        response.sub_type = im.config.subscription.accelerated;
+        response.sub_rate = im.config.rate.five_per_week;
+      } else {
+        response.sub_type = im.config.subscription.accelerated;
+        response.sub_rate = im.config.rate.daily;
+      }
+      return response;
+    }
 
 };
 
@@ -940,6 +1006,37 @@ go.app = function() {
 
                     return self.im.contacts
                         .save(self.contact)
+                        .then(function() {
+                            return {
+                                name: 'states_due_date_day'
+                            };
+                        });
+                }
+            });
+        });
+
+        self.states.add('states_due_date_day', function(name, opts) {
+            var error = $('Sorry, the number did not validate. ' +
+                          'Please enter the estimated day that the baby ' +
+                          'is due (For example 12):');
+
+            var question = $('Please enter the estimated day that the baby ' +
+                             'is due (For example 12):');
+
+            return new FreeText(name, {
+                question: question,
+
+                check: function(content) {
+                    if (!go.utils.check_valid_number(content)) {
+                        return error;
+                    }
+                },
+
+                next: function(content) {
+                    self.user.extra.due_date_day = content;
+
+                    return self.im.contacts
+                        .save(self.user)
                         .then(function() {
                             return {
                                 name: 'states_id_type'
@@ -1222,11 +1319,15 @@ go.app = function() {
                     'state:enter': function() {
                         if (self.contact.extra.id_type !== undefined){
                             if (self.contact.extra.id_type === 'none') {
-                                return go.utils.jembi_send_json(self.contact, self.user, 'registration', self.im, self.metric_prefix);
+                                return Q.all([
+                                    go.utils.jembi_send_json(self.contact, self.user, 'registration', self.im, self.metric_prefix),
+                                    go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix)
+                                ]);
                             } else {
                                 return Q.all([
                                     go.utils.jembi_send_doc(self.contact, self.user, self.im, self.metric_prefix),
-                                    go.utils.jembi_send_json(self.contact, self.user, 'registration', self.im, self.metric_prefix)
+                                    go.utils.jembi_send_json(self.contact, self.user, 'registration', self.im, self.metric_prefix),
+                                    go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix)
                                 ]);
                             }
                         }

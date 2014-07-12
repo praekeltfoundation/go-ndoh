@@ -6,6 +6,46 @@ var _ = require('lodash');
 var messagestore = require('./messagestore');
 var DummyMessageStoreResource = messagestore.DummyMessageStoreResource;
 
+describe("utils", function() {
+    describe("for clinic use", function() {
+        it('should tell us whether a month is this year or not', function(done) {
+            assert.equal(
+                go.utils.is_month_this_year(new Date('2014-08-01'), 10),
+                true);
+            assert.equal(
+                go.utils.is_month_this_year(new Date('2014-08-01'), 8),
+                true);
+            assert.equal(
+                go.utils.is_month_this_year(new Date('2015-08-01'), 7),
+                false);
+            done();
+        });
+        it('should tell us what week of pregnancy date is using month', function(done) {
+            // full term
+            assert.equal(
+                go.utils.calc_weeks(new Date('2014-07-13'), '07', '14'),
+                40);
+            // -1 week
+            assert.equal(
+                go.utils.calc_weeks(new Date('2014-07-06'), '07', '14'),
+                39);
+            // -2 weeks
+            assert.equal(
+                go.utils.calc_weeks(new Date('2014-06-29'), '07', '14'),
+                38);
+            // -37 weeks
+            assert.equal(
+                go.utils.calc_weeks(new Date('2014-01-01'), '09', '21'),
+                3);
+            // Can't be less than 2 weeks preg
+            assert.equal(
+                go.utils.calc_weeks(new Date('2014-01-01'), '10', '03'),
+                false);
+            done();
+        });
+    });
+});
+
 describe("app", function() {
     describe("for clinic use", function() {
         var app;
@@ -47,7 +87,32 @@ describe("app", function() {
                         url: 'http://test/v2/',
                         url_json: 'http://test/v2/json/'
                     },
-                    clinic_codes: ['123456', '234567']
+                    clinic_codes: ['12345', '234567'],
+                    control: {
+                        username: 'test_user',
+                        api_key: 'test_key',
+                        url: 'http://ndoh-control/api/v1/'
+                    },                    
+                    subscription: {
+                        standard: 1,
+                        later: 2,
+                        accelerated: 3,
+                        baby1: 4,
+                        baby2: 5,
+                        miscarriage: 6,
+                        stillbirth: 7,
+                        babyloss: 8,
+                        subscription: 9,
+                        chw: 10
+                    },
+                    rate: {
+                        daily: 1,
+                        one_per_week: 2,
+                        two_per_week: 3,
+                        three_per_week: 4,
+                        four_per_week: 5,
+                        five_per_week: 6
+                    }
                 })
                 .setup(function(api) {
                     api.kv.store['test.clinic.unique_users'] = 0;
@@ -78,7 +143,7 @@ describe("app", function() {
                         "states_mobile_no": "0800000000",
                         "states_passport_origin": "mz",
                         "states_id_type": "none",
-                        "states_clinic_code": "123456",
+                        "states_clinic_code": "12345",
                         "states_birth_day": "3",
                         "states_language": "so",
                         "states_passport_no": "123456789"
@@ -351,7 +416,7 @@ describe("app", function() {
                         })
                         .setup.user.addr('+270001')
                         .setup.user.state('states_clinic_code')
-                        .input('123456')
+                        .input('12345')
                         .check.interaction({
                             state: 'states_due_date_month',
                             reply: [
@@ -371,7 +436,7 @@ describe("app", function() {
                             var contact = _.find(api.contacts.store, {
                               msisdn: '+27821234567'
                             });
-                            assert.equal(contact.extra.clinic_code, '123456');
+                            assert.equal(contact.extra.clinic_code, '12345');
                             assert.equal(contact.extra.is_registered, 'false');
                             assert.equal(contact.extra.last_stage, 'states_due_date_month');
                         })
@@ -419,15 +484,35 @@ describe("app", function() {
                         })
                         .run();
                 });
+
+                it("should save the due month, ask for the day the baby is due", function() {
+                    return tester
+                        .setup.user.addr('+270001')
+                        .setup.user.state('states_due_date_month')
+                        .input('2')
+                        .check.interaction({
+                            state: 'states_due_date_day',
+                            reply: 'Please enter the estimated day that the baby is due (For example 12):'
+                        })
+                        .check(function(api) {
+                            var contact = _.find(api.contacts.store, {
+                              msisdn: '+270001'
+                            });
+                            assert.equal(contact.extra.due_date_month, '05');
+                            assert.equal(contact.extra.last_stage, 'states_due_date_day');
+                        })
+                        .run();
+                });
             });
+
         });
 
-        describe("after the birth month is selected", function() {
+        describe("after the birth day is selected", function() {
             it("should ask for the pregnant woman's id type", function() {
                 return tester
                     .setup.user.addr('+270001')
-                    .setup.user.state('states_due_date_month')
-                    .input('1')
+                    .setup.user.state('states_due_date_day')
+                    .input('10')
                     .check.interaction({
                         state: 'states_id_type',
                         reply: [
@@ -442,7 +527,7 @@ describe("app", function() {
                         var contact = _.find(api.contacts.store, {
                           msisdn: '+270001'
                         });
-                        assert.equal(contact.extra.due_date_month, '04');
+                        assert.equal(contact.extra.due_date_day, '10');
                     })
                     .run();
             });
@@ -825,7 +910,7 @@ describe("app", function() {
 
         describe("after the mom's msg language is selected", function() {
             describe("if the phone used is not the mom's", function() {
-                it.skip("should save msg language, thank them and exit", function() {
+                it("should save msg language, thank them and exit", function() {
                     return tester
                         .setup.user.addr('+270001')
                         .setup(function(api) {
@@ -839,7 +924,7 @@ describe("app", function() {
                             api.contacts.add( {
                                 msisdn: '+27821234567',
                                 extra : {
-                                    clinic_code: '123456',
+                                    clinic_code: '12345',
                                     suspect_pregnancy: 'yes',
                                     id_type: 'sa_id',
                                     sa_id: '5101025009086',
@@ -847,7 +932,9 @@ describe("app", function() {
                                     birth_month: '01',
                                     birth_day: '02',
                                     dob: '1951-01-02'
-                                }
+                                },
+                                key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                                user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
                             });
                         })
                         .setup.user.state('states_language')
@@ -886,14 +973,14 @@ describe("app", function() {
             });
             
             describe("if the phone used is the mom's", function() {
-                it.skip("should save msg language, thank them and exit", function() {
+                it("should save msg language, thank them and exit", function() {
                     return tester
                         .setup.user.addr('+27821234567')
                         .setup(function(api) {
                             api.contacts.add( {
                                 msisdn: '+27821234567',
                                 extra : {
-                                    clinic_code: '123456',
+                                    clinic_code: '12345',
                                     suspect_pregnancy: 'yes',
                                     id_type: 'sa_id',
                                     sa_id: '5101025009086',
@@ -902,7 +989,9 @@ describe("app", function() {
                                     birth_day: '02',
                                     dob: '1951-01-02',
                                     ussd_sessions: '5'
-                                }
+                                },
+                                key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                                user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
                             });
                         })
                         .setup.user.state('states_language')
@@ -948,11 +1037,15 @@ describe("app", function() {
                             api.contacts.add( {
                                 msisdn: '+27001',
                                 extra : {
-                                    clinic_code: '123456',
+                                    clinic_code: '12345',
                                     suspect_pregnancy: 'yes',
                                     id_type: 'none',
-                                    ussd_sessions: '5'
-                                }
+                                    ussd_sessions: '5',
+                                    due_date_month: '05',
+                                    due_date_day: ''
+                                },
+                                key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                                user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
                             });
                         })
                         .setup.user.state('states_language')
@@ -997,7 +1090,7 @@ describe("app", function() {
                             api.contacts.add( {
                                 msisdn: '+27821234567',
                                 extra : {
-                                    clinic_code: '123456',
+                                    clinic_code: '12345',
                                     suspect_pregnancy: 'yes',
                                     id_type: 'sa_id',
                                     sa_id: '5101025009086',

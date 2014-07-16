@@ -13,7 +13,8 @@ module.exports = function (grunt) {
                     clinic: 'src/clinic.js',
                     chw: 'src/chw.js',
                     personal: 'src/personal.js',
-                    optout: 'src/optout.js'
+                    optout: 'src/optout.js',
+                    smsinbound: 'src/smsinbound.js'
                 },
                 clinic: [
                     'src/index.js',
@@ -39,6 +40,12 @@ module.exports = function (grunt) {
                     '<%= paths.src.app.optout %>',
                     'src/init.js'
                 ],
+                smsinbound: [
+                    'src/index.js',
+                    'src/utils.js',
+                    '<%= paths.src.app.smsinbound %>',
+                    'src/init.js'
+                ],
                 all: [
                     'src/**/*.js'
                 ]
@@ -47,7 +54,8 @@ module.exports = function (grunt) {
                 clinic: 'go-app-clinic.js',
                 chw: 'go-app-chw.js',
                 personal: 'go-app-personal.js',
-                optout: 'go-app-optout.js'
+                optout: 'go-app-optout.js',
+                smsinbound: 'go-app-smsinbound.js'
             },
             test: {
                 clinic: [
@@ -73,6 +81,12 @@ module.exports = function (grunt) {
                     'src/utils.js',
                     '<%= paths.src.app.optout %>',
                     'test/optout.test.js'
+                ],
+                smsinbound: [
+                    'test/setup.js',
+                    'src/utils.js',
+                    '<%= paths.src.app.smsinbound %>',
+                    'test/smsinbound.test.js'
                 ]
             }
         },
@@ -108,6 +122,10 @@ module.exports = function (grunt) {
             optout: {
                 src: ['<%= paths.src.optout %>'],
                 dest: '<%= paths.dest.optout %>'
+            },
+            smsinbound: {
+                src: ['<%= paths.src.smsinbound %>'],
+                dest: '<%= paths.dest.smsinbound %>'
             }
         },
 
@@ -126,6 +144,9 @@ module.exports = function (grunt) {
             },
             test_optout: {
                 src: ['<%= paths.test.optout %>']
+            },
+            test_smsinbound: {
+                src: ['<%= paths.test.smsinbound %>']
             }
         }
     });

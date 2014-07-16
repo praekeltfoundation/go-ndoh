@@ -689,6 +689,9 @@ go.utils = {
       } else if (im.config.name.substring(0,3) == "chw") {
           response.sub_type = im.config.subscription.chw;
           response.sub_rate = im.config.rate.two_per_week;
+      } else if (im.config.name.substring(0,10) == "smsinbound") {
+          response.sub_type = im.config.subscription.baby1;
+          response.sub_rate = im.config.rate.two_per_week;
       } else {
         // clinic line
           var week = go.utils.calc_weeks(go.utils.get_today(im.config),

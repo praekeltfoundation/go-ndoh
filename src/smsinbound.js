@@ -57,6 +57,8 @@ go.app = function() {
                             return "states_opt_out";
                         case "START":
                             return "states_opt_in";
+                        case "BABY":
+                            return "states_baby";
                         default:
                             return "states_error";  
                     }
@@ -97,6 +99,21 @@ go.app = function() {
                             address_type: "msisdn",
                             address_value: self.im.user.addr
                         });
+                    }
+                }
+            });
+        });
+
+        self.states.add('states_baby', function(name) {
+            return new EndState(name, {
+                text: $('Thank you. You will now receive messages related to newborn babies. ' +
+                        'If you have any medical concerns please visit your nearest clinic'),
+
+                next: 'states_start',
+
+                events: {
+                    'state:enter': function() {
+                        return go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix);
                     }
                 }
             });

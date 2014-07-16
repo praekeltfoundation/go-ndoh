@@ -665,16 +665,25 @@ go.utils = {
         });
     },
 
-    control_api_call: function (payload, endpoint, im) {
+    control_api_call: function (method, payload, endpoint, im) {
         var http = new HttpApi(im, {
           headers: {
             'Content-Type': ['application/json'],
             'Authorization': ['ApiKey ' + im.config.control.username + ':' + im.config.control.api_key]
           }
         });
-        return http.post(im.config.control.url + endpoint, {
-          data: JSON.stringify(payload)
-        });
+        switch (method) {
+          case "post":
+            return http.post(im.config.control.url + endpoint, {
+                data: JSON.stringify(payload)
+              });
+          case "get":
+            return http.get(im.config.control.url + endpoint, {
+                params: payload
+              });
+          case "delete":
+            return http.delete(im.config.control.url + endpoint);
+        }
     },
 
     subscription_type_and_rate: function(contact, im) {
@@ -715,7 +724,7 @@ go.utils = {
           user_account: contact.user_account
         };
         return go.utils
-            .control_api_call(payload, 'subscription/', im)
+            .control_api_call("post", payload, 'subscription/', im)
             .then(function(doc_result) {
                 var metric;
                 if (doc_result.code >= 200 && doc_result.code < 300){
@@ -727,6 +736,7 @@ go.utils = {
                 return im.metrics.fire.inc(metric, {amount: 1});
         });
     },
+
 
     is_month_this_year: function(today, month) {
         return ((today.getMonth() + 1)) <= month;

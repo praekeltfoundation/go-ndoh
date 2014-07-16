@@ -790,6 +790,6 @@ module.exports = function() {
             "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
           }
         }
-      }
+      },
     ];
 };

@@ -844,18 +844,46 @@ go.app = function() {
                     return self.im.contacts
                         .save(self.contact)
                         .then(function() {
-                            return 'states_end';
+                            return 'states_subscribe_option';
                         });
                 }
 
             });
         });
 
-        self.states.add('states_end', function(name) {
+        self.states.add('states_subscribe_option', function(name) {
+            return new ChoiceState(name, {
+                question: $('We are sorry for your loss. Would you like ' +
+                            'to receive a small set of free messages from MomConnect ' +
+                            'that could help you in this difficult time?'),
+
+                choices: [
+                    new Choice('states_end_yes', $('Yes')),
+                    new Choice('states_end_no', $('No'))
+                ],
+
+                next: function(choice) {
+                    // TODO: do HTTP post of subscription
+                    return choice.value;
+                }
+
+            });
+        });
+
+        self.states.add('states_end_no', function(name) {
             return new EndState(name, {
                 text: $('Thank you. You will no longer receive ' +
                         'messages from us. If you have any medical ' +
                         'concerns please visit your nearest clinic.'),
+
+                next: 'states_start'
+            });
+        });
+
+        self.states.add('states_end_yes', function(name) {
+            return new EndState(name, {
+                text: $('Thank you. You will receive support messages ' +
+                            'from MomConnect in the coming weeks.'),
 
                 next: 'states_start'
             });

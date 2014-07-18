@@ -22,7 +22,7 @@ describe("app", function() {
                     testing: 'true',
                     channel: "*120*550#1"
                 })
-                .setup.char_limit(160)
+                .setup.char_limit(140)
                 .setup(function(api) {
                     api.contacts.add( {
                         msisdn: '+27001'
@@ -44,12 +44,12 @@ describe("app", function() {
                     .check.interaction({
                         state: 'states_start',
                         reply: [
-                            'Welcome to MomConnect. Why do you want to ' +
-                            'stop receiving our messages?',
-                            '1. Miscarriage',
-                            '2. Not pregnant',
-                            '3. Messages not useful',
-                            '4. Had my baby',
+                            'Welcome to MomConnect. Please tell us why you don\'t ' +
+                            'want msgs:',
+                            '1. Had miscarriage',
+                            '2. Baby stillborn',
+                            '3. Baby died',
+                            '4. Msgs not useful',
                             '5. Other'
                         ].join('\n')
                     })
@@ -67,8 +67,8 @@ describe("app", function() {
                         state: 'states_subscribe_option',
                         reply: [
                             'We are sorry for your loss. Would you like ' +
-                            'to receive a small set of free messages from MomConnect ' +
-                            'that could help you in this difficult time?',
+                            'to receive a small set of free messages ' +
+                            'to help you in this difficult time?',
                             '1. Yes',
                             '2. No'
                         ].join('\n')
@@ -76,6 +76,27 @@ describe("app", function() {
                     .check(function(api) {
                         var contact = api.contacts.store[0];
                         assert.equal(contact.extra.opt_out_reason, 'miscarriage');
+                    })
+                    .run();
+            });
+        });
+
+        describe("when the user selects a reason for opting out 4 or 5", function() {
+            it("should thank them and exit", function() {
+                return tester
+                    .setup.user.addr('+27001')
+                    .setup.user.state('states_start')
+                    .input('4')
+                    .check.interaction({
+                        state: 'states_end_no',
+                        reply: ('Thank you. You will no longer receive ' +
+                            'messages from us. If you have any medical ' +
+                            'concerns please visit your nearest clinic.')
+                    })
+                    .check.reply.ends_session()
+                    .check(function(api) {
+                        var contact = api.contacts.store[0];
+                        assert.equal(contact.extra.opt_out_reason, 'not_useful');
                     })
                     .run();
             });

@@ -817,14 +817,14 @@ go.app = function() {
 
         self.states.add('states_start', function(name) {
             return new ChoiceState(name, {
-                question: $('Welcome to MomConnect. Why do you want to ' +
-                            'stop receiving our messages?'),
+                question: $('Welcome to MomConnect. Please tell us why you don\'t ' +
+                            'want msgs:'),
 
                 choices: [
-                    new Choice('miscarriage', $('Miscarriage')),
-                    new Choice('not_pregnant', $('Not pregnant')),
-                    new Choice('not_useful', $('Messages not useful')),
-                    new Choice('had_baby', $('Had my baby')),
+                    new Choice('miscarriage', $('Had miscarriage')),
+                    new Choice('stillborn', $('Baby stillborn')),
+                    new Choice('baby_died', $('Baby died')),
+                    new Choice('not_useful', $('Msgs not useful')),
                     new Choice('other', $('Other'))
                 ],
 
@@ -844,7 +844,12 @@ go.app = function() {
                     return self.im.contacts
                         .save(self.contact)
                         .then(function() {
-                            return 'states_subscribe_option';
+                            if (['not_useful', 'other'].indexOf(choice.value)){
+                                return 'states_subscribe_option';
+                            } else {
+                                return 'states_end_no';
+                            }
+                            
                         });
                 }
 
@@ -854,8 +859,8 @@ go.app = function() {
         self.states.add('states_subscribe_option', function(name) {
             return new ChoiceState(name, {
                 question: $('We are sorry for your loss. Would you like ' +
-                            'to receive a small set of free messages from MomConnect ' +
-                            'that could help you in this difficult time?'),
+                            'to receive a small set of free messages ' +
+                            'to help you in this difficult time?'),
 
                 choices: [
                     new Choice('states_end_yes', $('Yes')),

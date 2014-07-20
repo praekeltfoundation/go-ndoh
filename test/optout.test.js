@@ -178,7 +178,7 @@ describe("app", function() {
         });
 
         describe("when the user selects yes to futher help", function() {
-            it.only("should subscribe them and exit", function() {
+            it("should subscribe them and exit", function() {
                 return tester
                     .setup.user.answers({
                         'states_start': 'miscarriage'

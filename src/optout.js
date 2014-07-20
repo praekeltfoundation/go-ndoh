@@ -48,10 +48,10 @@ go.app = function() {
                     return self.im.contacts
                         .save(self.contact)
                         .then(function() {
-                            if (['not_useful', 'other'].indexOf(choice.value)){
-                                return 'states_subscribe_option';
-                            } else {
+                            if (['not_useful', 'other'].indexOf(choice.value) !== -1){
                                 return 'states_end_no';
+                            } else {
+                                return 'states_subscribe_option';
                             }
                             
                         });

@@ -120,7 +120,7 @@ describe("app", function() {
             });
 
             describe("when the last state is states_end_success", function() {
-                it.only("should not fire a metric", function() {
+                it("should not fire a metric", function() {
                     return tester
                         .setup(function(api) {
                             api.contacts.add({

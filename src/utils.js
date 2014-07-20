@@ -689,6 +689,9 @@ go.utils = {
       } else if (im.config.name.substring(0,3) == "chw") {
           response.sub_type = im.config.subscription.chw;
           response.sub_rate = im.config.rate.two_per_week;
+      } else if (im.config.name.substring(0,6) == "optout") {
+          response.sub_type = im.config.subscription[im.user.answers.states_start];
+          response.sub_rate = im.config.rate.two_per_week;
       } else {
         // clinic line
           var week = go.utils.calc_weeks(go.utils.get_today(im.config),

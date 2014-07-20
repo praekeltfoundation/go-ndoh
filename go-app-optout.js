@@ -692,6 +692,9 @@ go.utils = {
       } else if (im.config.name.substring(0,3) == "chw") {
           response.sub_type = im.config.subscription.chw;
           response.sub_rate = im.config.rate.two_per_week;
+      } else if (im.config.name.substring(0,6) == "optout") {
+          response.sub_type = im.config.subscription[im.user.answers.states_start];
+          response.sub_rate = im.config.rate.two_per_week;
       } else {
         // clinic line
           var week = go.utils.calc_weeks(go.utils.get_today(im.config),
@@ -807,6 +810,9 @@ go.app = function() {
 
 
         self.init = function() {
+            self.env = self.im.config.env;
+            self.metric_prefix = [self.env, self.im.config.name].join('.');
+            self.store_name = [self.env, self.im.config.name].join('.');
             return self.im.contacts
                 .for_user()
                 .then(function(user_contact) {
@@ -822,8 +828,8 @@ go.app = function() {
 
                 choices: [
                     new Choice('miscarriage', $('Had miscarriage')),
-                    new Choice('stillborn', $('Baby stillborn')),
-                    new Choice('baby_died', $('Baby died')),
+                    new Choice('stillbirth', $('Baby stillborn')),
+                    new Choice('babyloss', $('Baby died')),
                     new Choice('not_useful', $('Msgs not useful')),
                     new Choice('other', $('Other'))
                 ],
@@ -844,6 +850,7 @@ go.app = function() {
                     return self.im.contacts
                         .save(self.contact)
                         .then(function() {
+                            //TODO: run unsub
                             if (['not_useful', 'other'].indexOf(choice.value) !== -1){
                                 return 'states_end_no';
                             } else {
@@ -868,8 +875,16 @@ go.app = function() {
                 ],
 
                 next: function(choice) {
-                    // TODO: do HTTP post of subscription
-                    return choice.value;
+                    if (choice.value == "states_end_yes"){
+                        return go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix)
+                            .then(function() {
+                                return choice.value;
+                            });
+                    } else {
+                        return choice.value;
+                    }
+                    
+                    
                 }
 
             });

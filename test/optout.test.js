@@ -20,12 +20,52 @@ describe("app", function() {
                 .setup.config.app({
                     name: 'optout',
                     testing: 'true',
-                    channel: "*120*550#1"
+                    channel: "*120*550#1",
+                    env: 'test',
+                    metric_store: 'test_metric_store',
+                    endpoints: {
+                        "sms": {"delivery_class": "sms"}
+                    },
+                    control: {
+                        username: 'test_user',
+                        api_key: 'test_key',
+                        url: 'http://ndoh-control/api/v1/'
+                    },
+                    subscription: {
+                        standard: 1,
+                        later: 2,
+                        accelerated: 3,
+                        baby1: 4,
+                        baby2: 5,
+                        miscarriage: 6,
+                        stillbirth: 7,
+                        babyloss: 8,
+                        subscription: 9,
+                        chw: 10
+                    },
+                    rate: {
+                        daily: 1,
+                        one_per_week: 2,
+                        two_per_week: 3,
+                        three_per_week: 4,
+                        four_per_week: 5,
+                        five_per_week: 6
+                    }
                 })
                 .setup.char_limit(140)
                 .setup(function(api) {
                     api.contacts.add( {
-                        msisdn: '+27001'
+                        msisdn: '+27001',
+                        extra : {
+                            language_choice: 'en',
+                            suspect_pregnancy: 'yes',
+                            id_type: 'passport',
+                            passport_origin: 'zw',
+                            passport_no: '12345',
+                            ussd_sessions: '5'
+                        },
+                        key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                        user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
                     });
                 })
                 .setup(function(api) {
@@ -105,6 +145,24 @@ describe("app", function() {
         describe("when the user selects no to futher help", function() {
             it("should thank them and exit", function() {
                 return tester
+                    .setup(function(api) {
+                        api.contacts.add({
+                            msisdn: '+27001',
+                            extra : {
+                                language_choice: 'en',
+                                suspect_pregnancy: 'yes',
+                                id_type: 'passport',
+                                passport_origin: 'zw',
+                                passport_no: '12345',
+                                ussd_sessions: '5'
+                            },
+                            key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
+                        });
+                    })
+                    .setup.user.answers({
+                        'states_start': 'miscarriage'
+                    })
                     .setup.user.addr('+27001')
                     .setup.user.state('states_subscribe_option')
                     .input('2')
@@ -120,10 +178,13 @@ describe("app", function() {
         });
 
         describe("when the user selects yes to futher help", function() {
-            it("should subscribe them and exit", function() {
+            it.only("should subscribe them and exit", function() {
                 return tester
-                    .setup.user.addr('+27001')
+                    .setup.user.answers({
+                        'states_start': 'miscarriage'
+                    })
                     .setup.user.state('states_subscribe_option')
+                    .setup.user.addr('+27001')
                     .input('1')
                     .check.interaction({
                         state: 'states_end_yes',

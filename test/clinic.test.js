@@ -1027,6 +1027,37 @@ describe("app", function() {
                         .check.reply.ends_session()
                         .run();
                 });
+
+                it("should put them in language group", function() {
+                    return tester
+                        .setup.user.addr('+27821234567')
+                        .setup(function(api) {
+                            api.contacts.add( {
+                                msisdn: '+27821234567',
+                                extra : {
+                                    clinic_code: '12345',
+                                    suspect_pregnancy: 'yes',
+                                    id_type: 'sa_id',
+                                    sa_id: '5101025009086',
+                                    birth_year: '1951',
+                                    birth_month: '01',
+                                    birth_day: '02',
+                                    dob: '1951-01-02',
+                                    ussd_sessions: '5'
+                                },
+                                key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                                user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
+                            });
+                        })
+                        .setup.user.state('states_language')
+                        .input('1')
+                        .check(function(api) {
+                            var contact = api.contacts.store[0];
+                            assert.equal(contact.extra.language_choice, 'en');
+                            assert.deepEqual(contact.groups, ['en']);
+                        })
+                        .run();
+                });
             });
 
             describe("if the phone used is the mom's", function() {

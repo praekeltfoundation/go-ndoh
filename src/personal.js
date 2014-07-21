@@ -107,6 +107,7 @@ go.app = function() {
 
                 next: function(choice) {
                     self.contact.extra.language_choice = choice.value;
+                    self.contact.groups.push(choice.value);
 
                     return self.im.user
                         .set_lang(choice.value)

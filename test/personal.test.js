@@ -283,6 +283,31 @@ describe("app", function() {
             });
         });
 
+        describe("when the user selects a language", function() {
+            it("should put them in the language group", function() {
+                return tester
+                    .setup.user.addr('+27001')
+                    .setup.user.state('states_start')
+                    .input('1')
+                    .check.interaction({
+                        state: 'states_suspect_pregnancy',
+                        reply: [
+                            'MomConnect sends free support SMSs to ' +
+                            'pregnant mothers. Are you or do you suspect ' +
+                            'that you are pregnant?',
+                            '1. Yes',
+                            '2. No'
+                        ].join('\n')
+                    })
+                    .check(function(api) {
+                        var contact = api.contacts.store[0];
+                        assert.equal(contact.extra.language_choice, 'en');
+                        assert.deepEqual(contact.groups, ['en']);
+                    })
+                    .run();
+            });
+        });
+
         describe("if the user does not suspect pregnancy", function() {
             it("should set pregnancy status, state service is for pregnant moms, exit", function() {
                 return tester

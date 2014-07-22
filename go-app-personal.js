@@ -916,24 +916,26 @@ go.app = function() {
 
                 next: function(choice) {
                     self.contact.extra.language_choice = choice.value;
-                    self.contact.groups.push(choice.value);
-
-                    return self.im.user
-                        .set_lang(choice.value)
-                        .then(function() {
-                            if (_.isUndefined(self.contact.extra.is_registered)) {
-                                return Q.all([
-                                    go.utils.incr_kv(self.im, [self.store_name, 'no_incomplete_registrations'].join('.')),
-                                    go.utils.adjust_percentage_registrations(self.im, self.metric_prefix)
-                                ]);
-                            }
-                        })
-                        .then(function() {
-                            self.contact.extra.is_registered = 'false';
-                            return self.im.contacts.save(self.contact);
-                        })
-                        .then(function() {
-                            return 'states_suspect_pregnancy';
+                    return self.im.groups.get(choice.value)
+                        .then(function(group) {
+                            self.contact.groups.push(group.key);
+                            return self.im.user
+                                .set_lang(choice.value)
+                                .then(function() {
+                                    if (_.isUndefined(self.contact.extra.is_registered)) {
+                                        return Q.all([
+                                            go.utils.incr_kv(self.im, [self.store_name, 'no_incomplete_registrations'].join('.')),
+                                            go.utils.adjust_percentage_registrations(self.im, self.metric_prefix)
+                                        ]);
+                                    }
+                                })
+                                .then(function() {
+                                    self.contact.extra.is_registered = 'false';
+                                    return self.im.contacts.save(self.contact);
+                                })
+                                .then(function() {
+                                    return 'states_suspect_pregnancy';
+                                });
                         });
                 }
             });

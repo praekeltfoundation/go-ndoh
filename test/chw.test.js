@@ -23,6 +23,10 @@ describe("app", function() {
                 .setup(function(api) {
                     api.resources.add(new DummyMessageStoreResource());
                     api.resources.attach(api);
+                    api.groups.add( {
+                        key: 'en_key',
+                        name: 'en',
+                    });
                 })
                 .setup.char_limit(160)
                 .setup.config.app({
@@ -932,7 +936,7 @@ describe("app", function() {
                         .check(function(api) {
                             var contact = api.contacts.store[0];
                             assert.equal(contact.extra.language_choice, 'en');
-                            assert.deepEqual(contact.groups, ['en']);
+                            assert.deepEqual(contact.groups, ['en_key']);
                         })
                         .run();
                 });

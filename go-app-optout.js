@@ -812,6 +812,7 @@ go.utils = {
 
 go.app = function() {
     var vumigo = require('vumigo_v02');
+    var _ = require('lodash');
     var App = vumigo.App;
     var Choice = vumigo.states.Choice;
     var ChoiceState = vumigo.states.ChoiceState;
@@ -864,7 +865,7 @@ go.app = function() {
                         .save(self.contact)
                         .then(function() {
                             //TODO: run unsub
-                            if (['not_useful', 'other'].indexOf(choice.value) !== -1){
+                            if (_.contains(['not_useful', 'other'], choice.value)){
                                 return 'states_end_no';
                             } else {
                                 return 'states_subscribe_option';

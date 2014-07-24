@@ -23,6 +23,10 @@ describe("app", function() {
                 .setup(function(api) {
                     api.resources.add(new DummyMessageStoreResource());
                     api.resources.attach(api);
+                    api.groups.add( {
+                        key: 'en_key',
+                        name: 'en',
+                    });
                 })
                 .setup.char_limit(160)
                 .setup.config.app({
@@ -907,6 +911,33 @@ describe("app", function() {
                             assert.deepEqual(metrics['test.chw.sum.json_to_jembi_success'].values, [1]);
                         })
                         .check.reply.ends_session()
+                        .run();
+                });
+
+                it("should put them in language group", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add( {
+                                msisdn: '+27001',
+                                extra : {
+                                    ussd_sessions: '5',
+                                    language_choice: 'en',
+                                    id_type: 'passport',
+                                    passport_origin: 'zw',
+                                    passport_no: '12345'
+                                },
+                                key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                                user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
+                            });
+                        })
+                        .setup.user.addr('+27001')
+                        .setup.user.state('states_language')
+                        .input('1')
+                        .check(function(api) {
+                            var contact = api.contacts.store[0];
+                            assert.equal(contact.extra.language_choice, 'en');
+                            assert.deepEqual(contact.groups, ['en_key']);
+                        })
                         .run();
                 });
 

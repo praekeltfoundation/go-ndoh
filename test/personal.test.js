@@ -31,6 +31,10 @@ describe("app", function() {
                 .setup(function(api) {
                     api.resources.add(new DummyMessageStoreResource());
                     api.resources.attach(api);
+                    api.groups.add( {
+                        key: 'en_key',
+                        name: 'en',
+                    });
                 })
                 .setup.char_limit(160)
                 .setup.config.app({
@@ -278,6 +282,31 @@ describe("app", function() {
                         var metrics = api.metrics.stores.test_metric_store;
                         assert.deepEqual(metrics['test.personal.percent_incomplete_registrations'].values, [60]);
                         assert.deepEqual(metrics['test.personal.percent_complete_registrations'].values, [40]);
+                    })
+                    .run();
+            });
+        });
+
+        describe("when the user selects a language", function() {
+            it("should put them in the language group", function() {
+                return tester
+                    .setup.user.addr('+27001')
+                    .setup.user.state('states_start')
+                    .input('1')
+                    .check.interaction({
+                        state: 'states_suspect_pregnancy',
+                        reply: [
+                            'MomConnect sends free support SMSs to ' +
+                            'pregnant mothers. Are you or do you suspect ' +
+                            'that you are pregnant?',
+                            '1. Yes',
+                            '2. No'
+                        ].join('\n')
+                    })
+                    .check(function(api) {
+                        var contact = api.contacts.store[0];
+                        assert.equal(contact.extra.language_choice, 'en');
+                        assert.deepEqual(contact.groups, ['en_key']);
                     })
                     .run();
             });

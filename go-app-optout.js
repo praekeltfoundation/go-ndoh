@@ -701,6 +701,9 @@ go.utils = {
       } else if (im.config.name.substring(0,3) == "chw") {
           response.sub_type = im.config.subscription.chw;
           response.sub_rate = im.config.rate.two_per_week;
+      } else if (im.config.name.substring(0,6) == "optout") {
+          response.sub_type = im.config.subscription[im.user.answers.states_start];
+          response.sub_rate = im.config.rate.two_per_week;
       } else if (im.config.name.substring(0,10) == "smsinbound") {
           response.sub_type = im.config.subscription.baby1;
           response.sub_rate = im.config.rate.two_per_week;
@@ -809,6 +812,7 @@ go.utils = {
 
 go.app = function() {
     var vumigo = require('vumigo_v02');
+    var _ = require('lodash');
     var App = vumigo.App;
     var Choice = vumigo.states.Choice;
     var ChoiceState = vumigo.states.ChoiceState;
@@ -820,6 +824,9 @@ go.app = function() {
 
 
         self.init = function() {
+            self.env = self.im.config.env;
+            self.metric_prefix = [self.env, self.im.config.name].join('.');
+            self.store_name = [self.env, self.im.config.name].join('.');
             return self.im.contacts
                 .for_user()
                 .then(function(user_contact) {
@@ -830,14 +837,14 @@ go.app = function() {
 
         self.states.add('states_start', function(name) {
             return new ChoiceState(name, {
-                question: $('Welcome to MomConnect. Why do you want to ' +
-                            'stop receiving our messages?'),
+                question: $('Welcome to MomConnect. Please tell us why you don\'t ' +
+                            'want msgs:'),
 
                 choices: [
-                    new Choice('miscarriage', $('Miscarriage')),
-                    new Choice('not_pregnant', $('Not pregnant')),
-                    new Choice('not_useful', $('Messages not useful')),
-                    new Choice('had_baby', $('Had my baby')),
+                    new Choice('miscarriage', $('Had miscarriage')),
+                    new Choice('stillbirth', $('Baby stillborn')),
+                    new Choice('babyloss', $('Baby died')),
+                    new Choice('not_useful', $('Msgs not useful')),
                     new Choice('other', $('Other'))
                 ],
 
@@ -857,18 +864,60 @@ go.app = function() {
                     return self.im.contacts
                         .save(self.contact)
                         .then(function() {
-                            return 'states_end';
+                            //TODO: run unsub
+                            if (_.contains(['not_useful', 'other'], choice.value)){
+                                return 'states_end_no';
+                            } else {
+                                return 'states_subscribe_option';
+                            }
+                            
                         });
                 }
 
             });
         });
 
-        self.states.add('states_end', function(name) {
+        self.states.add('states_subscribe_option', function(name) {
+            return new ChoiceState(name, {
+                question: $('We are sorry for your loss. Would you like ' +
+                            'to receive a small set of free messages ' +
+                            'to help you in this difficult time?'),
+
+                choices: [
+                    new Choice('states_end_yes', $('Yes')),
+                    new Choice('states_end_no', $('No'))
+                ],
+
+                next: function(choice) {
+                    if (choice.value == "states_end_yes"){
+                        return go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix)
+                            .then(function() {
+                                return choice.value;
+                            });
+                    } else {
+                        return choice.value;
+                    }
+                    
+                    
+                }
+
+            });
+        });
+
+        self.states.add('states_end_no', function(name) {
             return new EndState(name, {
                 text: $('Thank you. You will no longer receive ' +
                         'messages from us. If you have any medical ' +
                         'concerns please visit your nearest clinic.'),
+
+                next: 'states_start'
+            });
+        });
+
+        self.states.add('states_end_yes', function(name) {
+            return new EndState(name, {
+                text: $('Thank you. You will receive support messages ' +
+                            'from MomConnect in the coming weeks.'),
 
                 next: 'states_start'
             });

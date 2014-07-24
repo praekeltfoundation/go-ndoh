@@ -698,6 +698,9 @@ go.utils = {
       } else if (im.config.name.substring(0,3) == "chw") {
           response.sub_type = im.config.subscription.chw;
           response.sub_rate = im.config.rate.two_per_week;
+      } else if (im.config.name.substring(0,6) == "optout") {
+          response.sub_type = im.config.subscription[im.user.answers.states_start];
+          response.sub_rate = im.config.rate.two_per_week;
       } else if (im.config.name.substring(0,10) == "smsinbound") {
           response.sub_type = im.config.subscription.baby1;
           response.sub_rate = im.config.rate.two_per_week;

@@ -91,6 +91,7 @@ describe("app", function() {
             it("should increment the no. of unique users by 1", function() {
                 return tester
                     .start()
+                    .input('YO!')
                     .check(function(api) {
                         var metrics = api.metrics.stores.test_metric_store;
                         assert.deepEqual(metrics['test.smsinbound.sum.unique_users'].values, [1]);
@@ -102,13 +103,13 @@ describe("app", function() {
             it("should send them an error", function() {
                 return tester
                     .setup.user.addr('+27001')
-                    .setup.user.state('states_start')
                     .input('DONUTS')
                     .check.interaction({
-                        state: 'states_start',
+                        state: 'states_default',
                         reply: 
-                            'Sorry, your message was not understood. ' +
-                            'Please try again.'
+                            'Welcome to The Department of Health\'s ' +
+                            'MomConnect programme. Respond BABY to get baby' +
+                            'related messages or STOP to opt out of future messages'
                     })
                     .run();
             });
@@ -118,7 +119,6 @@ describe("app", function() {
             it("should set their opt out status", function() {
                 return tester
                     .setup.user.addr('+27001')
-                    .setup.user.state('states_start')
                     .input('STOP')
                     .check.interaction({
                         state: 'states_opt_out',
@@ -134,7 +134,6 @@ describe("app", function() {
             it("should reverse their opt out status", function() {
                 return tester
                     .setup.user.addr('+27001')
-                    .setup.user.state('states_start')
                     .input('START')
                     .check.interaction({
                         state: 'states_opt_in',
@@ -160,7 +159,6 @@ describe("app", function() {
                         });
                     })
                     .setup.user.addr('+27001')
-                    .setup.user.state('states_start')
                     .input('BABY')
                     .check.interaction({
                         state: 'states_baby',

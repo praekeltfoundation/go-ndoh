@@ -1,10 +1,7 @@
 go.app = function() {
     var vumigo = require('vumigo_v02');
-    // var _ = require('lodash');
-    // var Q = require('q');
     var App = vumigo.App;
     var EndState = vumigo.states.EndState;
-    var FreeText = vumigo.states.FreeText;
 
     var GoNDOH = App.extend(function(self) {
         App.call(self, 'states_start');
@@ -31,39 +28,18 @@ go.app = function() {
                 });
         };
 
-        self.states.add('states_start', function(name, opts) {
-            var error = $('Sorry, your message was not understood. ' +
-                          'Please try again.');
 
-            var question = $('Welcome to The Department of Health\'s ' +
-                    'MomConnect programme. Respond BABY to get baby' +
-                    'related messages or STOP to opt out of future messages');
-
-            var valid_keywords = ["BABY", "STOP", "START"];
-
-            return new FreeText(name, {
-                question: question,
-
-                check: function(content) {
-                    var keyword = content.split(" ")[0];
-                    if (valid_keywords.indexOf(keyword) === -1) {
-                        return error;
-                    }
-                },
-
-                next: function(content) {
-                    switch (content.split(" ")[0]) {
-                        case "STOP":
-                            return "states_opt_out";
-                        case "START":
-                            return "states_opt_in";
-                        case "BABY":
-                            return "states_baby";
-                        default:
-                            return "states_error";  
-                    }
-                }
-            });
+        self.states.add('states_start', function() {
+            switch (self.im.msg.content.split(" ")[0]) {
+                case "STOP":
+                    return self.states.create("states_opt_out");
+                case "START":
+                    return self.states.create("states_opt_in");
+                case "BABY":
+                    return self.states.create("states_baby");
+                default:
+                    return self.states.create("states_default");  
+            }
         });
 
 
@@ -119,9 +95,11 @@ go.app = function() {
             });
         });
 
-        self.states.add('states_error', function(name) {
+        self.states.add('states_default', function(name) {
             return new EndState(name, {
-              text: 'Sorry, something went wrong when saving the data. Please try again.',
+              text: $('Welcome to The Department of Health\'s ' +
+                'MomConnect programme. Respond BABY to get baby' +
+                'related messages or STOP to opt out of future messages'),
               next: 'states_start'
             });
         });

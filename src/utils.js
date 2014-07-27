@@ -803,6 +803,28 @@ go.utils = {
         response.sub_rate = im.config.rate.daily;
       }
       return response;
-    }
+    },
+
+    support_log_ticket: function(message, contact, im, metric_prefix) {
+        opts = go.utils.subscription_type_and_rate(contact, im);
+        var payload = {
+          conversation: "/api/v1/snappybouncer/conversation/key/" + im.config.snappybouncer.conversation + "/",
+          message: message,
+          contact_key: contact.key,
+          msisdn: contact.msisdn
+        };
+        return go.utils
+            .control_api_call("post", payload, 'snappybouncer/ticket/', im)
+            .then(function(doc_result) {
+                var metric;
+                if (doc_result.code >= 200 && doc_result.code < 300){
+                    metric = (([metric_prefix, "sum", "ticket_logged_to_control_success"].join('.')));
+                } else {
+                    //TODO - implement proper fail issue #36
+                    metric = (([metric_prefix, "sum", "ticket_logged_to_control_fail"].join('.')));
+                }
+                return im.metrics.fire.inc(metric, {amount: 1});
+        });
+    },
 
 };

@@ -37,7 +37,7 @@ go.app = function() {
                     return self.states.create("states_opt_in");
                 case "BABY":
                     return self.states.create("states_baby");
-                default:
+                default: // Logs a support ticket
                     return self.states.create("states_default");  
             }
         });
@@ -97,10 +97,15 @@ go.app = function() {
 
         self.states.add('states_default', function(name) {
             return new EndState(name, {
-              text: $('Welcome to The Department of Health\'s ' +
-                'MomConnect programme. Respond BABY to get baby' +
-                'related messages or STOP to opt out of future messages'),
-              next: 'states_start'
+                text: $('Thank you for your message, it has been captured and you will receive a ' +
+                        'response soon. Kind regards. MomConnect.'),
+                next: 'states_start',
+
+                events: {
+                    'state:enter': function() {
+                        return go.utils.support_log_ticket(self.im.msg.content, self.contact, self.im, self.metric_prefix);
+                    }
+                }
             });
         });
 

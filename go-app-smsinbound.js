@@ -812,11 +812,8 @@ go.utils = {
 
 go.app = function() {
     var vumigo = require('vumigo_v02');
-    // var _ = require('lodash');
-    // var Q = require('q');
     var App = vumigo.App;
     var EndState = vumigo.states.EndState;
-    // var FreeText = vumigo.states.FreeText;
 
     var GoNDOH = App.extend(function(self) {
         App.call(self, 'states_start');

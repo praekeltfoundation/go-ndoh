@@ -830,6 +830,27 @@ go.utils = {
         });
     },
 
+    servicerating_log: function(contact, im, metric_prefix) {
+        var payload = {
+            "user_account": contact.user_account,
+            "conversation_key": im.config.conversation_key,
+            "contact": contact,
+            "answers": im.user.answers
+        };
+        return go.utils
+            .control_api_call("post", payload, 'servicerating/rate/', im)
+            .then(function(doc_result) {
+                var metric;
+                if (doc_result.code >= 200 && doc_result.code < 300){
+                    metric = (([metric_prefix, "sum", "servicerating_success"].join('.')));
+                } else {
+                    //TODO - implement proper fail issue #36
+                    metric = (([metric_prefix, "sum", "subscription_to_protocol_fail"].join('.')));
+                }
+                return im.metrics.fire.inc(metric, {amount: 1});
+        });
+    },
+
 };
 
 go.app = function() {

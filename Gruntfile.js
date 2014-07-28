@@ -14,7 +14,8 @@ module.exports = function (grunt) {
                     chw: 'src/chw.js',
                     personal: 'src/personal.js',
                     optout: 'src/optout.js',
-                    smsinbound: 'src/smsinbound.js'
+                    smsinbound: 'src/smsinbound.js',
+                    servicerating: 'src/servicerating.js'
                 },
                 clinic: [
                     'src/index.js',
@@ -46,6 +47,12 @@ module.exports = function (grunt) {
                     '<%= paths.src.app.smsinbound %>',
                     'src/init.js'
                 ],
+                servicerating: [
+                    'src/index.js',
+                    'src/utils.js',
+                    '<%= paths.src.app.servicerating %>',
+                    'src/init.js'
+                ],
                 all: [
                     'src/**/*.js'
                 ]
@@ -55,7 +62,8 @@ module.exports = function (grunt) {
                 chw: 'go-app-chw.js',
                 personal: 'go-app-personal.js',
                 optout: 'go-app-optout.js',
-                smsinbound: 'go-app-smsinbound.js'
+                smsinbound: 'go-app-smsinbound.js',
+                servicerating: 'go-app-servicerating.js'
             },
             test: {
                 clinic: [
@@ -87,6 +95,12 @@ module.exports = function (grunt) {
                     'src/utils.js',
                     '<%= paths.src.app.smsinbound %>',
                     'test/smsinbound.test.js'
+                ],
+                servicerating: [
+                    'test/setup.js',
+                    'src/utils.js',
+                    '<%= paths.src.app.servicerating %>',
+                    'test/servicerating.test.js'
                 ]
             }
         },
@@ -126,6 +140,10 @@ module.exports = function (grunt) {
             smsinbound: {
                 src: ['<%= paths.src.smsinbound %>'],
                 dest: '<%= paths.dest.smsinbound %>'
+            },
+            servicerating: {
+                src: ['<%= paths.src.servicerating %>'],
+                dest: '<%= paths.dest.servicerating %>'
             }
         },
 
@@ -133,20 +151,23 @@ module.exports = function (grunt) {
             options: {
                 reporter: 'spec'
             },
-            test_clinic: {
-                src: ['<%= paths.test.clinic %>']
-            },
-            test_chw: {
-                src: ['<%= paths.test.chw %>']
-            },
-            test_personal: {
-                src: ['<%= paths.test.personal %>']
-            },
-            test_optout: {
-                src: ['<%= paths.test.optout %>']
-            },
-            test_smsinbound: {
-                src: ['<%= paths.test.smsinbound %>']
+            // test_clinic: {
+            //     src: ['<%= paths.test.clinic %>']
+            // },
+            // test_chw: {
+            //     src: ['<%= paths.test.chw %>']
+            // },
+            // test_personal: {
+            //     src: ['<%= paths.test.personal %>']
+            // },
+            // test_optout: {
+            //     src: ['<%= paths.test.optout %>']
+            // },
+            // test_smsinbound: {
+            //     src: ['<%= paths.test.smsinbound %>']
+            // },
+            test_servicerating: {
+                src: ['<%= paths.test.servicerating %>']
             }
         }
     });

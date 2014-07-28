@@ -833,27 +833,21 @@ go.utils = {
 
 go.app = function() {
     var vumigo = require('vumigo_v02');
+    var Q = require('q');
     var App = vumigo.App;
+    var Choice = vumigo.states.Choice;
+    var ChoiceState = vumigo.states.ChoiceState;
     var EndState = vumigo.states.EndState;
 
     var GoNDOH = App.extend(function(self) {
-        App.call(self, 'states_start');
+        App.call(self, 'question_1_friendliness');
         var $ = self.$;
 
         self.init = function() {
             self.env = self.im.config.env;
             self.metric_prefix = [self.env, self.im.config.name].join('.');
             self.store_name = [self.env, self.im.config.name].join('.');
-
-            self.im.user.on('user:new', function(e) {
-                return go.utils.fire_users_metrics(self.im, self.store_name, self.env, self.metric_prefix);
-            });
-
-            self.im.on('state:enter', function(e) {
-                self.contact.extra.last_stage = e.state.name;
-                return self.im.contacts.save(self.contact);
-            });
-            
+         
             return self.im.contacts
                 .for_user()
                 .then(function(user_contact) {
@@ -861,78 +855,118 @@ go.app = function() {
                 });
         };
 
+        self.states.add('question_1_friendliness', function(name) {
+            return new ChoiceState(name, {
+                question: $('Hi. When u were signed up, were the staff ' +
+                            'at the facility friendly and helpful?'),
 
-        self.states.add('states_start', function() {
-            switch (self.im.msg.content.split(" ")[0]) {
-                case "STOP":
-                    return self.states.create("states_opt_out");
-                case "START":
-                    return self.states.create("states_opt_in");
-                case "BABY":
-                    return self.states.create("states_baby");
-                default:
-                    return self.states.create("states_default");  
-            }
+                choices: [
+                    new Choice('very-satisfied', $('Very Satisfied :D')),
+                    new Choice('satisfied', $('Satisfied :)')),
+                    new Choice('not-satisfied', $('Not Satisfied :(')),
+                    new Choice('very-unsatisfied', $('Very unsatisfied :('))
+                ],
+
+                next: 'question_2_waiting_times_feel'
+            });
         });
 
+        self.states.add('question_2_waiting_times_feel', function(name) {
+            return new ChoiceState(name, {
+                question: $('How do you feel about the time you had to ' +
+                            'wait at the facility?'),
 
-        self.states.add('states_opt_out', function(name) {
+                choices: [
+                    new Choice('very-satisfied', $('Very Satisfied :D')),
+                    new Choice('satisfied', $('Satisfied :)')),
+                    new Choice('not-satisfied', $('Not Satisfied :(')),
+                    new Choice('very-unsatisfied', $('Very unsatisfied :('))
+                ],
+
+                next: 'question_3_waiting_times_length'
+            });
+        });
+
+        self.states.add('question_3_waiting_times_length', function(name) {
+            return new ChoiceState(name, {
+                question: $('How long did you wait to be helped at the clinic?'),
+
+                choices: [
+                    new Choice('less-than-an-hour', $('Less than an hour')),
+                    new Choice('between-1-and-3-hours', $('Between 1 and 3 hours')),
+                    new Choice('more-than-4-hours', $('More than 4 hours')),
+                    new Choice('all-day', $('All day'))
+                ],
+
+                next: 'question_4_cleanliness'
+            });
+        });
+
+        self.states.add('question_4_cleanliness', function(name) {
+            return new ChoiceState(name, {
+                question: $('Was the facility clean?'),
+
+                choices: [
+                    new Choice('very-satisfied', $('Very Satisfied :D')),
+                    new Choice('satisfied', $('Satisfied :)')),
+                    new Choice('not-satisfied', $('Not Satisfied :(')),
+                    new Choice('very-unsatisfied', $('Very unsatisfied :('))
+                ],
+
+                next: 'question_5_privacy'
+            });
+        });
+
+        self.states.add('question_5_privacy', function(name) {
+            return new ChoiceState(name, {
+                question: $('Did you feel that your privacy was respected by the staff?'),
+
+                choices: [
+                    new Choice('very-satisfied', $('Very Satisfied :D')),
+                    new Choice('satisfied', $('Satisfied :)')),
+                    new Choice('not-satisfied', $('Not Satisfied :(')),
+                    new Choice('very-unsatisfied', $('Very unsatisfied :('))
+                ],
+
+                next: 'end_thanks'
+            });
+        });
+
+        self.states.add('end_thanks', function(name) {
             return new EndState(name, {
-                text: $('Thank you. You will no longer receive messages from us. ' +
-                        'If you have any medical concerns please visit your nearest clinic'),
+                text: $('Thank you for rating our service. For baby and pregnancy ' +
+                            'help or if you have compliments or complaints ' +
+                            'dial *134*550# or reply to any of the SMSs you receive'),
 
-                next: 'states_start',
+                next: 'end_thanks_revisit',
 
                 events: {
                     'state:enter': function() {
-                        return self.im.api_request('optout.optout', {
-                            address_type: "msisdn",
-                            address_value: self.im.user.addr,
-                            message_id: self.im.msg.message_id
-                        });
+                        return Q.all([
+                            go.utils.servicerating_log(self.contact, self.im, self.metric_prefix),
+                            self.im.outbound.send_to_user({
+                                    endpoint: 'sms',
+                                    content: "Thank you for rating our service. If you have further queries " +
+                                            "or complaints please dial *134*550# or reply to any of the SMSs you receive"
+                                })
+                        ]);
                     }
                 }
             });
         });
 
-        self.states.add('states_opt_in', function(name) {
+        self.states.add('end_thanks_revisit', function(name) {
             return new EndState(name, {
-                text: $('Thank you. You will now receive messages from us again. ' +
-                        'If you have any medical concerns please visit your nearest clinic'),
-
-                next: 'states_start',
-
-                events: {
-                    'state:enter': function() {
-                        return self.im.api_request('optout.cancel_optout', {
-                            address_type: "msisdn",
-                            address_value: self.im.user.addr
-                        });
-                    }
-                }
+              text: 'Sorry, you\'ve already rated service. For baby and pregnancy ' +
+                    'help or if you have compliments or complaints ' +
+                    'dial *134*550# or reply to any of the SMSs you receive',
+              next: 'end_thanks_revisit'
             });
         });
 
-        self.states.add('states_baby', function(name) {
+        self.states.add('states_error', function(name) {
             return new EndState(name, {
-                text: $('Thank you. You will now receive messages related to newborn babies. ' +
-                        'If you have any medical concerns please visit your nearest clinic'),
-
-                next: 'states_start',
-
-                events: {
-                    'state:enter': function() {
-                        return go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix);
-                    }
-                }
-            });
-        });
-
-        self.states.add('states_default', function(name) {
-            return new EndState(name, {
-              text: $('Welcome to The Department of Health\'s ' +
-                'MomConnect programme. Respond BABY to get baby' +
-                'related messages or STOP to opt out of future messages'),
+              text: 'Sorry, something went wrong when saving the data. Please try again.',
               next: 'states_start'
             });
         });

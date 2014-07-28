@@ -71,6 +71,9 @@ describe("app", function() {
                         three_per_week: 4,
                         four_per_week: 5,
                         five_per_week: 6
+                    },
+                    snappybouncer: {
+                        conversation: 'dummyconversation'
                     }
                 })
                 .setup(function(api) {
@@ -90,8 +93,18 @@ describe("app", function() {
         describe("when a new unique user sends message in", function() {
             it("should increment the no. of unique users by 1", function() {
                 return tester
+                    .setup(function(api) {
+                        api.contacts.add({
+                            msisdn: '+27001',
+                            extra : {
+                                language_choice: 'en'
+                            },
+                            key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
+                        });
+                    })
                     .start()
-                    .input('YO!')
+                    .input('START')
                     .check(function(api) {
                         var metrics = api.metrics.stores.test_metric_store;
                         assert.deepEqual(metrics['test.smsinbound.sum.unique_users'].values, [1]);
@@ -100,16 +113,25 @@ describe("app", function() {
         });
 
         describe("when the user sends a non standard keyword message", function() {
-            it("should send them an error", function() {
+            it("should log a support ticket", function() {
                 return tester
+                    .setup(function(api) {
+                        api.contacts.add({
+                            msisdn: '+27001',
+                            extra : {
+                                language_choice: 'en'
+                            },
+                            key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
+                        });
+                    })
                     .setup.user.addr('+27001')
                     .input('DONUTS')
                     .check.interaction({
                         state: 'states_default',
                         reply: 
-                            'Welcome to The Department of Health\'s ' +
-                            'MomConnect programme. Respond BABY to get baby' +
-                            'related messages or STOP to opt out of future messages'
+                            'Thank you for your message, it has been captured and you will ' +
+                            'receive a response soon. Kind regards. MomConnect.'
                     })
                     .run();
             });
@@ -118,6 +140,16 @@ describe("app", function() {
         describe("when the user sends a STOP message", function() {
             it("should set their opt out status", function() {
                 return tester
+                    .setup(function(api) {
+                        api.contacts.add({
+                            msisdn: '+27001',
+                            extra : {
+                                language_choice: 'en'
+                            },
+                            key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
+                        });
+                    })
                     .setup.user.addr('+27001')
                     .input('STOP')
                     .check.interaction({
@@ -133,6 +165,16 @@ describe("app", function() {
         describe("when the user sends a START message", function() {
             it("should reverse their opt out status", function() {
                 return tester
+                    .setup(function(api) {
+                        api.contacts.add({
+                            msisdn: '+27001',
+                            extra : {
+                                language_choice: 'en'
+                            },
+                            key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
+                        });
+                    })
                     .setup.user.addr('+27001')
                     .input('START')
                     .check.interaction({

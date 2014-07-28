@@ -835,6 +835,39 @@ module.exports = function() {
                 'Authorization': ['ApiKey test_user:test_key'],
                 'Content-Type': ['application/json']
             },
+
+          "url": "http://ndoh-control/api/v1/snappybouncer/ticket/",
+          "data": {
+            "conversation":"/api/v1/snappybouncer/conversation/key/dummyconversation/",
+            "message": "DONUTS",
+            "contact_key": "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+            "msisdn": "+27001"
+          }
+        },
+        "response": {
+          "code": 201,
+          "data": {
+            "contact_key": "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+            "conversation": "/api/v1/snappybouncer/conversation/1/",
+            "created_at": "2014-07-27T21:59:50.463810",
+            "id": 1,
+            "message": "DONUTS",
+            "msisdn": "+27001",
+            "resource_uri": "/api/v1/snappybouncer/ticket/1/",
+            "response": "",
+            "support_id": null,
+            "support_nonce": "alfz1cc1qkitdarc",
+            "updated_at": "2014-07-27T21:59:56.489255"
+          }
+        },
+      },
+      {
+        "request": {
+          "method": "POST",
+          'headers': {
+                'Authorization': ['ApiKey test_user:test_key'],
+                'Content-Type': ['application/json']
+            },
           "url": "http://ndoh-control/api/v1/servicerating/rate/",
           "data": {
             "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4",

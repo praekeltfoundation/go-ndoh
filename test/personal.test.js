@@ -277,6 +277,7 @@ describe("app", function() {
                     .check(function(api) {
                         var contact = api.contacts.store[0];
                         assert.equal(contact.extra.language_choice, 'en');
+                        assert.equal(contact.extra.is_registered, 'false');
                     })
                     .check(function(api) {
                         var metrics = api.metrics.stores.test_metric_store;
@@ -788,6 +789,8 @@ describe("app", function() {
                         assert.equal(contact.extra.ussd_sessions, '0');
                         assert.equal(contact.extra.last_stage, 'states_end_success');
                         assert.equal(contact.extra.metric_sessions_to_register, '5');
+                        assert.equal(contact.extra.is_registered, 'true');
+                        assert.equal(contact.extra.is_registered_by, 'personal');
                     })
                     .check(function(api) {
                         var metrics = api.metrics.stores.test_metric_store;

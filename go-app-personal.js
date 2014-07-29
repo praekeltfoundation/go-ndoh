@@ -1252,6 +1252,7 @@ go.app = function() {
                         '-' + self.im.user.answers.states_birth_month +
                         '-' + content);
                     self.contact.extra.is_registered = 'true';
+                    self.contact.extra.is_registered_by = 'personal';
                     self.contact.extra.metric_sessions_to_register = self.contact.extra.ussd_sessions;
 
                     return self.im.contacts

@@ -1370,6 +1370,7 @@ go.app = function() {
                 next: function(choice) {
                     self.contact.extra.language_choice = choice.value;
                     self.contact.extra.is_registered = 'true';
+                    self.contact.extra.is_registered_by = 'clinic';
                     self.contact.extra.metric_sessions_to_register = self.user.extra.ussd_sessions;
 
                     return self.im.groups.get(choice.value)

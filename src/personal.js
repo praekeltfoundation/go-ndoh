@@ -114,7 +114,7 @@ go.app = function() {
                     'MomConnect. Please choose an option:'),
 
                 choices: [
-                    new Choice('info', $('Baby and pregnancy info')),
+                    new Choice('info', $('Baby and pregnancy info (English only)')),
                     new Choice('compliment', $('Send us a compliment')),
                     new Choice('complaint', $('Send us a complaint'))
                 ],
@@ -182,7 +182,7 @@ go.app = function() {
                     'MomConnect. Please choose an option:'),
 
                 choices: [
-                    new Choice('info', $('Baby and pregnancy info')),
+                    new Choice('info', $('Baby and pregnancy info (English only)')),
                     new Choice('full_set', $('Get the full set of messages'))
                 ],
 

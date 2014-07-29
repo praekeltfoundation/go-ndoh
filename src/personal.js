@@ -92,19 +92,17 @@ go.app = function() {
             }
         };
 
-        // mike: my thinking for the is_registered === 'false' part was that we could, for this line, 
-        //      suppress the standard vumi behaviour of going to the last state on timeouts, and 
-        //      default to states_start instead.  From states_start it then pops into the last state  
-        //      if they were busy with registration.
         self.states.add('states_start', function() {
             if (_.isUndefined(self.contact.extra.is_registered)) {
+                // hasn't started registration on any line
                 return self.states.create('states_language');
-            } else if (self.contact.extra.is_registered === 'false') {
-                return self.states.create(self.contact.extra.last_stage);
-            } else if (self.contact.extra.is_registered_by === 'chw') {
-                return self.states.create('states_registered_chw');
             } else if (self.contact.extra.is_registered_by === 'clinic') {
-                return self.states.create('states_registered_clinic');
+                // registered on clinic line
+                return self.states.create('states_registered_full');
+            } else {
+                // registered on chw / public lines or partially registered on any line
+                // mike: discuss partial registration going to ..._not_full
+                return self.states.create('states_registered_not_full');
             }
         });
 

@@ -39,7 +39,8 @@ go.app = function() {
             self.im.user.on('user:new', function(e) {
                 return Q.all([
                     go.utils.fire_users_metrics(self.im, self.store_name, self.env, self.metric_prefix),
-                    self.fire_incomplete('states_start', 1)
+                    // TODO re-evaluate the use of this metric
+                    // self.fire_incomplete('states_start', 1)
                 ]);
             });
 
@@ -91,7 +92,13 @@ go.app = function() {
             }
         };
 
-        self.states.add('states_start', function(name) {
+
+        self.states.add('states_start', function() {
+            return self.states.create('states_language');
+        });
+
+
+        self.states.add('states_language', function(name) {
             return new ChoiceState(name, {
                 question: $('Welcome to The Department of Health\'s ' +
                     'MomConnect programme. Please select your preferred ' +

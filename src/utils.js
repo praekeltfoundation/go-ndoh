@@ -7,6 +7,7 @@ var utils = vumigo.utils;
 var libxml = require('libxmljs');
 var crypto = require('crypto');
 var HttpApi = vumigo.http.api.HttpApi;
+var JsonApi = vumigo.http.api.JsonApi;
 
 // override moment default century switch at '68 with '49
 moment.parseTwoDigitYear = function (input) {
@@ -845,6 +846,38 @@ go.utils = {
                     metric = (([metric_prefix, "sum", "subscription_to_protocol_fail"].join('.')));
                 }
                 return im.metrics.fire.inc(metric, {amount: 1});
+        });
+    },
+
+    get_snappy_topics: function (im, faq_id) {
+        var http = new JsonApi(im, {
+          auth: {
+            username: im.config.snappy.username,
+            password: 'x'
+          }
+        });
+        return http.get(im.config.snappy.endpoint + 'account/'+im.config.snappy.account_id+'/faqs/'+faq_id+'/topics', {
+          data: JSON.stringify(),
+          headers: {
+            'Content-Type': ['application/json']
+          },
+          ssl_method: "SSLv3"
+        });
+    },
+
+    get_snappy_topic_content: function(im, faq_id, topic_id) {
+        var http = new JsonApi(im, {
+          auth: {
+            username: im.config.snappy.username,
+            password: 'x'
+          }
+        });
+        return http.get(im.config.snappy.endpoint + 'account/'+im.config.snappy.account_id+'/faqs/'+faq_id+'/topics/'+topic_id+'/questions', {
+          data: JSON.stringify(),
+          headers: {
+            'Content-Type': ['application/json']
+          },
+          ssl_method: "SSLv3"
         });
     },
 

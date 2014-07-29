@@ -1,0 +1,13 @@
+{
+    "name": "faqbrowser_qa",
+    "env": "qa",
+    "metric_store": "ndoh_qa",
+    "endpoints": {"sms": {"delivery_class": "sms"}},
+    "channel": "*120*550*4#",
+    "snappy": {
+        "endpoint": "https://app.besnappy.com/api/v1/",
+        "username": "980d2423-292b-4c34-be81-c74784b9e99a",
+        "account_id": "1",
+        "default_faq": "1"
+    }
+}

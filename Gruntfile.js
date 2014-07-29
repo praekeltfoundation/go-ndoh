@@ -15,7 +15,8 @@ module.exports = function (grunt) {
                     personal: 'src/personal.js',
                     optout: 'src/optout.js',
                     smsinbound: 'src/smsinbound.js',
-                    servicerating: 'src/servicerating.js'
+                    servicerating: 'src/servicerating.js',
+                    faqbrowser: 'src/faqbrowser.js'
                 },
                 clinic: [
                     'src/index.js',
@@ -53,6 +54,12 @@ module.exports = function (grunt) {
                     '<%= paths.src.app.servicerating %>',
                     'src/init.js'
                 ],
+                faqbrowser: [
+                    'src/index.js',
+                    'src/utils.js',
+                    '<%= paths.src.app.faqbrowser %>',
+                    'src/init.js'
+                ],
                 all: [
                     'src/**/*.js'
                 ]
@@ -63,7 +70,8 @@ module.exports = function (grunt) {
                 personal: 'go-app-personal.js',
                 optout: 'go-app-optout.js',
                 smsinbound: 'go-app-smsinbound.js',
-                servicerating: 'go-app-servicerating.js'
+                servicerating: 'go-app-servicerating.js',
+                faqbrowser: 'go-app-faqbrowser.js'
             },
             test: {
                 clinic: [
@@ -101,6 +109,12 @@ module.exports = function (grunt) {
                     'src/utils.js',
                     '<%= paths.src.app.servicerating %>',
                     'test/servicerating.test.js'
+                ],
+                faqbrowser: [
+                    'test/setup.js',
+                    'src/utils.js',
+                    '<%= paths.src.app.faqbrowser %>',
+                    'test/faqbrowser.test.js'
                 ]
             }
         },
@@ -144,6 +158,10 @@ module.exports = function (grunt) {
             servicerating: {
                 src: ['<%= paths.src.servicerating %>'],
                 dest: '<%= paths.dest.servicerating %>'
+            },
+            faqbrowser: {
+                src: ['<%= paths.src.faqbrowser %>'],
+                dest: '<%= paths.dest.faqbrowser %>'
             }
         },
 
@@ -151,23 +169,26 @@ module.exports = function (grunt) {
             options: {
                 reporter: 'spec'
             },
-            test_clinic: {
-                src: ['<%= paths.test.clinic %>']
-            },
-            test_chw: {
-                src: ['<%= paths.test.chw %>']
-            },
-            test_personal: {
-                src: ['<%= paths.test.personal %>']
-            },
-            test_optout: {
-                src: ['<%= paths.test.optout %>']
-            },
-            test_smsinbound: {
-                src: ['<%= paths.test.smsinbound %>']
-            },
-            test_servicerating: {
-                src: ['<%= paths.test.servicerating %>']
+            // test_clinic: {
+            //     src: ['<%= paths.test.clinic %>']
+            // },
+            // test_chw: {
+            //     src: ['<%= paths.test.chw %>']
+            // },
+            // test_personal: {
+            //     src: ['<%= paths.test.personal %>']
+            // },
+            // test_optout: {
+            //     src: ['<%= paths.test.optout %>']
+            // },
+            // test_smsinbound: {
+            //     src: ['<%= paths.test.smsinbound %>']
+            // },
+            // test_servicerating: {
+            //     src: ['<%= paths.test.servicerating %>']
+            // },
+            test_faqbrowser: {
+                src: ['<%= paths.test.faqbrowser %>']
             }
         }
     });

@@ -995,6 +995,51 @@ go.app = function() {
         });
 
 
+        self.states.add('states_registered_fullfull', function(name) {
+            return new ChoiceState(name, {
+                question: $('Welcome to the Department of Health\'s ' +
+                    'MomConnect. Please choose an option:'),
+
+                choices: [
+                    new Choice('info', $('Baby and pregnancy info')),
+                    new Choice('compliment', $('Send us a compliment')),
+                    new Choice('complaint', $('Send us a complaint'))
+                ],
+
+                next: function(choice) {
+                    return {
+                        info: 'states_faq_topics',
+                        compliment: 'states_end_compliment',
+                        complaint: 'states_end_complaint'
+                    } [choice.value];
+                }
+            });
+        });
+
+        self.states.add('states_end_compliment', function(name) {
+            return new EndState(name, {
+                text: $('Thank you. We will send you a message ' +
+                    'shortly with instructions on how to send us ' +
+                    'your compliment.'),
+                next: 'states_start',
+
+                // TODO on-enter trigger compliment sms
+            });
+        });
+
+        self.states.add('states_end_complaint', function(name) {
+            return new EndState(name, {
+                text: $('Thank you. We will send you a message ' +
+                    'shortly with instructions on how to send us ' +
+                    'your complaint.'),
+                next: 'states_start',
+
+                // TODO on-enter trigger complaint sms
+            });
+        });
+
+
+
 
         self.states.add('states_registered_not_full', function(name) {
             return new ChoiceState(name, {
@@ -1008,8 +1053,8 @@ go.app = function() {
 
                 next: function(choice) {
                     return {
-                        yes: 'states_faq_topics',
-                        no: 'states_end_go_clinic'
+                        info: 'states_faq_topics',
+                        full_set: 'states_end_go_clinic'
                     } [choice.value];
                 }
             });

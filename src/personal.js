@@ -106,6 +106,37 @@ go.app = function() {
             }
         });
 
+
+
+        self.states.add('states_registered_not_full', function(name) {
+            return new ChoiceState(name, {
+                question: $('Welcome to the Department of Health\'s ' +
+                    'MomConnect. Please choose an option:'),
+
+                choices: [
+                    new Choice('info', $('Baby and pregnancy info')),
+                    new Choice('full_set', $('Get the full set of messages'))
+                ],
+
+                next: function(choice) {
+                    return {
+                        yes: 'states_faq_topics',
+                        no: 'states_end_go_clinic'
+                    } [choice.value];
+                }
+            });
+        });
+
+        self.states.add('states_end_go_clinic', function(name) {
+            return new EndState(name, {
+                text: $('To register for the full set of MomConnect ' +
+                    'messages, please visit your nearest clinic.'),
+                next: 'states_start'
+            });
+        });
+
+
+
         self.states.add('states_language', function(name) {
             return new ChoiceState(name, {
                 question: $('Welcome to The Department of Health\'s ' +

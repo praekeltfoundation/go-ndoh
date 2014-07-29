@@ -107,7 +107,8 @@ go.app = function() {
         });
 
 
-        self.states.add('states_registered_fullfull', function(name) {
+
+        self.states.add('states_registered_full', function(name) {
             return new ChoiceState(name, {
                 question: $('Welcome to the Department of Health\'s ' +
                     'MomConnect. Please choose an option:'),
@@ -133,9 +134,20 @@ go.app = function() {
                 text: $('Thank you. We will send you a message ' +
                     'shortly with instructions on how to send us ' +
                     'your compliment.'),
+                
                 next: 'states_start',
 
-                // TODO on-enter trigger compliment sms
+                events: {
+                    'state:enter': function() {
+                        return self.im.outbound.send_to_user({
+                            endpoint: 'sms',
+                            content: $('Please reply to this message with your compliment. If your compliment ' +
+                                'relates to the service you received at a clinic, please tell us the name of ' +
+                                'the clinic or clinic worker who you interacted with. Thank you for using our ' +
+                                'service. MomConnect.')
+                        });
+                    }
+                }
             });
         });
 
@@ -146,7 +158,18 @@ go.app = function() {
                     'your complaint.'),
                 next: 'states_start',
 
-                // TODO on-enter trigger complaint sms
+                events: {
+                    'state:enter': function() {
+                        return self.im.outbound.send_to_user({
+                            endpoint: 'sms',
+                            content: $('Please reply to this message with your complaint. If your complaint ' +
+                                'relates to the service you received at a clinic, please tell us the name of ' +
+                                'the clinic or clinic worker who you interacted with. The more detail you ' +
+                                'supply, the easier it will be for us to follow up for you. Kind regards. ' + 
+                                'MomConnect')
+                        });
+                    }
+                }
             });
         });
 

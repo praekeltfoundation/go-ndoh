@@ -384,6 +384,88 @@ describe("app", function() {
 
         });
 
+        describe("when a user registered on the clinic line", function() {
+
+            describe("tries to lodge a complaint", function() {
+                it("should send them an sms with instructions, exit", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27001',
+                                extra : {
+                                    language_choice: 'en',
+                                    is_registered: 'true',
+                                    is_registered_by: 'clinic'
+                                },
+                            });
+                        })
+                        .setup.user.addr('+27001')
+                        .inputs('start', '3')
+                        .check.interaction({
+                            state: 'states_end_complaint',
+                            reply: ('Thank you. We will send you a message ' +
+                                'shortly with instructions on how to send ' +
+                                'us your complaint.')
+                        })
+                        .check(function(api) {
+                            var smses = _.where(api.outbound.store, {
+                                endpoint: 'sms'
+                            });
+                            var sms = smses[0];
+                            assert.equal(smses.length, 1);
+                            assert.equal(sms.content,
+                                'Please reply to this message with your complaint. If your complaint ' +
+                                'relates to the service you received at a clinic, please tell us the name of ' +
+                                'the clinic or clinic worker who you interacted with. The more detail you ' +
+                                'supply, the easier it will be for us to follow up for you. Kind regards. ' + 
+                                'MomConnect'
+                            );
+                        })
+                        .check.reply.ends_session()
+                        .run();
+                });
+            });
+
+            describe("tries to send a compliment", function() {
+                it("should send them an sms with instructions, exit", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27001',
+                                extra : {
+                                    language_choice: 'en',
+                                    is_registered: 'true',
+                                    is_registered_by: 'clinic'
+                                },
+                            });
+                        })
+                        .setup.user.addr('+27001')
+                        .inputs('start', '2')
+                        .check.interaction({
+                            state: 'states_end_compliment',
+                            reply: ('Thank you. We will send you a message ' +
+                                'shortly with instructions on how to send ' +
+                                'us your compliment.')
+                        })
+                        .check(function(api) {
+                            var smses = _.where(api.outbound.store, {
+                                endpoint: 'sms'
+                            });
+                            var sms = smses[0];
+                            assert.equal(smses.length, 1);
+                            assert.equal(sms.content,
+                                'Please reply to this message with your compliment. If your compliment ' +
+                                'relates to the service you received at a clinic, please tell us the name of ' +
+                                'the clinic or clinic worker who you interacted with. Thank you for using our ' +
+                                'service. MomConnect.'
+                            );
+                        })
+                        .check.reply.ends_session()
+                        .run();
+                });
+            });
+        });
+
         describe("when the user selects a language", function() {
             it("should set language and ask if they suspect pregnancy", function() {
                 return tester

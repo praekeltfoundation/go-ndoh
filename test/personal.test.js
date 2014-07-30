@@ -266,14 +266,13 @@ describe("app", function() {
                         .check.interaction({
                             state: 'states_language',
                             reply: [
-                                'Welcome to The Department of Health\'s ' +
-                                'MomConnect programme. Please select your ' +
-                                'preferred language:',
-                                '1. English',
-                                '2. Afrikaans',
+                                'Welcome to MomConnect. Please choose language:',
+                                '1. Eng',
+                                '2. Afrik',
                                 '3. Zulu',
                                 '4. Xhosa',
-                                '5. Sotho'
+                                '5. Sotho',
+                                '6. Setswana'
                             ].join('\n')
                         })
                         .check(function(api) {
@@ -307,14 +306,13 @@ describe("app", function() {
                         .check.interaction({
                             state: 'states_language',
                             reply: [
-                                'Welcome to The Department of Health\'s ' +
-                                'MomConnect programme. Please select your ' +
-                                'preferred language:',
-                                '1. English',
-                                '2. Afrikaans',
+                                'Welcome to MomConnect. Please choose language:',
+                                '1. Eng',
+                                '2. Afrik',
                                 '3. Zulu',
                                 '4. Xhosa',
-                                '5. Sotho'
+                                '5. Sotho',
+                                '6. Setswana'
                             ].join('\n')
                         })
                         .check(function(api) {
@@ -379,8 +377,8 @@ describe("app", function() {
                             state: 'states_registered_not_full',
                             reply: [
                                 'Welcome to the Department of Health\'s ' +
-                                'MomConnect. Please choose an option:',
-                                '1. Baby and pregnancy info',
+                                'MomConnect. Choose an option:',
+                                '1. Baby and pregnancy info (English only)',
                                 '2. Get the full set of messages'
                             ].join('\n')
                         })
@@ -482,9 +480,9 @@ describe("app", function() {
                         state: 'states_register_info',
                         reply: [
                             'Welcome to the Department of Health\'s ' +
-                            'MomConnect. Please select an option:',
+                            'MomConnect. Please select:',
                             '1. Register for messages',
-                            '2. Baby and Pregnancy info'
+                            '2. Baby and Pregnancy info (English only)'
                         ].join('\n')
                     })
                     .check.user.properties({lang: 'en'})
@@ -532,9 +530,9 @@ describe("app", function() {
                         state: 'states_register_info',
                         reply: [
                             'Welcome to the Department of Health\'s ' +
-                            'MomConnect. Please select an option:',
+                            'MomConnect. Please select:',
                             '1. Register for messages',
-                            '2. Baby and Pregnancy info'
+                            '2. Baby and Pregnancy info (English only)'
                         ].join('\n')
                     })
                     .check(function(api) {
@@ -1164,7 +1162,7 @@ describe("app", function() {
                     .check.interaction({
                         state: 'states_faq_topics',
                         reply: [
-                            'We have gathered the most important information in the areas below. Please select one:',
+                            'We have gathered information in the areas below. Please select:',
                             '1. Coffee',
                             '2. delivery',
                             '3. Payment',
@@ -1195,7 +1193,7 @@ describe("app", function() {
                     .check.interaction({
                         state: 'states_faq_topics',
                         reply: [
-                            'We have gathered the most important information in the areas below. Please select one:',
+                            'We have gathered information in the areas below. Please select:',
                             '1. Coffee',
                             '2. delivery',
                             '3. Payment',
@@ -1216,7 +1214,7 @@ describe("app", function() {
                     .check.interaction({
                         state: 'states_faq_topics',
                         reply: [
-                            'We have gathered the most important information in the areas below. Please select one:',
+                            'We have gathered information in the areas below. Please select:',
                             '1. Coffee',
                             '2. delivery',
                             '3. Payment',
@@ -1239,7 +1237,7 @@ describe("app", function() {
                     .check.interaction({
                         state: 'states_faq_topics',
                         reply: [
-                            'We have gathered the most important information in the areas below. Please select one:',
+                            'We have gathered information in the areas below. Please select:',
                             '1. Coffee',
                             '2. delivery',
                             '3. Payment',

@@ -183,10 +183,10 @@ go.app = function() {
         self.states.add('states_registered_not_full', function(name) {
             return new ChoiceState(name, {
                 question: $('Welcome to the Department of Health\'s ' +
-                    'MomConnect. Please choose an option:'),
+                    'MomConnect. Choose an option:'),
 
                 choices: [
-                    new Choice('info', $('Baby and pregnancy info')),
+                    new Choice('info', $('Baby and pregnancy info (English only)')),
                     new Choice('full_set', $('Get the full set of messages'))
                 ],
 
@@ -211,16 +211,15 @@ go.app = function() {
 
         self.states.add('states_language', function(name) {
             return new ChoiceState(name, {
-                question: $('Welcome to The Department of Health\'s ' +
-                    'MomConnect programme. Please select your preferred ' +
-                    'language:'),
+                question: $('Welcome to MomConnect. Please choose language:'),
 
                 choices: [
-                    new Choice('en', $('English')),
-                    new Choice('af', $('Afrikaans')),
+                    new Choice('en', $('Eng')),
+                    new Choice('af', $('Afrik')),
                     new Choice('zu', $('Zulu')),
                     new Choice('xh', $('Xhosa')),
-                    new Choice('so', $('Sotho'))
+                    new Choice('so', $('Sotho')),
+                    new Choice('tn', $('Setswana'))
                 ],
 
                 next: function(choice) {
@@ -253,11 +252,11 @@ go.app = function() {
         self.states.add('states_register_info', function(name) {
             return new ChoiceState(name, {
                 question: $('Welcome to the Department of Health\'s ' +
-                    'MomConnect. Please select an option:'),
+                    'MomConnect. Please select:'),
 
                 choices: [
                     new Choice('register', $('Register for messages')),
-                    new Choice('info', $('Baby and Pregnancy info'))
+                    new Choice('info', $('Baby and Pregnancy info (English only)'))
                 ],
 
                 next: function(choice) {
@@ -580,7 +579,7 @@ go.app = function() {
                 })
                 .then(function(choices) {
                     return new PaginatedChoiceState(name, {
-                        question: $('We have gathered the most important information in the areas below. Please select one:'),
+                        question: $('We have gathered information in the areas below. Please select:'),
                         choices: choices,
                         options_per_page: 8,
                         next: 'states_faq_questions'

@@ -970,11 +970,11 @@ go.app = function() {
                         self.contact.extra.subscription_type = opts.sub_type.toString();
                         self.contact.extra.subscription_rate = opts.sub_rate.toString();
                         return Q.all([
-                                go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix, opts),
-                                self.im.contacts.save(self.contact)
-                            ]).then(function() {
-                                return choice.value;
-                            });
+                            go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix, opts),
+                            self.im.contacts.save(self.contact)
+                        ]).then(function() {
+                            return choice.value;
+                        });
                     } else {
                         return choice.value;
                     }

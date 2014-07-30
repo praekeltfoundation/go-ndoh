@@ -284,6 +284,47 @@ describe("app", function() {
                 });
             });
 
+            describe("when the user has partially registered", function() {
+                it("should ask for their preferred language", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27001',
+                                extra : {
+                                    language_choice: 'en',
+                                    is_registered: 'false',
+                                },
+                            });
+                        })
+                        .setup.user.addr('+27001')
+                        .start()
+                        .check.interaction({
+                            state: 'states_language',
+                            reply: [
+                                'Welcome to The Department of Health\'s ' +
+                                'MomConnect programme. Please select your ' +
+                                'preferred language:',
+                                '1. English',
+                                '2. Afrikaans',
+                                '3. Zulu',
+                                '4. Xhosa',
+                                '5. Sotho'
+                            ].join('\n')
+                        })
+                        .check(function(api) {
+                            var contact = api.contacts.store[0];
+                            assert.equal(contact.extra.ussd_sessions, '1');
+                            assert.equal(contact.extra.metric_sum_sessions, '1');
+                            assert.equal(contact.extra.last_stage, 'states_language');
+                        })
+                        .check(function(api) {
+                            var metrics = api.metrics.stores.test_metric_store;
+                            assert.deepEqual(metrics['test.sum.sessions'].values, [1]);
+                        })
+                        .run();
+                });
+            });
+
             describe("when the user has registered on clinic", function() {
                 it("should prompt for info / compliment / complaint", function() {
                     return tester
@@ -313,7 +354,7 @@ describe("app", function() {
                 });
             });
 
-            describe("when the user has partial registration", function() {
+            describe("when the user registered on chw/personal", function() {
                 it("should prompt for info / full message set", function() {
                     return tester
                         .setup(function(api) {
@@ -321,7 +362,8 @@ describe("app", function() {
                                 msisdn: '+27001',
                                 extra : {
                                     language_choice: 'en',
-                                    is_registered: 'false'
+                                    is_registered: 'true',
+                                    is_registered_by: 'personal'
                                 },
                             });
                         })

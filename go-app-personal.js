@@ -984,15 +984,15 @@ go.app = function() {
 
 
         self.states.add('states_start', function() {
-            if (_.isUndefined(self.contact.extra.is_registered)) {
-                // hasn't started registration on any line
+            if (_.isUndefined(self.contact.extra.is_registered)
+                || self.contact.extra.is_registered === 'false') {
+                // hasn't completed registration on any line
                 return self.states.create('states_language');
             } else if (self.contact.extra.is_registered_by === 'clinic') {
                 // registered on clinic line
                 return self.states.create('states_registered_full');
             } else {
-                // registered on chw / public lines or partially registered on any line
-                // mike: discuss partial registration going to ..._not_full
+                // registered on chw / public lines
                 return self.states.create('states_registered_not_full');
             }
         });

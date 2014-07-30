@@ -92,6 +92,9 @@ go.app = function() {
             }
         };
 
+
+
+
         self.states.add('states_start', function() {
             if (_.isUndefined(self.contact.extra.is_registered)) {
                 // hasn't started registration on any line
@@ -114,7 +117,7 @@ go.app = function() {
                     'MomConnect. Please choose an option:'),
 
                 choices: [
-                    new Choice('info', $('Baby and pregnancy info (English only)')),
+                    new Choice('info', $('Baby and pregnancy info')),
                     new Choice('compliment', $('Send us a compliment')),
                     new Choice('complaint', $('Send us a complaint'))
                 ],
@@ -175,14 +178,13 @@ go.app = function() {
 
 
 
-
         self.states.add('states_registered_not_full', function(name) {
             return new ChoiceState(name, {
                 question: $('Welcome to the Department of Health\'s ' +
                     'MomConnect. Please choose an option:'),
 
                 choices: [
-                    new Choice('info', $('Baby and pregnancy info (English only)')),
+                    new Choice('info', $('Baby and pregnancy info')),
                     new Choice('full_set', $('Get the full set of messages'))
                 ],
 

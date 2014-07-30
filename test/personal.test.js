@@ -283,6 +283,63 @@ describe("app", function() {
                         .run();
                 });
             });
+
+            describe("when the user has registered on clinic", function() {
+                it("should prompt for info / compliment / complaint", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27001',
+                                extra : {
+                                    language_choice: 'en',
+                                    is_registered: 'true',
+                                    is_registered_by: 'clinic'
+                                },
+                            });
+                        })
+                        .setup.user.addr('+27001')
+                        .start()
+                        .check.interaction({
+                            state: 'states_registered_full',
+                            reply: [
+                                'Welcome to the Department of Health\'s ' +
+                                'MomConnect. Please choose an option:',
+                                '1. Baby and pregnancy info',
+                                '2. Send us a compliment',
+                                '3. Send us a complaint'
+                            ].join('\n')
+                        })
+                        .run();
+                });
+            });
+
+            describe("when the user has partial registration", function() {
+                it("should prompt for info / full message set", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27001',
+                                extra : {
+                                    language_choice: 'en',
+                                    is_registered: 'false'
+                                },
+                            });
+                        })
+                        .setup.user.addr('+27001')
+                        .start()
+                        .check.interaction({
+                            state: 'states_registered_not_full',
+                            reply: [
+                                'Welcome to the Department of Health\'s ' +
+                                'MomConnect. Please choose an option:',
+                                '1. Baby and pregnancy info',
+                                '2. Get the full set of messages'
+                            ].join('\n')
+                        })
+                        .run();
+                });
+            });
+
         });
 
         describe("when the user selects a language", function() {

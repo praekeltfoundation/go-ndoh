@@ -2,6 +2,7 @@ go.app = function() {
     var vumigo = require('vumigo_v02');
     var App = vumigo.App;
     var EndState = vumigo.states.EndState;
+    var Q = require('q');
 
     var GoNDOH = App.extend(function(self) {
         App.call(self, 'states_start');
@@ -89,7 +90,13 @@ go.app = function() {
 
                 events: {
                     'state:enter': function() {
-                        return go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix);
+                        opts = go.utils.subscription_type_and_rate(self.contact, self.im);
+                        self.contact.extra.subscription_type = opts.sub_type.toString();
+                        self.contact.extra.subscription_rate = opts.sub_rate.toString();
+                        return Q.all([
+                            go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix, opts),
+                            self.im.contacts.save(self.contact)
+                        ]);
                     }
                 }
             });

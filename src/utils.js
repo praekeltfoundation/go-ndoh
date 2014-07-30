@@ -716,8 +716,7 @@ go.utils = {
       return response;
     },
 
-    subscription_send_doc: function(contact, im, metric_prefix) {
-        opts = go.utils.subscription_type_and_rate(contact, im);
+    subscription_send_doc: function(contact, im, metric_prefix, opts) {
         var payload = {
           contact_key: contact.key,
           lang: contact.extra.language_choice,

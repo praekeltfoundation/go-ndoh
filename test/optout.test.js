@@ -2,6 +2,7 @@ var vumigo = require('vumigo_v02');
 var fixtures = require('./fixtures');
 var AppTester = vumigo.AppTester;
 var assert = require('assert');
+var _ = require('lodash');
 
 var messagestore = require('./optoutstore');
 var DummyOptoutResource = messagestore.DummyOptoutResource;
@@ -190,6 +191,13 @@ describe("app", function() {
                         state: 'states_end_yes',
                         reply: ('Thank you. You will receive support messages ' +
                             'from MomConnect in the coming weeks.')
+                    })
+                    .check(function(api) {
+                        var contact = _.find(api.contacts.store, {
+                          msisdn: '+27001'
+                        });                      
+                        assert.equal(contact.extra.subscription_type, '6');
+                        assert.equal(contact.extra.subscription_rate, '3');
                     })
                     .check.reply.ends_session()
                     .run();

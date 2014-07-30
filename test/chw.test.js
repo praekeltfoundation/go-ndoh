@@ -902,6 +902,8 @@ describe("app", function() {
                             assert.equal(contact.extra.metric_sessions_to_register, '5');
                             assert.equal(contact.extra.no_registrations, undefined);
                             assert.equal(contact.extra.registered_by, undefined);
+                            assert.equal(contact.extra.subscription_type, '10');
+                            assert.equal(contact.extra.subscription_rate, '3');
                         })
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;

@@ -719,8 +719,7 @@ go.utils = {
       return response;
     },
 
-    subscription_send_doc: function(contact, im, metric_prefix) {
-        opts = go.utils.subscription_type_and_rate(contact, im);
+    subscription_send_doc: function(contact, im, metric_prefix, opts) {
         var payload = {
           contact_key: contact.key,
           lang: contact.extra.language_choice,
@@ -890,6 +889,7 @@ go.app = function() {
     var vumigo = require('vumigo_v02');
     var App = vumigo.App;
     var EndState = vumigo.states.EndState;
+    var Q = require('q');
 
     var GoNDOH = App.extend(function(self) {
         App.call(self, 'states_start');
@@ -977,7 +977,13 @@ go.app = function() {
 
                 events: {
                     'state:enter': function() {
-                        return go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix);
+                        opts = go.utils.subscription_type_and_rate(self.contact, self.im);
+                        self.contact.extra.subscription_type = opts.sub_type.toString();
+                        self.contact.extra.subscription_rate = opts.sub_rate.toString();
+                        return Q.all([
+                            go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix, opts),
+                            self.im.contacts.save(self.contact)
+                        ]);
                     }
                 }
             });

@@ -1,6 +1,7 @@
 go.app = function() {
     var vumigo = require('vumigo_v02');
     var _ = require('lodash');
+    var Q = require('q');
     var App = vumigo.App;
     var Choice = vumigo.states.Choice;
     var ChoiceState = vumigo.states.ChoiceState;
@@ -78,8 +79,13 @@ go.app = function() {
 
                 next: function(choice) {
                     if (choice.value == "states_end_yes"){
-                        return go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix)
-                            .then(function() {
+                        opts = go.utils.subscription_type_and_rate(self.contact, self.im);
+                        self.contact.extra.subscription_type = opts.sub_type.toString();
+                        self.contact.extra.subscription_rate = opts.sub_rate.toString();
+                        return Q.all([
+                                go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix, opts),
+                                self.im.contacts.save(self.contact)
+                            ]).then(function() {
                                 return choice.value;
                             });
                     } else {

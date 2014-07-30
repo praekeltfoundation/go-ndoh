@@ -4,7 +4,7 @@ var AppTester = vumigo.AppTester;
 var assert = require('assert');
 var optoutstore = require('./optoutstore');
 var DummyOptoutResource = optoutstore.DummyOptoutResource;
-
+var _ = require('lodash');
 
 describe("app", function() {
     describe("for sms inbound use", function() {
@@ -207,6 +207,13 @@ describe("app", function() {
                         reply: 
                             'Thank you. You will now receive messages related to newborn babies. ' +
                             'If you have any medical concerns please visit your nearest clinic'
+                    })
+                    .check(function(api) {
+                        var contact = _.find(api.contacts.store, {
+                          msisdn: '+27001'
+                        });                      
+                        assert.equal(contact.extra.subscription_type, '4');
+                        assert.equal(contact.extra.subscription_rate, '3');
                     })
                     .run();
             });

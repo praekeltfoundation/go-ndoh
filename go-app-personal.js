@@ -1131,12 +1131,32 @@ go.app = function() {
                                     return self.im.contacts.save(self.contact);
                                 })
                                 .then(function() {
-                                    return 'states_suspect_pregnancy';
+                                    return 'states_register_info';
                                 });
                         });
                 }
             });
         });
+
+        self.states.add('states_register_info', function(name) {
+            return new ChoiceState(name, {
+                question: $('Welcome to the Department of Health\'s ' +
+                    'MomConnect. Please select an option:'),
+
+                choices: [
+                    new Choice('register', $('Register for messages')),
+                    new Choice('info', $('Baby and Pregnancy info'))
+                ],
+
+                next: function(choice) {
+                    return {
+                        register: 'states_suspect_pregnancy',
+                        info: 'states_faq_topics'
+                    } [choice.value];
+                }
+            });
+        });
+
 
         self.states.add('states_suspect_pregnancy', function(name) {
             return new ChoiceState(name, {

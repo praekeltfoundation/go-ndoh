@@ -406,7 +406,7 @@ describe("app", function() {
                             });
                         })
                         .setup.user.addr('+27001')
-                        .inputs('start', '3')
+                        .inputs(null, '3')
                         .check.interaction({
                             state: 'states_end_complaint',
                             reply: ('Thank you. We will send you a message ' +
@@ -446,7 +446,7 @@ describe("app", function() {
                             });
                         })
                         .setup.user.addr('+27001')
-                        .inputs('start', '2')
+                        .inputs(null, '2')
                         .check.interaction({
                             state: 'states_end_compliment',
                             reply: ('Thank you. We will send you a message ' +
@@ -473,19 +473,18 @@ describe("app", function() {
         });
 
         describe("when the user selects a language", function() {
-            it("should set language and ask if they suspect pregnancy", function() {
+            it("should ask if they want to register or get info", function() {
                 return tester
                     .setup.user.addr('+27001')
                     .setup.user.state('states_language')
                     .input('1')
                     .check.interaction({
-                        state: 'states_suspect_pregnancy',
+                        state: 'states_register_info',
                         reply: [
-                            'MomConnect sends free support SMSs to ' +
-                            'pregnant mothers. Are you or do you suspect ' +
-                            'that you are pregnant?',
-                            '1. Yes',
-                            '2. No'
+                            'Welcome to the Department of Health\'s ' +
+                            'MomConnect. Please select an option:',
+                            '1. Register for messages',
+                            '2. Baby and Pregnancy info'
                         ].join('\n')
                     })
                     .check.user.properties({lang: 'en'})
@@ -503,11 +502,11 @@ describe("app", function() {
             });
         });
 
-        describe("when the user selects a language", function() {
-            it("should put them in the language group", function() {
+        describe("when the user selects to register", function() {
+            it("should ask if they suspect pregnancy", function() {
                 return tester
                     .setup.user.addr('+27001')
-                    .setup.user.state('states_language')
+                    .setup.user.state('states_register_info')
                     .input('1')
                     .check.interaction({
                         state: 'states_suspect_pregnancy',
@@ -517,6 +516,25 @@ describe("app", function() {
                             'that you are pregnant?',
                             '1. Yes',
                             '2. No'
+                        ].join('\n')
+                    })
+                    .run();
+            });
+        });
+
+        describe("when the user selects a language", function() {
+            it("should put them in the language group", function() {
+                return tester
+                    .setup.user.addr('+27001')
+                    .setup.user.state('states_language')
+                    .input('1')
+                    .check.interaction({
+                        state: 'states_register_info',
+                        reply: [
+                            'Welcome to the Department of Health\'s ' +
+                            'MomConnect. Please select an option:',
+                            '1. Register for messages',
+                            '2. Baby and Pregnancy info'
                         ].join('\n')
                     })
                     .check(function(api) {
@@ -1123,6 +1141,91 @@ describe("app", function() {
                             }).run();
                     });
                 });
+            });
+        });
+
+
+        // Navigation to FAQ
+        describe("When a clinic-registered user navigates to FAQ", function() {
+            it("should ask to choose topic", function() {
+                return tester
+                    .setup(function(api) {
+                        api.contacts.add({
+                            msisdn: '+27001',
+                            extra : {
+                                language_choice: 'en',
+                                is_registered: 'true',
+                                is_registered_by: 'clinic'
+                            },
+                        });
+                    })
+                    .setup.user.addr('+27001')
+                    .inputs(null, '1')
+                    .check.interaction({
+                        state: 'states_faq_topics',
+                        reply: [
+                            'We have gathered the most important information in the areas below. Please select one:',
+                            '1. Coffee',
+                            '2. delivery',
+                            '3. Payment',
+                            '4. PowerBar',
+                            '5. Refund',
+                            '6. Subscriptions'
+                        ].join('\n')
+                    })
+                    .run();
+            });
+        });
+
+        describe("When a chw-registered user navigates to FAQ", function() {
+            it("should ask to choose topic", function() {
+                return tester
+                    .setup(function(api) {
+                        api.contacts.add({
+                            msisdn: '+27001',
+                            extra : {
+                                language_choice: 'en',
+                                is_registered: 'true',
+                                is_registered_by: 'chw'
+                            },
+                        });
+                    })
+                    .setup.user.addr('+27001')
+                    .inputs(null, '1')
+                    .check.interaction({
+                        state: 'states_faq_topics',
+                        reply: [
+                            'We have gathered the most important information in the areas below. Please select one:',
+                            '1. Coffee',
+                            '2. delivery',
+                            '3. Payment',
+                            '4. PowerBar',
+                            '5. Refund',
+                            '6. Subscriptions'
+                        ].join('\n')
+                    })
+                    .run();
+            });
+        });
+
+        describe("When an unregistered user navigates to FAQ", function() {
+            it("should ask to choose topic", function() {
+                return tester
+                    .setup.user.addr('+27001')
+                    .inputs(null, '1', '2')
+                    .check.interaction({
+                        state: 'states_faq_topics',
+                        reply: [
+                            'We have gathered the most important information in the areas below. Please select one:',
+                            '1. Coffee',
+                            '2. delivery',
+                            '3. Payment',
+                            '4. PowerBar',
+                            '5. Refund',
+                            '6. Subscriptions'
+                        ].join('\n')
+                    })
+                    .run();
             });
         });
 

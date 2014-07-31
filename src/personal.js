@@ -650,7 +650,7 @@ go.app = function() {
                 pages: answer_split.length,
                 page_text: function(n) {return answer_split[n];},
                 buttons: {"1": -1, "2": +1, "0": "exit"},
-                footer_text:$(footer_text),
+                footer_text: footer_text,
                 next: function() {
                     return {
                         name: 'states_faq_end',

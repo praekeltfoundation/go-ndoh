@@ -1105,7 +1105,7 @@ go.app = function() {
                     new Choice('af', $('Afrik')),
                     new Choice('zu', $('Zulu')),
                     new Choice('xh', $('Xhosa')),
-                    new Choice('so', $('Sotho')),
+                    new Choice('st', $('Sotho')),
                     new Choice('tn', $('Setswana'))
                 ],
 

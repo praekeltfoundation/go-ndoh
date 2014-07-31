@@ -573,7 +573,8 @@ describe("app", function() {
                             '2. Afrikaans',
                             '3. Zulu',
                             '4. Xhosa',
-                            '5. Sotho'
+                            '5. Sotho',
+                            '6. Setswana'
                             ].join('\n')
                     })
                     .check(function(api) {
@@ -708,7 +709,8 @@ describe("app", function() {
                             '2. Afrikaans',
                             '3. Zulu',
                             '4. Xhosa',
-                            '5. Sotho'
+                            '5. Sotho',
+                            '6. Setswana'
                             ].join('\n')
                     })
                     .check(function(api) {
@@ -898,7 +900,8 @@ describe("app", function() {
                             '2. Afrikaans',
                             '3. Zulu',
                             '4. Xhosa',
-                            '5. Sotho'
+                            '5. Sotho',
+                            '6. Setswana'
                             ].join('\n')
                     })
                     .check(function(api) {

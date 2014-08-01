@@ -231,30 +231,6 @@ describe("app", function() {
             });
         });
 
-        // describe("when the user sends a BABY message", function() {
-        //     it("should switch their subscription to baby protocol", function() {
-        //         return tester
-        //             .setup(function(api) {
-        //                 api.contacts.add({
-        //                     msisdn: '+27001',
-        //                     extra : {
-        //                         language_choice: 'en'
-        //                     },
-        //                     key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
-        //                     user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
-        //                 });
-        //             })
-        //             .setup.user.addr('+27001')
-        //             .input('BABY')
-        //             .check.interaction({
-        //                 state: 'states_baby',
-        //                 reply: 
-        //                     'Thank you. You will now receive messages related to newborn babies. ' +
-        //                     'If you have any medical concerns please visit your nearest clinic'
-        //             })
-        //             .run();
-        //     });
-        // });
 
         describe("when the user starts a session", function() {
 

@@ -81,6 +81,14 @@ describe("app", function() {
         describe("when the user starts a session", function() {
             it("should ask for the reason they are opting out", function() {
                 return tester
+                    .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27001',
+                                extra : {
+                                    language_choice: 'xh'
+                                },
+                            });
+                        })
                     .start()
                     .check.interaction({
                         state: 'states_start',
@@ -94,6 +102,7 @@ describe("app", function() {
                             '5. Other'
                         ].join('\n')
                     })
+                    .check.user.properties({lang: 'xh'})
                     .run();
             });
         });

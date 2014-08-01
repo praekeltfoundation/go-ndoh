@@ -62,6 +62,14 @@ describe("app", function() {
             it("should ask for their friendliness rating", function() {
                 return tester
                     .setup.user.addr('+27001')
+                    .setup(function(api) {
+                        api.contacts.add({
+                            msisdn: '+27001',
+                            extra : {
+                                language_choice: 'zu'
+                            }
+                        });
+                    })
                     .start()
                     .check.interaction({
                         state: 'question_1_friendliness',
@@ -74,6 +82,7 @@ describe("app", function() {
                             '4. Very unsatisfied :('
                         ].join('\n')
                     })
+                    .check.user.properties({lang: 'zu'})
                     .run();
             });
         });

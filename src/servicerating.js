@@ -23,6 +23,8 @@ go.app = function() {
         };
 
         self.states.add('question_1_friendliness', function(name) {
+            go.utils.set_language(self.im.user, self.contact);
+            
             return new ChoiceState(name, {
                 question: $('Hi. When u were signed up, were the staff ' +
                             'at the facility friendly and helpful?'),

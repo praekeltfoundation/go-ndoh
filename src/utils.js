@@ -880,4 +880,10 @@ go.utils = {
         });
     },
 
+    set_language: function(user, contact) {
+        if (contact.extra.language_choice !== null) {
+            return user.set_lang(contact.extra.language_choice);
+        }
+    }
+
 };

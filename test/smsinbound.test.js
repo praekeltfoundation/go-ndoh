@@ -104,7 +104,7 @@ describe("app", function() {
                         });
                     })
                     .start()
-                    .input('START')
+                    .input('start')
                     .check(function(api) {
                         var metrics = api.metrics.stores.test_metric_store;
                         assert.deepEqual(metrics['test.smsinbound.sum.unique_users'].values, [1]);
@@ -151,7 +151,7 @@ describe("app", function() {
                         });
                     })
                     .setup.user.addr('+27001')
-                    .input('STOP')
+                    .input('stop')
                     .check.interaction({
                         state: 'states_opt_out',
                         reply: 
@@ -201,7 +201,7 @@ describe("app", function() {
                         });
                     })
                     .setup.user.addr('+27001')
-                    .input('BABY')
+                    .input('baBy has been born, bub')
                     .check.interaction({
                         state: 'states_baby',
                         reply: 

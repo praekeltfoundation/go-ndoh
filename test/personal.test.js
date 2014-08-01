@@ -504,29 +504,29 @@ describe("app", function() {
         });
 
         // // check other language since default is 'en'
-        // describe("when the user selects a different language", function() {
-        //     it.only("should ask if they want to register or get info", function() {
-        //         return tester
-        //             .setup.user.addr('+27001')
-        //             .setup.user.state('states_language')
-        //             .input('3')
-        //             .check.interaction({
-        //                 state: 'states_register_info',
-        //                 reply: [
-        //                     'Welcome to the Department of Health\'s ' +
-        //                     'MomConnect. Please select:',
-        //                     '1. Register for messages',
-        //                     '2. Baby and Pregnancy info (English only)'
-        //                 ].join('\n')
-        //             })
-        //             // .check.user.properties({lang: 'zu'})
-        //             .check(function(api) {
-        //                 var contact = api.contacts.store[0];
-        //                 assert.equal(contact.extra.language_choice, 'zu');
-        //             })
-        //             .run();
-        //     });
-        // });
+        describe("when the user selects a different language", function() {
+            it("should ask if they want to register or get info", function() {
+                return tester
+                    .setup.user.addr('+27001')
+                    .setup.user.state('states_language')
+                    .input('3')
+                    .check.interaction({
+                        state: 'states_register_info',
+                        reply: [
+                            'Welcome to the Department of Health\'s ' +
+                            'MomConnect. Please select:',
+                            '1. Register for messages',
+                            '2. Baby and Pregnancy info (English only)'
+                        ].join('\n')
+                    })
+                    // .check.user.properties({lang: 'zu'})
+                    // .check(function(api) {
+                    //     var contact = api.contacts.store[0];
+                    //     assert.equal(contact.extra.language_choice, 'zu');
+                    // })
+                    .run();
+            });
+        });
 
         describe("when the user selects to register", function() {
             it("should ask if they suspect pregnancy", function() {

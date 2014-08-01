@@ -31,10 +31,18 @@ describe("app", function() {
                 .setup(function(api) {
                     api.resources.add(new DummyMessageStoreResource());
                     api.resources.attach(api);
-                    api.groups.add( {
-                        key: 'en_key',
-                        name: 'en',
-                    });
+                    api.groups.add(
+                        {
+                            key: 'en_key',
+                            name: 'en',
+                        }
+                    );
+                    api.groups.add(
+                        {
+                            key: 'xh_key',
+                            name: 'xh',
+                        }
+                    );
                 })
                 .setup.char_limit(160)
                 .setup.config.app({
@@ -509,7 +517,7 @@ describe("app", function() {
                 return tester
                     .setup.user.addr('+27001')
                     .setup.user.state('states_language')
-                    .input('3')
+                    .input('4')
                     .check.interaction({
                         state: 'states_register_info',
                         reply: [
@@ -519,11 +527,11 @@ describe("app", function() {
                             '2. Baby and Pregnancy info (English only)'
                         ].join('\n')
                     })
-                    // .check.user.properties({lang: 'zu'})
-                    // .check(function(api) {
-                    //     var contact = api.contacts.store[0];
-                    //     assert.equal(contact.extra.language_choice, 'zu');
-                    // })
+                    .check.user.properties({lang: 'xh'})
+                    .check(function(api) {
+                        var contact = api.contacts.store[0];
+                        assert.equal(contact.extra.language_choice, 'xh');
+                    })
                     .run();
             });
         });

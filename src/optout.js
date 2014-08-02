@@ -25,6 +25,8 @@ go.app = function() {
 
 
         self.states.add('states_start', function(name) {
+            go.utils.set_language(self.im.user, self.contact);
+            
             return new ChoiceState(name, {
                 question: $('Welcome to MomConnect. Please tell us why you don\'t ' +
                             'want msgs:'),

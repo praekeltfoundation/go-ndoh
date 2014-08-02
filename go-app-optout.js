@@ -883,6 +883,12 @@ go.utils = {
         });
     },
 
+    set_language: function(user, contact) {
+        if (contact.extra.language_choice !== null) {
+            return user.set_lang(contact.extra.language_choice);
+        }
+    }
+
 };
 
 go.app = function() {
@@ -912,6 +918,8 @@ go.app = function() {
 
 
         self.states.add('states_start', function(name) {
+            go.utils.set_language(self.im.user, self.contact);
+            
             return new ChoiceState(name, {
                 question: $('Welcome to MomConnect. Please tell us why you don\'t ' +
                             'want msgs:'),

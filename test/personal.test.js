@@ -31,10 +31,18 @@ describe("app", function() {
                 .setup(function(api) {
                     api.resources.add(new DummyMessageStoreResource());
                     api.resources.attach(api);
-                    api.groups.add( {
-                        key: 'en_key',
-                        name: 'en',
-                    });
+                    api.groups.add(
+                        {
+                            key: 'en_key',
+                            name: 'en',
+                        }
+                    );
+                    api.groups.add(
+                        {
+                            key: 'xh_key',
+                            name: 'xh',
+                        }
+                    );
                 })
                 .setup.char_limit(160)
                 .setup.config.app({
@@ -301,6 +309,7 @@ describe("app", function() {
                             var metrics = api.metrics.stores.test_metric_store;
                             assert.deepEqual(metrics['test.sum.sessions'].values, [1]);
                         })
+                        .check.user.properties({lang: null})
                         .run();
                 });
             });
@@ -312,7 +321,7 @@ describe("app", function() {
                             api.contacts.add({
                                 msisdn: '+27001',
                                 extra : {
-                                    language_choice: 'en',
+                                    language_choice: 'xh',
                                     is_registered: 'true',
                                     is_registered_by: 'clinic'
                                 },
@@ -330,6 +339,7 @@ describe("app", function() {
                                 '3. Send us a complaint'
                             ].join('\n')
                         })
+                        .check.user.properties({lang: 'xh'})
                         .run();
                 });
             });
@@ -341,7 +351,7 @@ describe("app", function() {
                             api.contacts.add({
                                 msisdn: '+27001',
                                 extra : {
-                                    language_choice: 'en',
+                                    language_choice: 'tn',
                                     is_registered: 'true',
                                     is_registered_by: 'personal'
                                 },
@@ -358,6 +368,7 @@ describe("app", function() {
                                 '2. Get the full set of messages'
                             ].join('\n')
                         })
+                        .check.user.properties({lang: 'tn'})
                         .run();
                 });
             });
@@ -446,7 +457,7 @@ describe("app", function() {
             });
         });
 
-        describe("when the user selects a language", function() {
+        describe("when the user selects english as language", function() {
             it("should ask if they want to register or get info", function() {
                 return tester
                     .setup.user.addr('+27001')
@@ -471,6 +482,31 @@ describe("app", function() {
                         var metrics = api.metrics.stores.test_metric_store;
                         assert.deepEqual(metrics['test.personal.percent_incomplete_registrations'].values, [60]);
                         assert.deepEqual(metrics['test.personal.percent_complete_registrations'].values, [40]);
+                    })
+                    .run();
+            });
+        });
+
+        // // check other language since default is 'en'
+        describe("when the user selects a different language", function() {
+            it("should ask if they want to register or get info", function() {
+                return tester
+                    .setup.user.addr('+27001')
+                    .setup.user.state('states_language')
+                    .input('4')
+                    .check.interaction({
+                        state: 'states_register_info',
+                        reply: [
+                            'Welcome to the Department of Health\'s ' +
+                            'MomConnect. Please select:',
+                            '1. Register for messages',
+                            '2. Baby and Pregnancy info (English only)'
+                        ].join('\n')
+                    })
+                    .check.user.properties({lang: 'xh'})
+                    .check(function(api) {
+                        var contact = api.contacts.store[0];
+                        assert.equal(contact.extra.language_choice, 'xh');
                     })
                     .run();
             });

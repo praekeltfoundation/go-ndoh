@@ -81,6 +81,7 @@ describe("app", function() {
         describe("when the user starts a session", function() {
             it("should ask for the reason they are opting out", function() {
                 return tester
+                    .setup.user.addr('+27001')
                     .start()
                     .check.interaction({
                         state: 'states_start',
@@ -94,6 +95,7 @@ describe("app", function() {
                             '5. Other'
                         ].join('\n')
                     })
+                    .check.user.properties({lang: 'en'})
                     .run();
             });
         });

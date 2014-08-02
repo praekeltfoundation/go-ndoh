@@ -34,5 +34,11 @@
         "three_per_week": 4,
         "four_per_week": 5,
         "five_per_week": 6
+    },
+    "snappy": {
+        "endpoint": "https://app.besnappy.com/api/v1/",
+        "username": "980d2423-292b-4c34-be81-c74784b9e99a",
+        "account_id": "3088",
+        "default_faq": "2134"
     }
 }

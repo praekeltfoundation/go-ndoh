@@ -914,55 +914,62 @@ module.exports = function() {
             },
             'response': {
                 "code": "200",
-                "data": [{
-                    "id": "52",
-                    "faq_id": "2752",
-                    "topic": "Coffee",
-                    "order": "0",
-                    "created_at": "2014-01-08 02:15:05",
-                    "updated_at": "2014-01-08 02:15:05",
-                    "slug": "coffee"
-                }, {
-                    "id": "240",
-                    "faq_id": "2752",
-                    "topic": "delivery",
-                    "order": "0",
-                    "created_at": "2014-01-08 02:15:09",
-                    "updated_at": "2014-01-08 02:15:09",
-                    "slug": "delivery"
-                }, {
-                    "id": "110",
-                    "faq_id": "2752",
-                    "topic": "Payment",
-                    "order": "0",
-                    "created_at": "2014-01-08 02:15:07",
-                    "updated_at": "2014-01-08 02:15:07",
-                    "slug": "payment"
-                }, {
-                    "id": "319",
-                    "faq_id": "2752",
-                    "topic": "PowerBar",
-                    "order": "0",
-                    "created_at": "2014-02-24 09:37:24",
-                    "updated_at": "2014-02-24 09:37:24",
-                    "slug": "powerbar"
-                }, {
-                    "id": "92",
-                    "faq_id": "2752",
-                    "topic": "Refund",
-                    "order": "0",
-                    "created_at": "2014-01-08 02:15:06",
-                    "updated_at": "2014-01-08 02:15:06",
-                    "slug": "refund"
-                }, {
-                    "id": "23",
-                    "faq_id": "2752",
-                    "topic": "Subscriptions",
-                    "order": "0",
-                    "created_at": "2014-01-08 02:15:05",
-                    "updated_at": "2014-01-08 02:15:05",
-                    "slug": "subscriptions"
-                }]
+                "data": [
+                    {
+                        "id": 903,
+                        "faq_id": 3134,
+                        "topic": "Baby",
+                        "order": 0,
+                        "created_at": "2014-07-29 10:37:56",
+                        "updated_at": "2014-07-29 10:37:56",
+                        "slug": "baby"
+                    },
+                    {
+                        "id": 904,
+                        "faq_id": 3134,
+                        "topic": "HIV",
+                        "order": 0,
+                        "created_at": "2014-07-29 10:38:04",
+                        "updated_at": "2014-07-29 10:38:04",
+                        "slug": "hiv"
+                    },
+                    {
+                        "id": 902,
+                        "faq_id": 3134,
+                        "topic": "Labour",
+                        "order": 0,
+                        "created_at": "2014-07-29 10:37:47",
+                        "updated_at": "2014-07-29 10:37:47",
+                        "slug": "labour"
+                    },
+                    {
+                        "id": 905,
+                        "faq_id": 3134,
+                        "topic": "Other Diseases",
+                        "order": 0,
+                        "created_at": "2014-07-29 10:38:21",
+                        "updated_at": "2014-07-29 10:38:21",
+                        "slug": "other-diseases"
+                    },
+                    {
+                        "id": 881,
+                        "faq_id": 3134,
+                        "topic": "Pregnancy",
+                        "order": 0,
+                        "created_at": "2014-07-15 09:51:44",
+                        "updated_at": "2014-07-15 09:51:44",
+                        "slug": "pregnancy"
+                    },
+                    {
+                        "id": 906,
+                        "faq_id": 3134,
+                        "topic": "Support",
+                        "order": 0,
+                        "created_at": "2014-07-29 10:38:29",
+                        "updated_at": "2014-07-29 10:38:29",
+                        "slug": "support"
+                    }
+                ]
             }
         },
         // QA RESPONSE
@@ -973,7 +980,7 @@ module.exports = function() {
                     'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
                     'Content-Type': ['application/json']
                 },
-                'url': 'https://app.besnappy.com/api/v1/account/1/faqs/1/topics/52/questions'
+                'url': 'https://app.besnappy.com/api/v1/account/1/faqs/1/topics/881/questions'
             },
             'responses': [{
                 "code": 200,
@@ -987,7 +994,7 @@ module.exports = function() {
                     "active": "1",
                     "parsed_answer": "<p>If the default box of 2 x 250g is not enough for your needs, you can increase the quantity up to 7 bags (or consider the Bulk subscription, starting at 2kgs).</p> ",
                     "pivot": {
-                        "topic_id": "52",
+                        "topic_id": "881",
                         "question_id": "635",
                         "featured": "0",
                         "order": "0"
@@ -1019,7 +1026,7 @@ module.exports = function() {
                     "active": "1",
                     "parsed_answer": "<p>At this point, we are offering the mixed box of different local coffee brands, but plan to offer a customised service for you in the near future where you will be able to choose exactly which brand you would like to receive. Watch this space!</p> ",
                     "pivot": {
-                        "topic_id": "52",
+                        "topic_id": "881",
                         "question_id": "634",
                         "featured": "0",
                         "order": "1"
@@ -1052,7 +1059,7 @@ module.exports = function() {
                     "active": "1",
                     "parsed_answer": "<p>If you realise that you either over or underestimated your coffee needs, you can easily upgrade your subscription quantity.</p> ",
                     "pivot": {
-                        "topic_id": "52",
+                        "topic_id": "881",
                         "question_id": "633",
                         "featured": "0",
                         "order": "2"
@@ -1085,7 +1092,7 @@ module.exports = function() {
                     "active": "1",
                     "parsed_answer": "<p>If you realise that you either over or underestimated your coffee needs, you can easily upgrade your subscription quantity.</p> ",
                     "pivot": {
-                        "topic_id": "52",
+                        "topic_id": "881",
                         "question_id": "633",
                         "featured": "0",
                         "order": "2"
@@ -1121,7 +1128,7 @@ module.exports = function() {
                     "active": "1",
                     "parsed_answer": "<p>If the default box of 2 x 250g is not enough for your needs, you can increase the quantity up to 7 bags (or consider the Bulk subscription, starting at 2kgs).</p> ",
                     "pivot": {
-                        "topic_id": "52",
+                        "topic_id": "881",
                         "question_id": "635",
                         "featured": "0",
                         "order": "0"
@@ -1153,7 +1160,7 @@ module.exports = function() {
                     "active": "1",
                     "parsed_answer": "<p>At this point, we are offering the mixed box of different local coffee brands, but plan to offer a customised service for you in the near future where you will be able to choose exactly which brand you would like to receive. Watch this space!</p> ",
                     "pivot": {
-                        "topic_id": "52",
+                        "topic_id": "881",
                         "question_id": "634",
                         "featured": "0",
                         "order": "1"
@@ -1186,7 +1193,7 @@ module.exports = function() {
                     "active": "1",
                     "parsed_answer": "<p>If you realise that you either over or underestimated your coffee needs, you can easily upgrade your subscription quantity.</p> ",
                     "pivot": {
-                        "topic_id": "52",
+                        "topic_id": "881",
                         "question_id": "633",
                         "featured": "0",
                         "order": "2"
@@ -1219,7 +1226,7 @@ module.exports = function() {
                     "active": "1",
                     "parsed_answer": "<p>If you realise that you either over or underestimated your coffee needs, you can easily upgrade your subscription quantity.</p> ",
                     "pivot": {
-                        "topic_id": "52",
+                        "topic_id": "881",
                         "question_id": "633",
                         "featured": "0",
                         "order": "2"

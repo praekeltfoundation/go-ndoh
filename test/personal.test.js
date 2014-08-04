@@ -1201,12 +1201,12 @@ describe("app", function() {
                         state: 'states_faq_topics',
                         reply: [
                             'We have gathered information in the areas below. Please select:',
-                            '1. Coffee',
-                            '2. delivery',
-                            '3. Payment',
-                            '4. PowerBar',
-                            '5. Refund',
-                            '6. Subscriptions'
+                            '1. Pregnancy',
+                            '2. Labour',
+                            '3. Baby',
+                            '4. HIV',
+                            '5. Other Diseases',
+                            '6. Support'
                         ].join('\n')
                     })
                     .run();
@@ -1232,12 +1232,12 @@ describe("app", function() {
                         state: 'states_faq_topics',
                         reply: [
                             'We have gathered information in the areas below. Please select:',
-                            '1. Coffee',
-                            '2. delivery',
-                            '3. Payment',
-                            '4. PowerBar',
-                            '5. Refund',
-                            '6. Subscriptions'
+                            '1. Pregnancy',
+                            '2. Labour',
+                            '3. Baby',
+                            '4. HIV',
+                            '5. Other Diseases',
+                            '6. Support'
                         ].join('\n')
                     })
                     .run();
@@ -1253,12 +1253,12 @@ describe("app", function() {
                         state: 'states_faq_topics',
                         reply: [
                             'We have gathered information in the areas below. Please select:',
-                            '1. Coffee',
-                            '2. delivery',
-                            '3. Payment',
-                            '4. PowerBar',
-                            '5. Refund',
-                            '6. Subscriptions'
+                            '1. Pregnancy',
+                            '2. Labour',
+                            '3. Baby',
+                            '4. HIV',
+                            '5. Other Diseases',
+                            '6. Support'
                         ].join('\n')
                     })
                     .run();
@@ -1276,20 +1276,20 @@ describe("app", function() {
                         state: 'states_faq_topics',
                         reply: [
                             'We have gathered information in the areas below. Please select:',
-                            '1. Coffee',
-                            '2. delivery',
-                            '3. Payment',
-                            '4. PowerBar',
-                            '5. Refund',
-                            '6. Subscriptions'
+                            '1. Pregnancy',
+                            '2. Labour',
+                            '3. Baby',
+                            '4. HIV',
+                            '5. Other Diseases',
+                            '6. Support'
                         ].join('\n')
                     })
                     .run();
             });
         });
 
-        describe("When the user chooses topic 52", function() {
-            it("should list first page of questions in topic 52", function() {
+        describe("When the user chooses topic 881", function() {
+            it("should list first page of questions in topic 881", function() {
                 return tester
                     .setup.user.state('states_faq_topics')
                     .input('1')
@@ -1306,8 +1306,8 @@ describe("app", function() {
             });
         });
 
-        describe("When the user chooses topic 52 and then 3. More", function() {
-            it("should list second page of questions in topic 52", function() {
+        describe("When the user chooses topic 881 and then 3. More", function() {
+            it("should list second page of questions in topic 881", function() {
                 return tester
                     .setup.user.state('states_faq_topics')
                     .inputs('1', '3')
@@ -1328,7 +1328,7 @@ describe("app", function() {
             it("should show answer to question 635", function() {
                 return tester
                     .setup.user.state('states_faq_questions')
-                    .setup.user.answers({'states_faq_topics': '52'})
+                    .setup.user.answers({'states_faq_topics': '881'})
                     .input('1')
                     .check.interaction({
                         state: 'states_faq_answers',
@@ -1348,7 +1348,7 @@ describe("app", function() {
             it("should show the first part of the answer of 999", function() {
                 return tester
                     .setup.user.state('states_faq_questions')
-                    .setup.user.answers({'states_faq_topics': '52'})
+                    .setup.user.answers({'states_faq_topics': '881'})
                     .inputs('3', '1')
                     .check.interaction({
                         state: 'states_faq_answers',
@@ -1367,7 +1367,7 @@ describe("app", function() {
             it("should show the second part of the answer to 999", function() {
                 return tester
                     .setup.user.state('states_faq_questions')
-                    .setup.user.answers({'states_faq_topics': '52'})
+                    .setup.user.answers({'states_faq_topics': '881'})
                     .inputs('3', '1', '2')
                     .check.interaction({
                         state: 'states_faq_answers',
@@ -1386,7 +1386,7 @@ describe("app", function() {
             it("should show the third part of the answer to 999", function() {
                 return tester
                     .setup.user.state('states_faq_questions')
-                    .setup.user.answers({'states_faq_topics': '52'})
+                    .setup.user.answers({'states_faq_topics': '881'})
                     .inputs('3', '1', '2', '2')
                     .check.interaction({
                         state: 'states_faq_answers',
@@ -1404,7 +1404,7 @@ describe("app", function() {
             it("should thank the user, send sms, and exit", function() {
                 return tester
                     .setup.user.state('states_faq_questions')
-                    .setup.user.answers({'states_faq_topics': '52'})
+                    .setup.user.answers({'states_faq_topics': '881'})
                     .inputs('3', '1', '0')
                     .check.interaction({
                         state: 'states_faq_end',

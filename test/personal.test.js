@@ -1128,7 +1128,7 @@ describe("app", function() {
                 });
 
                 describe("when they have not been sent a registration sms",function() {
-                    it("should send them an sms thanking them for their registration",function() {
+                    it("should send them an sms to dial back in",function() {
                         return tester
                             .setup(function(api) {
                                 api.contacts.add( {
@@ -1152,6 +1152,30 @@ describe("app", function() {
                                 assert.equal(sms.to_addr,'+273323');
                             }).run();
                     });
+                });
+            });
+
+            describe("when they are browsing faq",function() {
+                it("should not send them an sms",function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add( {
+                                msisdn: '+273444',
+                                extra : {
+                                    redial_sms_sent: 'false'
+                                }
+                            });
+                        })
+                        .setup.user.addr('+273444')
+                        .setup.user.state('states_faq_topics')
+                        .input('1')
+                        .input.session_event('close')
+                        .check(function(api) {
+                            var smses = _.where(api.outbound.store, {
+                                endpoint: 'sms'
+                            });
+                            assert.equal(smses.length,0);
+                        }).run();
                 });
             });
         });

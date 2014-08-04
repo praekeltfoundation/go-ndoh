@@ -1473,7 +1473,7 @@ go.app = function() {
                         // TODO Throw proper error
                         return error;
                     } else {
-                        return response.data.map(function(d) {
+                        return _.map(_.sortBy(response.data, 'id'), function(d) {
                             return new Choice(d.id, d.topic);
                         });
                     }

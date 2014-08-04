@@ -59,8 +59,21 @@ go.app = function() {
         };
 
         self.should_send_dialback = function(e) {
+            var dial_back_states = [
+                'states_language',
+                'states_register_info',
+                'states_suspect_pregnancy',
+                'states_id_type',
+                'states_sa_id',
+                'states_passport_origin',
+                'states_passport_no',
+                'states_birth_year',
+                'states_birth_month',
+                'states_birth_day'
+            ];
             return e.user_terminated
-                && !go.utils.is_true(self.contact.extra.redial_sms_sent);
+                && !go.utils.is_true(self.contact.extra.redial_sms_sent)
+                && _.contains(dial_back_states, e.im.state.name);
         };
 
         self.send_dialback = function() {

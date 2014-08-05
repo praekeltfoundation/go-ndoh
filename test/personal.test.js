@@ -1147,7 +1147,7 @@ describe("app", function() {
                                 var sms = smses[0];
                                 assert.equal(smses.length,1);
                                 assert.equal(sms.content, 
-                                    "Please dial back in to *120*550# to complete the pregnancy registration."
+                                    "Your session timed out. Please dial back in to *134*550# to complete the pregnancy registration so that you can receive messages."
                                 );
                                 assert.equal(sms.to_addr,'+273323');
                             }).run();

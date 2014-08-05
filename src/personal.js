@@ -615,7 +615,7 @@ go.app = function() {
                         });
 
                         return new PaginatedChoiceState(name, {
-                            question: $('Please choose a question:'),
+                            question: $('Please select one:'),
                             choices: choices,
                             // TODO calculate options_per_page once content length is known
                             options_per_page: 2,

@@ -1289,7 +1289,7 @@ describe("app", function() {
                     .check.interaction({
                         state: 'states_faq_questions',
                         reply: [
-                            'Please choose a question:',
+                            'Please select one:',
                             '1. Can I order more than one box at a time?',
                             '2. What happens if I fall in love with one particular coffee?',
                             '3. More'
@@ -1307,7 +1307,7 @@ describe("app", function() {
                     .check.interaction({
                         state: 'states_faq_questions',
                         reply: [
-                            'Please choose a question:',
+                            'Please select one:',
                             '1. What happens if the FAQ answer is really long?',
                             '2. What happens if I realise the amount of coffee I\'ve ordered doesn\'t suit?',
                             '3. Back'

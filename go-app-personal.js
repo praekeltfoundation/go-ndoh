@@ -1121,7 +1121,7 @@ go.app = function() {
 
         self.states.add('states_language', function(name) {
             return new ChoiceState(name, {
-                question: $('Welcome to MomConnect. Please choose language:'),
+                question: $('Welcome to the Department of Health\'s MomConnect. Choose your language:'),
 
                 choices: [
                     new Choice('en', $('Eng')),

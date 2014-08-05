@@ -250,7 +250,7 @@ describe("app", function() {
                         .check.interaction({
                             state: 'states_language',
                             reply: [
-                                'Welcome to MomConnect. Please choose language:',
+                                'Welcome to the Department of Health\'s MomConnect. Choose your language:',
                                 '1. Eng',
                                 '2. Afrik',
                                 '3. Zulu',
@@ -290,7 +290,7 @@ describe("app", function() {
                         .check.interaction({
                             state: 'states_language',
                             reply: [
-                                'Welcome to MomConnect. Please choose language:',
+                                'Welcome to the Department of Health\'s MomConnect. Choose your language:',
                                 '1. Eng',
                                 '2. Afrik',
                                 '3. Zulu',

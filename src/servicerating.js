@@ -41,14 +41,13 @@ go.app = function() {
 
         self.states.add('question_2_waiting_times_feel', function(name) {
             return new ChoiceState(name, {
-                question: $('How do you feel about the time you had to ' +
-                            'wait at the facility?'),
+                question: $('How do you feel about the time you had to wait at the facility?'),
 
                 choices: [
-                    new Choice('very-satisfied', $('Very Satisfied :D')),
-                    new Choice('satisfied', $('Satisfied :)')),
-                    new Choice('not-satisfied', $('Not Satisfied :(')),
-                    new Choice('very-unsatisfied', $('Very unsatisfied :('))
+                    new Choice('very-satisfied', $('Very Satisfied')),
+                    new Choice('satisfied', $('Satisfied')),
+                    new Choice('not-satisfied', $('Not Satisfied')),
+                    new Choice('very-unsatisfied', $('Very unsatisfied'))
                 ],
 
                 next: 'question_3_waiting_times_length'

@@ -96,10 +96,10 @@ describe("app", function() {
                         state: 'question_2_waiting_times_feel',
                         reply: [
                             'How do you feel about the time you had to wait at the facility?',
-                            '1. Very Satisfied :D',
-                            '2. Satisfied :)',
-                            '3. Not Satisfied :(',
-                            '4. Very unsatisfied :('
+                            '1. Very Satisfied',
+                            '2. Satisfied',
+                            '3. Not Satisfied',
+                            '4. Very unsatisfied'
                         ].join('\n')
                     })
                     .run();

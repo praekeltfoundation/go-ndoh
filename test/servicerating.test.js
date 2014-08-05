@@ -189,9 +189,7 @@ describe("app", function() {
                     .check.interaction({
                         state: 'end_thanks',
                         reply: [
-                            'Thank you for rating our service. For baby and pregnancy ' +
-                            'help or if you have compliments or complaints ' +
-                            'dial *134*550# or reply to any of the SMSs you receive'
+                            'Thank you for rating our service.'
                         ].join('\n')
                     })
                     .check.reply.ends_session()

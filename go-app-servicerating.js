@@ -994,9 +994,7 @@ go.app = function() {
 
         self.states.add('end_thanks', function(name) {
             return new EndState(name, {
-                text: $('Thank you for rating our service. For baby and pregnancy ' +
-                            'help or if you have compliments or complaints ' +
-                            'dial *134*550# or reply to any of the SMSs you receive'),
+                text: $('Thank you for rating our service.'),
 
                 next: 'end_thanks_revisit',
 

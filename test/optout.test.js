@@ -86,12 +86,11 @@ describe("app", function() {
                     .check.interaction({
                         state: 'states_start',
                         reply: [
-                            'Welcome to MomConnect. Please tell us why you don\'t ' +
-                            'want msgs:',
-                            '1. Had miscarriage',
-                            '2. Baby stillborn',
+                            'Please let us know why you do not want MomConnect messages',
+                            '1. Miscarriage',
+                            '2. Baby was stillborn',
                             '3. Baby died',
-                            '4. Msgs not useful',
+                            '4. Messages not useful',
                             '5. Other'
                         ].join('\n')
                     })

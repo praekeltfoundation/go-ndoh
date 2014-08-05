@@ -967,10 +967,10 @@ go.app = function() {
                 question: $('Was the facility clean?'),
 
                 choices: [
-                    new Choice('very-satisfied', $('Very Satisfied :D')),
-                    new Choice('satisfied', $('Satisfied :)')),
-                    new Choice('not-satisfied', $('Not Satisfied :(')),
-                    new Choice('very-unsatisfied', $('Very unsatisfied :('))
+                    new Choice('very-satisfied', $('Very Satisfied')),
+                    new Choice('satisfied', $('Satisfied')),
+                    new Choice('not-satisfied', $('Not Satisfied')),
+                    new Choice('very-unsatisfied', $('Very unsatisfied'))
                 ],
 
                 next: 'question_5_privacy'

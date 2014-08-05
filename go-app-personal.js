@@ -987,7 +987,7 @@ go.app = function() {
         };
 
         self.get_finish_reg_sms = function() {
-            return $("Your session timed out. Please dial back in to *134*550# to complete the pregnancy registration so that you can receive messages.")
+            return $("Your session timed out. Please dial back in to {{USSD_number}} to complete the pregnancy registration so that you can receive messages.")
                 .context({
                     USSD_number: self.im.config.channel
                 });

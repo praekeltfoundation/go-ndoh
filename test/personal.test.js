@@ -53,7 +53,7 @@ describe("app", function() {
                     endpoints: {
                         "sms": {"delivery_class": "sms"}
                     },
-                    channel: "*120*550#",
+                    channel: "*134*550#",
                     jembi: {
                         username: 'foo',
                         password: 'bar',

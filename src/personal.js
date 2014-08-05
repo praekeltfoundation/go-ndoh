@@ -540,10 +540,7 @@ go.app = function() {
 
         self.states.add('states_end_success', function(name) {
             return new EndState(name, {
-                text: $('Thank you for subscribing to MomConnect. ' +
-                        'You will now receive free messages about ' +
-                        'MomConnect. Visit your nearest clinic to get ' +
-                        'the full set of messages.'),
+                text: $('Congratulations on your pregnancy. You will now get free SMSs about MomConnect. You can register for the full set of FREE helpful messages at a clinic.'),
 
                 next: 'states_start',
 

@@ -633,10 +633,7 @@ describe("app", function() {
                     .input('5101015009088')
                     .check.interaction({
                         state: 'states_end_success',
-                        reply: ('Thank you for subscribing to MomConnect. ' +
-                            'You will now receive free messages about ' +
-                            'MomConnect. Visit your nearest clinic to get ' + 
-                            'the full set of messages.')
+                        reply: ('Congratulations on your pregnancy. You will now get free SMSs about MomConnect. You can register for the full set of FREE helpful messages at a clinic.')
                     })
                     .check(function(api) {
                         var contact = api.contacts.store[0];
@@ -671,10 +668,7 @@ describe("app", function() {
                     .input('5101025009086')
                     .check.interaction({
                         state: 'states_end_success',
-                        reply: ('Thank you for subscribing to MomConnect. ' +
-                            'You will now receive free messages about ' +
-                            'MomConnect. Visit your nearest clinic to get ' + 
-                            'the full set of messages.')
+                        reply: ('Congratulations on your pregnancy. You will now get free SMSs about MomConnect. You can register for the full set of FREE helpful messages at a clinic.')
                     })
                     .check(function(api) {
                         var contact = api.contacts.store[0];
@@ -831,10 +825,7 @@ describe("app", function() {
                     .input('12345')
                     .check.interaction({
                         state: 'states_end_success',
-                        reply: ('Thank you for subscribing to MomConnect. ' +
-                            'You will now receive free messages about ' +
-                            'MomConnect. Visit your nearest clinic to get ' + 
-                            'the full set of messages.')
+                        reply: ('Congratulations on your pregnancy. You will now get free SMSs about MomConnect. You can register for the full set of FREE helpful messages at a clinic.')
                     })
                     .check(function(api) {
                         var contact = api.contacts.store[0];
@@ -1013,10 +1004,7 @@ describe("app", function() {
                     .input('1')
                     .check.interaction({
                         state: 'states_end_success',
-                        reply: ('Thank you for subscribing to MomConnect. ' +
-                            'You will now receive free messages about ' +
-                            'MomConnect. Visit your nearest clinic to get ' + 
-                            'the full set of messages.')
+                        reply: ('Congratulations on your pregnancy. You will now get free SMSs about MomConnect. You can register for the full set of FREE helpful messages at a clinic.')
                     })
                     .check(function(api) {
                         var contact = api.contacts.store[0];
@@ -1081,10 +1069,7 @@ describe("app", function() {
                     .input('1')
                     .check.interaction({
                         state: 'states:end_success',
-                        reply: ('Thank you for subscribing to MomConnect. ' +
-                            'You will now receive free messages about ' +
-                            'MomConnect. Visit your nearest clinic to get ' + 
-                            'the full set of messages.')
+                        reply: ('Congratulations on your pregnancy. You will now get free SMSs about MomConnect. You can register for the full set of FREE helpful messages at a clinic.')
                     })
                     .check(function(api) {
                         var metrics = api.metrics.stores.test_metric_store;

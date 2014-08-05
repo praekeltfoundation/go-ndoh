@@ -445,10 +445,7 @@ describe("app", function() {
                             var sms = smses[0];
                             assert.equal(smses.length, 1);
                             assert.equal(sms.content,
-                                'Please reply to this message with your compliment. If your compliment ' +
-                                'relates to the service you received at a clinic, please tell us the name of ' +
-                                'the clinic or clinic worker who you interacted with. Thank you for using our ' +
-                                'service. MomConnect.'
+                                'Please reply to this message with your compliment. If your compliment relates to the service at a clinic, tell us the name of the clinic or clinic worker.'
                             );
                         })
                         .check.reply.ends_session()

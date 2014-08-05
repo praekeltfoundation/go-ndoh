@@ -231,8 +231,8 @@ go.app = function() {
                 question: $('Welcome to the Department of Health\'s MomConnect. Choose your language:'),
 
                 choices: [
-                    new Choice('en', $('Eng')),
-                    new Choice('af', $('Afrik')),
+                    new Choice('en', $('English')),
+                    new Choice('af', $('Afrikaans')),
                     new Choice('zu', $('Zulu')),
                     new Choice('xh', $('Xhosa')),
                     new Choice('st', $('Sotho')),

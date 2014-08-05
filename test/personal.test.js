@@ -251,8 +251,8 @@ describe("app", function() {
                             state: 'states_language',
                             reply: [
                                 'Welcome to the Department of Health\'s MomConnect. Choose your language:',
-                                '1. Eng',
-                                '2. Afrik',
+                                '1. English',
+                                '2. Afrikaans',
                                 '3. Zulu',
                                 '4. Xhosa',
                                 '5. Sotho',
@@ -291,8 +291,8 @@ describe("app", function() {
                             state: 'states_language',
                             reply: [
                                 'Welcome to the Department of Health\'s MomConnect. Choose your language:',
-                                '1. Eng',
-                                '2. Afrik',
+                                '1. English',
+                                '2. Afrikaans',
                                 '3. Zulu',
                                 '4. Xhosa',
                                 '5. Sotho',

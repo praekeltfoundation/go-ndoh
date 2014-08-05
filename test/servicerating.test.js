@@ -74,12 +74,11 @@ describe("app", function() {
                     .check.interaction({
                         state: 'question_1_friendliness',
                         reply: [
-                            'Hi. When u were signed up, were the staff ' +
-                            'at the facility friendly and helpful?',
-                            '1. Very Satisfied :D',
-                            '2. Satisfied :)',
-                            '3. Not Satisfied :(',
-                            '4. Very unsatisfied :('
+                            'Welcome. When you signed up, were staff at the facility friendly & helpful?',
+                            '1. Very Satisfied',
+                            '2. Satisfied',
+                            '3. Not Satisfied',
+                            '4. Very unsatisfied'
                         ].join('\n')
                     })
                     .check.user.properties({lang: 'zu'})

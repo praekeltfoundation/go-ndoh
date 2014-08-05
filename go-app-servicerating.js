@@ -919,14 +919,13 @@ go.app = function() {
             go.utils.set_language(self.im.user, self.contact);
             
             return new ChoiceState(name, {
-                question: $('Hi. When u were signed up, were the staff ' +
-                            'at the facility friendly and helpful?'),
+                question: $('Welcome. When you signed up, were staff at the facility friendly & helpful?'),
 
                 choices: [
-                    new Choice('very-satisfied', $('Very Satisfied :D')),
-                    new Choice('satisfied', $('Satisfied :)')),
-                    new Choice('not-satisfied', $('Not Satisfied :(')),
-                    new Choice('very-unsatisfied', $('Very unsatisfied :('))
+                    new Choice('very-satisfied', $('Very Satisfied')),
+                    new Choice('satisfied', $('Satisfied')),
+                    new Choice('not-satisfied', $('Not Satisfied')),
+                    new Choice('very-unsatisfied', $('Very unsatisfied'))
                 ],
 
                 next: 'question_2_waiting_times_feel'

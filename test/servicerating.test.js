@@ -156,10 +156,10 @@ describe("app", function() {
                         state: 'question_5_privacy',
                         reply: [
                             'Did you feel that your privacy was respected by the staff?',
-                            '1. Very Satisfied :D',
-                            '2. Satisfied :)',
-                            '3. Not Satisfied :(',
-                            '4. Very unsatisfied :('
+                            '1. Very Satisfied',
+                            '2. Satisfied',
+                            '3. Not Satisfied',
+                            '4. Very unsatisfied'
                         ].join('\n')
                     })
                     .run();

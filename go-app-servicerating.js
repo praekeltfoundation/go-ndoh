@@ -982,10 +982,10 @@ go.app = function() {
                 question: $('Did you feel that your privacy was respected by the staff?'),
 
                 choices: [
-                    new Choice('very-satisfied', $('Very Satisfied :D')),
-                    new Choice('satisfied', $('Satisfied :)')),
-                    new Choice('not-satisfied', $('Not Satisfied :(')),
-                    new Choice('very-unsatisfied', $('Very unsatisfied :('))
+                    new Choice('very-satisfied', $('Very Satisfied')),
+                    new Choice('satisfied', $('Satisfied')),
+                    new Choice('not-satisfied', $('Not Satisfied')),
+                    new Choice('very-unsatisfied', $('Very unsatisfied'))
                 ],
 
                 next: 'end_thanks'

@@ -111,8 +111,7 @@ go.app = function() {
                             go.utils.servicerating_log(self.contact, self.im, self.metric_prefix),
                             self.im.outbound.send_to_user({
                                     endpoint: 'sms',
-                                    content: "Thank you for rating our service. If you have further queries " +
-                                            "or complaints please dial *134*550# or reply to any of the SMSs you receive"
+                                    content: "Thank you for rating our service."
                                 })
                         ]);
                     }

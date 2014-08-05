@@ -258,8 +258,7 @@ describe("app", function() {
                         var sms = smses[0];
                         assert.equal(smses.length,1);
                         assert.equal(sms.content, 
-                            "Thank you for rating our service. If you have further queries " +
-                            "or complaints please dial *134*550# or reply to any of the SMSs you receive"
+                            "Thank you for rating our service."
                         );
                         assert.equal(sms.to_addr,'+27001');
                     })

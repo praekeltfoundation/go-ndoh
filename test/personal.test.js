@@ -53,7 +53,7 @@ describe("app", function() {
                     endpoints: {
                         "sms": {"delivery_class": "sms"}
                     },
-                    channel: "*120*550#",
+                    channel: "*134*550#",
                     jembi: {
                         username: 'foo',
                         password: 'bar',
@@ -250,9 +250,9 @@ describe("app", function() {
                         .check.interaction({
                             state: 'states_language',
                             reply: [
-                                'Welcome to MomConnect. Please choose language:',
-                                '1. Eng',
-                                '2. Afrik',
+                                'Welcome to the Department of Health\'s MomConnect. Choose your language:',
+                                '1. English',
+                                '2. Afrikaans',
                                 '3. Zulu',
                                 '4. Xhosa',
                                 '5. Sotho',
@@ -290,9 +290,9 @@ describe("app", function() {
                         .check.interaction({
                             state: 'states_language',
                             reply: [
-                                'Welcome to MomConnect. Please choose language:',
-                                '1. Eng',
-                                '2. Afrik',
+                                'Welcome to the Department of Health\'s MomConnect. Choose your language:',
+                                '1. English',
+                                '2. Afrikaans',
                                 '3. Zulu',
                                 '4. Xhosa',
                                 '5. Sotho',
@@ -405,11 +405,7 @@ describe("app", function() {
                             var sms = smses[0];
                             assert.equal(smses.length, 1);
                             assert.equal(sms.content,
-                                'Please reply to this message with your complaint. If your complaint ' +
-                                'relates to the service you received at a clinic, please tell us the name of ' +
-                                'the clinic or clinic worker who you interacted with. The more detail you ' +
-                                'supply, the easier it will be for us to follow up for you. Kind regards. ' + 
-                                'MomConnect'
+                                'Please reply to this message with your complaint. If your complaint relates to the service at a clinic, please tell us the name of the clinic or clinic worker.'
                             );
                         })
                         .check.reply.ends_session()
@@ -445,10 +441,7 @@ describe("app", function() {
                             var sms = smses[0];
                             assert.equal(smses.length, 1);
                             assert.equal(sms.content,
-                                'Please reply to this message with your compliment. If your compliment ' +
-                                'relates to the service you received at a clinic, please tell us the name of ' +
-                                'the clinic or clinic worker who you interacted with. Thank you for using our ' +
-                                'service. MomConnect.'
+                                'Please reply to this message with your compliment. If your compliment relates to the service at a clinic, tell us the name of the clinic or clinic worker.'
                             );
                         })
                         .check.reply.ends_session()
@@ -640,10 +633,7 @@ describe("app", function() {
                     .input('5101015009088')
                     .check.interaction({
                         state: 'states_end_success',
-                        reply: ('Thank you for subscribing to MomConnect. ' +
-                            'You will now receive free messages about ' +
-                            'MomConnect. Visit your nearest clinic to get ' + 
-                            'the full set of messages.')
+                        reply: ('Congratulations on your pregnancy. You will now get free SMSs about MomConnect. You can register for the full set of FREE helpful messages at a clinic.')
                     })
                     .check(function(api) {
                         var contact = api.contacts.store[0];
@@ -678,10 +668,7 @@ describe("app", function() {
                     .input('5101025009086')
                     .check.interaction({
                         state: 'states_end_success',
-                        reply: ('Thank you for subscribing to MomConnect. ' +
-                            'You will now receive free messages about ' +
-                            'MomConnect. Visit your nearest clinic to get ' + 
-                            'the full set of messages.')
+                        reply: ('Congratulations on your pregnancy. You will now get free SMSs about MomConnect. You can register for the full set of FREE helpful messages at a clinic.')
                     })
                     .check(function(api) {
                         var contact = api.contacts.store[0];
@@ -838,10 +825,7 @@ describe("app", function() {
                     .input('12345')
                     .check.interaction({
                         state: 'states_end_success',
-                        reply: ('Thank you for subscribing to MomConnect. ' +
-                            'You will now receive free messages about ' +
-                            'MomConnect. Visit your nearest clinic to get ' + 
-                            'the full set of messages.')
+                        reply: ('Congratulations on your pregnancy. You will now get free SMSs about MomConnect. You can register for the full set of FREE helpful messages at a clinic.')
                     })
                     .check(function(api) {
                         var contact = api.contacts.store[0];
@@ -1020,10 +1004,7 @@ describe("app", function() {
                     .input('1')
                     .check.interaction({
                         state: 'states_end_success',
-                        reply: ('Thank you for subscribing to MomConnect. ' +
-                            'You will now receive free messages about ' +
-                            'MomConnect. Visit your nearest clinic to get ' + 
-                            'the full set of messages.')
+                        reply: ('Congratulations on your pregnancy. You will now get free SMSs about MomConnect. You can register for the full set of FREE helpful messages at a clinic.')
                     })
                     .check(function(api) {
                         var contact = api.contacts.store[0];
@@ -1088,10 +1069,7 @@ describe("app", function() {
                     .input('1')
                     .check.interaction({
                         state: 'states:end_success',
-                        reply: ('Thank you for subscribing to MomConnect. ' +
-                            'You will now receive free messages about ' +
-                            'MomConnect. Visit your nearest clinic to get ' + 
-                            'the full set of messages.')
+                        reply: ('Congratulations on your pregnancy. You will now get free SMSs about MomConnect. You can register for the full set of FREE helpful messages at a clinic.')
                     })
                     .check(function(api) {
                         var metrics = api.metrics.stores.test_metric_store;
@@ -1147,7 +1125,7 @@ describe("app", function() {
                                 var sms = smses[0];
                                 assert.equal(smses.length,1);
                                 assert.equal(sms.content, 
-                                    "Please dial back in to *120*550# to complete the pregnancy registration."
+                                    "Your session timed out. Please dial back in to *134*550# to complete the pregnancy registration so that you can receive messages."
                                 );
                                 assert.equal(sms.to_addr,'+273323');
                             }).run();
@@ -1296,7 +1274,7 @@ describe("app", function() {
                     .check.interaction({
                         state: 'states_faq_questions',
                         reply: [
-                            'Please choose a question:',
+                            'Please select one:',
                             '1. Can I order more than one box at a time?',
                             '2. What happens if I fall in love with one particular coffee?',
                             '3. More'
@@ -1314,7 +1292,7 @@ describe("app", function() {
                     .check.interaction({
                         state: 'states_faq_questions',
                         reply: [
-                            'Please choose a question:',
+                            'Please select one:',
                             '1. What happens if the FAQ answer is really long?',
                             '2. What happens if I realise the amount of coffee I\'ve ordered doesn\'t suit?',
                             '3. Back'

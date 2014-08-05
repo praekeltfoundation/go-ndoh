@@ -94,7 +94,7 @@ go.app = function() {
         };
 
         self.get_finish_reg_sms = function() {
-            return $("Please dial back in to {{ USSD_number }} to complete the pregnancy registration.")
+            return $("Your session timed out. Please dial back in to {{USSD_number}} to complete the pregnancy registration so that you can receive messages.")
                 .context({
                     USSD_number: self.im.config.channel
                 });
@@ -163,10 +163,7 @@ go.app = function() {
                     'state:enter': function() {
                         return self.im.outbound.send_to_user({
                             endpoint: 'sms',
-                            content: $('Please reply to this message with your compliment. If your compliment ' +
-                                'relates to the service you received at a clinic, please tell us the name of ' +
-                                'the clinic or clinic worker who you interacted with. Thank you for using our ' +
-                                'service. MomConnect.')
+                            content: $('Please reply to this message with your compliment. If your compliment relates to the service at a clinic, tell us the name of the clinic or clinic worker.')
                         });
                     }
                 }
@@ -184,11 +181,7 @@ go.app = function() {
                     'state:enter': function() {
                         return self.im.outbound.send_to_user({
                             endpoint: 'sms',
-                            content: $('Please reply to this message with your complaint. If your complaint ' +
-                                'relates to the service you received at a clinic, please tell us the name of ' +
-                                'the clinic or clinic worker who you interacted with. The more detail you ' +
-                                'supply, the easier it will be for us to follow up for you. Kind regards. ' + 
-                                'MomConnect')
+                            content: $('Please reply to this message with your complaint. If your complaint relates to the service at a clinic, please tell us the name of the clinic or clinic worker.')
                         });
                     }
                 }
@@ -228,11 +221,11 @@ go.app = function() {
 
         self.states.add('states_language', function(name) {
             return new ChoiceState(name, {
-                question: $('Welcome to MomConnect. Please choose language:'),
+                question: $('Welcome to the Department of Health\'s MomConnect. Choose your language:'),
 
                 choices: [
-                    new Choice('en', $('Eng')),
-                    new Choice('af', $('Afrik')),
+                    new Choice('en', $('English')),
+                    new Choice('af', $('Afrikaans')),
                     new Choice('zu', $('Zulu')),
                     new Choice('xh', $('Xhosa')),
                     new Choice('st', $('Sotho')),
@@ -547,10 +540,7 @@ go.app = function() {
 
         self.states.add('states_end_success', function(name) {
             return new EndState(name, {
-                text: $('Thank you for subscribing to MomConnect. ' +
-                        'You will now receive free messages about ' +
-                        'MomConnect. Visit your nearest clinic to get ' +
-                        'the full set of messages.'),
+                text: $('Congratulations on your pregnancy. You will now get free SMSs about MomConnect. You can register for the full set of FREE helpful messages at a clinic.'),
 
                 next: 'states_start',
 
@@ -622,7 +612,7 @@ go.app = function() {
                         });
 
                         return new PaginatedChoiceState(name, {
-                            question: $('Please choose a question:'),
+                            question: $('Please select one:'),
                             choices: choices,
                             // TODO calculate options_per_page once content length is known
                             options_per_page: 2,

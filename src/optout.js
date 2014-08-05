@@ -28,14 +28,13 @@ go.app = function() {
             go.utils.set_language(self.im.user, self.contact);
             
             return new ChoiceState(name, {
-                question: $('Welcome to MomConnect. Please tell us why you don\'t ' +
-                            'want msgs:'),
+                question: $('Please let us know why you do not want MomConnect messages'),
 
                 choices: [
-                    new Choice('miscarriage', $('Had miscarriage')),
-                    new Choice('stillbirth', $('Baby stillborn')),
+                    new Choice('miscarriage', $('Miscarriage')),
+                    new Choice('stillbirth', $('Baby was stillborn')),
                     new Choice('babyloss', $('Baby died')),
-                    new Choice('not_useful', $('Msgs not useful')),
+                    new Choice('not_useful', $('Messages not useful')),
                     new Choice('other', $('Other'))
                 ],
 

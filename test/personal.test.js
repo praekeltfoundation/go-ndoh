@@ -405,11 +405,7 @@ describe("app", function() {
                             var sms = smses[0];
                             assert.equal(smses.length, 1);
                             assert.equal(sms.content,
-                                'Please reply to this message with your complaint. If your complaint ' +
-                                'relates to the service you received at a clinic, please tell us the name of ' +
-                                'the clinic or clinic worker who you interacted with. The more detail you ' +
-                                'supply, the easier it will be for us to follow up for you. Kind regards. ' + 
-                                'MomConnect'
+                                'Please reply to this message with your complaint. If your complaint relates to the service at a clinic, please tell us the name of the clinic or clinic worker.'
                             );
                         })
                         .check.reply.ends_session()

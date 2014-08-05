@@ -181,11 +181,7 @@ go.app = function() {
                     'state:enter': function() {
                         return self.im.outbound.send_to_user({
                             endpoint: 'sms',
-                            content: $('Please reply to this message with your complaint. If your complaint ' +
-                                'relates to the service you received at a clinic, please tell us the name of ' +
-                                'the clinic or clinic worker who you interacted with. The more detail you ' +
-                                'supply, the easier it will be for us to follow up for you. Kind regards. ' + 
-                                'MomConnect')
+                            content: $('Please reply to this message with your complaint. If your complaint relates to the service at a clinic, please tell us the name of the clinic or clinic worker.')
                         });
                     }
                 }

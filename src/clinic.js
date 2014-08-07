@@ -529,7 +529,7 @@ go.app = function() {
             return new EndState(name, {
                 text: $('Thank you. The pregnant woman will now ' +
                         'receive weekly messages about her pregnancy ' +
-                        'from the Department of Health.'),
+                        'from MomConnect.'),
 
                 next: 'states_start',
 

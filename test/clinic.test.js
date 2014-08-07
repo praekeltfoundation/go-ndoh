@@ -950,7 +950,7 @@ describe("app", function() {
                             state: 'states_end_success',
                             reply: ('Thank you. The pregnant woman will now ' +
                                 'receive weekly messages about her pregnancy ' +
-                                'from the Department of Health.')
+                                'from MomConnect.')
                         })
                         .check(function(api) {
                             var contact_mom = _.find(api.contacts.store, {
@@ -1011,7 +1011,7 @@ describe("app", function() {
                             state: 'states_end_success',
                             reply: ('Thank you. The pregnant woman will now ' +
                                 'receive weekly messages about her pregnancy ' +
-                                'from the Department of Health.')
+                                'from MomConnect.')
                         })
                         .check(function(api) {
                             var contact = _.find(api.contacts.store, {
@@ -1187,7 +1187,7 @@ describe("app", function() {
                             state: 'states_end_success',
                             reply: ('Thank you. The pregnant woman will now ' +
                                 'receive weekly messages about her pregnancy ' +
-                                'from the Department of Health.')
+                                'from MomConnect.')
                         })
                         .check(function(api) {
                             var contact = _.find(api.contacts.store, {
@@ -1241,7 +1241,7 @@ describe("app", function() {
                             state: 'states:end_success',
                             reply: ('Thank you. The pregnant woman will now ' +
                                 'receive weekly messages about her pregnancy ' +
-                                'from the Department of Health.')
+                                'from MomConnect.')
                         })
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;

@@ -1,0 +1,119 @@
+{
+    "": {
+        "pot-creation-date": "2014-08-05 12:55:+0200",
+        "project-id-version": "Service rating",
+        "language-team": "Language <LL@li.org>",
+        "mime-version": "1.0",
+        "content-type": "text/plain; charset=UTF-8",
+        "content-transfer-encoding": "8bit",
+        "po-revision-date": "2014-08-05 14:15+0200",
+        "last-translator": "",
+        "x-generator": "Poedit 1.6.7",
+        "plural-forms": "nplurals=2; plural=(n != 1);",
+        "language": "af"
+    },
+    "Jan": [
+        null,
+        "Jan"
+    ],
+    "Feb": [
+        null,
+        "Feb"
+    ],
+    "Mar": [
+        null,
+        "Maart"
+    ],
+    "Apr": [
+        null,
+        "Apr"
+    ],
+    "May": [
+        null,
+        "Mei"
+    ],
+    "Jun": [
+        null,
+        "Junie"
+    ],
+    "Jul": [
+        null,
+        "Julie"
+    ],
+    "Aug": [
+        null,
+        "Aug"
+    ],
+    "Sep": [
+        null,
+        "Sep"
+    ],
+    "Oct": [
+        null,
+        "Okt"
+    ],
+    "Nov": [
+        null,
+        "Nov"
+    ],
+    "Dec": [
+        null,
+        "Des"
+    ],
+    "Welcome. When you signed up, were staff at the facility friendly & helpful?": [
+        null,
+        "Welkom. By registrasie, was die personeel by fasiliteit vriendelik & hulpvaardig?"
+    ],
+    "Very Satisfied": [
+        null,
+        "Baie Tevrede"
+    ],
+    "Satisfied": [
+        null,
+        "Tevrede"
+    ],
+    "Not Satisfied": [
+        null,
+        "Ontevrede"
+    ],
+    "Very unsatisfied": [
+        null,
+        "Baie Ontevrede"
+    ],
+    "How do you feel about the time you had to wait at the facility?": [
+        null,
+        "Hoe voel jy oor die wagtyd by die fasiliteit?"
+    ],
+    "How long did you wait to be helped at the clinic?": [
+        null,
+        "Hoe lank was dit voordat jy by die kliniek gehelp is?"
+    ],
+    "Less than an hour": [
+        null,
+        "Minder as ’n uur"
+    ],
+    "Between 1 and 3 hours": [
+        null,
+        "Tussen 1 & 3 uur"
+    ],
+    "More than 4 hours": [
+        null,
+        "Meer as 4 uur"
+    ],
+    "All day": [
+        null,
+        "Heeldag"
+    ],
+    "Was the facility clean?": [
+        null,
+        "Was die fasiliteit skoon?"
+    ],
+    "Did you feel that your privacy was respected by the staff?": [
+        null,
+        "Het die personeel jou privaatheid gerespekteer?"
+    ],
+    "Thank you for rating our service.": [
+        null,
+        "Dankie"
+    ]
+}

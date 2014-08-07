@@ -1,0 +1,106 @@
+{
+    "": {
+        "pot-creation-date": "2014-08-05 12:54:+0200",
+        "project-id-version": "opt_out_TN",
+        "language-team": "Language <LL@li.org>",
+        "mime-version": "1.0",
+        "content-type": "text/plain; charset=UTF-8",
+        "content-transfer-encoding": "8bit",
+        "po-revision-date": "2014-08-06 13:40+0200",
+        "last-translator": "",
+        "x-generator": "Poedit 1.6.7",
+        "language": "tn"
+    },
+    "Jan": [
+        null,
+        "Jan"
+    ],
+    "Feb": [
+        null,
+        "Feb"
+    ],
+    "Mar": [
+        null,
+        "Mar"
+    ],
+    "Apr": [
+        null,
+        "Apr"
+    ],
+    "May": [
+        null,
+        "May"
+    ],
+    "Jun": [
+        null,
+        "June"
+    ],
+    "Jul": [
+        null,
+        "July"
+    ],
+    "Aug": [
+        null,
+        "August"
+    ],
+    "Sep": [
+        null,
+        "Sept"
+    ],
+    "Oct": [
+        null,
+        "Oct"
+    ],
+    "Nov": [
+        null,
+        "Nov"
+    ],
+    "Dec": [
+        null,
+        "Dec"
+    ],
+    "Please let us know why you do not want MomConnect messages": [
+        null,
+        "Bua goreng o sa batle melaetsa ya Mconnect"
+    ],
+    "Miscarriage": [
+        null,
+        "Ke boile tseleng"
+    ],
+    "Baby was stillborn": [
+        null,
+        "Ngwana o fetile"
+    ],
+    "Baby died": [
+        null,
+        "Ngwana o sule"
+    ],
+    "Messages not useful": [
+        null,
+        "Melaetsa ga e mosola"
+    ],
+    "Other": [
+        null,
+        "Tse dingwe"
+    ],
+    "We are sorry for your loss. Would you like to receive a small set of free messages to help you in this difficult time?": [
+        null,
+        "Re botlhoko ka tatlhegelo ya gago. A o rata go amogela sete ya melaetsa e e ka go thusang mo nakong e e thata e? "
+    ],
+    "Yes": [
+        null,
+        "Ee"
+    ],
+    "No": [
+        null,
+        "Nnyaa"
+    ],
+    "Thank you. You will no longer receive messages from us. If you have any medical concerns please visit your nearest clinic.": [
+        null,
+        "Re leboga. Gankitla o tlhola o amogela melaetsa go tswa go rona. Fa o na le matshwenyego a tsa kalafo, etela tliliniki e e gaufi nao."
+    ],
+    "Thank you. You will receive support messages from MomConnect in the coming weeks.": [
+        null,
+        "Re a leboga. O tla amogela melaetsa ya tshegetso go tswa go MomConnect mo dibekeng tse di tlang."
+    ]
+}

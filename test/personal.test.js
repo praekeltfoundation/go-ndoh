@@ -1312,9 +1312,8 @@ describe("app", function() {
                         state: 'states_faq_answers',
                         reply: [
                             'If the default box of 2 x 250g is not enough for your needs, you can increase the quantity up to 7 bags (or consider the',
-                            '1. Prev',
-                            '2. Next',
-                            '0. Send to me by SMS'
+                            '1. More',
+                            '2. Send to me by SMS'
                         ].join('\n')
                     })
                     .run();
@@ -1332,9 +1331,8 @@ describe("app", function() {
                         state: 'states_faq_answers',
                         reply: [
                             'It will be split into multiple pages on a bookletstate, showing content on different screens as the text gets too long. To',
-                            '1. Prev',
-                            '2. Next',
-                            '0. Send to me by SMS'
+                            '1. More',
+                            '2. Send to me by SMS'
                         ].join('\n')
                     })
                     .run();
@@ -1346,14 +1344,14 @@ describe("app", function() {
                 return tester
                     .setup.user.state('states_faq_questions')
                     .setup.user.answers({'states_faq_topics': '881'})
-                    .inputs('3', '1', '2')
+                    .inputs('3', '1', '1')
                     .check.interaction({
                         state: 'states_faq_answers',
                         reply: [
                             'illustrate this, this super long response has been faked. This should be split over at least 2 screens just because we want',
-                            '1. Prev',
-                            '2. Next',
-                            '0. Send to me by SMS'
+                            '1. More',
+                            '2. Back',
+                            '3. Send to me by SMS'
                         ].join('\n')
                     })
                     .run();
@@ -1365,13 +1363,12 @@ describe("app", function() {
                 return tester
                     .setup.user.state('states_faq_questions')
                     .setup.user.answers({'states_faq_topics': '881'})
-                    .inputs('3', '1', '2', '2')
+                    .inputs('3', '1', '1', '1')
                     .check.interaction({
                         state: 'states_faq_answers',
                         reply: ['to test properly. Let\'s see.',
-                            '1. Prev',
-                            '2. Next',
-                            '0. Send to me by SMS'
+                            '1. Back',
+                            '2. Send to me by SMS'
                         ].join('\n')
                     })
                     .run();
@@ -1383,7 +1380,7 @@ describe("app", function() {
                 return tester
                     .setup.user.state('states_faq_questions')
                     .setup.user.answers({'states_faq_topics': '881'})
-                    .inputs('3', '1', '0')
+                    .inputs('3', '1', '2')
                     .check.interaction({
                         state: 'states_faq_end',
                         reply: ('Thank you. Your SMS will be delivered shortly.')

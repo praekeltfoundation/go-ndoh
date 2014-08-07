@@ -8,7 +8,7 @@ go.app = function() {
     var PaginatedChoiceState = vumigo.states.PaginatedChoiceState;
     var EndState = vumigo.states.EndState;
     var FreeText = vumigo.states.FreeText;
-    var BookletState = vumigo.states.BookletState;
+    var PaginatedState = vumigo.states.PaginatedState;
 
     var GoNDOH = App.extend(function(self) {
         App.call(self, 'states_start');
@@ -616,11 +616,15 @@ go.app = function() {
                             choices: choices,
                             // TODO calculate options_per_page once content length is known
                             options_per_page: 2,
-                            next: function() {
+                            next: function(choice) {
+                                var question_id = choice.value;
+                                var index = _.findIndex(response.data, { 'id': question_id});
+                                var answer = response.data[index].answer.trim();
+
                                 return {
                                     name: 'states_faq_answers',
                                     creator_opts: {
-                                        response: response
+                                        answer: answer
                                     }
                                 };
                             }
@@ -631,38 +635,16 @@ go.app = function() {
 
         // Show answer to selected question
         self.states.add('states_faq_answers', function(name, opts) {
-            var id = self.im.user.answers.states_faq_questions;
-            var index = _.findIndex(opts.response.data, { 'id': id });
-            var footer_text = [
-                    "1. Prev",
-                    "2. Next",
-                    "0. Send to me by SMS"
-                ].join("\n");
-            var num_chars = 160 - footer_text.length;
-            // TODO update footer_text length calc for translations
-            var answer = opts.response.data[index].answer.trim();
-            var sms_content = answer;
-            var answer_split = [];
-
-            while (answer.length > 0 && answer.length > num_chars) {
-                answer_max_str = answer.substr(0,num_chars);
-                space_index = answer_max_str.lastIndexOf(' ');
-                answer_sub = answer.substr(0, space_index);
-                answer_split.push(answer_sub);
-                answer = answer.slice(space_index+1);
-            }
-            answer_split.push(answer);
-
-            return new BookletState(name, {
-                pages: answer_split.length,
-                page_text: function(n) {return answer_split[n];},
-                buttons: {"1": -1, "2": +1, "0": "exit"},
-                footer_text: footer_text,
+            return new PaginatedState(name, {
+                text: opts.answer,
+                more: $('More'),
+                back: $('Back'),
+                exit: $('Send to me by SMS'),
                 next: function() {
                     return {
                         name: 'states_faq_end',
                         creator_opts: {
-                            sms_content: sms_content
+                            answer: opts.answer
                         }
                     };
                 }
@@ -680,7 +662,7 @@ go.app = function() {
                     'state:enter': function() {
                         return self.im.outbound.send_to_user({
                             endpoint: 'sms',
-                            content: opts.sms_content
+                            content: opts.answer
                         });
                     }
                 }

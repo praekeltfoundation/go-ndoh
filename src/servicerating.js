@@ -23,20 +23,23 @@ go.app = function() {
         };
 
         self.states.add('question_1_friendliness', function(name) {
-            go.utils.set_language(self.im.user, self.contact);
-            
-            return new ChoiceState(name, {
-                question: $('Welcome. When you signed up, were staff at the facility friendly & helpful?'),
+            return go.utils.set_language(self.im.user, self.contact)
+                .then(function() {
 
-                choices: [
-                    new Choice('very-satisfied', $('Very Satisfied')),
-                    new Choice('satisfied', $('Satisfied')),
-                    new Choice('not-satisfied', $('Not Satisfied')),
-                    new Choice('very-unsatisfied', $('Very unsatisfied'))
-                ],
+                    return new ChoiceState(name, {
+                        question: $('Welcome. When you signed up, were staff at the facility friendly & helpful?'),
 
-                next: 'question_2_waiting_times_feel'
-            });
+                        choices: [
+                            new Choice('very-satisfied', $('Very Satisfied')),
+                            new Choice('satisfied', $('Satisfied')),
+                            new Choice('not-satisfied', $('Not Satisfied')),
+                            new Choice('very-unsatisfied', $('Very unsatisfied'))
+                        ],
+
+                        next: 'question_2_waiting_times_feel'
+                    });
+                    
+                });
         });
 
         self.states.add('question_2_waiting_times_feel', function(name) {

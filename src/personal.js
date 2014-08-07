@@ -118,13 +118,17 @@ go.app = function() {
 
             } else if (self.contact.extra.is_registered_by === 'clinic') {
                 // registered on clinic line
-                go.utils.set_language(self.im.user, self.contact);
-                return self.states.create('states_registered_full');
+                return go.utils.set_language(self.im.user, self.contact)
+                    .then(function() {
+                        return self.states.create('states_registered_full');
+                    });
                     
             } else {
                 // registered on chw / public lines
-                go.utils.set_language(self.im.user, self.contact);
-                return self.states.create('states_registered_not_full');
+                return go.utils.set_language(self.im.user, self.contact)
+                    .then(function() {
+                        return self.states.create('states_registered_not_full');
+                    });
             }
         });
 

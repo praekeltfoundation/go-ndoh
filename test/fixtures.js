@@ -686,7 +686,7 @@ module.exports = function() {
                 "swt": 1,
                 "dmsisdn": "+27001",
                 "cmsisdn": "+27001",
-                "id": "12345^^^ZW^FI",
+                "id": "12345^^^ZW^PPN",
                 "type": 1,
                 "lang": "en",
                 "encdate": "20130819144811"
@@ -842,7 +842,7 @@ module.exports = function() {
                 "swt": 1,
                 "dmsisdn": "+27001",
                 "cmsisdn": "+27001",
-                "id": "12345^^^ZW^FI",
+                "id": "12345^^^ZW^PPN",
                 "type": 2,
                 "lang": "en",
                 "encdate": "20130819144811"

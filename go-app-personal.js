@@ -1529,7 +1529,7 @@ go.app = function() {
         // Show answer to selected question
         self.states.add('states_faq_answers', function(name, opts) {
             return new PaginatedState(name, {
-                text: $('{{ text }}').context({text: opts.answer}),
+                text: opts.answer,
                 more: $('More'),
                 back: $('Back'),
                 exit: $('Send to me by SMS'),

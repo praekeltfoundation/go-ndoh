@@ -1,0 +1,117 @@
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2014-08-05 12:54:+0200\n"
+"Project-Id-Version: opt_out_XH\n"
+"Language-Team: Language <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2014-08-06 13:13+0200\n"
+"Last-Translator: \n"
+"X-Generator: Poedit 1.6.7\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: xh\n"
+
+#: go-app-optout.js:27
+msgid "Jan"
+msgstr "Jan"
+
+#: go-app-optout.js:28
+msgid "Feb"
+msgstr "Feb"
+
+#: go-app-optout.js:29
+msgid "Mar"
+msgstr "March"
+
+#: go-app-optout.js:30
+msgid "Apr"
+msgstr "April"
+
+#: go-app-optout.js:31
+msgid "May"
+msgstr "May"
+
+#: go-app-optout.js:32
+msgid "Jun"
+msgstr "June"
+
+#: go-app-optout.js:33
+msgid "Jul"
+msgstr "July"
+
+#: go-app-optout.js:34
+msgid "Aug"
+msgstr "August"
+
+#: go-app-optout.js:35
+msgid "Sep"
+msgstr "Sept"
+
+#: go-app-optout.js:36
+msgid "Oct"
+msgstr "Oct"
+
+#: go-app-optout.js:37
+msgid "Nov"
+msgstr "Nov"
+
+#: go-app-optout.js:38
+msgid "Dec"
+msgstr "Dec"
+
+#: go-app-optout.js:924
+msgid "Please let us know why you do not want MomConnect messages"
+msgstr "Nceda usixelele kutheni ungasafuni imiyalezo ka-MomConnect"
+
+#: go-app-optout.js:927
+msgid "Miscarriage"
+msgstr "Kuphume isisu"
+
+#: go-app-optout.js:928
+msgid "Baby was stillborn"
+msgstr "Yimva-mbilini"
+
+#: go-app-optout.js:929
+msgid "Baby died"
+msgstr "Usana luswelekile"
+
+#: go-app-optout.js:930
+msgid "Messages not useful"
+msgstr "Imiyalezo ayincedi"
+
+#: go-app-optout.js:931
+msgid "Other"
+msgstr "Esinye"
+
+#: go-app-optout.js:965
+msgid ""
+"We are sorry for your loss. Would you like to receive a small set of free "
+"messages to help you in this difficult time?"
+msgstr ""
+"Silusizi ngelahleko yakho. Ungathanda ukufumana iseti encinci yemiyalezo "
+"yasimahla engakunceda kweli xesha linzima?"
+
+#: go-app-optout.js:970
+msgid "Yes"
+msgstr "Ewe"
+
+#: go-app-optout.js:971
+msgid "No"
+msgstr "Hayi"
+
+#: go-app-optout.js:997
+msgid ""
+"Thank you. You will no longer receive messages from us. If you have any "
+"medical concerns please visit your nearest clinic."
+msgstr ""
+"Enkosi. Awusenakufumana imiyalezo evela kuthi. Ukuba unenkxalabo nayiphi "
+"yezonyango nceda utyelele ikliniki yakho ekufuphi."
+
+#: go-app-optout.js:1007
+msgid ""
+"Thank you. You will receive support messages from MomConnect in the coming "
+"weeks."
+msgstr ""
+"Siyabulela. Uza kufumana imiyalezo yenkxaso evela ku-MomConnect kwiiveki "
+"ezizayo."

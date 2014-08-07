@@ -1,0 +1,114 @@
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2014-08-05 12:55:+0200\n"
+"Project-Id-Version: PACKAGE VERSION\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+
+#: go-app-servicerating.js:27
+msgid "Jan"
+msgstr ""
+
+#: go-app-servicerating.js:28
+msgid "Feb"
+msgstr ""
+
+#: go-app-servicerating.js:29
+msgid "Mar"
+msgstr ""
+
+#: go-app-servicerating.js:30
+msgid "Apr"
+msgstr ""
+
+#: go-app-servicerating.js:31
+msgid "May"
+msgstr ""
+
+#: go-app-servicerating.js:32
+msgid "Jun"
+msgstr ""
+
+#: go-app-servicerating.js:33
+msgid "Jul"
+msgstr ""
+
+#: go-app-servicerating.js:34
+msgid "Aug"
+msgstr ""
+
+#: go-app-servicerating.js:35
+msgid "Sep"
+msgstr ""
+
+#: go-app-servicerating.js:36
+msgid "Oct"
+msgstr ""
+
+#: go-app-servicerating.js:37
+msgid "Nov"
+msgstr ""
+
+#: go-app-servicerating.js:38
+msgid "Dec"
+msgstr ""
+
+#: go-app-servicerating.js:922
+msgid "Welcome. When you signed up, were staff at the facility friendly & helpful?"
+msgstr ""
+
+#: go-app-servicerating.js:925 go-app-servicerating.js:940 go-app-servicerating.js:970 go-app-servicerating.js:985
+msgid "Very Satisfied"
+msgstr ""
+
+#: go-app-servicerating.js:926 go-app-servicerating.js:941 go-app-servicerating.js:971 go-app-servicerating.js:986
+msgid "Satisfied"
+msgstr ""
+
+#: go-app-servicerating.js:927 go-app-servicerating.js:942 go-app-servicerating.js:972 go-app-servicerating.js:987
+msgid "Not Satisfied"
+msgstr ""
+
+#: go-app-servicerating.js:928 go-app-servicerating.js:943 go-app-servicerating.js:973 go-app-servicerating.js:988
+msgid "Very unsatisfied"
+msgstr ""
+
+#: go-app-servicerating.js:937
+msgid "How do you feel about the time you had to wait at the facility?"
+msgstr ""
+
+#: go-app-servicerating.js:952
+msgid "How long did you wait to be helped at the clinic?"
+msgstr ""
+
+#: go-app-servicerating.js:955
+msgid "Less than an hour"
+msgstr ""
+
+#: go-app-servicerating.js:956
+msgid "Between 1 and 3 hours"
+msgstr ""
+
+#: go-app-servicerating.js:957
+msgid "More than 4 hours"
+msgstr ""
+
+#: go-app-servicerating.js:958
+msgid "All day"
+msgstr ""
+
+#: go-app-servicerating.js:967
+msgid "Was the facility clean?"
+msgstr ""
+
+#: go-app-servicerating.js:982
+msgid "Did you feel that your privacy was respected by the staff?"
+msgstr ""
+
+#: go-app-servicerating.js:997
+msgid "Thank you for rating our service."
+msgstr ""

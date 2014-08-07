@@ -1,0 +1,119 @@
+{
+    "": {
+        "pot-creation-date": "2014-08-05 12:55:+0200",
+        "project-id-version": "Service rating",
+        "language-team": "Language <LL@li.org>",
+        "mime-version": "1.0",
+        "content-type": "text/plain; charset=UTF-8",
+        "content-transfer-encoding": "8bit",
+        "po-revision-date": "2014-08-05 14:29+0200",
+        "last-translator": "",
+        "x-generator": "Poedit 1.6.7",
+        "plural-forms": "nplurals=2; plural=(n != 1);",
+        "language": "zu"
+    },
+    "Jan": [
+        null,
+        "Jan"
+    ],
+    "Feb": [
+        null,
+        "Feb"
+    ],
+    "Mar": [
+        null,
+        "Mar"
+    ],
+    "Apr": [
+        null,
+        "Apr"
+    ],
+    "May": [
+        null,
+        "May"
+    ],
+    "Jun": [
+        null,
+        "Jun"
+    ],
+    "Jul": [
+        null,
+        "Jul"
+    ],
+    "Aug": [
+        null,
+        "Aug"
+    ],
+    "Sep": [
+        null,
+        "Sep"
+    ],
+    "Oct": [
+        null,
+        "Oct"
+    ],
+    "Nov": [
+        null,
+        "Nov"
+    ],
+    "Dec": [
+        null,
+        "Dec"
+    ],
+    "Welcome. When you signed up, were staff at the facility friendly & helpful?": [
+        null,
+        "Wemukelekile. Abasebenzi babenomusa/bewusizo?"
+    ],
+    "Very Satisfied": [
+        null,
+        "Ngeneliseke ngempela"
+    ],
+    "Satisfied": [
+        null,
+        "Ngenelisekile"
+    ],
+    "Not Satisfied": [
+        null,
+        "Angenelisekile"
+    ],
+    "Very unsatisfied": [
+        null,
+        "Akushiwo nokuthi angenelisekile"
+    ],
+    "How do you feel about the time you had to wait at the facility?": [
+        null,
+        "Uzizwa kanjani ngesikhathi okuye kwafanela usilinde esikhungweni?"
+    ],
+    "How long did you wait to be helped at the clinic?": [
+        null,
+        "Uye walinda kangakanani anduba usizakale ekliniki?"
+    ],
+    "Less than an hour": [
+        null,
+        "Ngaphansi kwehora"
+    ],
+    "Between 1 and 3 hours": [
+        null,
+        "Hakathi kwe-1 kuya ku 3 amahora"
+    ],
+    "More than 4 hours": [
+        null,
+        "Ngaphezu kwamahora amane"
+    ],
+    "All day": [
+        null,
+        "Usuku lonke"
+    ],
+    "Was the facility clean?": [
+        null,
+        "Kungabe iskhungo sabe sihlanzekile?"
+    ],
+    "Did you feel that your privacy was respected by the staff?": [
+        null,
+        "Wezwa sengathi izindaba zakho ziphatheke ngobumfihlo abasebenzi?"
+    ],
+    "Thank you for rating our service.": [
+        null,
+        "Siyabonga."
+    ]
+}

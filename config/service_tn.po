@@ -1,0 +1,121 @@
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2014-08-05 12:55:+0200\n"
+"Project-Id-Version: Service rating\n"
+"Language-Team: Language <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2014-08-05 18:27+0200\n"
+"Last-Translator: \n"
+"X-Generator: Poedit 1.6.7\n"
+"Language: tn\n"
+
+#: go-app-servicerating.js:27
+msgid "Jan"
+msgstr "Jan"
+
+#: go-app-servicerating.js:28
+msgid "Feb"
+msgstr "Feb"
+
+#: go-app-servicerating.js:29
+msgid "Mar"
+msgstr "Mar"
+
+#: go-app-servicerating.js:30
+msgid "Apr"
+msgstr "Apr"
+
+#: go-app-servicerating.js:31
+msgid "May"
+msgstr "Mat"
+
+#: go-app-servicerating.js:32
+msgid "Jun"
+msgstr "Jun"
+
+#: go-app-servicerating.js:33
+msgid "Jul"
+msgstr "Jul"
+
+#: go-app-servicerating.js:34
+msgid "Aug"
+msgstr "Aug"
+
+#: go-app-servicerating.js:35
+msgid "Sep"
+msgstr "Sep"
+
+#: go-app-servicerating.js:36
+msgid "Oct"
+msgstr "Oct"
+
+#: go-app-servicerating.js:37
+msgid "Nov"
+msgstr "Nov"
+
+#: go-app-servicerating.js:38
+msgid "Dec"
+msgstr "Dec"
+
+#: go-app-servicerating.js:922
+msgid ""
+"Welcome. When you signed up, were staff at the facility friendly & helpful?"
+msgstr "Amogelega. Ka ikwadiso, botsalano & thuso ya badiri?"
+
+#: go-app-servicerating.js:925 go-app-servicerating.js:940
+#: go-app-servicerating.js:970 go-app-servicerating.js:985
+msgid "Very Satisfied"
+msgstr "Kgotsofetse thata"
+
+#: go-app-servicerating.js:926 go-app-servicerating.js:941
+#: go-app-servicerating.js:971 go-app-servicerating.js:986
+msgid "Satisfied"
+msgstr "Kgotsofetse"
+
+#: go-app-servicerating.js:927 go-app-servicerating.js:942
+#: go-app-servicerating.js:972 go-app-servicerating.js:987
+msgid "Not Satisfied"
+msgstr "Ga go kgotsofalo"
+
+#: go-app-servicerating.js:928 go-app-servicerating.js:943
+#: go-app-servicerating.js:973 go-app-servicerating.js:988
+msgid "Very unsatisfied"
+msgstr "Ga go kgotsofao gotlhelele"
+
+#: go-app-servicerating.js:937
+msgid "How do you feel about the time you had to wait at the facility?"
+msgstr "O ikutlwa jang ka nako e o e emeng kwa lefelong?"
+
+#: go-app-servicerating.js:952
+msgid "How long did you wait to be helped at the clinic?"
+msgstr "O eme lobaka lo lo kana kang go bona thuso kwa tliliniking?"
+
+#: go-app-servicerating.js:955
+msgid "Less than an hour"
+msgstr "Kwa tlase ga ura"
+
+#: go-app-servicerating.js:956
+msgid "Between 1 and 3 hours"
+msgstr "Magareng ga ura  le di le 3"
+
+#: go-app-servicerating.js:957
+msgid "More than 4 hours"
+msgstr "Go feta diura di le 4"
+
+#: go-app-servicerating.js:958
+msgid "All day"
+msgstr "Motshegare otlhe"
+
+#: go-app-servicerating.js:967
+msgid "Was the facility clean?"
+msgstr "A lefelo le ne le le phepa?"
+
+#: go-app-servicerating.js:982
+msgid "Did you feel that your privacy was respected by the staff?"
+msgstr "A botho (sephiri) ba gago bo be ba tlotlwa ke badiri?"
+
+#: go-app-servicerating.js:997
+msgid "Thank you for rating our service."
+msgstr "Re leboga."

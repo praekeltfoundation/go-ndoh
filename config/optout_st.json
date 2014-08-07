@@ -1,0 +1,107 @@
+{
+    "": {
+        "pot-creation-date": "2014-08-05 12:54:+0200",
+        "project-id-version": "opt_out_ST",
+        "language-team": "Language <LL@li.org>",
+        "mime-version": "1.0",
+        "content-type": "text/plain; charset=UTF-8",
+        "content-transfer-encoding": "8bit",
+        "po-revision-date": "2014-08-06 13:30+0200",
+        "last-translator": "",
+        "x-generator": "Poedit 1.6.7",
+        "plural-forms": "nplurals=2; plural=(n != 1);",
+        "language": "st"
+    },
+    "Jan": [
+        null,
+        "Phere"
+    ],
+    "Feb": [
+        null,
+        "Hlakola"
+    ],
+    "Mar": [
+        null,
+        "Hlakub"
+    ],
+    "Apr": [
+        null,
+        "Mmesa"
+    ],
+    "May": [
+        null,
+        "Motsh"
+    ],
+    "Jun": [
+        null,
+        "Phupj"
+    ],
+    "Jul": [
+        null,
+        "Phupu"
+    ],
+    "Aug": [
+        null,
+        "Phato"
+    ],
+    "Sep": [
+        null,
+        "Loetse"
+    ],
+    "Oct": [
+        null,
+        "Mpha"
+    ],
+    "Nov": [
+        null,
+        "Pudu"
+    ],
+    "Dec": [
+        null,
+        "Tshitwe"
+    ],
+    "Please let us know why you do not want MomConnect messages": [
+        null,
+        "Ka kopo re bolelle keng o sa batle melaetsa ya MomConnect"
+    ],
+    "Miscarriage": [
+        null,
+        "Mpa e tswile"
+    ],
+    "Baby was stillborn": [
+        null,
+        "Lesea le kgathetse"
+    ],
+    "Baby died": [
+        null,
+        " Lesea le hlokahetse"
+    ],
+    "Messages not useful": [
+        null,
+        "Melaetsa ha e na molemo"
+    ],
+    "Other": [
+        null,
+        " Le leng"
+    ],
+    "We are sorry for your loss. Would you like to receive a small set of free messages to help you in this difficult time?": [
+        null,
+        "Re mohau ka tahlehelo ya hao. O ka rata ho fumana sete e nyane ya melaetsa ya mahala e ka thusang nakong ena e boima?"
+    ],
+    "Yes": [
+        null,
+        "E"
+    ],
+    "No": [
+        null,
+        "Tjhee"
+    ],
+    "Thank you. You will no longer receive messages from us. If you have any medical concerns please visit your nearest clinic.": [
+        null,
+        "Re a leboha.  O ke ke wa hlola o fumana melaetsa e tswang ho rona. Ha o na le dingongoreho dife kapa dife tsa bongaka ka kopo etela tleleniki e haufi le wena."
+    ],
+    "Thank you. You will receive support messages from MomConnect in the coming weeks.": [
+        null,
+        "Re a leboha. O tla fumana melaetsa ya tshehetso ho tswa ho MomConnect dibekeng tse tlang."
+    ]
+}

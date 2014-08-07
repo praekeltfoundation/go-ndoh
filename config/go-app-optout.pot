@@ -1,0 +1,108 @@
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2014-08-05 12:54:+0200\n"
+"Project-Id-Version: PACKAGE VERSION\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+
+#: go-app-optout.js:27
+msgid "Jan"
+msgstr ""
+
+#: go-app-optout.js:28
+msgid "Feb"
+msgstr ""
+
+#: go-app-optout.js:29
+msgid "Mar"
+msgstr ""
+
+#: go-app-optout.js:30
+msgid "Apr"
+msgstr ""
+
+#: go-app-optout.js:31
+msgid "May"
+msgstr ""
+
+#: go-app-optout.js:32
+msgid "Jun"
+msgstr ""
+
+#: go-app-optout.js:33
+msgid "Jul"
+msgstr ""
+
+#: go-app-optout.js:34
+msgid "Aug"
+msgstr ""
+
+#: go-app-optout.js:35
+msgid "Sep"
+msgstr ""
+
+#: go-app-optout.js:36
+msgid "Oct"
+msgstr ""
+
+#: go-app-optout.js:37
+msgid "Nov"
+msgstr ""
+
+#: go-app-optout.js:38
+msgid "Dec"
+msgstr ""
+
+#: go-app-optout.js:924
+msgid "Please let us know why you do not want MomConnect messages"
+msgstr ""
+
+#: go-app-optout.js:927
+msgid "Miscarriage"
+msgstr ""
+
+#: go-app-optout.js:928
+msgid "Baby was stillborn"
+msgstr ""
+
+#: go-app-optout.js:929
+msgid "Baby died"
+msgstr ""
+
+#: go-app-optout.js:930
+msgid "Messages not useful"
+msgstr ""
+
+#: go-app-optout.js:931
+msgid "Other"
+msgstr ""
+
+#: go-app-optout.js:965
+msgid ""
+"We are sorry for your loss. Would you like to receive a small set of free "
+"messages to help you in this difficult time?"
+msgstr ""
+
+#: go-app-optout.js:970
+msgid "Yes"
+msgstr ""
+
+#: go-app-optout.js:971
+msgid "No"
+msgstr ""
+
+#: go-app-optout.js:997
+msgid ""
+"Thank you. You will no longer receive messages from us. If you have any "
+"medical concerns please visit your nearest clinic."
+msgstr ""
+
+#: go-app-optout.js:1007
+msgid ""
+"Thank you. You will receive support messages from MomConnect in the coming "
+"weeks."
+msgstr ""

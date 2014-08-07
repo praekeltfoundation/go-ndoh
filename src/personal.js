@@ -636,11 +636,10 @@ go.app = function() {
         // Show answer to selected question
         self.states.add('states_faq_answers', function(name, opts) {
             return new PaginatedState(name, {
-                text: opts.answer,
-                exit: $("Send to me by SMS"),
-                // wrap in translation?
-                    // make sure this is going into POT files
-                    // make sure More and Back are also being translated
+                text: $('{{ text }}').context({text: opts.answer}),
+                more: $('More'),
+                back: $('Back'),
+                exit: $('Send to me by SMS'),
                 next: function() {
                     return {
                         name: 'states_faq_end',

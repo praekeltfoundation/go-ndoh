@@ -125,6 +125,19 @@ describe("app", function() {
                 });
             });
 
+            describe("when not in the registration flow", function() {
+                it("should not fire no_incomplete", function() {
+                    return tester
+                        .setup.user.state('states_faq_topics')
+                        .input.session_event('close')
+                        .check(function(api) {
+                            var metrics = api.metrics.stores.test_metric_store;
+                            assert.equal(metrics['test.personal.states_faq_topics.no_incomplete'], undefined);
+                        })
+                        .run();
+                });
+            });
+
             describe("when the last state is states_language", function() {
                 it("should increase states_language.no_incomplete metric by 1", function() {
                     return tester

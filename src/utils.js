@@ -107,12 +107,12 @@ go.utils = {
     },
 
     readable_sa_msisdn: function(msisdn) {
-        readable_no = '0' + msisdn.slice(3,12);
+        readable_no = '0' + msisdn.slice(msisdn.length-9, msisdn.length);
         return readable_no;
     },
 
     normalise_sa_msisdn: function(msisdn) {
-        denormalised_no = '+27' + msisdn.slice(1,10);
+        denormalised_no = '+27' + msisdn.slice(msisdn.length-9, msisdn.length);
         return denormalised_no;
     },
 

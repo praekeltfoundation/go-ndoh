@@ -16,6 +16,13 @@ describe("app", function() {
             go.utils.get_timestamp = function() {
                 return '20130819144811';
             };
+            go.utils.get_uuid = function() {
+                return 'b18c62b4-828e-4b52-25c9-725a1f43fb37';
+            };
+
+            go.utils.get_oid = function(){
+                return '2.25.169380846032024';
+            };
             
             tester = new AppTester(app);
 
@@ -145,7 +152,7 @@ describe("app", function() {
                                     language_choice: 'en',
                                     id_type: 'passport',
                                     passport_origin: 'zw',
-                                    passport_no: '12345'
+                                    passport_no: '5101025009086'
                                 },
                                 key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                                 user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
@@ -885,7 +892,7 @@ describe("app", function() {
                                     language_choice: 'en',
                                     id_type: 'passport',
                                     passport_origin: 'zw',
-                                    passport_no: '12345'
+                                    passport_no: '5101025009086'
                                 },
                                 key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                                 user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
@@ -936,7 +943,7 @@ describe("app", function() {
                                     language_choice: 'en',
                                     id_type: 'passport',
                                     passport_origin: 'zw',
-                                    passport_no: '12345'
+                                    passport_no: '5101025009086'
                                 },
                                 key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                                 user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
@@ -963,7 +970,7 @@ describe("app", function() {
                                     language_choice: 'en',
                                     id_type: 'passport',
                                     passport_origin: 'zw',
-                                    passport_no: '12345'
+                                    passport_no: '5101025009086'
                                 },
                                 key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                                 user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"

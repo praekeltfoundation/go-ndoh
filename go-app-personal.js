@@ -174,7 +174,7 @@ go.utils = {
             return contact.extra.sa_id + '^^^ZAF^NI';
           },
           'passport': function () {
-            return contact.extra.passport_no + '^^^' + contact.extra.passport_origin.toUpperCase() + '^FI';
+            return contact.extra.passport_no + '^^^' + contact.extra.passport_origin.toUpperCase() + '^PPN';
           },
           'none': function () {
             return null;
@@ -371,6 +371,8 @@ go.utils = {
 
     build_request_data: function (doc, boundary, contact) {
         var docstr = doc.toString().trim();
+        // Leave this in for easier debugging of stupid whitespace bugs
+        // console.log(docstr.replace(/ /g,"©"));
         return go.utils.build_multipart_data(boundary, [
           {
             name: "ihe-mhd-metadata",

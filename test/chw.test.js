@@ -234,21 +234,21 @@ describe("app", function() {
         describe("when the user starts a session", function() {
             it("should check if no. belongs to pregnant woman", function() {
                 return tester
-                    .setup.user.addr('+270001')
+                    .setup.user.addr('27821234444')
                     .start()
                     .check.interaction({
                         state: 'states_start',
                         reply: [
                             'Welcome to The Department of Health\'s ' +
                             'MomConnect. Tell us if this is the no. that ' +
-                            'the mother would like to get SMSs on: 00001',
+                            'the mother would like to get SMSs on: 0821234444',
                             '1. Yes',
                             '2. No'
                         ].join('\n')
                     })
                     .check(function(api) {
                         var contact = _.find(api.contacts.store, {
-                          msisdn: '+270001'
+                          msisdn: '+27821234444'
                         });
                         assert.equal(contact.extra.ussd_sessions, '1');
                         assert.equal(contact.extra.metric_sum_sessions, '1');

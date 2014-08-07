@@ -111,6 +111,20 @@ describe("app", function() {
         // no_incomplete metric tests
         describe("when a session is terminated", function() {
 
+            describe("when the last state is states_start", function() {
+                it("should not fire no_incomplete", function() {
+                    return tester
+                        .setup.user.lang('en')
+                        .start()
+                        .input.session_event('close')
+                        .check(function(api) {
+                            var metrics = api.metrics.stores.test_metric_store;
+                            assert.equal(metrics['test.personal.states_start.no_incomplete'], undefined);
+                        })
+                        .run();
+                });
+            });
+
             describe("when the last state is states_language", function() {
                 it("should increase states_language.no_incomplete metric by 1", function() {
                     return tester
@@ -173,31 +187,31 @@ describe("app", function() {
 
         describe("when a new session is started", function() {
 
-            // describe("when it is a new user logging on", function() {
-            //     it("should set the last metric value in states_start.no_incomplete to 0", function() {
-            //         return tester
-            //             .setup.user.addr('+275678')
-            //             .start()
-            //             .check(function(api) {
-            //                 var metrics = api.metrics.stores.test_metric_store;
-            //                 assert.deepEqual(metrics['test.personal.states_start.no_incomplete'].values, [1, 0]);
-            //             })
-            //             .run();
-            //     });
-            // });
+            describe("when a new user hits states_start", function() {
+                it("should not fire no_incomplete", function() {
+                    return tester
+                        .setup.user.addr('+275678')
+                        .start()
+                        .check(function(api) {
+                            var metrics = api.metrics.stores.test_metric_store;
+                            assert.equal(metrics['test.personal.states_start.no_incomplete'], undefined);
+                        })
+                        .run();
+                });
+            });
 
-            // describe("when it is an existing user logging on at states_start", function() {
-            //     it("should decrease the metric states_start.no_incomplete by 1", function() {
-            //         return tester
-            //             .setup.user.lang('en')  // make sure user is not seen as new
-            //             .start()
-            //             .check(function(api) {
-            //                 var metrics = api.metrics.stores.test_metric_store;
-            //                 assert.deepEqual(metrics['test.personal.states_start.no_incomplete'].values, [-1]);
-            //             })
-            //             .run();
-            //     });
-            // });
+            describe("when an existing user hits states_start", function() {
+                it("should not fire no_incomplete", function() {
+                    return tester
+                        .setup.user.lang('en')  // make sure user is not seen as new
+                        .start()
+                        .check(function(api) {
+                            var metrics = api.metrics.stores.test_metric_store;
+                            assert.equal(metrics['test.personal.states_start.no_incomplete'], undefined);
+                        })
+                        .run();
+                });
+            });
 
             describe("when it is an existing starting a session at states_birth_day", function() {
                 it("should decrease the metric states_birth_day.no_incomplete by 1", function() {

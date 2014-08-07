@@ -174,7 +174,7 @@ go.utils = {
             return contact.extra.sa_id + '^^^ZAF^NI';
           },
           'passport': function () {
-            return contact.extra.passport_no + '^^^' + contact.extra.passport_origin.toUpperCase() + '^FI';
+            return contact.extra.passport_no + '^^^' + contact.extra.passport_origin.toUpperCase() + '^PPN';
           },
           'none': function () {
             return null;
@@ -371,6 +371,8 @@ go.utils = {
 
     build_request_data: function (doc, boundary, contact) {
         var docstr = doc.toString().trim();
+        // Leave this in for easier debugging of stupid whitespace bugs
+        // console.log(docstr.replace(/ /g,"©"));
         return go.utils.build_multipart_data(boundary, [
           {
             name: "ihe-mhd-metadata",
@@ -1342,18 +1344,34 @@ go.app = function() {
                         opts = go.utils.subscription_type_and_rate(self.contact, self.im);
                         self.contact.extra.subscription_type = opts.sub_type.toString();
                         self.contact.extra.subscription_rate = opts.sub_rate.toString();
-                        return Q.all([
-
-                            go.utils.jembi_send_json(self.contact, self.user, 'pre-registration', self.im, self.metric_prefix),
-                            go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix, opts),
-                            self.im.outbound.send({
-                                to: self.contact,
-                                endpoint: 'sms',
-                                content: "Congratulations on your pregnancy. You will now get free SMSs about MomConnect. " +
-                                         "You can register for the full set of FREE helpful messages at a clinic."
-                            }),
-                            self.im.contacts.save(self.contact)
-                        ]);
+                        if (self.contact.extra.id_type !== undefined){
+                            if (self.contact.extra.id_type === 'none') {
+                                return Q.all([
+                                    go.utils.jembi_send_json(self.contact, self.user, 'pre-registration', self.im, self.metric_prefix),
+                                    go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix, opts),
+                                    self.im.outbound.send({
+                                        to: self.contact,
+                                        endpoint: 'sms',
+                                        content: $("Congratulations on your pregnancy. You will now get free SMSs about MomConnect. " +
+                                                 "You can register for the full set of FREE helpful messages at a clinic.")
+                                    }),
+                                    self.im.contacts.save(self.contact)
+                                ]);
+                            } else {
+                                return Q.all([
+                                    go.utils.jembi_send_doc(self.contact, self.user, self.im, self.metric_prefix),
+                                    go.utils.jembi_send_json(self.contact, self.user, 'pre-registration', self.im, self.metric_prefix),
+                                    go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix, opts),
+                                    self.im.outbound.send({
+                                        to: self.contact,
+                                        endpoint: 'sms',
+                                        content: $("Congratulations on your pregnancy. You will now get free SMSs about MomConnect. " +
+                                                 "You can register for the full set of FREE helpful messages at a clinic.")
+                                    }),
+                                    self.im.contacts.save(self.contact)
+                                ]);
+                            }
+                        }
                     }
                 }
             });

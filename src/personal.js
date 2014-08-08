@@ -111,12 +111,34 @@ go.app = function() {
             self.states.add(name, function(name, opts) {
                 opts = _.defaults(opts || {}, {in_header: true});
 
+                // var registration_states = [
+                //     'states_language',
+                //     'states_register_info',
+                //     'states_suspect_pregnancy',
+                //     'states_id_type',
+                //     'states_sa_id',
+                //     'states_passport_origin',
+                //     'states_passport_no',
+                //     'states_birth_year',
+                //     'states_birth_month',
+                //     'states_birth_day'
+                // ];
+
                 if (!opts.in_header || !go.utils.timed_out(self.im))
                     return creator(name, opts);
+
+                // if (!_.contains(registration_states, name)) {
+                //     return creator('states_start', opts);
+                // }
+
+                // if (!_.contains(registration_states, name)) {
+                //     return self.states.create('states_start');
+                // }
 
                 opts.name = name;
                 opts.in_header = false;
                 return self.states.create('states_timed_out', opts);
+                
             });
         };
 

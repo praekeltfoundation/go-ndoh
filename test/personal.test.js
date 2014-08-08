@@ -293,10 +293,9 @@ describe("app", function() {
                         .check.interaction({
                             state: 'states_timed_out',
                             reply: [
-                                'Would you like to complete pregnancy registration ' +
-                                'for 0821234444?',
-                                '1. Yes',
-                                '2. Start new registration'
+                                'Welcome back. Please select an option:',
+                                '1. Continue signing up for messages',
+                                '2. Main menu'
                             ].join('\n')
                         })
                         .run();

@@ -1069,16 +1069,12 @@ go.app = function() {
         });
 
         self.add('states_timed_out', function(name, creator_opts) {
-            var readable_no = go.utils.readable_sa_msisdn(self.im.user.addr);
-
             return new ChoiceState(name, {
-                question: $('Would you like to complete pregnancy registration for ' +
-                            '{{ num }}?')
-                    .context({ num: readable_no }),
+                question: $('Welcome back. Please select an option:'),
 
                 choices: [
-                    new Choice(creator_opts.name, $('Yes')),
-                    new Choice('states_start', $('Start new registration'))
+                    new Choice(creator_opts.name, $('Continue signing up for messages')),
+                    new Choice('states_start', $('Main menu'))
                 ],
 
                 next: function(choice) {

@@ -291,7 +291,7 @@ describe("app", function() {
                             'states_register_info': 'register'
                         })
                         .setup.user.state('states_suspect_pregnancy')
-                        .inputs(session_event('new'), '1')
+                        .inputs( {session_event: 'new'}, '1')
                         .check.interaction({
                             state: 'states_suspect_pregnancy',
                             reply: [
@@ -324,7 +324,7 @@ describe("app", function() {
                             'states_register_info': 'register'
                         })
                         .setup.user.state('states_suspect_pregnancy')
-                        .inputs(session_event('new'), '2')
+                        .inputs( {session_event: 'new'}, '2')
                         .check.interaction({
                             state: 'states_language',
                             reply: [

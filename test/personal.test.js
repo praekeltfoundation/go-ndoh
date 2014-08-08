@@ -239,10 +239,114 @@ describe("app", function() {
             });
         });
 
+        describe("when a user timed out", function() {
 
-        describe("when the user starts a session", function() {
+            describe("when the user timed out during registration on public", function() {
+                it("should ask it they want to continue registration", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27821234444',
+                                extra : {
+                                    language_choice: 'en',
+                                    is_registered: 'false',
+                                },
+                            });
+                        })
+                        .setup.user.addr('27821234444')
+                        .setup.user.answers({
+                            'states_language': 'en',
+                            'states_register_info': 'register'
+                        })
+                        .setup.user.state('states_suspect_pregnancy')
+                        .input.session_event('new')
+                        .check.interaction({
+                            state: 'states_timed_out',
+                            reply: [
+                                'Would you like to complete pregnancy registration ' +
+                                'for 0821234444?',
+                                '1. Yes',
+                                '2. Start new registration'
+                            ].join('\n')
+                        })
+                        .run();
+                });
+            });
 
-            describe("when the user has not registered", function() {
+            describe("when the user chooses to continue registration", function() {
+                it("should take them back to state they were on at timeout", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27821234444',
+                                extra : {
+                                    language_choice: 'en',
+                                    is_registered: 'false',
+                                },
+                            });
+                        })
+                        .setup.user.addr('27821234444')
+                        .setup.user.answers({
+                            'states_language': 'en',
+                            'states_register_info': 'register'
+                        })
+                        .setup.user.state('states_suspect_pregnancy')
+                        .inputs(session_event('new'), '1')
+                        .check.interaction({
+                            state: 'states_suspect_pregnancy',
+                            reply: [
+                                'MomConnect sends free support SMSs to ' +
+                                'pregnant mothers. Are you or do you suspect ' +
+                                'that you are pregnant?',
+                                '1. Yes',
+                                '2. No'
+                            ].join('\n')
+                        })
+                        .run();
+                });
+            });
+
+            describe("when the user chooses to abort registration", function() {
+                it("should take them back to states_language", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27821234444',
+                                extra : {
+                                    language_choice: 'en',
+                                    is_registered: 'false',
+                                },
+                            });
+                        })
+                        .setup.user.addr('27821234444')
+                        .setup.user.answers({
+                            'states_language': 'en',
+                            'states_register_info': 'register'
+                        })
+                        .setup.user.state('states_suspect_pregnancy')
+                        .inputs(session_event('new'), '2')
+                        .check.interaction({
+                            state: 'states_language',
+                            reply: [
+                                'Welcome to MomConnect. Please choose language:',
+                                '1. Eng',
+                                '2. Afrik',
+                                '3. Zulu',
+                                '4. Xhosa',
+                                '5. Sotho',
+                                '6. Setswana'
+                            ].join('\n')
+                        })
+                        .run();
+                });
+            });
+
+
+        });
+
+        describe("when the user starts a session (no prior timeout)", function() {
+
+            describe("when the user has not started registration", function() {
                 it("should ask for their preferred language", function() {
                     return tester
                         .setup.user.addr('+27001')
@@ -273,7 +377,7 @@ describe("app", function() {
                 });
             });
 
-            describe("when the user has partially registered", function() {
+            describe("when the user had partially registered on another line", function() {
                 it("should ask for their preferred language", function() {
                     return tester
                         .setup(function(api) {

@@ -94,6 +94,19 @@ go.app = function() {
             }
         };
 
+        self.add = function(name, creator) {
+            self.states.add(name, function(name, opts) {
+                opts = _.defaults(opts || {}, {in_header: true});
+
+                if (!opts.in_header || !timed_out())
+                    return creator(name, opts);
+
+                opts.name = name;
+                opts.in_header = false;
+                return self.states.create('states_timed_out', opts);
+            });
+        };
+
 
 
 

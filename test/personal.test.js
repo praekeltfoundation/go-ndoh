@@ -328,9 +328,9 @@ describe("app", function() {
                         .check.interaction({
                             state: 'states_language',
                             reply: [
-                                'Welcome to MomConnect. Please choose language:',
-                                '1. Eng',
-                                '2. Afrik',
+                                'Welcome to the Department of Health\'s MomConnect. Choose your language:',
+                                '1. English',
+                                '2. Afrikaans',
                                 '3. Zulu',
                                 '4. Xhosa',
                                 '5. Sotho',
@@ -340,8 +340,6 @@ describe("app", function() {
                         .run();
                 });
             });
-
-
         });
 
         describe("when the user starts a session (no prior timeout)", function() {

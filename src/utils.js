@@ -884,6 +884,11 @@ go.utils = {
         if (contact.extra.language_choice !== null) {
             return user.set_lang(contact.extra.language_choice);
         }
-    }
+    },
 
+    timed_out: function(im) {
+        return im.msg.session_event === 'new'
+            && im.user.state.name
+            && im.user.state.name !== 'states_start';
+    }
 };

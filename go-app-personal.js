@@ -1013,7 +1013,7 @@ go.app = function() {
             self.states.add(name, function(name, opts) {
                 opts = _.defaults(opts || {}, {in_header: true});
 
-                if (!opts.in_header || !timed_out())
+                if (!opts.in_header || !go.utils.timed_out(self.im))
                     return creator(name, opts);
 
                 opts.name = name;
@@ -1021,7 +1021,6 @@ go.app = function() {
                 return self.states.create('states_timed_out', opts);
             });
         };
-
 
 
 
@@ -1047,7 +1046,27 @@ go.app = function() {
             }
         });
 
+        self.states.add('states_timed_out', function(name, creator_opts) {
+            var readable_no = go.utils.readable_sa_msisdn(self.im.user.addr);
 
+            return new ChoiceState(name, {
+                question: $('Would you like to complete pregnancy registration for ' +
+                            '{{ num }}?')
+                    .context({ num: readable_no }),
+
+                choices: [
+                    new Choice(creator_opts.name, $('Yes')),
+                    new Choice('states_start', $('Start new registration'))
+                ],
+
+                next: function(choice) {
+                    return {
+                        name: choice.value,
+                        creator_opts: creator_opts
+                    };
+                }
+            });
+        });
 
         self.states.add('states_registered_full', function(name) {
             return new ChoiceState(name, {

@@ -1,0 +1,119 @@
+{
+    "": {
+        "pot-creation-date": "2014-08-05 12:55:+0200",
+        "project-id-version": "service rating",
+        "language-team": "Language <LL@li.org>",
+        "mime-version": "1.0",
+        "content-type": "text/plain; charset=UTF-8",
+        "content-transfer-encoding": "8bit",
+        "po-revision-date": "2014-08-05 22:55+0200",
+        "last-translator": "",
+        "x-generator": "Poedit 1.6.7",
+        "plural-forms": "nplurals=2; plural=(n != 1);",
+        "language": "st"
+    },
+    "Jan": [
+        null,
+        "Phere"
+    ],
+    "Feb": [
+        null,
+        "Hlakola"
+    ],
+    "Mar": [
+        null,
+        "Hlakub"
+    ],
+    "Apr": [
+        null,
+        "Mmesa"
+    ],
+    "May": [
+        null,
+        "Motsh"
+    ],
+    "Jun": [
+        null,
+        "Phupj"
+    ],
+    "Jul": [
+        null,
+        "Phupu"
+    ],
+    "Aug": [
+        null,
+        "Phato"
+    ],
+    "Sep": [
+        null,
+        "Loetse"
+    ],
+    "Oct": [
+        null,
+        "Mpha"
+    ],
+    "Nov": [
+        null,
+        "Pudu"
+    ],
+    "Dec": [
+        null,
+        "Tshitwe"
+    ],
+    "Welcome. When you signed up, were staff at the facility friendly & helpful?": [
+        null,
+        "Amoheleha.Ngodisong,na moifo wa thuso o mosa o a thusa?"
+    ],
+    "Very Satisfied": [
+        null,
+        "Kgotsofetse haholo"
+    ],
+    "Satisfied": [
+        null,
+        "Kgotsofetse"
+    ],
+    "Not Satisfied": [
+        null,
+        "Ha ke a kgotsofala"
+    ],
+    "Very unsatisfied": [
+        null,
+        "Ha ke a kgotsofala ho hang"
+    ],
+    "How do you feel about the time you had to wait at the facility?": [
+        null,
+        "O utlwa jwang ka nako o emeng ka yona thusong?"
+    ],
+    "How long did you wait to be helped at the clinic?": [
+        null,
+        "O eme nako e kae hore o thuswe tleleniki?"
+    ],
+    "Less than an hour": [
+        null,
+        "Ka tlase ho hora"
+    ],
+    "Between 1 and 3 hours": [
+        null,
+        "Pakeng tsa hora e le 1 le tse 3"
+    ],
+    "More than 4 hours": [
+        null,
+        "Ho feta dihora tse 4"
+    ],
+    "All day": [
+        null,
+        "etsatsi lohle"
+    ],
+    "Was the facility clean?": [
+        null,
+        "Na tlhophisetso e ne hlwekile?"
+    ],
+    "Did you feel that your privacy was respected by the staff?": [
+        null,
+        "Na o utlwile hore bowena bo hlomphuwe ke basebeletsi?"
+    ],
+    "Thank you for rating our service.": [
+        null,
+        "Re a leboha."
+    ]
+}

@@ -1,0 +1,116 @@
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2014-08-05 12:54:+0200\n"
+"Project-Id-Version: opt_out_TN\n"
+"Language-Team: Language <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2014-08-06 13:40+0200\n"
+"Last-Translator: \n"
+"X-Generator: Poedit 1.6.7\n"
+"Language: tn\n"
+
+#: go-app-optout.js:27
+msgid "Jan"
+msgstr "Jan"
+
+#: go-app-optout.js:28
+msgid "Feb"
+msgstr "Feb"
+
+#: go-app-optout.js:29
+msgid "Mar"
+msgstr "Mar"
+
+#: go-app-optout.js:30
+msgid "Apr"
+msgstr "Apr"
+
+#: go-app-optout.js:31
+msgid "May"
+msgstr "May"
+
+#: go-app-optout.js:32
+msgid "Jun"
+msgstr "June"
+
+#: go-app-optout.js:33
+msgid "Jul"
+msgstr "July"
+
+#: go-app-optout.js:34
+msgid "Aug"
+msgstr "August"
+
+#: go-app-optout.js:35
+msgid "Sep"
+msgstr "Sept"
+
+#: go-app-optout.js:36
+msgid "Oct"
+msgstr "Oct"
+
+#: go-app-optout.js:37
+msgid "Nov"
+msgstr "Nov"
+
+#: go-app-optout.js:38
+msgid "Dec"
+msgstr "Dec"
+
+#: go-app-optout.js:924
+msgid "Please let us know why you do not want MomConnect messages"
+msgstr "Bua goreng o sa batle melaetsa ya Mconnect"
+
+#: go-app-optout.js:927
+msgid "Miscarriage"
+msgstr "Ke boile tseleng"
+
+#: go-app-optout.js:928
+msgid "Baby was stillborn"
+msgstr "Ngwana o fetile"
+
+#: go-app-optout.js:929
+msgid "Baby died"
+msgstr "Ngwana o sule"
+
+#: go-app-optout.js:930
+msgid "Messages not useful"
+msgstr "Melaetsa ga e mosola"
+
+#: go-app-optout.js:931
+msgid "Other"
+msgstr "Tse dingwe"
+
+#: go-app-optout.js:965
+msgid ""
+"We are sorry for your loss. Would you like to receive a small set of free "
+"messages to help you in this difficult time?"
+msgstr ""
+"Re botlhoko ka tatlhegelo ya gago. A o rata go amogela sete ya melaetsa e e "
+"ka go thusang mo nakong e e thata e? "
+
+#: go-app-optout.js:970
+msgid "Yes"
+msgstr "Ee"
+
+#: go-app-optout.js:971
+msgid "No"
+msgstr "Nnyaa"
+
+#: go-app-optout.js:997
+msgid ""
+"Thank you. You will no longer receive messages from us. If you have any "
+"medical concerns please visit your nearest clinic."
+msgstr ""
+"Re leboga. Gankitla o tlhola o amogela melaetsa go tswa go rona. Fa o na le "
+"matshwenyego a tsa kalafo, etela tliliniki e e gaufi nao."
+
+#: go-app-optout.js:1007
+msgid ""
+"Thank you. You will receive support messages from MomConnect in the coming "
+"weeks."
+msgstr ""
+"Re a leboga. O tla amogela melaetsa ya tshegetso go tswa go MomConnect mo "
+"dibekeng tse di tlang."

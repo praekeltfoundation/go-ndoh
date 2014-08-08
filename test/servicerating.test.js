@@ -74,12 +74,11 @@ describe("app", function() {
                     .check.interaction({
                         state: 'question_1_friendliness',
                         reply: [
-                            'Hi. When u were signed up, were the staff ' +
-                            'at the facility friendly and helpful?',
-                            '1. Very Satisfied :D',
-                            '2. Satisfied :)',
-                            '3. Not Satisfied :(',
-                            '4. Very unsatisfied :('
+                            'Welcome. When you signed up, were staff at the facility friendly & helpful?',
+                            '1. Very Satisfied',
+                            '2. Satisfied',
+                            '3. Not Satisfied',
+                            '4. Very unsatisfied'
                         ].join('\n')
                     })
                     .check.user.properties({lang: 'zu'})
@@ -97,10 +96,10 @@ describe("app", function() {
                         state: 'question_2_waiting_times_feel',
                         reply: [
                             'How do you feel about the time you had to wait at the facility?',
-                            '1. Very Satisfied :D',
-                            '2. Satisfied :)',
-                            '3. Not Satisfied :(',
-                            '4. Very unsatisfied :('
+                            '1. Very Satisfied',
+                            '2. Satisfied',
+                            '3. Not Satisfied',
+                            '4. Very unsatisfied'
                         ].join('\n')
                     })
                     .run();
@@ -137,10 +136,10 @@ describe("app", function() {
                         state: 'question_4_cleanliness',
                         reply: [
                             'Was the facility clean?',
-                            '1. Very Satisfied :D',
-                            '2. Satisfied :)',
-                            '3. Not Satisfied :(',
-                            '4. Very unsatisfied :('
+                            '1. Very Satisfied',
+                            '2. Satisfied',
+                            '3. Not Satisfied',
+                            '4. Very unsatisfied'
                         ].join('\n')
                     })
                     .run();
@@ -157,10 +156,10 @@ describe("app", function() {
                         state: 'question_5_privacy',
                         reply: [
                             'Did you feel that your privacy was respected by the staff?',
-                            '1. Very Satisfied :D',
-                            '2. Satisfied :)',
-                            '3. Not Satisfied :(',
-                            '4. Very unsatisfied :('
+                            '1. Very Satisfied',
+                            '2. Satisfied',
+                            '3. Not Satisfied',
+                            '4. Very unsatisfied'
                         ].join('\n')
                     })
                     .run();
@@ -190,9 +189,7 @@ describe("app", function() {
                     .check.interaction({
                         state: 'end_thanks',
                         reply: [
-                            'Thank you for rating our service. For baby and pregnancy ' +
-                            'help or if you have compliments or complaints ' +
-                            'dial *134*550# or reply to any of the SMSs you receive'
+                            'Thank you for rating our service.'
                         ].join('\n')
                     })
                     .check.reply.ends_session()
@@ -261,8 +258,7 @@ describe("app", function() {
                         var sms = smses[0];
                         assert.equal(smses.length,1);
                         assert.equal(sms.content, 
-                            "Thank you for rating our service. If you have further queries " +
-                            "or complaints please dial *134*550# or reply to any of the SMSs you receive"
+                            "Thank you for rating our service."
                         );
                         assert.equal(sms.to_addr,'+27001');
                     })

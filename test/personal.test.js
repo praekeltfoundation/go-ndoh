@@ -53,7 +53,7 @@ describe("app", function() {
                     endpoints: {
                         "sms": {"delivery_class": "sms"}
                     },
-                    channel: "*120*550#",
+                    channel: "*134*550#",
                     jembi: {
                         username: 'foo',
                         password: 'bar',
@@ -354,9 +354,9 @@ describe("app", function() {
                         .check.interaction({
                             state: 'states_language',
                             reply: [
-                                'Welcome to MomConnect. Please choose language:',
-                                '1. Eng',
-                                '2. Afrik',
+                                'Welcome to the Department of Health\'s MomConnect. Choose your language:',
+                                '1. English',
+                                '2. Afrikaans',
                                 '3. Zulu',
                                 '4. Xhosa',
                                 '5. Sotho',
@@ -394,9 +394,9 @@ describe("app", function() {
                         .check.interaction({
                             state: 'states_language',
                             reply: [
-                                'Welcome to MomConnect. Please choose language:',
-                                '1. Eng',
-                                '2. Afrik',
+                                'Welcome to the Department of Health\'s MomConnect. Choose your language:',
+                                '1. English',
+                                '2. Afrikaans',
                                 '3. Zulu',
                                 '4. Xhosa',
                                 '5. Sotho',
@@ -509,11 +509,7 @@ describe("app", function() {
                             var sms = smses[0];
                             assert.equal(smses.length, 1);
                             assert.equal(sms.content,
-                                'Please reply to this message with your complaint. If your complaint ' +
-                                'relates to the service you received at a clinic, please tell us the name of ' +
-                                'the clinic or clinic worker who you interacted with. The more detail you ' +
-                                'supply, the easier it will be for us to follow up for you. Kind regards. ' + 
-                                'MomConnect'
+                                'Please reply to this message with your complaint. If your complaint relates to the service at a clinic, please tell us the name of the clinic or clinic worker.'
                             );
                         })
                         .check.reply.ends_session()
@@ -549,10 +545,7 @@ describe("app", function() {
                             var sms = smses[0];
                             assert.equal(smses.length, 1);
                             assert.equal(sms.content,
-                                'Please reply to this message with your compliment. If your compliment ' +
-                                'relates to the service you received at a clinic, please tell us the name of ' +
-                                'the clinic or clinic worker who you interacted with. Thank you for using our ' +
-                                'service. MomConnect.'
+                                'Please reply to this message with your compliment. If your compliment relates to the service at a clinic, tell us the name of the clinic or clinic worker.'
                             );
                         })
                         .check.reply.ends_session()
@@ -744,10 +737,7 @@ describe("app", function() {
                     .input('5101015009088')
                     .check.interaction({
                         state: 'states_end_success',
-                        reply: ('Thank you for subscribing to MomConnect. ' +
-                            'You will now receive free messages about ' +
-                            'MomConnect. Visit your nearest clinic to get ' + 
-                            'the full set of messages.')
+                        reply: ('Congratulations on your pregnancy. You will now get free SMSs about MomConnect. You can register for the full set of FREE helpful messages at a clinic.')
                     })
                     .check(function(api) {
                         var contact = api.contacts.store[0];
@@ -782,10 +772,7 @@ describe("app", function() {
                     .input('5101025009086')
                     .check.interaction({
                         state: 'states_end_success',
-                        reply: ('Thank you for subscribing to MomConnect. ' +
-                            'You will now receive free messages about ' +
-                            'MomConnect. Visit your nearest clinic to get ' + 
-                            'the full set of messages.')
+                        reply: ('Congratulations on your pregnancy. You will now get free SMSs about MomConnect. You can register for the full set of FREE helpful messages at a clinic.')
                     })
                     .check(function(api) {
                         var contact = api.contacts.store[0];
@@ -942,10 +929,7 @@ describe("app", function() {
                     .input('12345')
                     .check.interaction({
                         state: 'states_end_success',
-                        reply: ('Thank you for subscribing to MomConnect. ' +
-                            'You will now receive free messages about ' +
-                            'MomConnect. Visit your nearest clinic to get ' + 
-                            'the full set of messages.')
+                        reply: ('Congratulations on your pregnancy. You will now get free SMSs about MomConnect. You can register for the full set of FREE helpful messages at a clinic.')
                     })
                     .check(function(api) {
                         var contact = api.contacts.store[0];
@@ -1124,10 +1108,7 @@ describe("app", function() {
                     .input('1')
                     .check.interaction({
                         state: 'states_end_success',
-                        reply: ('Thank you for subscribing to MomConnect. ' +
-                            'You will now receive free messages about ' +
-                            'MomConnect. Visit your nearest clinic to get ' + 
-                            'the full set of messages.')
+                        reply: ('Congratulations on your pregnancy. You will now get free SMSs about MomConnect. You can register for the full set of FREE helpful messages at a clinic.')
                     })
                     .check(function(api) {
                         var contact = api.contacts.store[0];
@@ -1192,10 +1173,7 @@ describe("app", function() {
                     .input('1')
                     .check.interaction({
                         state: 'states:end_success',
-                        reply: ('Thank you for subscribing to MomConnect. ' +
-                            'You will now receive free messages about ' +
-                            'MomConnect. Visit your nearest clinic to get ' + 
-                            'the full set of messages.')
+                        reply: ('Congratulations on your pregnancy. You will now get free SMSs about MomConnect. You can register for the full set of FREE helpful messages at a clinic.')
                     })
                     .check(function(api) {
                         var metrics = api.metrics.stores.test_metric_store;
@@ -1232,7 +1210,7 @@ describe("app", function() {
                 });
 
                 describe("when they have not been sent a registration sms",function() {
-                    it("should send them an sms thanking them for their registration",function() {
+                    it("should send them an sms to dial back in",function() {
                         return tester
                             .setup(function(api) {
                                 api.contacts.add( {
@@ -1251,11 +1229,35 @@ describe("app", function() {
                                 var sms = smses[0];
                                 assert.equal(smses.length,1);
                                 assert.equal(sms.content, 
-                                    "Please dial back in to *120*550# to complete the pregnancy registration."
+                                    "Your session timed out. Please dial back in to *134*550# to complete the pregnancy registration so that you can receive messages."
                                 );
                                 assert.equal(sms.to_addr,'+273323');
                             }).run();
                     });
+                });
+            });
+
+            describe("when they are browsing faq",function() {
+                it("should not send them an sms",function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add( {
+                                msisdn: '+273444',
+                                extra : {
+                                    redial_sms_sent: 'false'
+                                }
+                            });
+                        })
+                        .setup.user.addr('+273444')
+                        .setup.user.state('states_faq_topics')
+                        .input('1')
+                        .input.session_event('close')
+                        .check(function(api) {
+                            var smses = _.where(api.outbound.store, {
+                                endpoint: 'sms'
+                            });
+                            assert.equal(smses.length,0);
+                        }).run();
                 });
             });
         });
@@ -1281,12 +1283,12 @@ describe("app", function() {
                         state: 'states_faq_topics',
                         reply: [
                             'We have gathered information in the areas below. Please select:',
-                            '1. Coffee',
-                            '2. delivery',
-                            '3. Payment',
-                            '4. PowerBar',
-                            '5. Refund',
-                            '6. Subscriptions'
+                            '1. Pregnancy',
+                            '2. Labour',
+                            '3. Baby',
+                            '4. HIV',
+                            '5. Other Diseases',
+                            '6. Support'
                         ].join('\n')
                     })
                     .run();
@@ -1312,12 +1314,12 @@ describe("app", function() {
                         state: 'states_faq_topics',
                         reply: [
                             'We have gathered information in the areas below. Please select:',
-                            '1. Coffee',
-                            '2. delivery',
-                            '3. Payment',
-                            '4. PowerBar',
-                            '5. Refund',
-                            '6. Subscriptions'
+                            '1. Pregnancy',
+                            '2. Labour',
+                            '3. Baby',
+                            '4. HIV',
+                            '5. Other Diseases',
+                            '6. Support'
                         ].join('\n')
                     })
                     .run();
@@ -1333,12 +1335,12 @@ describe("app", function() {
                         state: 'states_faq_topics',
                         reply: [
                             'We have gathered information in the areas below. Please select:',
-                            '1. Coffee',
-                            '2. delivery',
-                            '3. Payment',
-                            '4. PowerBar',
-                            '5. Refund',
-                            '6. Subscriptions'
+                            '1. Pregnancy',
+                            '2. Labour',
+                            '3. Baby',
+                            '4. HIV',
+                            '5. Other Diseases',
+                            '6. Support'
                         ].join('\n')
                     })
                     .run();
@@ -1356,27 +1358,27 @@ describe("app", function() {
                         state: 'states_faq_topics',
                         reply: [
                             'We have gathered information in the areas below. Please select:',
-                            '1. Coffee',
-                            '2. delivery',
-                            '3. Payment',
-                            '4. PowerBar',
-                            '5. Refund',
-                            '6. Subscriptions'
+                            '1. Pregnancy',
+                            '2. Labour',
+                            '3. Baby',
+                            '4. HIV',
+                            '5. Other Diseases',
+                            '6. Support'
                         ].join('\n')
                     })
                     .run();
             });
         });
 
-        describe("When the user chooses topic 52", function() {
-            it("should list first page of questions in topic 52", function() {
+        describe("When the user chooses topic 881", function() {
+            it("should list first page of questions in topic 881", function() {
                 return tester
                     .setup.user.state('states_faq_topics')
                     .input('1')
                     .check.interaction({
                         state: 'states_faq_questions',
                         reply: [
-                            'Please choose a question:',
+                            'Please select one:',
                             '1. Can I order more than one box at a time?',
                             '2. What happens if I fall in love with one particular coffee?',
                             '3. More'
@@ -1386,15 +1388,15 @@ describe("app", function() {
             });
         });
 
-        describe("When the user chooses topic 52 and then 3. More", function() {
-            it("should list second page of questions in topic 52", function() {
+        describe("When the user chooses topic 881 and then 3. More", function() {
+            it("should list second page of questions in topic 881", function() {
                 return tester
                     .setup.user.state('states_faq_topics')
                     .inputs('1', '3')
                     .check.interaction({
                         state: 'states_faq_questions',
                         reply: [
-                            'Please choose a question:',
+                            'Please select one:',
                             '1. What happens if the FAQ answer is really long?',
                             '2. What happens if I realise the amount of coffee I\'ve ordered doesn\'t suit?',
                             '3. Back'
@@ -1408,15 +1410,14 @@ describe("app", function() {
             it("should show answer to question 635", function() {
                 return tester
                     .setup.user.state('states_faq_questions')
-                    .setup.user.answers({'states_faq_topics': '52'})
+                    .setup.user.answers({'states_faq_topics': '881'})
                     .input('1')
                     .check.interaction({
                         state: 'states_faq_answers',
                         reply: [
                             'If the default box of 2 x 250g is not enough for your needs, you can increase the quantity up to 7 bags (or consider the',
-                            '1. Prev',
-                            '2. Next',
-                            '0. Send to me by SMS'
+                            '1. More',
+                            '2. Send to me by SMS'
                         ].join('\n')
                     })
                     .run();
@@ -1428,15 +1429,14 @@ describe("app", function() {
             it("should show the first part of the answer of 999", function() {
                 return tester
                     .setup.user.state('states_faq_questions')
-                    .setup.user.answers({'states_faq_topics': '52'})
+                    .setup.user.answers({'states_faq_topics': '881'})
                     .inputs('3', '1')
                     .check.interaction({
                         state: 'states_faq_answers',
                         reply: [
                             'It will be split into multiple pages on a bookletstate, showing content on different screens as the text gets too long. To',
-                            '1. Prev',
-                            '2. Next',
-                            '0. Send to me by SMS'
+                            '1. More',
+                            '2. Send to me by SMS'
                         ].join('\n')
                     })
                     .run();
@@ -1447,15 +1447,15 @@ describe("app", function() {
             it("should show the second part of the answer to 999", function() {
                 return tester
                     .setup.user.state('states_faq_questions')
-                    .setup.user.answers({'states_faq_topics': '52'})
-                    .inputs('3', '1', '2')
+                    .setup.user.answers({'states_faq_topics': '881'})
+                    .inputs('3', '1', '1')
                     .check.interaction({
                         state: 'states_faq_answers',
                         reply: [
                             'illustrate this, this super long response has been faked. This should be split over at least 2 screens just because we want',
-                            '1. Prev',
-                            '2. Next',
-                            '0. Send to me by SMS'
+                            '1. More',
+                            '2. Back',
+                            '3. Send to me by SMS'
                         ].join('\n')
                     })
                     .run();
@@ -1466,14 +1466,13 @@ describe("app", function() {
             it("should show the third part of the answer to 999", function() {
                 return tester
                     .setup.user.state('states_faq_questions')
-                    .setup.user.answers({'states_faq_topics': '52'})
-                    .inputs('3', '1', '2', '2')
+                    .setup.user.answers({'states_faq_topics': '881'})
+                    .inputs('3', '1', '1', '1')
                     .check.interaction({
                         state: 'states_faq_answers',
                         reply: ['to test properly. Let\'s see.',
-                            '1. Prev',
-                            '2. Next',
-                            '0. Send to me by SMS'
+                            '1. Back',
+                            '2. Send to me by SMS'
                         ].join('\n')
                     })
                     .run();
@@ -1484,8 +1483,8 @@ describe("app", function() {
             it("should thank the user, send sms, and exit", function() {
                 return tester
                     .setup.user.state('states_faq_questions')
-                    .setup.user.answers({'states_faq_topics': '52'})
-                    .inputs('3', '1', '0')
+                    .setup.user.answers({'states_faq_topics': '881'})
+                    .inputs('3', '1', '2')
                     .check.interaction({
                         state: 'states_faq_end',
                         reply: ('Thank you. Your SMS will be delivered shortly.')

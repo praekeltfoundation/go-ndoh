@@ -110,12 +110,12 @@ go.utils = {
     },
 
     readable_sa_msisdn: function(msisdn) {
-        readable_no = '0' + msisdn.slice(3,12);
+        readable_no = '0' + msisdn.slice(msisdn.length-9, msisdn.length);
         return readable_no;
     },
 
     normalise_sa_msisdn: function(msisdn) {
-        denormalised_no = '+27' + msisdn.slice(1,10);
+        denormalised_no = '+27' + msisdn.slice(msisdn.length-9, msisdn.length);
         return denormalised_no;
     },
 
@@ -174,7 +174,7 @@ go.utils = {
             return contact.extra.sa_id + '^^^ZAF^NI';
           },
           'passport': function () {
-            return contact.extra.passport_no + '^^^' + contact.extra.passport_origin.toUpperCase() + '^FI';
+            return contact.extra.passport_no + '^^^' + contact.extra.passport_origin.toUpperCase() + '^PPN';
           },
           'none': function () {
             return null;
@@ -371,6 +371,8 @@ go.utils = {
 
     build_request_data: function (doc, boundary, contact) {
         var docstr = doc.toString().trim();
+        // Leave this in for easier debugging of stupid whitespace bugs
+        // console.log(docstr.replace(/ /g,"©"));
         return go.utils.build_multipart_data(boundary, [
           {
             name: "ihe-mhd-metadata",
@@ -886,6 +888,8 @@ go.utils = {
     set_language: function(user, contact) {
         if (contact.extra.language_choice !== null) {
             return user.set_lang(contact.extra.language_choice);
+        } else {
+            return Q();
         }
     },
 
@@ -923,47 +927,48 @@ go.app = function() {
 
 
         self.states.add('states_start', function(name) {
-            go.utils.set_language(self.im.user, self.contact);
+            return go.utils.set_language(self.im.user, self.contact)
+                .then(function() {
             
-            return new ChoiceState(name, {
-                question: $('Welcome to MomConnect. Please tell us why you don\'t ' +
-                            'want msgs:'),
+                    return new ChoiceState(name, {
+                        question: $('Please let us know why you do not want MomConnect messages'),
 
-                choices: [
-                    new Choice('miscarriage', $('Had miscarriage')),
-                    new Choice('stillbirth', $('Baby stillborn')),
-                    new Choice('babyloss', $('Baby died')),
-                    new Choice('not_useful', $('Msgs not useful')),
-                    new Choice('other', $('Other'))
-                ],
+                        choices: [
+                            new Choice('miscarriage', $('Miscarriage')),
+                            new Choice('stillbirth', $('Baby was stillborn')),
+                            new Choice('babyloss', $('Baby died')),
+                            new Choice('not_useful', $('Messages not useful')),
+                            new Choice('other', $('Other'))
+                        ],
 
-                events: {
-                    'state:enter': function() {
-                        return self.im.api_request('optout.optout', {
-                            address_type: "msisdn",
-                            address_value: self.im.user.addr,
-                            message_id: self.im.msg.message_id
-                        });
-                    }
-                },
-
-                next: function(choice) {
-                    self.contact.extra.opt_out_reason = choice.value;
-
-                    return self.im.contacts
-                        .save(self.contact)
-                        .then(function() {
-                            //TODO: run unsub
-                            if (_.contains(['not_useful', 'other'], choice.value)){
-                                return 'states_end_no';
-                            } else {
-                                return 'states_subscribe_option';
+                        events: {
+                            'state:enter': function() {
+                                return self.im.api_request('optout.optout', {
+                                    address_type: "msisdn",
+                                    address_value: self.im.user.addr,
+                                    message_id: self.im.msg.message_id
+                                });
                             }
-                            
-                        });
-                }
+                        },
 
-            });
+                        next: function(choice) {
+                            self.contact.extra.opt_out_reason = choice.value;
+
+                            return self.im.contacts
+                                .save(self.contact)
+                                .then(function() {
+                                    //TODO: run unsub
+                                    if (_.contains(['not_useful', 'other'], choice.value)){
+                                        return 'states_end_no';
+                                    } else {
+                                        return 'states_subscribe_option';
+                                    }
+                                    
+                                });
+                        }
+
+                    });
+                });
         });
 
         self.states.add('states_subscribe_option', function(name) {

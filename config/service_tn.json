@@ -1,0 +1,118 @@
+{
+    "": {
+        "pot-creation-date": "2014-08-05 12:55:+0200",
+        "project-id-version": "Service rating",
+        "language-team": "Language <LL@li.org>",
+        "mime-version": "1.0",
+        "content-type": "text/plain; charset=UTF-8",
+        "content-transfer-encoding": "8bit",
+        "po-revision-date": "2014-08-05 18:27+0200",
+        "last-translator": "",
+        "x-generator": "Poedit 1.6.7",
+        "language": "tn"
+    },
+    "Jan": [
+        null,
+        "Jan"
+    ],
+    "Feb": [
+        null,
+        "Feb"
+    ],
+    "Mar": [
+        null,
+        "Mar"
+    ],
+    "Apr": [
+        null,
+        "Apr"
+    ],
+    "May": [
+        null,
+        "Mat"
+    ],
+    "Jun": [
+        null,
+        "Jun"
+    ],
+    "Jul": [
+        null,
+        "Jul"
+    ],
+    "Aug": [
+        null,
+        "Aug"
+    ],
+    "Sep": [
+        null,
+        "Sep"
+    ],
+    "Oct": [
+        null,
+        "Oct"
+    ],
+    "Nov": [
+        null,
+        "Nov"
+    ],
+    "Dec": [
+        null,
+        "Dec"
+    ],
+    "Welcome. When you signed up, were staff at the facility friendly & helpful?": [
+        null,
+        "Amogelega. Ka ikwadiso, botsalano & thuso ya badiri?"
+    ],
+    "Very Satisfied": [
+        null,
+        "Kgotsofetse thata"
+    ],
+    "Satisfied": [
+        null,
+        "Kgotsofetse"
+    ],
+    "Not Satisfied": [
+        null,
+        "Ga go kgotsofalo"
+    ],
+    "Very unsatisfied": [
+        null,
+        "Ga go kgotsofao gotlhelele"
+    ],
+    "How do you feel about the time you had to wait at the facility?": [
+        null,
+        "O ikutlwa jang ka nako e o e emeng kwa lefelong?"
+    ],
+    "How long did you wait to be helped at the clinic?": [
+        null,
+        "O eme lobaka lo lo kana kang go bona thuso kwa tliliniking?"
+    ],
+    "Less than an hour": [
+        null,
+        "Kwa tlase ga ura"
+    ],
+    "Between 1 and 3 hours": [
+        null,
+        "Magareng ga ura  le di le 3"
+    ],
+    "More than 4 hours": [
+        null,
+        "Go feta diura di le 4"
+    ],
+    "All day": [
+        null,
+        "Motshegare otlhe"
+    ],
+    "Was the facility clean?": [
+        null,
+        "A lefelo le ne le le phepa?"
+    ],
+    "Did you feel that your privacy was respected by the staff?": [
+        null,
+        "A botho (sephiri) ba gago bo be ba tlotlwa ke badiri?"
+    ],
+    "Thank you for rating our service.": [
+        null,
+        "Re leboga."
+    ]
+}

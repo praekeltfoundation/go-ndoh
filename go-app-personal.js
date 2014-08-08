@@ -110,12 +110,12 @@ go.utils = {
     },
 
     readable_sa_msisdn: function(msisdn) {
-        readable_no = '0' + msisdn.slice(3,12);
+        readable_no = '0' + msisdn.slice(msisdn.length-9, msisdn.length);
         return readable_no;
     },
 
     normalise_sa_msisdn: function(msisdn) {
-        denormalised_no = '+27' + msisdn.slice(1,10);
+        denormalised_no = '+27' + msisdn.slice(msisdn.length-9, msisdn.length);
         return denormalised_no;
     },
 
@@ -174,7 +174,7 @@ go.utils = {
             return contact.extra.sa_id + '^^^ZAF^NI';
           },
           'passport': function () {
-            return contact.extra.passport_no + '^^^' + contact.extra.passport_origin.toUpperCase() + '^FI';
+            return contact.extra.passport_no + '^^^' + contact.extra.passport_origin.toUpperCase() + '^PPN';
           },
           'none': function () {
             return null;
@@ -371,6 +371,8 @@ go.utils = {
 
     build_request_data: function (doc, boundary, contact) {
         var docstr = doc.toString().trim();
+        // Leave this in for easier debugging of stupid whitespace bugs
+        // console.log(docstr.replace(/ /g,"©"));
         return go.utils.build_multipart_data(boundary, [
           {
             name: "ihe-mhd-metadata",
@@ -886,6 +888,8 @@ go.utils = {
     set_language: function(user, contact) {
         if (contact.extra.language_choice !== null) {
             return user.set_lang(contact.extra.language_choice);
+        } else {
+            return Q();
         }
     },
 
@@ -906,7 +910,7 @@ go.app = function() {
     var PaginatedChoiceState = vumigo.states.PaginatedChoiceState;
     var EndState = vumigo.states.EndState;
     var FreeText = vumigo.states.FreeText;
-    var BookletState = vumigo.states.BookletState;
+    var PaginatedState = vumigo.states.PaginatedState;
 
     var GoNDOH = App.extend(function(self) {
         App.call(self, 'states_start');
@@ -957,8 +961,21 @@ go.app = function() {
         };
 
         self.should_send_dialback = function(e) {
+            var dial_back_states = [
+                'states_language',
+                'states_register_info',
+                'states_suspect_pregnancy',
+                'states_id_type',
+                'states_sa_id',
+                'states_passport_origin',
+                'states_passport_no',
+                'states_birth_year',
+                'states_birth_month',
+                'states_birth_day'
+            ];
             return e.user_terminated
-                && !go.utils.is_true(self.contact.extra.redial_sms_sent);
+                && !go.utils.is_true(self.contact.extra.redial_sms_sent)
+                && _.contains(dial_back_states, e.im.state.name);
         };
 
         self.send_dialback = function() {
@@ -979,7 +996,7 @@ go.app = function() {
         };
 
         self.get_finish_reg_sms = function() {
-            return $("Please dial back in to {{ USSD_number }} to complete the pregnancy registration.")
+            return $("Your session timed out. Please dial back in to {{USSD_number}} to complete the pregnancy registration so that you can receive messages.")
                 .context({
                     USSD_number: self.im.config.channel
                 });
@@ -1016,13 +1033,17 @@ go.app = function() {
 
             } else if (self.contact.extra.is_registered_by === 'clinic') {
                 // registered on clinic line
-                go.utils.set_language(self.im.user, self.contact);
-                return self.states.create('states_registered_full');
+                return go.utils.set_language(self.im.user, self.contact)
+                    .then(function() {
+                        return self.states.create('states_registered_full');
+                    });
                     
             } else {
                 // registered on chw / public lines
-                go.utils.set_language(self.im.user, self.contact);
-                return self.states.create('states_registered_not_full');
+                return go.utils.set_language(self.im.user, self.contact)
+                    .then(function() {
+                        return self.states.create('states_registered_not_full');
+                    });
             }
         });
 
@@ -1061,10 +1082,7 @@ go.app = function() {
                     'state:enter': function() {
                         return self.im.outbound.send_to_user({
                             endpoint: 'sms',
-                            content: $('Please reply to this message with your compliment. If your compliment ' +
-                                'relates to the service you received at a clinic, please tell us the name of ' +
-                                'the clinic or clinic worker who you interacted with. Thank you for using our ' +
-                                'service. MomConnect.')
+                            content: $('Please reply to this message with your compliment. If your compliment relates to the service at a clinic, tell us the name of the clinic or clinic worker.')
                         });
                     }
                 }
@@ -1082,11 +1100,7 @@ go.app = function() {
                     'state:enter': function() {
                         return self.im.outbound.send_to_user({
                             endpoint: 'sms',
-                            content: $('Please reply to this message with your complaint. If your complaint ' +
-                                'relates to the service you received at a clinic, please tell us the name of ' +
-                                'the clinic or clinic worker who you interacted with. The more detail you ' +
-                                'supply, the easier it will be for us to follow up for you. Kind regards. ' + 
-                                'MomConnect')
+                            content: $('Please reply to this message with your complaint. If your complaint relates to the service at a clinic, please tell us the name of the clinic or clinic worker.')
                         });
                     }
                 }
@@ -1126,11 +1140,11 @@ go.app = function() {
 
         self.states.add('states_language', function(name) {
             return new ChoiceState(name, {
-                question: $('Welcome to MomConnect. Please choose language:'),
+                question: $('Welcome to the Department of Health\'s MomConnect. Choose your language:'),
 
                 choices: [
-                    new Choice('en', $('Eng')),
-                    new Choice('af', $('Afrik')),
+                    new Choice('en', $('English')),
+                    new Choice('af', $('Afrikaans')),
                     new Choice('zu', $('Zulu')),
                     new Choice('xh', $('Xhosa')),
                     new Choice('st', $('Sotho')),
@@ -1445,10 +1459,7 @@ go.app = function() {
 
         self.states.add('states_end_success', function(name) {
             return new EndState(name, {
-                text: $('Thank you for subscribing to MomConnect. ' +
-                        'You will now receive free messages about ' +
-                        'MomConnect. Visit your nearest clinic to get ' +
-                        'the full set of messages.'),
+                text: $('Congratulations on your pregnancy. You will now get free SMSs about MomConnect. You can register for the full set of FREE helpful messages at a clinic.'),
 
                 next: 'states_start',
 
@@ -1491,7 +1502,7 @@ go.app = function() {
                         // TODO Throw proper error
                         return error;
                     } else {
-                        return response.data.map(function(d) {
+                        return _.map(_.sortBy(response.data, 'id'), function(d) {
                             return new Choice(d.id, d.topic);
                         });
                     }
@@ -1520,15 +1531,19 @@ go.app = function() {
                         });
 
                         return new PaginatedChoiceState(name, {
-                            question: $('Please choose a question:'),
+                            question: $('Please select one:'),
                             choices: choices,
                             // TODO calculate options_per_page once content length is known
                             options_per_page: 2,
-                            next: function() {
+                            next: function(choice) {
+                                var question_id = choice.value;
+                                var index = _.findIndex(response.data, { 'id': question_id});
+                                var answer = response.data[index].answer.trim();
+
                                 return {
                                     name: 'states_faq_answers',
                                     creator_opts: {
-                                        response: response
+                                        answer: answer
                                     }
                                 };
                             }
@@ -1539,38 +1554,16 @@ go.app = function() {
 
         // Show answer to selected question
         self.states.add('states_faq_answers', function(name, opts) {
-            var id = self.im.user.answers.states_faq_questions;
-            var index = _.findIndex(opts.response.data, { 'id': id });
-            var footer_text = [
-                    "1. Prev",
-                    "2. Next",
-                    "0. Send to me by SMS"
-                ].join("\n");
-            var num_chars = 160 - footer_text.length;
-            // TODO update footer_text length calc for translations
-            var answer = opts.response.data[index].answer.trim();
-            var sms_content = answer;
-            var answer_split = [];
-
-            while (answer.length > 0 && answer.length > num_chars) {
-                answer_max_str = answer.substr(0,num_chars);
-                space_index = answer_max_str.lastIndexOf(' ');
-                answer_sub = answer.substr(0, space_index);
-                answer_split.push(answer_sub);
-                answer = answer.slice(space_index+1);
-            }
-            answer_split.push(answer);
-
-            return new BookletState(name, {
-                pages: answer_split.length,
-                page_text: function(n) {return answer_split[n];},
-                buttons: {"1": -1, "2": +1, "0": "exit"},
-                footer_text: footer_text,
+            return new PaginatedState(name, {
+                text: opts.answer,
+                more: $('More'),
+                back: $('Back'),
+                exit: $('Send to me by SMS'),
                 next: function() {
                     return {
                         name: 'states_faq_end',
                         creator_opts: {
-                            sms_content: sms_content
+                            answer: opts.answer
                         }
                     };
                 }
@@ -1588,7 +1581,7 @@ go.app = function() {
                     'state:enter': function() {
                         return self.im.outbound.send_to_user({
                             endpoint: 'sms',
-                            content: opts.sms_content
+                            content: opts.answer
                         });
                     }
                 }

@@ -110,12 +110,12 @@ go.utils = {
     },
 
     readable_sa_msisdn: function(msisdn) {
-        readable_no = '0' + msisdn.slice(3,12);
+        readable_no = '0' + msisdn.slice(msisdn.length-9, msisdn.length);
         return readable_no;
     },
 
     normalise_sa_msisdn: function(msisdn) {
-        denormalised_no = '+27' + msisdn.slice(1,10);
+        denormalised_no = '+27' + msisdn.slice(msisdn.length-9, msisdn.length);
         return denormalised_no;
     },
 
@@ -174,7 +174,7 @@ go.utils = {
             return contact.extra.sa_id + '^^^ZAF^NI';
           },
           'passport': function () {
-            return contact.extra.passport_no + '^^^' + contact.extra.passport_origin.toUpperCase() + '^FI';
+            return contact.extra.passport_no + '^^^' + contact.extra.passport_origin.toUpperCase() + '^PPN';
           },
           'none': function () {
             return null;
@@ -371,6 +371,8 @@ go.utils = {
 
     build_request_data: function (doc, boundary, contact) {
         var docstr = doc.toString().trim();
+        // Leave this in for easier debugging of stupid whitespace bugs
+        // console.log(docstr.replace(/ /g,"©"));
         return go.utils.build_multipart_data(boundary, [
           {
             name: "ihe-mhd-metadata",
@@ -886,6 +888,8 @@ go.utils = {
     set_language: function(user, contact) {
         if (contact.extra.language_choice !== null) {
             return user.set_lang(contact.extra.language_choice);
+        } else {
+            return Q();
         }
     },
 
@@ -921,33 +925,34 @@ go.app = function() {
         };
 
         self.states.add('question_1_friendliness', function(name) {
-            go.utils.set_language(self.im.user, self.contact);
-            
-            return new ChoiceState(name, {
-                question: $('Hi. When u were signed up, were the staff ' +
-                            'at the facility friendly and helpful?'),
+            return go.utils.set_language(self.im.user, self.contact)
+                .then(function() {
 
-                choices: [
-                    new Choice('very-satisfied', $('Very Satisfied :D')),
-                    new Choice('satisfied', $('Satisfied :)')),
-                    new Choice('not-satisfied', $('Not Satisfied :(')),
-                    new Choice('very-unsatisfied', $('Very unsatisfied :('))
-                ],
+                    return new ChoiceState(name, {
+                        question: $('Welcome. When you signed up, were staff at the facility friendly & helpful?'),
 
-                next: 'question_2_waiting_times_feel'
-            });
+                        choices: [
+                            new Choice('very-satisfied', $('Very Satisfied')),
+                            new Choice('satisfied', $('Satisfied')),
+                            new Choice('not-satisfied', $('Not Satisfied')),
+                            new Choice('very-unsatisfied', $('Very unsatisfied'))
+                        ],
+
+                        next: 'question_2_waiting_times_feel'
+                    });
+                    
+                });
         });
 
         self.states.add('question_2_waiting_times_feel', function(name) {
             return new ChoiceState(name, {
-                question: $('How do you feel about the time you had to ' +
-                            'wait at the facility?'),
+                question: $('How do you feel about the time you had to wait at the facility?'),
 
                 choices: [
-                    new Choice('very-satisfied', $('Very Satisfied :D')),
-                    new Choice('satisfied', $('Satisfied :)')),
-                    new Choice('not-satisfied', $('Not Satisfied :(')),
-                    new Choice('very-unsatisfied', $('Very unsatisfied :('))
+                    new Choice('very-satisfied', $('Very Satisfied')),
+                    new Choice('satisfied', $('Satisfied')),
+                    new Choice('not-satisfied', $('Not Satisfied')),
+                    new Choice('very-unsatisfied', $('Very unsatisfied'))
                 ],
 
                 next: 'question_3_waiting_times_length'
@@ -974,10 +979,10 @@ go.app = function() {
                 question: $('Was the facility clean?'),
 
                 choices: [
-                    new Choice('very-satisfied', $('Very Satisfied :D')),
-                    new Choice('satisfied', $('Satisfied :)')),
-                    new Choice('not-satisfied', $('Not Satisfied :(')),
-                    new Choice('very-unsatisfied', $('Very unsatisfied :('))
+                    new Choice('very-satisfied', $('Very Satisfied')),
+                    new Choice('satisfied', $('Satisfied')),
+                    new Choice('not-satisfied', $('Not Satisfied')),
+                    new Choice('very-unsatisfied', $('Very unsatisfied'))
                 ],
 
                 next: 'question_5_privacy'
@@ -989,10 +994,10 @@ go.app = function() {
                 question: $('Did you feel that your privacy was respected by the staff?'),
 
                 choices: [
-                    new Choice('very-satisfied', $('Very Satisfied :D')),
-                    new Choice('satisfied', $('Satisfied :)')),
-                    new Choice('not-satisfied', $('Not Satisfied :(')),
-                    new Choice('very-unsatisfied', $('Very unsatisfied :('))
+                    new Choice('very-satisfied', $('Very Satisfied')),
+                    new Choice('satisfied', $('Satisfied')),
+                    new Choice('not-satisfied', $('Not Satisfied')),
+                    new Choice('very-unsatisfied', $('Very unsatisfied'))
                 ],
 
                 next: 'end_thanks'
@@ -1001,9 +1006,7 @@ go.app = function() {
 
         self.states.add('end_thanks', function(name) {
             return new EndState(name, {
-                text: $('Thank you for rating our service. For baby and pregnancy ' +
-                            'help or if you have compliments or complaints ' +
-                            'dial *134*550# or reply to any of the SMSs you receive'),
+                text: $('Thank you for rating our service.'),
 
                 next: 'end_thanks_revisit',
 
@@ -1013,8 +1016,7 @@ go.app = function() {
                             go.utils.servicerating_log(self.contact, self.im, self.metric_prefix),
                             self.im.outbound.send_to_user({
                                     endpoint: 'sms',
-                                    content: "Thank you for rating our service. If you have further queries " +
-                                            "or complaints please dial *134*550# or reply to any of the SMSs you receive"
+                                    content: "Thank you for rating our service."
                                 })
                         ]);
                     }

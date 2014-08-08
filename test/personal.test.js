@@ -241,6 +241,36 @@ describe("app", function() {
 
         describe("when a user timed out", function() {
 
+            describe("when the user timed out but not during registration", function() {
+                it("should take them back through states_start", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27821234444',
+                                extra : {
+                                    language_choice: 'en',
+                                    is_registered: 'true',
+                                    is_registered_by: 'clinic',
+                                },
+                            });
+                        })
+                        .setup.user.addr('27821234444')
+                        .setup.user.state('states_faq_topics')
+                        .input.session_event('new')
+                        .check.interaction({
+                            state: 'states_registered_full',
+                            reply: [
+                                'Welcome to the Department of Health\'s ' +
+                                'MomConnect. Please choose an option:',
+                                '1. Baby and pregnancy info',
+                                '2. Send us a compliment',
+                                '3. Send us a complaint'
+                            ].join('\n')
+                        })
+                        .run();
+                });
+            });
+
             describe("when the user timed out during registration on public", function() {
                 it("should ask it they want to continue registration", function() {
                     return tester

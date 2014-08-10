@@ -1004,7 +1004,51 @@ go.app = function() {
             }
         };
 
-        self.states.add('states_start', function(name) {
+        self.add = function(name, creator) {
+            self.states.add(name, function(name, opts) {
+                opts = _.defaults(opts || {}, {in_header: true});
+
+                if (!opts.in_header || !go.utils.timed_out(self.im))
+                    return creator(name, opts);
+
+                opts.name = name;
+                opts.in_header = false;
+                return self.states.create('states_timed_out', opts);
+                
+            });
+        };
+
+        self.add('states_timed_out', function(name, creator_opts) {
+            var readable_no = go.utils.readable_sa_msisdn(self.contact.msisdn);
+
+            return new ChoiceState(name, {
+                question: $('Would you like to complete pregnancy registration for ' +
+                            '{{ num }}?')
+                    .context({ num: readable_no }),
+
+                choices: [
+                    new Choice(creator_opts.name, $('Yes')),
+                    new Choice('states_start', $('Start new registration'))
+                ],
+
+                next: function(choice) {
+                    if (choice.value === 'states_start') {
+                        self.user.extra.working_on = "";
+                    }
+
+                    return self.im.contacts
+                        .save(self.user)
+                        .then(function() {
+                            return {
+                                name: choice.value,
+                                creator_opts: creator_opts
+                            };
+                        });
+                }
+            });
+        });
+
+        self.add('states_start', function(name) {
             var readable_no = go.utils.readable_sa_msisdn(self.im.user.addr);
 
             return new ChoiceState(name, {
@@ -1031,7 +1075,7 @@ go.app = function() {
             });
         });
 
-        self.states.add('states_mobile_no', function(name, opts) {
+        self.add('states_mobile_no', function(name, opts) {
             var error = $('Sorry, the mobile number did not validate. ' +
                           'Please reenter the mobile number:');
 
@@ -1062,7 +1106,7 @@ go.app = function() {
             });
         });
 
-        self.states.add('states_id_type', function(name) {
+        self.add('states_id_type', function(name) {
             return new ChoiceState(name, {
                 question: $('What kind of identification does the pregnant ' +
                             'mother have?'),
@@ -1098,7 +1142,7 @@ go.app = function() {
             });
         });
 
-        self.states.add('states_sa_id', function(name, opts) {
+        self.add('states_sa_id', function(name, opts) {
             var error = $('Sorry, the mother\'s ID number did not validate. ' +
                           'Please reenter the SA ID number:');
 
@@ -1134,7 +1178,7 @@ go.app = function() {
             });
         });
 
-        self.states.add('states_passport_origin', function(name) {
+        self.add('states_passport_origin', function(name) {
             return new ChoiceState(name, {
                 question: $('What is the country of origin of the passport?'),
 
@@ -1162,7 +1206,7 @@ go.app = function() {
             });
         });
 
-        self.states.add('states_passport_no', function(name) {
+        self.add('states_passport_no', function(name) {
             var error = $('There was an error in your entry. Please ' +
                         'carefully enter the passport number again.');
             var question = $('Please enter the pregnant mother\'s Passport number:');
@@ -1190,7 +1234,7 @@ go.app = function() {
             });
         });
 
-        self.states.add('states_birth_year', function(name, opts) {
+        self.add('states_birth_year', function(name, opts) {
             var error = $('There was an error in your entry. Please ' +
                         'carefully enter the mother\'s year of birth again ' +
                         '(for example: 2001)');
@@ -1221,7 +1265,7 @@ go.app = function() {
             });
         });
 
-        self.states.add('states_birth_month', function(name) {
+        self.add('states_birth_month', function(name) {
             return new ChoiceState(name, {
                 question: $('Please enter the month that you were born.'),
 
@@ -1241,7 +1285,7 @@ go.app = function() {
             });
         });
 
-        self.states.add('states_birth_day', function(name, opts) {
+        self.add('states_birth_day', function(name, opts) {
             var error = $('There was an error in your entry. Please ' +
                         'carefully enter the mother\'s day of birth again ' +
                         '(for example: 8)');
@@ -1278,7 +1322,7 @@ go.app = function() {
             });
         });
 
-        self.states.add('states_language', function(name) {
+        self.add('states_language', function(name) {
             return new ChoiceState(name, {
                 question: $('Please select the language that the ' +
                             'pregnant mother would like to get messages in:'),
@@ -1336,7 +1380,7 @@ go.app = function() {
             });
         });
 
-        self.states.add('states_end_success', function(name) {
+        self.add('states_end_success', function(name) {
             return new EndState(name, {
                 text: $('Thank you, registration is complete. The pregnant ' +
                         'woman will now receive messages to encourage her ' +

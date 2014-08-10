@@ -225,6 +225,136 @@ describe("app", function() {
         });
         // end no_incomplete metrics tests
 
+        // re-dial flow tests
+        describe("when a user timed out", function() {
+
+            // clinic worker's phone
+            describe("when the user timed out during registration", function() {
+                it("should ask if they want to continue registration", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27821234444',
+                                extra : {
+                                    working_on: '+27821234567',
+                                }
+                            });
+                            api.contacts.add( {
+                                msisdn: '+27821234567',
+                            });
+                        })
+                        .setup.user.addr('27821234444')
+                        .setup.user.state('states_id_type')
+                        .input.session_event('new')
+                        .check.interaction({
+                            state: 'states_timed_out',
+                            reply: [
+                                'Would you like to complete pregnancy registration for 0821234567?',
+                                '1. Yes',
+                                '2. Start new registration'
+                            ].join('\n')
+                        })
+                        .run();
+                });
+            });
+
+            // pregnant woman's phone
+            describe("when the user timed out during registration", function() {
+                it("should ask if they want to continue registration", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27821234444',
+                            });
+                            api.contacts.add( {
+                                msisdn: '+27821234567',
+                            });
+                        })
+                        .setup.user.addr('27821234567')
+                        .setup.user.state('states_id_type')
+                        .input.session_event('new')
+                        .check.interaction({
+                            state: 'states_timed_out',
+                            reply: [
+                                'Would you like to complete pregnancy registration for 0821234567?',
+                                '1. Yes',
+                                '2. Start new registration'
+                            ].join('\n')
+                        })
+                        .run();
+                });
+            });
+
+            describe("when the user chooses to continue registration", function() {
+                it("should take them back to state they were on at timeout", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27821234444',
+                                extra : {
+                                    working_on: '+27821234567',
+                                }
+                            });
+                            api.contacts.add( {
+                                msisdn: '+27821234567',
+                            });
+                        })
+                        .setup.user.addr('27821234444')
+                        .setup.user.state('states_id_type')
+                        .inputs({session_event: 'new'}, '1')
+                        .check.interaction({
+                            state: 'states_id_type',
+                            reply: [
+                                'What kind of identification does the pregnant ' +
+                                'mother have?',
+                                '1. SA ID',
+                                '2. Passport',
+                                '3. None'
+                            ].join('\n')
+                        })
+                        .run();
+                });
+            });
+
+            describe("when the user chooses to abort registration", function() {
+                it("should take them back to states_start", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27821234444',
+                                extra : {
+                                    working_on: '+27821234567',
+                                }
+                            });
+                            api.contacts.add( {
+                                msisdn: '+27821234567',
+                            });
+                        })
+                        .setup.user.addr('27821234444')
+                        .setup.user.state('states_id_type')
+                        .inputs({session_event: 'new'}, '2')
+                        .check.interaction({
+                            state: 'states_start',
+                            reply: [
+                                'Welcome to The Department of Health\'s ' +
+                                'MomConnect. Tell us if this is the no. that ' +
+                                'the mother would like to get SMSs on: 0821234444',
+                                '1. Yes',
+                                '2. No'
+                            ].join('\n')
+                        })
+                        .check(function(api) {
+                            var contact = _.find(api.contacts.store, {
+                              msisdn: '+27821234444'
+                            });
+                            assert.equal(contact.extra.working_on, '');
+                        })
+                        .run();
+                });
+            });
+        });
+        // end re-dial flow tests
+
         describe("when a new unique user logs on", function() {
             it("should increment the no. of unique users by 1", function() {
                 return tester

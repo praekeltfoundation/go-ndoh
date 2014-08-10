@@ -1040,10 +1040,18 @@ go.app = function() {
                 ],
 
                 next: function(choice) {
-                    return {
-                        name: choice.value,
-                        creator_opts: creator_opts
-                    };
+                    if (choice.value === 'states_start') {
+                        self.user.extra.working_on = "";
+                    }
+
+                    return self.im.contacts
+                        .save(self.user)
+                        .then(function() {
+                            return {
+                                name: choice.value,
+                                creator_opts: creator_opts
+                            };
+                        });
                 }
             });
         });

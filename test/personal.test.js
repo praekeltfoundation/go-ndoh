@@ -1294,8 +1294,25 @@ describe("app", function() {
                         reply: [
                             'Please select one:',
                             '1. What happens if the FAQ answer is really long?',
-                            '2. What happens if I realise the amount of coffee I\'ve ordered doesn\'t suit?',
+                            '2. More',
                             '3. Back'
+                        ].join('\n')
+                    })
+                    .run();
+            });
+        });
+
+        describe("When the user chooses topic 881, then 3. More, then 2. More", function() {
+            it("should list third page of questions in topic 881", function() {
+                return tester
+                    .setup.user.state('states_faq_topics')
+                    .inputs('1', '3', '2')
+                    .check.interaction({
+                        state: 'states_faq_questions',
+                        reply: [
+                            'Please select one:',
+                            '1. What happens if I realise the amount of coffee I\'ve ordered doesn\'t suit?',
+                            '2. Back'
                         ].join('\n')
                     })
                     .run();

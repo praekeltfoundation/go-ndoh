@@ -262,6 +262,12 @@ describe("app", function() {
                         );
                         assert.equal(sms.to_addr,'+27001');
                     })
+                    .check(function(api) {
+                            var contact = _.find(api.contacts.store, {
+                              msisdn: '+27001'
+                            });
+                            assert.equal(contact.extra.last_service_rating, '20130819144811');
+                        })
                     .check.reply.ends_session()
                     .run();
             });

@@ -619,7 +619,7 @@ go.app = function() {
                             question: $('Please select one:'),
                             choices: choices,
                             // TODO calculate options_per_page once content length is known
-                            options_per_page: 2,
+                            options_per_page: null,
                             next: function(choice) {
                                 var question_id = choice.value;
                                 var index = _.findIndex(response.data, { 'id': question_id});

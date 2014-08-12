@@ -1002,8 +1002,13 @@ go.app = function() {
             return self.im.outbound.send({
                 to: self.contact,
                 endpoint: 'sms',
-                content: "Congratulations on your pregnancy. You will now get free SMSs about MomConnect. " +
-                         "You can register for the full set of FREE helpful messages at a clinic."
+                content: $("Welcome to MomConnect. For more info or to log a complaint or compliment, " +
+                        "please dial {{public_channel}}. If you ever want to stop getting SMSs dial " +
+                        "{{optout_channel}}")
+                    .context({
+                        public_channel: self.im.config.public_channel,
+                        optout_channel: self.im.config.optout_channel
+                    })
             });
         };
 

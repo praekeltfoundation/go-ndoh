@@ -4,6 +4,8 @@
     "metric_store": "ndoh_qa",
     "endpoints": {"sms": {"delivery_class": "sms"}},
     "channel": "*120*550*12#",
+    "public_channel": "*120*550#",
+    "optout_channel": "*120*550*1#",
     "jembi": {
         "username": "test",
         "password": "test",

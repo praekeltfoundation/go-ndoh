@@ -1382,6 +1382,7 @@ go.app = function() {
                     self.contact.extra.is_registered = 'true';
                     self.contact.extra.is_registered_by = 'clinic';
                     self.contact.extra.metric_sessions_to_register = self.user.extra.ussd_sessions;
+                    self.contact.extra.service_rating_reminder = '0';
 
                     return self.im.groups.get(choice.value)
                         .then(function(group) {

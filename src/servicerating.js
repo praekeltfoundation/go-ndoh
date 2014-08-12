@@ -115,8 +115,12 @@ go.app = function() {
                             self.im.outbound.send_to_user({
                                     endpoint: 'sms',
                                     content: "Thank you for rating our service."
-                                })
-                        ]);
+                            }),
+                        ])
+                        .then(function() {
+                            self.contact.extra.last_service_rating = go.utils.get_timestamp();
+                            return self.im.contacts.save(self.contact);
+                        });
                     }
                 }
             });

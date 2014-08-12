@@ -85,6 +85,8 @@ describe("app", function() {
                         "sms": {"delivery_class": "sms"}
                     },
                     channel: "*120*550*2#",
+                    public_channel: "*120*550#",
+                    optout_channel: "*120*550*1#",
                     jembi: {
                         username: 'foo',
                         password: 'bar',
@@ -1108,7 +1110,7 @@ describe("app", function() {
                             assert.equal(smses.length,1);
                             assert.equal(sms.content, 
                                 "Welcome to MomConnect. For more info or to log a complaint or compliment, " +
-                                "please dial *134*550#. If you ever want to stop getting SMSs dial *134*550*1#"
+                                "please dial *120*550#. If you ever want to stop getting SMSs dial *120*550*1#"
                             );
                             assert.equal(sms.to_addr,'+27821234567');
                         })
@@ -1154,7 +1156,7 @@ describe("app", function() {
                             assert.equal(smses.length,1);
                             assert.equal(sms.content, 
                                 "Welcome to MomConnect. For more info or to log a complaint or compliment, " +
-                                "please dial *134*550#. If you ever want to stop getting SMSs dial *134*550*1#"
+                                "please dial *120*550#. If you ever want to stop getting SMSs dial *120*550*1#"
                             );
                             assert.equal(sms.to_addr,'+27821234567');
                         })

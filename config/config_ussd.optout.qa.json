@@ -2,7 +2,7 @@
     "name": "optout_qa",
     "env": "qa",
     "metric_store": "ndoh_qa",
-    "channel": "*120*550*11#",
+    "channel": "*120*4216*11#",
     "control": {
         "username": "test_user",
         "api_key": "test_key",

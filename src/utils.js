@@ -726,6 +726,7 @@ go.utils = {
           next_sequence_number: 1,
           schedule: "/api/v1/periodic_task/" + opts.sub_rate + "/",
           to_addr: contact.msisdn,
+          // should we do to_addr: normalise_sa_msisdn(contact.msisdn) instead?
           user_account: contact.user_account
         };
         return go.utils

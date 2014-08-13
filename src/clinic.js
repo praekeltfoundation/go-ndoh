@@ -12,6 +12,7 @@ go.app = function() {
     var GoNDOH = App.extend(function(self) {
         App.call(self, 'states_start');
         var $ = self.$;
+        var interrupt = true;
 
         self.init = function() {
             self.env = self.im.config.env;
@@ -115,7 +116,50 @@ go.app = function() {
             });
         };
 
-        self.states.add('states_start', function(name) {
+        self.add = function(name, creator) {
+            self.states.add(name, function(name, opts) {
+                if (!interrupt || !go.utils.timed_out(self.im))
+                    return creator(name, opts);
+
+                interrupt = false;
+                opts = opts || {};
+                opts.name = name;
+                return self.states.create('states_timed_out', opts);
+            });
+        };
+
+        self.add('states_timed_out', function(name, creator_opts) {
+            var readable_no = go.utils.readable_sa_msisdn(self.contact.msisdn);
+
+            return new ChoiceState(name, {
+                question: $('Would you like to complete pregnancy registration for ' +
+                            '{{ num }}?')
+                    .context({ num: readable_no }),
+
+                choices: [
+                    new Choice(creator_opts.name, $('Yes')),
+                    new Choice('states_start', $('Start new registration'))
+                ],
+
+                next: function(choice) {
+                    if (choice.value === 'states_start') {
+                        self.user.extra.working_on = "";
+                    }
+
+                    return self.im.contacts
+                        .save(self.user)
+                        .then(function() {
+                            return {
+                                name: choice.value,
+                                creator_opts: creator_opts
+                            };
+                        });
+                }
+            });
+        });
+
+
+        self.add('states_start', function(name) {
             var readable_no = go.utils.readable_sa_msisdn(self.im.user.addr);
 
             return new ChoiceState(name, {
@@ -138,7 +182,7 @@ go.app = function() {
             });
         });
 
-        self.states.add('states_clinic_code', function(name) {
+        self.add('states_clinic_code', function(name) {
             var error = $('Sorry, the clinic number did not validate. ' +
                           'Please reenter the clinic number:');
             var question = $('Please enter the clinic code for the facility ' +
@@ -177,7 +221,7 @@ go.app = function() {
             });
         });
 
-        self.states.add('states_mobile_no', function(name, opts) {
+        self.add('states_mobile_no', function(name, opts) {
             var error = $('Sorry, the mobile number did not validate. ' +
                           'Please reenter the mobile number:');
 
@@ -208,7 +252,7 @@ go.app = function() {
             });
         });
 
-        self.states.add('states_due_date_month', function(name) {
+        self.add('states_due_date_month', function(name) {
 
             var today = go.utils.get_today(self.im.config);
             var month = today.getMonth();   // 0-bound
@@ -233,7 +277,7 @@ go.app = function() {
             });
         });
 
-        self.states.add('states_due_date_day', function(name, opts) {
+        self.add('states_due_date_day', function(name, opts) {
             var error = $('Sorry, the number did not validate. ' +
                           'Please enter the estimated day that the baby ' +
                           'is due (For example 12):');
@@ -264,7 +308,7 @@ go.app = function() {
             });
         });
 
-        self.states.add('states_id_type', function(name) {
+        self.add('states_id_type', function(name) {
             return new ChoiceState(name, {
                 question: $('What kind of identification does the pregnant ' +
                             'mother have?'),
@@ -291,7 +335,7 @@ go.app = function() {
             });
         });
 
-        self.states.add('states_sa_id', function(name, opts) {
+        self.add('states_sa_id', function(name, opts) {
             var error = $('Sorry, the mother\'s ID number did not validate. ' +
                           'Please reenter the SA ID number:');
 
@@ -327,7 +371,7 @@ go.app = function() {
             });
         });
 
-        self.states.add('states_passport_origin', function(name) {
+        self.add('states_passport_origin', function(name) {
             return new ChoiceState(name, {
                 question: $('What is the country of origin of the passport?'),
 
@@ -355,7 +399,7 @@ go.app = function() {
             });
         });
 
-        self.states.add('states_passport_no', function(name) {
+        self.add('states_passport_no', function(name) {
             var error = $('There was an error in your entry. Please ' +
                         'carefully enter the passport number again.');
             var question = $('Please enter the pregnant mother\'s Passport number:');
@@ -383,7 +427,7 @@ go.app = function() {
             });
         });
 
-        self.states.add('states_birth_year', function(name, opts) {
+        self.add('states_birth_year', function(name, opts) {
             var error = $('There was an error in your entry. Please ' +
                         'carefully enter the mother\'s year of birth again ' +
                         '(for example: 2001)');
@@ -414,7 +458,7 @@ go.app = function() {
             });
         });
 
-        self.states.add('states_birth_month', function(name) {
+        self.add('states_birth_month', function(name) {
             return new ChoiceState(name, {
                 question: $('Please enter the month that the mom was born.'),
 
@@ -435,7 +479,7 @@ go.app = function() {
         });
 
 
-        self.states.add('states_birth_day', function(name, opts) {
+        self.add('states_birth_day', function(name, opts) {
             var error = $('There was an error in your entry. Please ' +
                         'carefully enter the mother\'s day of birth again ' +
                         '(for example: 8)');
@@ -471,7 +515,7 @@ go.app = function() {
             });
         });
 
-        self.states.add('states_language', function(name) {
+        self.add('states_language', function(name) {
             return new ChoiceState(name, {
                 question: $('Please select the language that the ' +
                             'pregnant mother would like to get messages in:'),
@@ -530,7 +574,7 @@ go.app = function() {
             });
         });
 
-        self.states.add('states_end_success', function(name) {
+        self.add('states_end_success', function(name) {
             // If none passport then only json push
             return new EndState(name, {
                 text: $('Thank you. The pregnant woman will now ' +

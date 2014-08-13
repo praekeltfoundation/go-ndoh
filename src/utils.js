@@ -888,6 +888,11 @@ go.utils = {
         } else {
             return Q();
         }
-    }
+    },
 
+    timed_out: function(im) {
+        return im.msg.session_event === 'new'
+            && im.user.state.name
+            && im.user.state.name !== 'states_start';
+    }
 };

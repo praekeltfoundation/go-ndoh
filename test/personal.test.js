@@ -242,7 +242,7 @@ describe("app", function() {
         describe("when a user timed out", function() {
 
             describe("when the user timed out but not during registration", function() {
-                it.only("should take them back through states_start", function() {
+                it("should take them back through states_start", function() {
                     return tester
                         .setup(function(api) {
                             api.contacts.add({
@@ -257,7 +257,6 @@ describe("app", function() {
                         .setup.user.addr('27821234444')
                         .setup.user.state('states_faq_topics')
                         .inputs('1', null)
-                        // .input.session_event('new')
                         .check.interaction({
                             state: 'states_registered_full',
                             reply: [

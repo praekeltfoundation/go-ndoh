@@ -1029,17 +1029,13 @@ go.app = function() {
                 if (!opts.in_header || !go.utils.timed_out(self.im))
                     return creator(name, opts);
 
-                // if (!_.contains(registration_states, name)) {
-                //     return creator('states_start', opts);
-                // }
-
-                // 
-
                 opts.name = name;
                 opts.in_header = false;
+
                 if (!_.contains(registration_states, name)) {
                     return self.states.create('states_start', opts);
                 }
+                
                 return self.states.create('states_timed_out', opts);
                 
             });
@@ -1047,24 +1043,24 @@ go.app = function() {
 
 
 
-        self.add('states_start', function() {
+        self.add('states_start', function(name, opts) {
             if (_.isUndefined(self.contact.extra.is_registered)
                 || self.contact.extra.is_registered === 'false') {
                 // hasn't completed registration on any line
-                return self.states.create('states_language');
+                return self.states.create('states_language', opts);
 
             } else if (self.contact.extra.is_registered_by === 'clinic') {
                 // registered on clinic line
                 return go.utils.set_language(self.im.user, self.contact)
                     .then(function() {
-                        return self.states.create('states_registered_full');
+                        return self.states.create('states_registered_full', opts);
                     });
                     
             } else {
                 // registered on chw / public lines
                 return go.utils.set_language(self.im.user, self.contact)
                     .then(function() {
-                        return self.states.create('states_registered_not_full');
+                        return self.states.create('states_registered_not_full', opts);
                     });
             }
         });

@@ -81,7 +81,7 @@ describe("app", function() {
         describe("when the user starts a session", function() {
             it("should ask for the reason they are opting out", function() {
                 return tester
-                    .setup.user.addr('+27001')
+                    .setup.user.addr('27001')
                     .start()
                     .check.interaction({
                         state: 'states_start',
@@ -102,7 +102,7 @@ describe("app", function() {
         describe("when the user selects a reason for opting out", function() {
             it("should ask if they want further help", function() {
                 return tester
-                    .setup.user.addr('+27001')
+                    .setup.user.addr('27001')
                     .setup.user.state('states_start')
                     .input('1')
                     .check.interaction({
@@ -126,7 +126,7 @@ describe("app", function() {
         describe("when the user selects a reason for opting out 4 or 5", function() {
             it("should thank them and exit", function() {
                 return tester
-                    .setup.user.addr('+27001')
+                    .setup.user.addr('27001')
                     .setup.user.state('states_start')
                     .input('4')
                     .check.interaction({
@@ -165,7 +165,7 @@ describe("app", function() {
                     .setup.user.answers({
                         'states_start': 'miscarriage'
                     })
-                    .setup.user.addr('+27001')
+                    .setup.user.addr('27001')
                     .setup.user.state('states_subscribe_option')
                     .input('2')
                     .check.interaction({
@@ -186,7 +186,7 @@ describe("app", function() {
                         'states_start': 'miscarriage'
                     })
                     .setup.user.state('states_subscribe_option')
-                    .setup.user.addr('+27001')
+                    .setup.user.addr('27001')
                     .input('1')
                     .check.interaction({
                         state: 'states_end_yes',

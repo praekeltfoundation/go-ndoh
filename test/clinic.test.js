@@ -121,9 +121,9 @@ describe("app", function() {
                     }
                 })
                 .setup(function(api) {
-                    api.kv.store['test.clinic.unique_users'] = 0;
-                    api.kv.store['test.chw.unique_users'] = 0;
-                    api.kv.store['test.personal.unique_users'] = 0;
+                    api.kv.store['test.clinic.unique_users'] = 3;
+                    api.kv.store['test.chw.unique_users'] = 1;
+                    api.kv.store['test.personal.unique_users'] = 7;
                     api.kv.store['test.clinic.no_complete_registrations'] = 2;
                     api.kv.store['test.clinic.no_incomplete_registrations'] = 2;
                 })

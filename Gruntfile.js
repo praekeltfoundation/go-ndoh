@@ -72,36 +72,36 @@ module.exports = function (grunt) {
                     '<%= paths.src.app.clinic %>',
                     'test/clinic.test.js'
                 ],
-                chw: [
-                    'test/setup.js',
-                    'src/utils.js',
-                    '<%= paths.src.app.chw %>',
-                    'test/chw.test.js'
-                ],
-                personal: [
-                    'test/setup.js',
-                    'src/utils.js',
-                    '<%= paths.src.app.personal %>',
-                    'test/personal.test.js'
-                ],
-                optout: [
-                    'test/setup.js',
-                    'src/utils.js',
-                    '<%= paths.src.app.optout %>',
-                    'test/optout.test.js'
-                ],
-                smsinbound: [
-                    'test/setup.js',
-                    'src/utils.js',
-                    '<%= paths.src.app.smsinbound %>',
-                    'test/smsinbound.test.js'
-                ],
-                servicerating: [
-                    'test/setup.js',
-                    'src/utils.js',
-                    '<%= paths.src.app.servicerating %>',
-                    'test/servicerating.test.js'
-                ]
+                // chw: [
+                //     'test/setup.js',
+                //     'src/utils.js',
+                //     '<%= paths.src.app.chw %>',
+                //     'test/chw.test.js'
+                // ],
+                // personal: [
+                //     'test/setup.js',
+                //     'src/utils.js',
+                //     '<%= paths.src.app.personal %>',
+                //     'test/personal.test.js'
+                // ],
+                // optout: [
+                //     'test/setup.js',
+                //     'src/utils.js',
+                //     '<%= paths.src.app.optout %>',
+                //     'test/optout.test.js'
+                // ],
+                // smsinbound: [
+                //     'test/setup.js',
+                //     'src/utils.js',
+                //     '<%= paths.src.app.smsinbound %>',
+                //     'test/smsinbound.test.js'
+                // ],
+                // servicerating: [
+                //     'test/setup.js',
+                //     'src/utils.js',
+                //     '<%= paths.src.app.servicerating %>',
+                //     'test/servicerating.test.js'
+                // ]
             }
         },
 
@@ -125,26 +125,26 @@ module.exports = function (grunt) {
                 src: ['<%= paths.src.clinic %>'],
                 dest: '<%= paths.dest.clinic %>'
             },
-            chw: {
-                src: ['<%= paths.src.chw %>'],
-                dest: '<%= paths.dest.chw %>'
-            },
-            personal: {
-                src: ['<%= paths.src.personal %>'],
-                dest: '<%= paths.dest.personal %>'
-            },
-            optout: {
-                src: ['<%= paths.src.optout %>'],
-                dest: '<%= paths.dest.optout %>'
-            },
-            smsinbound: {
-                src: ['<%= paths.src.smsinbound %>'],
-                dest: '<%= paths.dest.smsinbound %>'
-            },
-            servicerating: {
-                src: ['<%= paths.src.servicerating %>'],
-                dest: '<%= paths.dest.servicerating %>'
-            }
+            // chw: {
+            //     src: ['<%= paths.src.chw %>'],
+            //     dest: '<%= paths.dest.chw %>'
+            // },
+            // personal: {
+            //     src: ['<%= paths.src.personal %>'],
+            //     dest: '<%= paths.dest.personal %>'
+            // },
+            // optout: {
+            //     src: ['<%= paths.src.optout %>'],
+            //     dest: '<%= paths.dest.optout %>'
+            // },
+            // smsinbound: {
+            //     src: ['<%= paths.src.smsinbound %>'],
+            //     dest: '<%= paths.dest.smsinbound %>'
+            // },
+            // servicerating: {
+            //     src: ['<%= paths.src.servicerating %>'],
+            //     dest: '<%= paths.dest.servicerating %>'
+            // }
         },
 
         mochaTest: {
@@ -154,21 +154,21 @@ module.exports = function (grunt) {
             test_clinic: {
                 src: ['<%= paths.test.clinic %>']
             },
-            test_chw: {
-                src: ['<%= paths.test.chw %>']
-            },
-            test_personal: {
-                src: ['<%= paths.test.personal %>']
-            },
-            test_optout: {
-                src: ['<%= paths.test.optout %>']
-            },
-            test_smsinbound: {
-                src: ['<%= paths.test.smsinbound %>']
-            },
-            test_servicerating: {
-                src: ['<%= paths.test.servicerating %>']
-            }
+            // test_chw: {
+            //     src: ['<%= paths.test.chw %>']
+            // },
+            // test_personal: {
+            //     src: ['<%= paths.test.personal %>']
+            // },
+            // test_optout: {
+            //     src: ['<%= paths.test.optout %>']
+            // },
+            // test_smsinbound: {
+            //     src: ['<%= paths.test.smsinbound %>']
+            // },
+            // test_servicerating: {
+            //     src: ['<%= paths.test.servicerating %>']
+            // }
         }
     });
 

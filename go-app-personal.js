@@ -915,6 +915,8 @@ go.app = function() {
     var GoNDOH = App.extend(function(self) {
         App.call(self, 'states_start');
         var $ = self.$;
+        var interrupt = true;
+
 
         self.init = function() {
             self.env = self.im.config.env;
@@ -1011,8 +1013,7 @@ go.app = function() {
 
         self.add = function(name, creator) {
             self.states.add(name, function(name, opts) {
-                opts = _.defaults(opts || {}, {in_header: true});
-
+                // UPDATE if registration states change
                 var registration_states = [
                     'states_language',
                     'states_register_info',
@@ -1026,11 +1027,12 @@ go.app = function() {
                     'states_birth_day'
                 ];
 
-                if (!opts.in_header || !go.utils.timed_out(self.im))
+                if (!interrupt || !go.utils.timed_out(self.im))
                     return creator(name, opts);
 
+                interrupt = false;
+                opts = opts || {};
                 opts.name = name;
-                opts.in_header = false;
 
                 if (!_.contains(registration_states, name)) {
                     return self.states.create('states_start', opts);

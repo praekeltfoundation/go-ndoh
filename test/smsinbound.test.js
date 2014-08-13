@@ -125,7 +125,7 @@ describe("app", function() {
                             user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
                         });
                     })
-                    .setup.user.addr('+27001')
+                    .setup.user.addr('27001')
                     .input('DONUTS')
                     .check.interaction({
                         state: 'states_default',
@@ -150,7 +150,7 @@ describe("app", function() {
                             user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
                         });
                     })
-                    .setup.user.addr('+27001')
+                    .setup.user.addr('27001')
                     .input('stop')
                     .check.interaction({
                         state: 'states_opt_out',
@@ -175,7 +175,7 @@ describe("app", function() {
                             user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
                         });
                     })
-                    .setup.user.addr('+27001')
+                    .setup.user.addr('27001')
                     .input('START')
                     .check.interaction({
                         state: 'states_opt_in',
@@ -200,7 +200,7 @@ describe("app", function() {
                             user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
                         });
                     })
-                    .setup.user.addr('+27001')
+                    .setup.user.addr('27001')
                     .input('baBy has been born, bub')
                     .check.interaction({
                         state: 'states_baby',

@@ -61,7 +61,7 @@ describe("app", function() {
         describe("when the user starts a session", function() {
             it("should ask for their friendliness rating", function() {
                 return tester
-                    .setup.user.addr('+27001')
+                    .setup.user.addr('27001')
                     .setup(function(api) {
                         api.contacts.add({
                             msisdn: '+27001',
@@ -89,7 +89,7 @@ describe("app", function() {
         describe("when the user answers their friendliness rating", function() {
             it("should ask for their waiting times feeling", function() {
                 return tester
-                    .setup.user.addr('+27001')
+                    .setup.user.addr('27001')
                     .setup.user.state('question_1_friendliness')
                     .input('1')
                     .check.interaction({
@@ -109,7 +109,7 @@ describe("app", function() {
         describe("when the user answers their waiting times feeling", function() {
             it("should ask for their waiting times length feeling", function() {
                 return tester
-                    .setup.user.addr('+27001')
+                    .setup.user.addr('27001')
                     .setup.user.state('question_2_waiting_times_feel')
                     .input('1')
                     .check.interaction({
@@ -129,7 +129,7 @@ describe("app", function() {
         describe("when the user answers their waiting times length feeling", function() {
             it("should ask for their cleanliness rating", function() {
                 return tester
-                    .setup.user.addr('+27001')
+                    .setup.user.addr('27001')
                     .setup.user.state('question_3_waiting_times_length')
                     .input('1')
                     .check.interaction({
@@ -149,7 +149,7 @@ describe("app", function() {
         describe("when the user answers their cleanliness rating", function() {
             it("should ask for their privacy rating", function() {
                 return tester
-                    .setup.user.addr('+27001')
+                    .setup.user.addr('27001')
                     .setup.user.state('question_4_cleanliness')
                     .input('1')
                     .check.interaction({
@@ -177,7 +177,7 @@ describe("app", function() {
                             user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"                            
                         });
                     })
-                    .setup.user.addr('+27001')
+                    .setup.user.addr('27001')
                     .setup.user.state('question_5_privacy')
                     .setup.user.answers({
                         'question_1_friendliness': 'very-satisfied',
@@ -208,7 +208,7 @@ describe("app", function() {
                             user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"                            
                         });
                     })
-                    .setup.user.addr('+27001')
+                    .setup.user.addr('27001')
                     .setup.user.answers({
                         'question_1_friendliness': 'very-satisfied',
                         'question_2_waiting_times_feel': 'very-satisfied',
@@ -241,7 +241,7 @@ describe("app", function() {
                             user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"                            
                         });
                     })
-                    .setup.user.addr('+27001')
+                    .setup.user.addr('27001')
                     .setup.user.state('question_5_privacy')
                     .setup.user.answers({
                         'question_1_friendliness': 'very-satisfied',
@@ -260,7 +260,7 @@ describe("app", function() {
                         assert.equal(sms.content, 
                             "Thank you for rating our service."
                         );
-                        assert.equal(sms.to_addr,'+27001');
+                        assert.equal(sms.to_addr,'27001');
                     })
                     .check(function(api) {
                             var contact = _.find(api.contacts.store, {

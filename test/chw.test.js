@@ -158,7 +158,7 @@ describe("app", function() {
                                 user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
                             });
                         })
-                        .setup.user.addr('+27001')
+                        .setup.user.addr('27001')
                         .setup.user.state('states_end_success')
                         .input.session_event('close')
                         .check(function(api) {
@@ -175,7 +175,7 @@ describe("app", function() {
             describe("when it is a new user logging on", function() {
                 it("should set the last metric value in states_start.no_incomplete to 0", function() {
                     return tester
-                        .setup.user.addr('+275678')
+                        .setup.user.addr('275678')
                         .start()
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
@@ -411,7 +411,7 @@ describe("app", function() {
                             }
                         });
                     })
-                    .setup.user.addr('+270001')
+                    .setup.user.addr('270001')
                     .start()
                     .check(function(api) {
                         var contact = _.find(api.contacts.store, {
@@ -476,7 +476,7 @@ describe("app", function() {
         describe("after entering the pregnant woman's number", function() {
             it("should ask for the id type", function() {
                 return tester
-                    .setup.user.addr('+270001')
+                    .setup.user.addr('270001')
                     .setup.user.state('states_mobile_no')
                     .input('0821234567')
                     .check.interaction({
@@ -501,7 +501,7 @@ describe("app", function() {
             describe("if the user is the pregnant woman", function() {
                 it("should set id type, ask for their id number", function() {
                     return tester
-                        .setup.user.addr('+270001')
+                        .setup.user.addr('270001')
                         .setup.user.state('states_id_type')
                         .input('1')
                         .check.interaction({
@@ -530,7 +530,7 @@ describe("app", function() {
             describe("if the user is not the pregnant woman", function() {
                 it("should set id type, ask for their id number", function() {
                     return tester
-                        .setup.user.addr('+270001')
+                        .setup.user.addr('270001')
                         .setup(function(api) {
                             api.contacts.add( {
                                 msisdn: '+270001',
@@ -566,7 +566,7 @@ describe("app", function() {
         describe("after the user enters the ID number after '50", function() {
             it("should save ID, extract DOB, ask for pregnant woman's msg language", function() {
                 return tester
-                    .setup.user.addr('+270001')
+                    .setup.user.addr('270001')
                     .setup.user.state('states_sa_id')
                     .input('5101015009088')
                     .check.interaction({
@@ -598,7 +598,7 @@ describe("app", function() {
         describe("after the user enters the ID number before '50", function() {
             it("should save ID, extract DOB", function() {
                 return tester
-                    .setup.user.addr('+270001')
+                    .setup.user.addr('270001')
                     .setup.user.state('states_sa_id')
                     .input('2012315678097')
                     .check(function(api) {
@@ -615,7 +615,7 @@ describe("app", function() {
         describe("after the user enters the ID number on '50", function() {
             it("should save ID, extract DOB", function() {
                 return tester
-                    .setup.user.addr('+270001')
+                    .setup.user.addr('270001')
                     .setup.user.state('states_sa_id')
                     .input('5002285000007')
                     .check(function(api) {
@@ -632,7 +632,7 @@ describe("app", function() {
         describe("after the user enters their ID number incorrectly", function() {
             it("should not save ID, ask them to try again", function() {
                 return tester
-                    .setup.user.addr('+270001')
+                    .setup.user.addr('270001')
                     .setup.user.state('states_sa_id')
                     .input('1234015009087')
                     .check.interaction({
@@ -653,7 +653,7 @@ describe("app", function() {
         describe("if the user selects Passport (id type)", function() {
             it("should set id type, ask for their country of origin", function() {
                 return tester
-                    .setup.user.addr('+270001')
+                    .setup.user.addr('270001')
                     .setup.user.state('states_id_type')
                     .input('2')
                     .check.interaction({
@@ -682,7 +682,7 @@ describe("app", function() {
         describe("after the user selects passport country", function() {
             it("should save passport country, ask for their passport number", function() {
                 return tester
-                    .setup.user.addr('+270001')
+                    .setup.user.addr('270001')
                     .setup.user.state('states_passport_origin')
                     .input('1')
                     .check.interaction({
@@ -702,7 +702,7 @@ describe("app", function() {
         describe("after the user enters the passport number", function() {
             it("should save passport no, ask for pregnant woman's msg language", function() {
                 return tester
-                    .setup.user.addr('+270001')
+                    .setup.user.addr('270001')
                     .setup.user.state('states_passport_no')
                     .input('12345')
                     .check.interaction({
@@ -730,7 +730,7 @@ describe("app", function() {
         describe("if the user enters their passport incorrectly (non alpha-numeric)", function() {
             it("should ask for their passport number again", function() {
                 return tester
-                    .setup.user.addr('+270001')
+                    .setup.user.addr('270001')
                     .setup.user.state('states_passport_no')
                     .input('algeria 1234')
                     .check.interaction({
@@ -745,7 +745,7 @@ describe("app", function() {
         describe("if the user enters their passport incorrectly (too short)", function() {
             it("should ask for their passport number again", function() {
                 return tester
-                    .setup.user.addr('+270001')
+                    .setup.user.addr('270001')
                     .setup.user.state('states_passport_no')
                     .input('1234')
                     .check.interaction({
@@ -760,7 +760,7 @@ describe("app", function() {
         describe("if the user selects None (id type)", function() {
             it("should set id type, ask for their birth year", function() {
                 return tester
-                    .setup.user.addr('+270001')
+                    .setup.user.addr('270001')
                     .setup.user.state('states_id_type')
                     .input('3')
                     .check.interaction({
@@ -781,7 +781,7 @@ describe("app", function() {
         describe("after the user enters their birth year incorrectly", function() {
             it("should ask for their birth year again", function() {
                 return tester
-                    .setup.user.addr('+270001')
+                    .setup.user.addr('270001')
                     .setup.user.state('states_birth_year')
                     .input('Nineteen Eighty One')
                     .check.interaction({
@@ -797,7 +797,7 @@ describe("app", function() {
         describe("after the user enters their birth year", function() {
             it("should save birth year, ask for their birth month", function() {
                 return tester
-                    .setup.user.addr('+270001')
+                    .setup.user.addr('270001')
                     .setup.user.state('states_birth_year')
                     .input('1981')
                     .check.interaction({
@@ -830,7 +830,7 @@ describe("app", function() {
         describe("after the user enters their birth month", function() {
             it("should save birth month, ask for their birth day", function() {
                 return tester
-                    .setup.user.addr('+270001')
+                    .setup.user.addr('270001')
                     .setup.user.state('states_birth_month')
                     .input('1')
                     .check.interaction({
@@ -851,7 +851,7 @@ describe("app", function() {
         describe("after the user enters their birth day incorrectly", function() {
             it("should not save birth day, ask them their birth day again", function() {
                 return tester
-                    .setup.user.addr('+270001')
+                    .setup.user.addr('270001')
                     .setup.user.state('states_birth_day')
                     .input('fourteen')
                     .check.interaction({
@@ -874,7 +874,7 @@ describe("app", function() {
         describe("after the user enters the birth day", function() {
             it("should save birth day and dob, ask for pregnant woman's msg language", function() {
                 return tester
-                    .setup.user.addr('+270001')
+                    .setup.user.addr('270001')
                     .setup.user.answers({
                         'states_birth_year': '1981',
                         'states_birth_month': '01'
@@ -908,7 +908,7 @@ describe("app", function() {
             describe("if the phone used is not the mom's", function() {
                 it("should save msg language, thank them and exit", function() {
                     return tester
-                        .setup.user.addr('+27001')
+                        .setup.user.addr('27001')
                         .setup(function(api) {
                             api.contacts.add( {
                                 msisdn: '+27001',
@@ -971,7 +971,7 @@ describe("app", function() {
                 
                 it("should send them an SMS on completion", function() {
                     return tester
-                        .setup.user.addr('+27001')
+                        .setup.user.addr('27001')
                         .setup(function(api) {
                             api.contacts.add( {
                                 msisdn: '+27001',
@@ -1028,7 +1028,7 @@ describe("app", function() {
                                 user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
                             });
                         })
-                        .setup.user.addr('+27001')
+                        .setup.user.addr('27001')
                         .setup.user.state('states_language')
                         .input('1')
                         .check.interaction({
@@ -1079,7 +1079,7 @@ describe("app", function() {
                                 user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
                             });
                         })
-                        .setup.user.addr('+27001')
+                        .setup.user.addr('27001')
                         .setup.user.state('states_language')
                         .input('1')
                         .check(function(api) {
@@ -1106,7 +1106,7 @@ describe("app", function() {
                                 user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
                             });
                         })
-                        .setup.user.addr('+27001')
+                        .setup.user.addr('27001')
                         .setup.user.state('states_language')
                         .input('1')
                         .check(function(api) {
@@ -1143,7 +1143,7 @@ describe("app", function() {
                                 user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
                             });
                         })
-                        .setup.user.addr('+27001')
+                        .setup.user.addr('27001')
                         .setup.user.state('states:language')
                         .input('1')
                         .check.interaction({
@@ -1176,7 +1176,7 @@ describe("app", function() {
                                     }
                                 });
                             })
-                            .setup.user.addr('+273444')
+                            .setup.user.addr('273444')
                             .setup.user.state('states_start')
                             .input('1')
                             .input.session_event('close')
@@ -1198,7 +1198,7 @@ describe("app", function() {
                                     extra : {}
                                 });
                             })
-                            .setup.user.addr('+273323')
+                            .setup.user.addr('273323')
                             .setup.user.state('states_start')
                             .input(1)
                             .input.session_event('close')
@@ -1211,7 +1211,7 @@ describe("app", function() {
                                 assert.equal(sms.content, 
                                     "Please dial back in to *120*550*3# to complete the pregnancy registration."
                                 );
-                                assert.equal(sms.to_addr,'+273323');
+                                assert.equal(sms.to_addr,'273323');
                             }).run();
                     });
                 });

@@ -15,12 +15,16 @@ describe("app", function() {
 
         beforeEach(function() {
             app = new go.app.GoNDOH();
+            go.utils.get_timestamp = function() {
+                return '20130819144811';
+            };
             tester = new AppTester(app);
 
             tester
                 .setup.config.app({
                     name: 'optout',
                     testing: 'true',
+                    testing_today: 'April 4, 2014 07:07:07',
                     channel: "*120*550#1",
                     env: 'test',
                     metric_store: 'test_metric_store',
@@ -31,6 +35,12 @@ describe("app", function() {
                         username: 'test_user',
                         api_key: 'test_key',
                         url: 'http://ndoh-control/api/v1/'
+                    },
+                    jembi: {
+                        username: 'foo',
+                        password: 'bar',
+                        url: 'http://test/v2/',
+                        url_json: 'http://test/v2/json/optout'
                     },
                     subscription: {
                         standard: 1,

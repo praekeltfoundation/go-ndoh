@@ -46,7 +46,7 @@ describe("app", function() {
                 })
                 .setup.char_limit(160)
                 .setup.config.app({
-                    name: 'personal',
+                    name: 'personal_test',
                     testing: 'true',
                     env: 'test',
                     metric_store: 'test_metric_store',
@@ -93,11 +93,11 @@ describe("app", function() {
                     }
                 })
                 .setup(function(api) {
-                    api.kv.store['test.clinic.unique_users'] = 0;
-                    api.kv.store['test.chw.unique_users'] = 0;
-                    api.kv.store['test.personal.unique_users'] = 0;
-                    api.kv.store['test.personal.no_complete_registrations'] = 2;
-                    api.kv.store['test.personal.no_incomplete_registrations'] = 2;
+                    api.kv.store['test.clinic_test.unique_users'] = 0;
+                    api.kv.store['test.chw_test.unique_users'] = 0;
+                    api.kv.store['test.personal_test.unique_users'] = 0;
+                    api.kv.store['test.personal_test.no_complete_registrations'] = 2;
+                    api.kv.store['test.personal_test.no_incomplete_registrations'] = 2;
                 })
                 .setup(function(api) {
                     api.metrics.stores = {'test_metric_store': {}};
@@ -119,7 +119,7 @@ describe("app", function() {
                         .input.session_event('close')
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
-                            assert.equal(metrics['test.personal.states_start.no_incomplete'], undefined);
+                            assert.equal(metrics['test.personal_test.states_start.no_incomplete'], undefined);
                         })
                         .run();
                 });
@@ -132,7 +132,7 @@ describe("app", function() {
                         .input.session_event('close')
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
-                            assert.equal(metrics['test.personal.states_faq_topics.no_incomplete'], undefined);
+                            assert.equal(metrics['test.personal_test.states_faq_topics.no_incomplete'], undefined);
                         })
                         .run();
                 });
@@ -145,7 +145,7 @@ describe("app", function() {
                         .input.session_event('close')
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
-                            assert.deepEqual(metrics['test.personal.states_language.no_incomplete'].values, [1]);
+                            assert.deepEqual(metrics['test.personal_test.states_language.no_incomplete'].values, [1]);
                         })
                         .run();
                 });
@@ -158,7 +158,7 @@ describe("app", function() {
                         .input.session_event('close')
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
-                            assert.deepEqual(metrics['test.personal.states_birth_day.no_incomplete'].values, [1]);
+                            assert.deepEqual(metrics['test.personal_test.states_birth_day.no_incomplete'].values, [1]);
                         })
                         .run();
                 });
@@ -191,7 +191,7 @@ describe("app", function() {
                         .input.session_event('close')
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
-                            assert.deepEqual(metrics['test.personal.states_end_success.no_incomplete'], undefined);
+                            assert.deepEqual(metrics['test.personal_test.states_end_success.no_incomplete'], undefined);
                         })
                         .run();
                 });
@@ -207,7 +207,7 @@ describe("app", function() {
                         .start()
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
-                            assert.equal(metrics['test.personal.states_start.no_incomplete'], undefined);
+                            assert.equal(metrics['test.personal_test.states_start.no_incomplete'], undefined);
                         })
                         .run();
                 });
@@ -220,7 +220,7 @@ describe("app", function() {
                         .start()
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
-                            assert.equal(metrics['test.personal.states_start.no_incomplete'], undefined);
+                            assert.equal(metrics['test.personal_test.states_start.no_incomplete'], undefined);
                         })
                         .run();
                 });
@@ -232,7 +232,7 @@ describe("app", function() {
                         .setup.user.state('states_birth_day')
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
-                            assert.deepEqual(metrics['test.personal.states_birth_day.no_incomplete'].values, [-1]);
+                            assert.deepEqual(metrics['test.personal_test.states_birth_day.no_incomplete'].values, [-1]);
                         })
                         .run();
                 });
@@ -245,7 +245,7 @@ describe("app", function() {
                         .input('2') // make sure session is not new
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
-                            assert.equal(metrics['test.personal.states_birth_month.no_incomplete'], undefined);
+                            assert.equal(metrics['test.personal_test.states_birth_month.no_incomplete'], undefined);
                         })
                         .run();
                 });
@@ -259,8 +259,8 @@ describe("app", function() {
                     .start()
                     .check(function(api) {
                         var metrics = api.metrics.stores.test_metric_store;
-                        assert.deepEqual(metrics['test.personal.sum.unique_users'].values, [1]);
-                        assert.deepEqual(metrics['test.personal.percentage_users'].values, [100]);
+                        assert.deepEqual(metrics['test.personal_test.sum.unique_users'].values, [1]);
+                        assert.deepEqual(metrics['test.personal_test.percentage_users'].values, [100]);
                         assert.deepEqual(metrics['test.sum.unique_users'].values, [1]);
                     }).run();
             });
@@ -500,8 +500,8 @@ describe("app", function() {
                     })
                     .check(function(api) {
                         var metrics = api.metrics.stores.test_metric_store;
-                        assert.deepEqual(metrics['test.personal.percent_incomplete_registrations'].values, [60]);
-                        assert.deepEqual(metrics['test.personal.percent_complete_registrations'].values, [40]);
+                        assert.deepEqual(metrics['test.personal_test.percent_incomplete_registrations'].values, [60]);
+                        assert.deepEqual(metrics['test.personal_test.percent_complete_registrations'].values, [40]);
                     })
                     .run();
             });
@@ -1047,10 +1047,10 @@ describe("app", function() {
                     })
                     .check(function(api) {
                         var metrics = api.metrics.stores.test_metric_store;
-                        assert.deepEqual(metrics['test.personal.avg.sessions_to_register'].values, [5]);
-                        assert.deepEqual(metrics['test.personal.percent_incomplete_registrations'].values, [25]);
-                        assert.deepEqual(metrics['test.personal.percent_complete_registrations'].values, [75]);
-                        assert.deepEqual(metrics['test.personal.sum.json_to_jembi_success'].values, [1]);
+                        assert.deepEqual(metrics['test.personal_test.avg.sessions_to_register'].values, [5]);
+                        assert.deepEqual(metrics['test.personal_test.percent_incomplete_registrations'].values, [25]);
+                        assert.deepEqual(metrics['test.personal_test.percent_complete_registrations'].values, [75]);
+                        assert.deepEqual(metrics['test.personal_test.sum.json_to_jembi_success'].values, [1]);
                     })
                     .check(function(api) {
                         var smses = _.where(api.outbound.store, {
@@ -1100,7 +1100,7 @@ describe("app", function() {
                     })
                     .check(function(api) {
                         var metrics = api.metrics.stores.test_metric_store;
-                        assert.deepEqual(metrics['test.personal.sum.json_to_jembi_fail'].values, [1]);
+                        assert.deepEqual(metrics['test.personal_test.sum.json_to_jembi_fail'].values, [1]);
                     })
                     .run();
             });

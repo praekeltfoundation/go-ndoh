@@ -1,5 +1,5 @@
 {
-    "name": "clinic_qa",
+    "name": "clinic",
     "env": "qa",
     "metric_store": "ndoh_qa",
     "endpoints": {"sms": {"delivery_class": "sms"}},

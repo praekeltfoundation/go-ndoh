@@ -988,6 +988,8 @@ go.app = function() {
                         self.contact.extra.subscription_type = opts.sub_type.toString();
                         self.contact.extra.subscription_rate = opts.sub_rate.toString();
                         return Q.all([
+                            // Registration is sent to optout endpoint at Jembi to indicate removal
+                            go.utils.jembi_send_json(self.contact, self.contact, 'subscription', self.im, self.metric_prefix),
                             go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix, opts),
                             self.im.contacts.save(self.contact)
                         ]).then(function() {

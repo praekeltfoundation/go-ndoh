@@ -7,7 +7,7 @@
             "target": {
                 "metric_type": "account",
                 "store": "ndoh_qa",
-                "name": "qa.personal.sum.unique_users",
+                "name": "qa.personal_qa.sum.unique_users",
                 "aggregator": "last"
                 }
         },
@@ -18,7 +18,7 @@
             "target": {
                 "metric_type": "account",
                 "store": "ndoh_qa",
-                "name": "qa.personal.avg.sessions_to_register",
+                "name": "qa.personal_qa.avg.sessions_to_register",
                 "aggregator": "avg"
                 }
         },
@@ -29,7 +29,7 @@
             "target": {
                 "metric_type": "account",
                 "store": "ndoh_qa",
-                "name": "qa.personal.percentage_users",
+                "name": "qa.personal_qa.percentage_users",
                 "aggregator": "last"
                 }
         },
@@ -41,7 +41,7 @@
             "target": {
                 "metric_type": "account",
                 "store": "ndoh_qa",
-                "name": "qa.personal.percent_complete_registrations",
+                "name": "qa.personal_qa.percent_complete_registrations",
                 "aggregator": "last"
                 }
         },
@@ -52,7 +52,7 @@
             "target": {
                 "metric_type": "account",
                 "store": "ndoh_qa",
-                "name": "qa.personal.percent_incomplete_registrations",
+                "name": "qa.personal_qa.percent_incomplete_registrations",
                 "aggregator": "last"
                 }
         },
@@ -64,7 +64,7 @@
             "target": {
                 "metric_type": "account",
                 "store": "ndoh_qa",
-                "name": "qa.personal.states_start.no_incomplete",
+                "name": "qa.personal_qa.states_start.no_incomplete",
                 "aggregator": "last"
                 }
         },
@@ -75,7 +75,7 @@
             "target": {
                 "metric_type": "account",
                 "store": "ndoh_qa",
-                "name": "qa.personal.states_suspect_pregnancy.no_incomplete",
+                "name": "qa.personal_qa.states_suspect_pregnancy.no_incomplete",
                 "aggregator": "last"
                 }
         },
@@ -86,7 +86,7 @@
             "target": {
                 "metric_type": "account",
                 "store": "ndoh_qa",
-                "name": "qa.personal.states_id_type.no_incomplete",
+                "name": "qa.personal_qa.states_id_type.no_incomplete",
                 "aggregator": "last"
                 }
         },
@@ -97,7 +97,7 @@
             "target": {
                 "metric_type": "account",
                 "store": "ndoh_qa",
-                "name": "qa.personal.states_sa_id.no_incomplete",
+                "name": "qa.personal_qa.states_sa_id.no_incomplete",
                 "aggregator": "last"
                 }
         },
@@ -108,7 +108,7 @@
             "target": {
                 "metric_type": "account",
                 "store": "ndoh_qa",
-                "name": "qa.personal.states_passport_origin.no_incomplete",
+                "name": "qa.personal_qa.states_passport_origin.no_incomplete",
                 "aggregator": "last"
                 }
         },
@@ -119,7 +119,7 @@
             "target": {
                 "metric_type": "account",
                 "store": "ndoh_qa",
-                "name": "qa.personal.states_passport_no.no_incomplete",
+                "name": "qa.personal_qa.states_passport_no.no_incomplete",
                 "aggregator": "last"
                 }
         },
@@ -130,7 +130,7 @@
             "target": {
                 "metric_type": "account",
                 "store": "ndoh_qa",
-                "name": "qa.personal.states_birth_year.no_incomplete",
+                "name": "qa.personal_qa.states_birth_year.no_incomplete",
                 "aggregator": "last"
                 }
         },
@@ -141,7 +141,7 @@
             "target": {
                 "metric_type": "account",
                 "store": "ndoh_qa",
-                "name": "qa.personal.states_birth_month.no_incomplete",
+                "name": "qa.personal_qa.states_birth_month.no_incomplete",
                 "aggregator": "last"
                 }
         },
@@ -152,7 +152,7 @@
             "target": {
                 "metric_type": "account",
                 "store": "ndoh_qa",
-                "name": "qa.personal.states_birth_day.no_incomplete",
+                "name": "qa.personal_qa.states_birth_day.no_incomplete",
                 "aggregator": "last"
                 }
         },
@@ -165,7 +165,7 @@
             "target": {
                 "metric_type": "account",
                 "store": "ndoh_qa",
-                "name": "qa.personal.sum.json_to_jembi_success",
+                "name": "qa.personal_qa.sum.json_to_jembi_success",
                 "aggregator": "last"
                 }
         },
@@ -176,7 +176,7 @@
             "target": {
                 "metric_type": "account",
                 "store": "ndoh_qa",
-                "name": "qa.personal.sum.json_to_jembi_fail",
+                "name": "qa.personal_qa.sum.json_to_jembi_fail",
                 "aggregator": "last"
                 }
         }

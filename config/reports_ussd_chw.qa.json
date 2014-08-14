@@ -7,7 +7,7 @@
             "target": {
                 "metric_type": "account",
                 "store": "ndoh_qa",
-                "name": "qa.chw.sum.unique_users",
+                "name": "qa.chw_qa.sum.unique_users",
                 "aggregator": "last"
                 }
         },
@@ -18,7 +18,7 @@
             "target": {
                 "metric_type": "account",
                 "store": "ndoh_qa",
-                "name": "qa.chw.avg.sessions_to_register",
+                "name": "qa.chw_qa.avg.sessions_to_register",
                 "aggregator": "avg"
                 }
         },
@@ -29,7 +29,7 @@
             "target": {
                 "metric_type": "account",
                 "store": "ndoh_qa",
-                "name": "qa.chw.percentage_users",
+                "name": "qa.chw_qa.percentage_users",
                 "aggregator": "last"
                 }
         },
@@ -41,7 +41,7 @@
             "target": {
                 "metric_type": "account",
                 "store": "ndoh_qa",
-                "name": "qa.chw.percent_complete_registrations",
+                "name": "qa.chw_qa.percent_complete_registrations",
                 "aggregator": "last"
                 }
         },
@@ -52,7 +52,7 @@
             "target": {
                 "metric_type": "account",
                 "store": "ndoh_qa",
-                "name": "qa.chw.percent_incomplete_registrations",
+                "name": "qa.chw_qa.percent_incomplete_registrations",
                 "aggregator": "last"
                 }
         },
@@ -64,7 +64,7 @@
             "target": {
                 "metric_type": "account",
                 "store": "ndoh_qa",
-                "name": "qa.chw.states_start.no_incomplete",
+                "name": "qa.chw_qa.states_start.no_incomplete",
                 "aggregator": "last"
                 }
         },
@@ -75,7 +75,7 @@
             "target": {
                 "metric_type": "account",
                 "store": "ndoh_qa",
-                "name": "qa.chw.states_mobile_no.no_incomplete",
+                "name": "qa.chw_qa.states_mobile_no.no_incomplete",
                 "aggregator": "last"
                 }
         },
@@ -86,7 +86,7 @@
             "target": {
                 "metric_type": "account",
                 "store": "ndoh_qa",
-                "name": "qa.chw.states_id_type.no_incomplete",
+                "name": "qa.chw_qa.states_id_type.no_incomplete",
                 "aggregator": "last"
                 }
         },
@@ -97,7 +97,7 @@
             "target": {
                 "metric_type": "account",
                 "store": "ndoh_qa",
-                "name": "qa.chw.states_sa_id.no_incomplete",
+                "name": "qa.chw_qa.states_sa_id.no_incomplete",
                 "aggregator": "last"
                 }
         },
@@ -108,7 +108,7 @@
             "target": {
                 "metric_type": "account",
                 "store": "ndoh_qa",
-                "name": "qa.chw.states_passport_origin.no_incomplete",
+                "name": "qa.chw_qa.states_passport_origin.no_incomplete",
                 "aggregator": "last"
                 }
         },
@@ -119,7 +119,7 @@
             "target": {
                 "metric_type": "account",
                 "store": "ndoh_qa",
-                "name": "qa.chw.states_passport_no.no_incomplete",
+                "name": "qa.chw_qa.states_passport_no.no_incomplete",
                 "aggregator": "last"
                 }
         },
@@ -130,7 +130,7 @@
             "target": {
                 "metric_type": "account",
                 "store": "ndoh_qa",
-                "name": "qa.chw.states_birth_year.no_incomplete",
+                "name": "qa.chw_qa.states_birth_year.no_incomplete",
                 "aggregator": "last"
                 }
         },
@@ -141,7 +141,7 @@
             "target": {
                 "metric_type": "account",
                 "store": "ndoh_qa",
-                "name": "qa.chw.states_birth_month.no_incomplete",
+                "name": "qa.chw_qa.states_birth_month.no_incomplete",
                 "aggregator": "last"
                 }
         },
@@ -152,7 +152,7 @@
             "target": {
                 "metric_type": "account",
                 "store": "ndoh_qa",
-                "name": "qa.chw.states_birth_day.no_incomplete",
+                "name": "qa.chw_qa.states_birth_day.no_incomplete",
                 "aggregator": "last"
                 }
         },
@@ -163,7 +163,7 @@
             "target": {
                 "metric_type": "account",
                 "store": "ndoh_qa",
-                "name": "qa.chw.states_language.no_incomplete",
+                "name": "qa.chw_qa.states_language.no_incomplete",
                 "aggregator": "last"
                 }
         },
@@ -175,7 +175,7 @@
             "target": {
                 "metric_type": "account",
                 "store": "ndoh_qa",
-                "name": "qa.chw.sum.json_to_jembi_success",
+                "name": "qa.chw_qa.sum.json_to_jembi_success",
                 "aggregator": "last"
                 }
         },
@@ -186,7 +186,7 @@
             "target": {
                 "metric_type": "account",
                 "store": "ndoh_qa",
-                "name": "qa.chw.sum.json_to_jembi_fail",
+                "name": "qa.chw_qa.sum.json_to_jembi_fail",
                 "aggregator": "last"
                 }
         }

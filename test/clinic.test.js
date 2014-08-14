@@ -1062,7 +1062,7 @@ describe("app", function() {
 
         describe("after the mom's msg language is selected", function() {
             describe("if the phone used is not the mom's", function() {
-                it.only("should save msg language, thank them and exit", function() {
+                it("should save msg language, thank them and exit", function() {
                     return tester
                         .setup.user.addr('270001')
                         .setup(function(api) {
@@ -1083,7 +1083,9 @@ describe("app", function() {
                                     birth_year: '1951',
                                     birth_month: '01',
                                     birth_day: '02',
-                                    dob: '1951-01-02'
+                                    dob: '1951-01-02',
+                                    due_date_month: '05',
+                                    due_date_day: '30'
                                 },
                                 key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                                 user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
@@ -1146,7 +1148,9 @@ describe("app", function() {
                                     birth_month: '01',
                                     birth_day: '02',
                                     dob: '1951-01-02',
-                                    ussd_sessions: '5'
+                                    ussd_sessions: '5',
+                                    due_date_month: '05',
+                                    due_date_day: '30'
                                 },
                                 key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                                 user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
@@ -1205,7 +1209,9 @@ describe("app", function() {
                                     birth_month: '01',
                                     birth_day: '02',
                                     dob: '1951-01-02',
-                                    ussd_sessions: '5'
+                                    ussd_sessions: '5',
+                                    due_date_month: '05',
+                                    due_date_day: '30'
                                 },
                                 key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                                 user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
@@ -1238,7 +1244,9 @@ describe("app", function() {
                                     birth_month: '01',
                                     birth_day: '02',
                                     dob: '1951-01-02',
-                                    ussd_sessions: '5'
+                                    ussd_sessions: '5',
+                                    due_date_month: '05',
+                                    due_date_day: '30'
                                 },
                                 key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                                 user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
@@ -1284,7 +1292,9 @@ describe("app", function() {
                                     birth_year: '1951',
                                     birth_month: '01',
                                     birth_day: '02',
-                                    dob: '1951-01-02'
+                                    dob: '1951-01-02',
+                                    due_date_month: '05',
+                                    due_date_day: '30'
                                 },
                                 key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                                 user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
@@ -1377,7 +1387,9 @@ describe("app", function() {
                                     birth_month: '01',
                                     birth_day: '02',
                                     dob: '1951-01-02',
-                                    ussd_sessions: '5'
+                                    ussd_sessions: '5',
+                                    due_date_month: '05',
+                                    due_date_day: '30'
                                 }
                             });
                         })

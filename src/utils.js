@@ -620,18 +620,9 @@ go.utils = {
                     go.utils.get_kv(im, [env, 'personal', 'unique_users'].join('.'), 0)
                 ]).spread(function(clinic_users, chw_users, personal_users) {
                     var total_users = clinic_users + chw_users + personal_users;
-                    console.log('TOTALS');
-                    console.log('total_users: ' + total_users);
-                    console.log('clinic_users: ' + clinic_users);
-                    console.log('chw_users: ' + chw_users);
-                    console.log('public_users: ' + personal_users);
                     var clinic_percentage = (clinic_users / total_users) * 100;
                     var chw_percentage = (chw_users / total_users) * 100;
                     var personal_percentage = (personal_users / total_users) * 100;
-                    console.log('PERCENTAGES');
-                    console.log(clinic_percentage);
-                    console.log(chw_percentage);
-                    console.log(personal_percentage);
                     return Q.all([
                         im.metrics.fire.inc([metric_prefix, 'sum', 'unique_users'].join('.')),
                         im.metrics.fire.last([env, 'clinic', 'percentage_users'].join('.'), clinic_percentage),

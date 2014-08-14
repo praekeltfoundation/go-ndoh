@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2014-08-05 12:54:+0200\n"
+"POT-Creation-Date: 2014-08-14 04:35:+0200\n"
 "Project-Id-Version: PACKAGE VERSION\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -57,51 +57,51 @@ msgstr ""
 msgid "Dec"
 msgstr ""
 
-#: go-app-optout.js:924
+#: go-app-optout.js:934
 msgid "Please let us know why you do not want MomConnect messages"
 msgstr ""
 
-#: go-app-optout.js:927
+#: go-app-optout.js:937
 msgid "Miscarriage"
 msgstr ""
 
-#: go-app-optout.js:928
+#: go-app-optout.js:938
 msgid "Baby was stillborn"
 msgstr ""
 
-#: go-app-optout.js:929
+#: go-app-optout.js:939
 msgid "Baby died"
 msgstr ""
 
-#: go-app-optout.js:930
+#: go-app-optout.js:940
 msgid "Messages not useful"
 msgstr ""
 
-#: go-app-optout.js:931
+#: go-app-optout.js:941
 msgid "Other"
 msgstr ""
 
-#: go-app-optout.js:965
+#: go-app-optout.js:976
 msgid ""
 "We are sorry for your loss. Would you like to receive a small set of free "
 "messages to help you in this difficult time?"
 msgstr ""
 
-#: go-app-optout.js:970
+#: go-app-optout.js:981
 msgid "Yes"
 msgstr ""
 
-#: go-app-optout.js:971
+#: go-app-optout.js:982
 msgid "No"
 msgstr ""
 
-#: go-app-optout.js:997
+#: go-app-optout.js:1008
 msgid ""
 "Thank you. You will no longer receive messages from us. If you have any "
 "medical concerns please visit your nearest clinic."
 msgstr ""
 
-#: go-app-optout.js:1007
+#: go-app-optout.js:1018
 msgid ""
 "Thank you. You will receive support messages from MomConnect in the coming "
 "weeks."

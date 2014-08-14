@@ -1174,8 +1174,8 @@ describe("app", function() {
                             assert.equal(contact.extra.metric_sessions_to_register, '5');
                             assert.equal(contact.extra.no_registrations, undefined);
                             assert.equal(contact.extra.registered_by, undefined);                            
-                            assert.equal(contact.extra.subscription_type, '1');
-                            assert.equal(contact.extra.subscription_rate, '3');
+                            assert.equal(contact.extra.subscription_type, '2');
+                            assert.equal(contact.extra.subscription_rate, '4');
                             assert.equal(contact.extra.is_registered, 'true');
                             assert.equal(contact.extra.is_registered_by, 'clinic');
                             assert.equal(contact.extra.service_rating_reminder, '0');

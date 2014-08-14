@@ -275,7 +275,6 @@ go.utils = {
     },
 
     get_pregnancy_code: function(im, element){
-      console.log(element);
       if (im.config.name.substring(0,3) == "chw") {        
         return go.utils.update_attr(element, 'code', '102874004');
       } else {

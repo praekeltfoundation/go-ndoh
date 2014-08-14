@@ -156,25 +156,27 @@ go.app = function() {
 
                 next: function(content) {
                     self.contact.extra.clinic_code = content;
+                    self.contact.extra.is_registered = 'false';
 
                     return self.im.contacts
                         .save(self.contact)
                         .then(function() {
-                            if (_.isUndefined(self.contact.extra.is_registered)) {
-                                return go.utils
-                                    .incr_kv(self.im, [self.store_name, 'no_incomplete_registrations'].join('.'))
-                                    .then(function() {
-                                        return go.utils.adjust_percentage_registrations(self.im, self.metric_prefix);
-                                    });
-                            }
-                        })
-                        .then(function() {
-                            self.contact.extra.is_registered = 'false';
                             return {
                                 name: 'states_due_date_month'
                             };
                         });
+                },
+
+                events: {
+                    'state:enter': function(content) {
+                        return go.utils
+                            .incr_kv(self.im, [self.store_name, 'no_incomplete_registrations'].join('.'))
+                            .then(function() {
+                                return go.utils.adjust_percentage_registrations(self.im, self.metric_prefix);
+                            });
+                    }
                 }
+
             });
         });
 

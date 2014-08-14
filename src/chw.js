@@ -173,27 +173,29 @@ go.app = function() {
 
                 next: function(choice) {
                     self.contact.extra.id_type = choice.value;
+                    self.contact.extra.is_registered = 'false';
 
                     return self.im.contacts
                         .save(self.contact)
                         .then(function() {
-                            if (_.isUndefined(self.contact.extra.is_registered)) {
-                                return go.utils
-                                    .incr_kv(self.im, [self.store_name, 'no_incomplete_registrations'].join('.'))
-                                    .then(function() {
-                                        go.utils.adjust_percentage_registrations(self.im, self.metric_prefix);
-                                    });
-                            }
-                        })
-                        .then(function() {
-                            self.contact.extra.is_registered = 'false';
                             return {
                                 sa_id: 'states_sa_id',
                                 passport: 'states_passport_origin',
                                 none: 'states_birth_year'
                             } [choice.value];
                         });
+                },
+
+                events: {
+                    'state:enter': function(content) {
+                        return go.utils
+                            .incr_kv(self.im, [self.store_name, 'no_incomplete_registrations'].join('.'))
+                            .then(function() {
+                                return go.utils.adjust_percentage_registrations(self.im, self.metric_prefix);
+                            });
+                    }
                 }
+
             });
         });
 

@@ -259,10 +259,11 @@ go.app = function() {
                                 .set_lang(choice.value)
                                 .then(function() {
                                     if (_.isUndefined(self.contact.extra.is_registered)) {
-                                        return Q.all([
-                                            go.utils.incr_kv(self.im, [self.store_name, 'no_incomplete_registrations'].join('.')),
-                                            go.utils.adjust_percentage_registrations(self.im, self.metric_prefix)
-                                        ]);
+                                        return go.utils
+                                            .incr_kv(self.im, [self.store_name, 'no_incomplete_registrations'].join('.'))
+                                            .then(function() {
+                                                go.utils.adjust_percentage_registrations(self.im, self.metric_prefix);
+                                            });
                                     }
                                 })
                                 .then(function() {
@@ -539,9 +540,11 @@ go.app = function() {
                                 self.im.metrics.fire.avg((self.metric_prefix + ".avg.sessions_to_register"),
                                     parseInt(self.contact.extra.ussd_sessions, 10)),
                                 go.utils.incr_kv(self.im, [self.store_name, 'no_complete_registrations'].join('.')),
-                                go.utils.decr_kv(self.im, [self.store_name, 'no_incomplete_registrations'].join('.')),
-                                go.utils.adjust_percentage_registrations(self.im, self.metric_prefix)
-                            ]);
+                                go.utils.decr_kv(self.im, [self.store_name, 'no_incomplete_registrations'].join('.'))
+                            ])
+                                .then(function() {
+                                    go.utils.adjust_percentage_registrations(self.im, self.metric_prefix);
+                                });
                         })
                         .then(function() {
                             self.contact.extra.ussd_sessions = '0';

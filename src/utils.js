@@ -264,7 +264,24 @@ go.utils = {
         }
     },
 
-    build_cda_doc: function(contact, user) {
+    get_pregnancy_code: function(im, element){
+      console.log(element);
+      if (im.config.name.substring(0,3) == "chw") {        
+        return go.utils.update_attr(element, 'code', '102874004');
+      } else {
+        return go.utils.update_attr(element, 'code', '77386006');
+      }
+    },
+
+    get_pregnancy_display_name: function(im, element){
+      if (im.config.name.substring(0,3) == "chw") {
+        return go.utils.update_attr(element, 'displayName', 'Unconfirmed pregnancy');
+      } else {
+        return go.utils.update_attr(element, 'displayName', 'Pregnancy confirmed');
+      }
+    },
+
+    build_cda_doc: function(contact, user, im) {
         /**
 
         HERE BE MODERATE DRAGONS
@@ -341,6 +358,12 @@ go.utils = {
           },
           '//*[text()="${softwareName}"]': function (element) {
             return go.utils.replace_element(element, 'Vumi');
+          },
+          '//*[@code="${pregStatusCode}"]': function (element) {
+            return go.utils.get_pregnancy_code(im, element);
+          },
+          '//*[@displayName="${pregStatusDisplayName}"]': function (element) {
+            return go.utils.get_pregnancy_display_name(im, element);
           }
         };
         Object.keys(map).forEach(function (key) {
@@ -541,9 +564,9 @@ go.utils = {
             '            <statusCode code="completed"/>',
             '            <!-- e.g. 20140217 -->',
             '            <effectiveTime value="${effectiveTime}"/>',
-            '            <value xsi:type="CE" code="77386006" displayName="Pregnancy confirmed" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT"/>',
-            '            <!-- For CHW identification use case, use "Unconfirmed pregnancy" -->',
-            '            <!--<value xsi:type="CE" code="102874004" displayName="Unconfirmed pregnancy" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT"/>-->',
+            '            <!-- For CHW identification use case, use: code="102874004" displayName="Unconfirmed pregnancy" -->',
+            '            <!-- For Clinic identification use case, use: code="77386006" displayName="Pregnancy confirmed" -->',
+            '            <value xsi:type="CE" code="${pregStatusCode}" displayName="${pregStatusDisplayName}" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT"/>',
             '            <entryRelationship typeCode="SPRT" inversionInd="true">',
             '              <!-- Delivery Date -->',
             '              <observation classCode="OBS" moodCode="EVN">',
@@ -654,7 +677,7 @@ go.utils = {
     },
 
     jembi_send_doc: function(contact, user, im, metric_prefix) {
-        var built_doc = go.utils.build_cda_doc(contact, user);
+        var built_doc = go.utils.build_cda_doc(contact, user, im);
         return go.utils
             .jembi_api_call(built_doc, contact, im)
             .then(function(doc_result) {

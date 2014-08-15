@@ -39,16 +39,6 @@ go.app = function() {
                             new Choice('other', $('Other'))
                         ],
 
-                        events: {
-                            'state:enter': function() {
-                                return self.im.api_request('optout.optout', {
-                                    address_type: "msisdn",
-                                    address_value: self.im.user.addr,
-                                    message_id: self.im.msg.message_id
-                                });
-                            }
-                        },
-
                         next: function(choice) {
                             self.contact.extra.opt_out_reason = choice.value;
 
@@ -109,7 +99,17 @@ go.app = function() {
                         'messages from us. If you have any medical ' +
                         'concerns please visit your nearest clinic.'),
 
-                next: 'states_start'
+                next: 'states_start',
+
+                events: {
+                    'state:enter': function() {
+                        return self.im.api_request('optout.optout', {
+                            address_type: "msisdn",
+                            address_value: self.im.user.addr,
+                            message_id: self.im.msg.message_id
+                        });
+                    }
+                },
             });
         });
 

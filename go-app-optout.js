@@ -62,6 +62,16 @@ go.utils = {
         return today;
     },
 
+    get_due_year_from_month: function(month, today) {
+      // if due month is less than current month then mother must be due next year
+      motoday = moment(today);
+      if ((motoday.month()+1) > parseInt(month, 10)) {
+        return motoday.year()+1;
+      } else {
+        return motoday.year();
+      }
+    },
+
     check_valid_number: function(input){
         // an attempt to solve the insanity of JavaScript numbers
         var numbers_only = new RegExp('^\\d+$');
@@ -267,7 +277,35 @@ go.utils = {
         }
     },
 
-    build_cda_doc: function(contact, user) {
+    get_pregnancy_code: function(im, element){
+      if (im.config.name.substring(0,3) == "chw") {        
+        return go.utils.update_attr(element, 'code', '102874004');
+      } else {
+        return go.utils.update_attr(element, 'code', '77386006');
+      }
+    },
+
+    get_pregnancy_display_name: function(im, element){
+      if (im.config.name.substring(0,3) == "chw") {
+        return go.utils.update_attr(element, 'displayName', 'Unconfirmed pregnancy');
+      } else {
+        return go.utils.update_attr(element, 'displayName', 'Pregnancy confirmed');
+      }
+    },
+
+    get_duedate: function(contact, element, config){
+        if (!_.isUndefined(contact.extra.due_date_month) && !_.isUndefined(contact.extra.due_date_day)){
+          var day = contact.extra.due_date_day;
+          var month = contact.extra.due_date_month;
+          var year = go.utils.get_due_year_from_month(month, go.utils.get_today(config));
+            return go.utils.update_attr(
+              element, 'value', [year, month, day, '000000'].join(''));
+        } else {
+            return go.utils.null_element(element);
+        }
+    },
+
+    build_cda_doc: function(contact, user, im) {
         /**
 
         HERE BE MODERATE DRAGONS
@@ -337,13 +375,19 @@ go.utils = {
             return go.utils.update_attr(element, 'value', go.utils.get_timestamp());
           },
           '//*[@value="${date}"]': function (element) {
-            return go.utils.update_attr(element, 'value', go.utils.get_timestamp());
+            return go.utils.get_duedate(contact, element, im.config);
           },
           '//*[@code="${mobileHealthApplicationCode}"]': function (element) {
             return go.utils.update_attr(element, 'code', 'PF');
           },
           '//*[text()="${softwareName}"]': function (element) {
             return go.utils.replace_element(element, 'Vumi');
+          },
+          '//*[@code="${pregStatusCode}"]': function (element) {
+            return go.utils.get_pregnancy_code(im, element);
+          },
+          '//*[@displayName="${pregStatusDisplayName}"]': function (element) {
+            return go.utils.get_pregnancy_display_name(im, element);
           }
         };
         Object.keys(map).forEach(function (key) {
@@ -544,9 +588,9 @@ go.utils = {
             '            <statusCode code="completed"/>',
             '            <!-- e.g. 20140217 -->',
             '            <effectiveTime value="${effectiveTime}"/>',
-            '            <value xsi:type="CE" code="77386006" displayName="Pregnancy confirmed" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT"/>',
-            '            <!-- For CHW identification use case, use "Unconfirmed pregnancy" -->',
-            '            <!--<value xsi:type="CE" code="102874004" displayName="Unconfirmed pregnancy" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT"/>-->',
+            '            <!-- For CHW identification use case, use: code="102874004" displayName="Unconfirmed pregnancy" -->',
+            '            <!-- For Clinic identification use case, use: code="77386006" displayName="Pregnancy confirmed" -->',
+            '            <value xsi:type="CE" code="${pregStatusCode}" displayName="${pregStatusDisplayName}" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT"/>',
             '            <entryRelationship typeCode="SPRT" inversionInd="true">',
             '              <!-- Delivery Date -->',
             '              <observation classCode="OBS" moodCode="EVN">',
@@ -657,7 +701,7 @@ go.utils = {
     },
 
     jembi_send_doc: function(contact, user, im, metric_prefix) {
-        var built_doc = go.utils.build_cda_doc(contact, user);
+        var built_doc = go.utils.build_cda_doc(contact, user, im);
         return go.utils
             .jembi_api_call(built_doc, contact, im)
             .then(function(doc_result) {

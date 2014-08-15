@@ -1126,6 +1126,62 @@ describe("app", function() {
                 });
             });
 
+            describe("if the ID type is South Africa ID", function() {
+                it("should save msg language, thank them and exit", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add( {
+                                msisdn: '+27001',
+                                extra : {
+                                    ussd_sessions: '5',
+                                    language_choice: 'en',
+                                    id_type: 'sa_id',
+                                    sa_id: '5101025009086',
+                                    birth_year: '1951',
+                                    birth_month: '01',
+                                    birth_day: '02',
+                                    dob: '1951-01-02',
+                                },
+                                key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                                user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
+                            });
+                        })
+                        .setup.user.addr('27001')
+                        .setup.user.state('states_language')
+                        .input('1')
+                        .check.interaction({
+                            state: 'states_end_success',
+                            reply: ('Thank you, registration is complete. The ' +
+                            'pregnant woman will now receive messages to ' +
+                            'encourage her to register at her nearest ' + 
+                            'clinic.')
+                        })
+                        .check(function(api) {
+                            var contact = _.find(api.contacts.store, {
+                              msisdn: '+27001'
+                            });
+                            assert.equal(contact.extra.language_choice, 'en');
+                            assert.equal(contact.extra.ussd_sessions, '0');
+                            assert.equal(contact.extra.metric_sessions_to_register, '5');
+                            assert.equal(contact.extra.no_registrations, undefined);
+                            assert.equal(contact.extra.registered_by, undefined);
+                            assert.equal(contact.extra.subscription_type, '10');
+                            assert.equal(contact.extra.subscription_rate, '3');
+                            assert.equal(contact.extra.is_registered, 'true');
+                            assert.equal(contact.extra.is_registered_by, 'chw');
+                        })
+                        .check(function(api) {
+                            var metrics = api.metrics.stores.test_metric_store;
+                            assert.deepEqual(metrics['test.chw.avg.sessions_to_register'].values, [5]);
+                            assert.deepEqual(metrics['test.chw.percent_incomplete_registrations'].values, [25]);
+                            assert.deepEqual(metrics['test.chw.percent_complete_registrations'].values, [75]);
+                            assert.deepEqual(metrics['test.chw.sum.json_to_jembi_success'].values, [1]);
+                        })
+                        .check.reply.ends_session()
+                        .run();
+                });
+            });
+
             describe("if the jembi send fails", function() {
                 it.skip("should fire a fail metric", function() {
                     return tester

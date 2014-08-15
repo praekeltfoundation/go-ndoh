@@ -1083,7 +1083,9 @@ describe("app", function() {
                                     birth_year: '1951',
                                     birth_month: '01',
                                     birth_day: '02',
-                                    dob: '1951-01-02'
+                                    dob: '1951-01-02',
+                                    due_date_month: '05',
+                                    due_date_day: '30'
                                 },
                                 key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                                 user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
@@ -1146,7 +1148,9 @@ describe("app", function() {
                                     birth_month: '01',
                                     birth_day: '02',
                                     dob: '1951-01-02',
-                                    ussd_sessions: '5'
+                                    ussd_sessions: '5',
+                                    due_date_month: '05',
+                                    due_date_day: '30'
                                 },
                                 key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                                 user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
@@ -1170,8 +1174,8 @@ describe("app", function() {
                             assert.equal(contact.extra.metric_sessions_to_register, '5');
                             assert.equal(contact.extra.no_registrations, undefined);
                             assert.equal(contact.extra.registered_by, undefined);                            
-                            assert.equal(contact.extra.subscription_type, '1');
-                            assert.equal(contact.extra.subscription_rate, '3');
+                            assert.equal(contact.extra.subscription_type, '2');
+                            assert.equal(contact.extra.subscription_rate, '4');
                             assert.equal(contact.extra.is_registered, 'true');
                             assert.equal(contact.extra.is_registered_by, 'clinic');
                             assert.equal(contact.extra.service_rating_reminder, '0');
@@ -1205,7 +1209,9 @@ describe("app", function() {
                                     birth_month: '01',
                                     birth_day: '02',
                                     dob: '1951-01-02',
-                                    ussd_sessions: '5'
+                                    ussd_sessions: '5',
+                                    due_date_month: '05',
+                                    due_date_day: '30'
                                 },
                                 key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                                 user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
@@ -1238,7 +1244,9 @@ describe("app", function() {
                                     birth_month: '01',
                                     birth_day: '02',
                                     dob: '1951-01-02',
-                                    ussd_sessions: '5'
+                                    ussd_sessions: '5',
+                                    due_date_month: '05',
+                                    due_date_day: '30'
                                 },
                                 key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                                 user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
@@ -1284,7 +1292,9 @@ describe("app", function() {
                                     birth_year: '1951',
                                     birth_month: '01',
                                     birth_day: '02',
-                                    dob: '1951-01-02'
+                                    dob: '1951-01-02',
+                                    due_date_month: '05',
+                                    due_date_day: '30'
                                 },
                                 key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                                 user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
@@ -1377,7 +1387,9 @@ describe("app", function() {
                                     birth_month: '01',
                                     birth_day: '02',
                                     dob: '1951-01-02',
-                                    ussd_sessions: '5'
+                                    ussd_sessions: '5',
+                                    due_date_month: '05',
+                                    due_date_day: '30'
                                 }
                             });
                         })

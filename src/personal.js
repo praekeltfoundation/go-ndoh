@@ -301,27 +301,30 @@ go.app = function() {
 
                 next: function(choice) {
                     self.contact.extra.language_choice = choice.value;
+                    self.contact.extra.is_registered = 'false';
+
                     return self.im.groups.get(choice.value)
                         .then(function(group) {
                             self.contact.groups.push(group.key);
                             return self.im.user
                                 .set_lang(choice.value)
                                 .then(function() {
-                                    if (_.isUndefined(self.contact.extra.is_registered)) {
-                                        return Q.all([
-                                            go.utils.incr_kv(self.im, [self.store_name, 'no_incomplete_registrations'].join('.')),
-                                            go.utils.adjust_percentage_registrations(self.im, self.metric_prefix)
-                                        ]);
-                                    }
-                                })
-                                .then(function() {
-                                    self.contact.extra.is_registered = 'false';
                                     return self.im.contacts.save(self.contact);
                                 })
                                 .then(function() {
                                     return 'states_register_info';
                                 });
                         });
+                },
+
+                events: {
+                    'state:enter': function(content) {
+                        return go.utils
+                            .incr_kv(self.im, [self.store_name, 'no_incomplete_registrations'].join('.'))
+                            .then(function() {
+                                return go.utils.adjust_percentage_registrations(self.im, self.metric_prefix);
+                            });
+                    }
                 }
             });
         });
@@ -588,9 +591,11 @@ go.app = function() {
                                 self.im.metrics.fire.avg((self.metric_prefix + ".avg.sessions_to_register"),
                                     parseInt(self.contact.extra.ussd_sessions, 10)),
                                 go.utils.incr_kv(self.im, [self.store_name, 'no_complete_registrations'].join('.')),
-                                go.utils.decr_kv(self.im, [self.store_name, 'no_incomplete_registrations'].join('.')),
-                                go.utils.adjust_percentage_registrations(self.im, self.metric_prefix)
-                            ]);
+                                go.utils.decr_kv(self.im, [self.store_name, 'no_incomplete_registrations'].join('.'))
+                            ])
+                                .then(function() {
+                                    go.utils.adjust_percentage_registrations(self.im, self.metric_prefix);
+                                });
                         })
                         .then(function() {
                             self.contact.extra.ussd_sessions = '0';

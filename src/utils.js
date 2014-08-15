@@ -656,24 +656,26 @@ go.utils = {
     },
 
     fire_users_metrics: function(im, store_name, env, metric_prefix) {
-        return Q.all([
-            go.utils.incr_kv(im, [store_name, 'unique_users'].join('.')),
-            go.utils.get_kv(im, [env, 'clinic', 'unique_users'].join('.'), 0),
-            go.utils.get_kv(im, [env, 'chw', 'unique_users'].join('.'), 0),
-            go.utils.get_kv(im, [env, 'personal', 'unique_users'].join('.'), 0)
-        ]).spread(function(placeholder, clinic_users, chw_users, personal_users) {
-            var total_users = clinic_users + chw_users + personal_users;
-            var clinic_percentage = (clinic_users / total_users) * 100;
-            var chw_percentage = (chw_users / total_users) * 100;
-            var personal_percentage = (personal_users / total_users) * 100;
-            return Q.all([
-                im.metrics.fire.inc([metric_prefix, 'sum', 'unique_users'].join('.')),
-                im.metrics.fire.last([env, 'clinic', 'percentage_users'].join('.'), clinic_percentage),
-                im.metrics.fire.last([env, 'chw', 'percentage_users'].join('.'), chw_percentage),
-                im.metrics.fire.last([env, 'personal', 'percentage_users'].join('.'), personal_percentage),
-                im.metrics.fire.inc([env, 'sum', 'unique_users'].join('.'))
-            ]);
-        });
+        return go.utils.incr_kv(im, [store_name, 'unique_users'].join('.'))
+            .then(function() {
+                return Q.all([
+                    go.utils.get_kv(im, [env, 'clinic', 'unique_users'].join('.'), 0),
+                    go.utils.get_kv(im, [env, 'chw', 'unique_users'].join('.'), 0),
+                    go.utils.get_kv(im, [env, 'personal', 'unique_users'].join('.'), 0)
+                ]).spread(function(clinic_users, chw_users, personal_users) {
+                    var total_users = clinic_users + chw_users + personal_users;
+                    var clinic_percentage = (clinic_users / total_users) * 100;
+                    var chw_percentage = (chw_users / total_users) * 100;
+                    var personal_percentage = (personal_users / total_users) * 100;
+                    return Q.all([
+                        im.metrics.fire.inc([metric_prefix, 'sum', 'unique_users'].join('.')),
+                        im.metrics.fire.last([env, 'clinic', 'percentage_users'].join('.'), clinic_percentage),
+                        im.metrics.fire.last([env, 'chw', 'percentage_users'].join('.'), chw_percentage),
+                        im.metrics.fire.last([env, 'personal', 'percentage_users'].join('.'), personal_percentage),
+                        im.metrics.fire.inc([env, 'sum', 'unique_users'].join('.'))
+                    ]);
+                });
+            });
     },
 
 

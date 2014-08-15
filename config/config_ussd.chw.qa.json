@@ -1,5 +1,5 @@
 {
-    "name": "chw_qa",
+    "name": "chw",
     "env": "qa",
     "metric_store": "ndoh_qa",
     "endpoints": {"sms": {"delivery_class": "sms"}},

@@ -216,26 +216,29 @@ go.app = function() {
 
                 next: function(choice) {
                     self.contact.extra.id_type = choice.value;
+                    self.contact.extra.is_registered = 'false';
 
                     return self.im.contacts
                         .save(self.contact)
                         .then(function() {
-                            if (_.isUndefined(self.contact.extra.is_registered)) {
-                                return Q.all([
-                                    go.utils.incr_kv(self.im, [self.store_name, 'no_incomplete_registrations'].join('.')),
-                                    go.utils.adjust_percentage_registrations(self.im, self.metric_prefix)
-                                ]);
-                            }
-                        })
-                        .then(function() {
-                            self.contact.extra.is_registered = 'false';
                             return {
                                 sa_id: 'states_sa_id',
                                 passport: 'states_passport_origin',
                                 none: 'states_birth_year'
                             } [choice.value];
                         });
+                },
+
+                events: {
+                    'state:enter': function(content) {
+                        return go.utils
+                            .incr_kv(self.im, [self.store_name, 'no_incomplete_registrations'].join('.'))
+                            .then(function() {
+                                return go.utils.adjust_percentage_registrations(self.im, self.metric_prefix);
+                            });
+                    }
                 }
+
             });
         });
 
@@ -453,9 +456,11 @@ go.app = function() {
                                         self.im.metrics.fire.avg((self.metric_prefix + ".avg.sessions_to_register"),
                                             parseInt(self.user.extra.ussd_sessions, 10)),
                                         go.utils.incr_kv(self.im, [self.store_name, 'no_complete_registrations'].join('.')),
-                                        go.utils.decr_kv(self.im, [self.store_name, 'no_incomplete_registrations'].join('.')),
-                                        go.utils.adjust_percentage_registrations(self.im, self.metric_prefix)
-                                    ]);
+                                        go.utils.decr_kv(self.im, [self.store_name, 'no_incomplete_registrations'].join('.'))
+                                    ])
+                                        .then(function() {
+                                            go.utils.adjust_percentage_registrations(self.im, self.metric_prefix);
+                                        });
                                 })
                                 .then(function() {
                                     if (!_.isUndefined(self.user.extra.working_on) && (self.user.extra.working_on !== "")) {

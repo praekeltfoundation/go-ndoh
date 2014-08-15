@@ -659,24 +659,26 @@ go.utils = {
     },
 
     fire_users_metrics: function(im, store_name, env, metric_prefix) {
-        return Q.all([
-            go.utils.incr_kv(im, [store_name, 'unique_users'].join('.')),
-            go.utils.get_kv(im, [env, 'clinic', 'unique_users'].join('.'), 0),
-            go.utils.get_kv(im, [env, 'chw', 'unique_users'].join('.'), 0),
-            go.utils.get_kv(im, [env, 'personal', 'unique_users'].join('.'), 0)
-        ]).spread(function(placeholder, clinic_users, chw_users, personal_users) {
-            var total_users = clinic_users + chw_users + personal_users;
-            var clinic_percentage = (clinic_users / total_users) * 100;
-            var chw_percentage = (chw_users / total_users) * 100;
-            var personal_percentage = (personal_users / total_users) * 100;
-            return Q.all([
-                im.metrics.fire.inc([metric_prefix, 'sum', 'unique_users'].join('.')),
-                im.metrics.fire.last([env, 'clinic', 'percentage_users'].join('.'), clinic_percentage),
-                im.metrics.fire.last([env, 'chw', 'percentage_users'].join('.'), chw_percentage),
-                im.metrics.fire.last([env, 'personal', 'percentage_users'].join('.'), personal_percentage),
-                im.metrics.fire.inc([env, 'sum', 'unique_users'].join('.'))
-            ]);
-        });
+        return go.utils.incr_kv(im, [store_name, 'unique_users'].join('.'))
+            .then(function() {
+                return Q.all([
+                    go.utils.get_kv(im, [env, 'clinic', 'unique_users'].join('.'), 0),
+                    go.utils.get_kv(im, [env, 'chw', 'unique_users'].join('.'), 0),
+                    go.utils.get_kv(im, [env, 'personal', 'unique_users'].join('.'), 0)
+                ]).spread(function(clinic_users, chw_users, personal_users) {
+                    var total_users = clinic_users + chw_users + personal_users;
+                    var clinic_percentage = (clinic_users / total_users) * 100;
+                    var chw_percentage = (chw_users / total_users) * 100;
+                    var personal_percentage = (personal_users / total_users) * 100;
+                    return Q.all([
+                        im.metrics.fire.inc([metric_prefix, 'sum', 'unique_users'].join('.')),
+                        im.metrics.fire.last([env, 'clinic', 'percentage_users'].join('.'), clinic_percentage),
+                        im.metrics.fire.last([env, 'chw', 'percentage_users'].join('.'), chw_percentage),
+                        im.metrics.fire.last([env, 'personal', 'percentage_users'].join('.'), personal_percentage),
+                        im.metrics.fire.inc([env, 'sum', 'unique_users'].join('.'))
+                    ]);
+                });
+            });
     },
 
 
@@ -1247,27 +1249,30 @@ go.app = function() {
 
                 next: function(choice) {
                     self.contact.extra.language_choice = choice.value;
+                    self.contact.extra.is_registered = 'false';
+
                     return self.im.groups.get(choice.value)
                         .then(function(group) {
                             self.contact.groups.push(group.key);
                             return self.im.user
                                 .set_lang(choice.value)
                                 .then(function() {
-                                    if (_.isUndefined(self.contact.extra.is_registered)) {
-                                        return Q.all([
-                                            go.utils.incr_kv(self.im, [self.store_name, 'no_incomplete_registrations'].join('.')),
-                                            go.utils.adjust_percentage_registrations(self.im, self.metric_prefix)
-                                        ]);
-                                    }
-                                })
-                                .then(function() {
-                                    self.contact.extra.is_registered = 'false';
                                     return self.im.contacts.save(self.contact);
                                 })
                                 .then(function() {
                                     return 'states_register_info';
                                 });
                         });
+                },
+
+                events: {
+                    'state:enter': function(content) {
+                        return go.utils
+                            .incr_kv(self.im, [self.store_name, 'no_incomplete_registrations'].join('.'))
+                            .then(function() {
+                                return go.utils.adjust_percentage_registrations(self.im, self.metric_prefix);
+                            });
+                    }
                 }
             });
         });
@@ -1534,9 +1539,11 @@ go.app = function() {
                                 self.im.metrics.fire.avg((self.metric_prefix + ".avg.sessions_to_register"),
                                     parseInt(self.contact.extra.ussd_sessions, 10)),
                                 go.utils.incr_kv(self.im, [self.store_name, 'no_complete_registrations'].join('.')),
-                                go.utils.decr_kv(self.im, [self.store_name, 'no_incomplete_registrations'].join('.')),
-                                go.utils.adjust_percentage_registrations(self.im, self.metric_prefix)
-                            ]);
+                                go.utils.decr_kv(self.im, [self.store_name, 'no_incomplete_registrations'].join('.'))
+                            ])
+                                .then(function() {
+                                    go.utils.adjust_percentage_registrations(self.im, self.metric_prefix);
+                                });
                         })
                         .then(function() {
                             self.contact.extra.ussd_sessions = '0';

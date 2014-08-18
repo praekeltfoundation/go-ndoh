@@ -45,7 +45,6 @@ go.app = function() {
                             return self.im.contacts
                                 .save(self.contact)
                                 .then(function() {
-                                    //TODO: run unsub
                                     if (_.contains(['not_useful', 'other'], choice.value)){
                                         return 'states_end_no';
                                     } else {
@@ -73,16 +72,24 @@ go.app = function() {
                 next: function(choice) {
                     if (choice.value == "states_end_yes"){
                         opts = go.utils.subscription_type_and_rate(self.contact, self.im);
+                        // set new subscription user extras
                         self.contact.extra.subscription_type = opts.sub_type.toString();
                         self.contact.extra.subscription_rate = opts.sub_rate.toString();
-                        return Q.all([
-                            // Registration is sent to optout endpoint at Jembi to indicate removal
-                            go.utils.jembi_send_json(self.contact, self.contact, 'subscription', self.im, self.metric_prefix),
-                            go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix, opts),
-                            self.im.contacts.save(self.contact)
-                        ]).then(function() {
-                            return choice.value;
-                        });
+
+                        return go.utils
+                            // deactivate current subscriptions
+                            .subscription_unsubscribe_all(self.contact, self.im, opts)
+                            .then(function() {
+                                return Q.all([
+                                    // Registration is sent to optout endpoint at Jembi to indicate removal
+                                    go.utils.jembi_send_json(self.contact, self.contact, 'subscription', self.im, self.metric_prefix),
+                                    // activate new subscription
+                                    go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix, opts),
+                                    self.im.contacts.save(self.contact)
+                                ]).then(function() {
+                                    return choice.value;
+                                });
+                            });
                     } else {
                         return choice.value;
                     }
@@ -103,6 +110,10 @@ go.app = function() {
 
                 events: {
                     'state:enter': function() {
+                        // george: should we also run subscription_unsubscribe_all here?
+                        // george: and change the subscription type and frequency to 'none' / '0'?
+                        // george: I think this depends on how we want to deal with people opting back in -
+                        //         do they have to register again or continue where they left off?
                         return self.im.api_request('optout.optout', {
                             address_type: "msisdn",
                             address_value: self.im.user.addr,

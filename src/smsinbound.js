@@ -53,6 +53,7 @@ go.app = function() {
 
                 events: {
                     'state:enter': function() {
+                        // george: run unsubscribe_all here?
                         return self.im.api_request('optout.optout', {
                             address_type: "msisdn",
                             address_value: self.im.user.addr,
@@ -90,13 +91,19 @@ go.app = function() {
 
                 events: {
                     'state:enter': function() {
-                        opts = go.utils.subscription_type_and_rate(self.contact, self.im);
+                        go.utils.subscription_type_and_rate(self.contact, self.im);
                         self.contact.extra.subscription_type = opts.sub_type.toString();
                         self.contact.extra.subscription_rate = opts.sub_rate.toString();
-                        return Q.all([
-                            go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix, opts),
-                            self.im.contacts.save(self.contact)
-                        ]);
+
+                        return go.utils
+                            .subscription_unsubscribe_all(self.contact, self.im, opts)
+                            .then(function() {
+                                return Q.all([
+                                    // george: should we be notifying jembi of birth?
+                                    go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix, opts),
+                                    self.im.contacts.save(self.contact)
+                                ]);
+                            });
                     }
                 }
             });

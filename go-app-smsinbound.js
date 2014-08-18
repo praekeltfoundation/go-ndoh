@@ -718,6 +718,14 @@ go.utils = {
     },
 
     control_api_call: function (method, payload, endpoint, im) {
+    // george: alt1 & alt2 were born from the PUT request.  I wasn't sure if we needed to pass in the
+    // params again for the query.  Couldn't find good resource on PUT usage.  Current code assumes we
+    // don't need to pass it in.  alt1 and alt2 are provided if we do need it.
+
+    // alt1
+    // control_api_call: function (method, params, payload, endpoint, im) {
+    // alt2
+    // control_api_call: function (method, endpoint, im, opts) {
         var http = new HttpApi(im, {
           headers: {
             'Content-Type': ['application/json'],
@@ -728,10 +736,24 @@ go.utils = {
           case "post":
             return http.post(im.config.control.url + endpoint, {
                 data: JSON.stringify(payload)
+                // alt2
+                // data: JSON.stringify(opts.payload)
               });
           case "get":
             return http.get(im.config.control.url + endpoint, {
-                params: payload
+                params: payload // george: JSON.stringify? don't think so.
+                // alt2
+                // params: opts.params
+              });
+          case "put":
+            return http.put(im.config.control.url + endpoint, {
+                data: JSON.stringify(payload)
+                // alt1
+                // params: params,
+                // data: JSON.stringify(payload)
+                // alt2
+                // params: opts.params,
+                // data: JSON.stringify(opts.payload)
               });
           case "delete":
             return http.delete(im.config.control.url + endpoint);
@@ -789,6 +811,24 @@ go.utils = {
                 }
                 return im.metrics.fire.inc(metric, {amount: 1});
         });
+    },
+
+    subscription_unsubscribe_all: function(contact, im, opts) {
+        var payload = {
+            to_addr: contact.msisdn
+        };
+        return go.utils
+            .control_api_call("get", payload, 'subscription/', im)
+            .then(function(json_result) {
+                // make all subscriptions inactive
+                var update = JSON.parse(json_result.data);
+                if (update.length > 0) {
+                    for (var i=0; i<update.length; i++) {
+                        update[i].active = false;
+                    }
+                    return go.utils.control_api_call("put", update, 'subscription/', im);
+                }
+            });
     },
 
 
@@ -1001,6 +1041,7 @@ go.app = function() {
 
                 events: {
                     'state:enter': function() {
+                        // george: run unsubscribe_all here?
                         return self.im.api_request('optout.optout', {
                             address_type: "msisdn",
                             address_value: self.im.user.addr,
@@ -1038,13 +1079,19 @@ go.app = function() {
 
                 events: {
                     'state:enter': function() {
-                        opts = go.utils.subscription_type_and_rate(self.contact, self.im);
+                        go.utils.subscription_type_and_rate(self.contact, self.im);
                         self.contact.extra.subscription_type = opts.sub_type.toString();
                         self.contact.extra.subscription_rate = opts.sub_rate.toString();
-                        return Q.all([
-                            go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix, opts),
-                            self.im.contacts.save(self.contact)
-                        ]);
+
+                        return go.utils
+                            .subscription_unsubscribe_all(self.contact, self.im, opts)
+                            .then(function() {
+                                return Q.all([
+                                    // george: should we be notifying jembi of birth?
+                                    go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix, opts),
+                                    self.im.contacts.save(self.contact)
+                                ]);
+                            });
                     }
                 }
             });

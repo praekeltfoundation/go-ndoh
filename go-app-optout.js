@@ -718,6 +718,14 @@ go.utils = {
     },
 
     control_api_call: function (method, payload, endpoint, im) {
+    // george: alt1 & alt2 were born from the PUT request.  I wasn't sure if we needed to pass in the
+    // params again for the query.  Couldn't find good resource on PUT usage.  Current code assumes we
+    // don't need to pass it in.  alt1 and alt2 are provided if we do need it.
+
+    // alt1
+    // control_api_call: function (method, params, payload, endpoint, im) {
+    // alt2
+    // control_api_call: function (method, endpoint, im, opts) {
         var http = new HttpApi(im, {
           headers: {
             'Content-Type': ['application/json'],
@@ -728,10 +736,24 @@ go.utils = {
           case "post":
             return http.post(im.config.control.url + endpoint, {
                 data: JSON.stringify(payload)
+                // alt2
+                // data: JSON.stringify(opts.payload)
               });
           case "get":
             return http.get(im.config.control.url + endpoint, {
-                params: payload
+                params: payload // george: JSON.stringify? don't think so.
+                // alt2
+                // params: opts.params
+              });
+          case "put":
+            return http.put(im.config.control.url + endpoint, {
+                data: JSON.stringify(payload)
+                // alt1
+                // params: params,
+                // data: JSON.stringify(payload)
+                // alt2
+                // params: opts.params,
+                // data: JSON.stringify(opts.payload)
               });
           case "delete":
             return http.delete(im.config.control.url + endpoint);
@@ -789,6 +811,24 @@ go.utils = {
                 }
                 return im.metrics.fire.inc(metric, {amount: 1});
         });
+    },
+
+    subscription_unsubscribe_all: function(contact, im, opts) {
+        var payload = {
+            to_addr: contact.msisdn
+        };
+        return go.utils
+            .control_api_call("get", payload, 'subscription/', im)
+            .then(function(json_result) {
+                // make all subscriptions inactive
+                var update = JSON.parse(json_result.data);
+                if (update.length > 0) {
+                    for (var i=0; i<update.length; i++) {
+                        update[i].active = false;
+                    }
+                    return go.utils.control_api_call("put", update, 'subscription/', im);
+                }
+            });
     },
 
 
@@ -993,7 +1033,6 @@ go.app = function() {
                             return self.im.contacts
                                 .save(self.contact)
                                 .then(function() {
-                                    //TODO: run unsub
                                     if (_.contains(['not_useful', 'other'], choice.value)){
                                         return 'states_end_no';
                                     } else {
@@ -1021,16 +1060,24 @@ go.app = function() {
                 next: function(choice) {
                     if (choice.value == "states_end_yes"){
                         opts = go.utils.subscription_type_and_rate(self.contact, self.im);
+                        // set new subscription user extras
                         self.contact.extra.subscription_type = opts.sub_type.toString();
                         self.contact.extra.subscription_rate = opts.sub_rate.toString();
-                        return Q.all([
-                            // Registration is sent to optout endpoint at Jembi to indicate removal
-                            go.utils.jembi_send_json(self.contact, self.contact, 'subscription', self.im, self.metric_prefix),
-                            go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix, opts),
-                            self.im.contacts.save(self.contact)
-                        ]).then(function() {
-                            return choice.value;
-                        });
+
+                        return go.utils
+                            // deactivate current subscriptions
+                            .subscription_unsubscribe_all(self.contact, self.im, opts)
+                            .then(function() {
+                                return Q.all([
+                                    // Registration is sent to optout endpoint at Jembi to indicate removal
+                                    go.utils.jembi_send_json(self.contact, self.contact, 'subscription', self.im, self.metric_prefix),
+                                    // activate new subscription
+                                    go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix, opts),
+                                    self.im.contacts.save(self.contact)
+                                ]).then(function() {
+                                    return choice.value;
+                                });
+                            });
                     } else {
                         return choice.value;
                     }
@@ -1051,6 +1098,10 @@ go.app = function() {
 
                 events: {
                     'state:enter': function() {
+                        // george: should we also run subscription_unsubscribe_all here?
+                        // george: and change the subscription type and frequency to 'none' / '0'?
+                        // george: I think this depends on how we want to deal with people opting back in -
+                        //         do they have to register again or continue where they left off?
                         return self.im.api_request('optout.optout', {
                             address_type: "msisdn",
                             address_value: self.im.user.addr,

@@ -718,14 +718,6 @@ go.utils = {
     },
 
     control_api_call: function (method, payload, endpoint, im) {
-    // george: alt1 & alt2 were born from the PUT request.  I wasn't sure if we needed to pass in the
-    // params again for the query.  Couldn't find good resource on PUT usage.  Current code assumes we
-    // don't need to pass it in.  alt1 and alt2 are provided if we do need it.
-
-    // alt1
-    // control_api_call: function (method, params, payload, endpoint, im) {
-    // alt2
-    // control_api_call: function (method, endpoint, im, opts) {
         var http = new HttpApi(im, {
           headers: {
             'Content-Type': ['application/json'],
@@ -736,24 +728,14 @@ go.utils = {
           case "post":
             return http.post(im.config.control.url + endpoint, {
                 data: JSON.stringify(payload)
-                // alt2
-                // data: JSON.stringify(opts.payload)
               });
           case "get":
             return http.get(im.config.control.url + endpoint, {
-                params: payload // george: JSON.stringify? don't think so.
-                // alt2
-                // params: opts.params
+                params: payload
               });
           case "put":
             return http.put(im.config.control.url + endpoint, {
                 data: JSON.stringify(payload)
-                // alt1
-                // params: params,
-                // data: JSON.stringify(payload)
-                // alt2
-                // params: opts.params,
-                // data: JSON.stringify(opts.payload)
               });
           case "delete":
             return http.delete(im.config.control.url + endpoint);
@@ -826,8 +808,14 @@ go.utils = {
                     for (var i=0; i<update.length; i++) {
                         update[i].active = false;
                     }
-                    return go.utils.control_api_call("put", update, 'subscription/', im);
+                    payload = {
+                        objects: update
+                    };
+                    return go.utils.control_api_call("put", payload, 'subscription/', im);
+                } else {
+                    return Q();  
                 }
+                
             });
     },
 
@@ -1041,12 +1029,15 @@ go.app = function() {
 
                 events: {
                     'state:enter': function() {
-                        // george: run unsubscribe_all here?
-                        return self.im.api_request('optout.optout', {
-                            address_type: "msisdn",
-                            address_value: self.im.user.addr,
-                            message_id: self.im.msg.message_id
-                        });
+                        return self.im
+                            .api_request('optout.optout', {
+                                address_type: "msisdn",
+                                address_value: self.im.user.addr,
+                                message_id: self.im.msg.message_id
+                            })
+                            .then(function() {
+                                go.utils.subscription_unsubscribe_all(self.contact, self.im, opts);
+                            });
                     }
                 }
             });
@@ -1087,7 +1078,6 @@ go.app = function() {
                             .subscription_unsubscribe_all(self.contact, self.im, opts)
                             .then(function() {
                                 return Q.all([
-                                    // george: should we be notifying jembi of birth?
                                     go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix, opts),
                                     self.im.contacts.save(self.contact)
                                 ]);

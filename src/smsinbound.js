@@ -53,12 +53,15 @@ go.app = function() {
 
                 events: {
                     'state:enter': function() {
-                        // george: run unsubscribe_all here?
-                        return self.im.api_request('optout.optout', {
-                            address_type: "msisdn",
-                            address_value: self.im.user.addr,
-                            message_id: self.im.msg.message_id
-                        });
+                        return self.im
+                            .api_request('optout.optout', {
+                                address_type: "msisdn",
+                                address_value: self.im.user.addr,
+                                message_id: self.im.msg.message_id
+                            })
+                            .then(function() {
+                                go.utils.subscription_unsubscribe_all(self.contact, self.im, opts);
+                            });
                     }
                 }
             });
@@ -99,7 +102,6 @@ go.app = function() {
                             .subscription_unsubscribe_all(self.contact, self.im, opts)
                             .then(function() {
                                 return Q.all([
-                                    // george: should we be notifying jembi of birth?
                                     go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix, opts),
                                     self.im.contacts.save(self.contact)
                                 ]);

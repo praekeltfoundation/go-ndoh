@@ -110,15 +110,15 @@ go.app = function() {
 
                 events: {
                     'state:enter': function() {
-                        // george: should we also run subscription_unsubscribe_all here?
-                        // george: and change the subscription type and frequency to 'none' / '0'?
-                        // george: I think this depends on how we want to deal with people opting back in -
-                        //         do they have to register again or continue where they left off?
-                        return self.im.api_request('optout.optout', {
-                            address_type: "msisdn",
-                            address_value: self.im.user.addr,
-                            message_id: self.im.msg.message_id
-                        });
+                        return self.im
+                            .api_request('optout.optout', {
+                                address_type: "msisdn",
+                                address_value: self.im.user.addr,
+                                message_id: self.im.msg.message_id
+                            })
+                            .then(function() {
+                                go.utils.subscription_unsubscribe_all(self.contact, self.im, opts);
+                            });
                     }
                 },
             });

@@ -127,7 +127,7 @@ go.app = function() {
                         return go.utils
                             .opt_out(self.im, self.contact)
                             .then(function() {
-                                go.utils.subscription_unsubscribe_all(self.contact, self.im);
+                                return go.utils.subscription_unsubscribe_all(self.contact, self.im);
                             });
                     }
                 },

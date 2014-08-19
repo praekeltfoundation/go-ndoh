@@ -90,6 +90,8 @@ go.app = function() {
                             .subscription_unsubscribe_all(self.contact, self.im, opts)
                             .then(function() {
                                 return Q.all([
+                                    // ensure user is not opted out
+                                    go.utils.opt_in(self.im, self.contact),
                                     // Registration is sent to optout endpoint at Jembi to indicate removal
                                     go.utils.jembi_send_json(self.contact, self.contact, 'subscription', self.im, self.metric_prefix),
                                     // activate new subscription

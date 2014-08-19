@@ -468,17 +468,50 @@ describe("app", function() {
         });
 
         describe("when the no. is the pregnant woman's no.", function() {
-            it("should ask for the clinic code", function() {
-                return tester
-                    .setup.user.state('states_start')
-                    .input('1')
-                    .check.interaction({
-                        state: 'states_clinic_code',
-                        reply: (
-                            'Please enter the clinic code for the facility ' +
-                            'where this pregnancy is being registered:')
-                    })
-                    .run();
+
+            describe("if not previously opted out", function() {
+                it("should ask for the clinic code", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27001',
+                            });
+                        })
+                        .setup.user.state('states_start')
+                        .input('1')
+                        .check.interaction({
+                            state: 'states_clinic_code',
+                            reply: (
+                                'Please enter the clinic code for the facility ' +
+                                'where this pregnancy is being registered:')
+                        })
+                        .run();
+                });
+            });
+
+            describe("if the user previously opted out", function() {
+                it("should ask to confirm opting back in", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27002',
+                            });
+                        })
+                        .setup.user.addr('+27002')
+                        .setup.user.state('states_start')
+                        .input('1')
+                        .check.interaction({
+                            state: 'states_opt_in',
+                            reply: [(
+                                'This number has previously opted out of MomConnect ' +
+                                'SMSs. Please confirm that the mom would like to ' +
+                                'opt in to receive messages again?'),
+                                '1. Yes',
+                                '2. No'
+                            ].join('\n')
+                        })
+                        .run();
+                });
             });
         });
 
@@ -514,25 +547,59 @@ describe("app", function() {
 
 
         describe("after entering the pregnant woman's number", function() {
-            it("should ask for the clinic code", function() {
-                return tester
-                    .setup.user.addr('270001')
-                    .setup.user.state('states_mobile_no')
-                    .input('0821234567')
-                    .check.interaction({
-                        state: 'states_clinic_code',
-                        reply: (
-                            'Please enter the clinic code for the facility ' +
-                            'where this pregnancy is being registered:')
-                    })
-                    .check(function(api) {
-                        var contact = api.contacts.store[0];
-                        assert.equal(contact.extra.working_on, "+27821234567");
-                        assert.equal(contact.extra.is_registered, undefined);
-                        assert.equal(contact.extra.last_stage, 'states_clinic_code');
-                    })
-                    .run();
+
+            describe("if the number has not opted out before", function() {
+                it("should ask for the clinic code", function() {
+                    return tester
+                        .setup.user.addr('270001')
+                        .setup.user.state('states_mobile_no')
+                        .input('0821234567')
+                        .check.interaction({
+                            state: 'states_clinic_code',
+                            reply: (
+                                'Please enter the clinic code for the facility ' +
+                                'where this pregnancy is being registered:')
+                        })
+                        .check(function(api) {
+                            var contact = api.contacts.store[0];
+                            assert.equal(contact.extra.working_on, "+27821234567");
+                            assert.equal(contact.extra.is_registered, undefined);
+                            assert.equal(contact.extra.last_stage, 'states_clinic_code');
+                        })
+                        .run();
+                });
             });
+
+            describe("if the user previously opted out", function() {
+                it("should ask to confirm opting back in", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27001',
+                            });
+                        })
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27002',
+                            });
+                        })
+                        .setup.user.addr('+27001')
+                        .setup.user.state('states_mobile_no')
+                        .input('+27002')
+                        .check.interaction({
+                            state: 'states_opt_in',
+                            reply: [(
+                                'This number has previously opted out of MomConnect ' +
+                                'SMSs. Please confirm that the mom would like to ' +
+                                'opt in to receive messages again?'),
+                                '1. Yes',
+                                '2. No'
+                            ].join('\n')
+                        })
+                        .run();
+                });
+            });
+
         });
 
         describe("after entering the clinic code", function() {

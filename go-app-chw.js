@@ -733,6 +733,10 @@ go.utils = {
             return http.get(im.config.control.url + endpoint, {
                 params: payload
               });
+          case "put":
+            return http.put(im.config.control.url + endpoint, {
+                data: JSON.stringify(payload)
+              });
           case "delete":
             return http.delete(im.config.control.url + endpoint);
         }
@@ -789,6 +793,30 @@ go.utils = {
                 }
                 return im.metrics.fire.inc(metric, {amount: 1});
         });
+    },
+
+    subscription_unsubscribe_all: function(contact, im, opts) {
+        var payload = {
+            to_addr: contact.msisdn
+        };
+        return go.utils
+            .control_api_call("get", payload, 'subscription/', im)
+            .then(function(json_result) {
+                // make all subscriptions inactive
+                var update = JSON.parse(json_result.data);
+                if (update.length > 0) {
+                    for (var i=0; i<update.length; i++) {
+                        update[i].active = false;
+                    }
+                    payload = {
+                        objects: update
+                    };
+                    return go.utils.control_api_call("put", payload, 'subscription/', im);
+                } else {
+                    return Q();  
+                }
+                
+            });
     },
 
 
@@ -943,6 +971,13 @@ go.utils = {
         return im.msg.session_event === 'new'
             && im.user.state.name
             && im.user.state.name !== 'states_start';
+    },
+
+    opted_out: function(im, user) {
+        return im.api_request('optout.status', {
+            address_type: "msisdn",
+            address_value: im.user.addr
+        });
     }
 };
 

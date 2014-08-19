@@ -78,6 +78,19 @@ describe("app", function() {
                         key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                         user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
                     });
+                    api.contacts.add( {
+                        msisdn: '+27002',
+                        extra : {
+                            language_choice: 'en',
+                            suspect_pregnancy: 'yes',
+                            id_type: 'passport',
+                            passport_origin: 'zw',
+                            passport_no: '12345',
+                            ussd_sessions: '5'
+                        },
+                        key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                        user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
+                    });
                 })
                 .setup(function(api) {
                     fixtures().forEach(api.http.fixtures.add);
@@ -190,30 +203,59 @@ describe("app", function() {
         });
 
         describe("when the user selects yes to futher help", function() {
-            it("should subscribe them and exit", function() {
-                return tester
-                    .setup.user.answers({
-                        'states_start': 'miscarriage'
-                    })
-                    .setup.user.state('states_subscribe_option')
-                    .setup.user.addr('27001')
-                    .input('1')
-                    .check.interaction({
-                        state: 'states_end_yes',
-                        reply: ('Thank you. You will receive support messages ' +
-                            'from MomConnect in the coming weeks.')
-                    })
-                    .check(function(api) {
-                        var contact = _.find(api.contacts.store, {
-                          msisdn: '+27001'
-                        });                      
-                        assert.equal(contact.extra.subscription_type, '6');
-                        assert.equal(contact.extra.subscription_rate, '3');
-                    })
-                    .check.reply.ends_session()
-                    .run();
+            
+            describe("when the user has existing subscriptions", function() {
+                it("should unsubscribe from other lines, subscribe them and exit", function() {
+                    return tester
+                        .setup.user.answers({
+                            'states_start': 'miscarriage'
+                        })
+                        .setup.user.state('states_subscribe_option')
+                        .setup.user.addr('27001')
+                        .input('1')
+                        .check.interaction({
+                            state: 'states_end_yes',
+                            reply: ('Thank you. You will receive support messages ' +
+                                'from MomConnect in the coming weeks.')
+                        })
+                        .check(function(api) {
+                            var contact = _.find(api.contacts.store, {
+                              msisdn: '+27001'
+                            });                      
+                            assert.equal(contact.extra.subscription_type, '6');
+                            assert.equal(contact.extra.subscription_rate, '3');
+                        })
+                        .check.reply.ends_session()
+                        .run();
+                });
             });
-        });
 
+            describe("when the user has no existing subscriptions", function() {
+                it("should subscribe them and exit", function() {
+                    return tester
+                        .setup.user.answers({
+                            'states_start': 'miscarriage'
+                        })
+                        .setup.user.state('states_subscribe_option')
+                        .setup.user.addr('27002')
+                        .input('1')
+                        .check.interaction({
+                            state: 'states_end_yes',
+                            reply: ('Thank you. You will receive support messages ' +
+                                'from MomConnect in the coming weeks.')
+                        })
+                        .check(function(api) {
+                            var contact = _.find(api.contacts.store, {
+                              msisdn: '+27002'
+                            });                      
+                            assert.equal(contact.extra.subscription_type, '6');
+                            assert.equal(contact.extra.subscription_rate, '3');
+                        })
+                        .check.reply.ends_session()
+                        .run();
+                });
+            });
+
+        });
     });
 });

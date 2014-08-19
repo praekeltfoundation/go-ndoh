@@ -102,24 +102,49 @@ describe("app", function() {
         });
 
         describe("when the user starts a session", function() {
-            it("should ask for the reason they are opting out", function() {
-                return tester
-                    .setup.user.addr('27001')
-                    .start()
-                    .check.interaction({
-                        state: 'states_start',
-                        reply: [
-                            'Please let us know why you do not want MomConnect messages',
-                            '1. Miscarriage',
-                            '2. Baby was stillborn',
-                            '3. Baby died',
-                            '4. Messages not useful',
-                            '5. Other'
-                        ].join('\n')
-                    })
-                    .check.user.properties({lang: 'en'})
-                    .run();
+
+            describe("when the user has not previously opted out", function() {
+                it("should ask for the reason they are opting out", function() {
+                    return tester
+                        .setup.user.addr('27001')
+                        .start()
+                        .check.interaction({
+                            state: 'states_start',
+                            reply: [
+                                'Please let us know why you do not want MomConnect messages',
+                                '1. Miscarriage',
+                                '2. Baby was stillborn',
+                                '3. Baby died',
+                                '4. Messages not useful',
+                                '5. Other'
+                            ].join('\n')
+                        })
+                        .check.user.properties({lang: 'en'})
+                        .run();
+                });
             });
+
+            describe("when the user has previously opted out", function() {
+                it("should ask for the reason they are opting out", function() {
+                    return tester
+                        .setup.user.addr('27002')
+                        .start()
+                        .check.interaction({
+                            state: 'states_start',
+                            reply: [
+                                'Please tell us why you previously opted out of messages',
+                                '1. Miscarriage',
+                                '2. Baby was stillborn',
+                                '3. Baby died',
+                                '4. Messages not useful',
+                                '5. Other'
+                            ].join('\n')
+                        })
+                        .check.user.properties({lang: 'en'})
+                        .run();
+                });
+            });
+
         });
 
         describe("when the user selects a reason for opting out", function() {

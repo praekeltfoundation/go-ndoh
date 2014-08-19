@@ -6,7 +6,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2014-08-06 14:49+0200\n"
+"PO-Revision-Date: 2014-08-18 17:47+0200\n"
 "Last-Translator: \n"
 "X-Generator: Poedit 1.6.7\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -71,8 +71,7 @@ msgstr ""
 #: go-app-personal.js:1028
 msgid ""
 "Welcome to the Department of Health's MomConnect. Please choose an option:"
-msgstr ""
-"Welcome to the Department of Health's MomConnect. Please choose an option:"
+msgstr "Welkom by die Dep Gesondheid se MomConnect. Kies asseblief:"
 
 #: go-app-personal.js:1032
 msgid "Baby and pregnancy info"
@@ -84,15 +83,15 @@ msgstr "Stuur vir ons 'n kompliment"
 
 #: go-app-personal.js:1034
 msgid "Send us a complaint"
-msgstr "Stuur vir ons 'n klagte"
+msgstr "Le 'n klagte"
 
 #: go-app-personal.js:1049
 msgid ""
 "Thank you. We will send you a message shortly with instructions on how to "
 "send us your compliment."
 msgstr ""
-"Dankie. Ons sal binnekort stuur 'n boodskap met instruksies oor hoe om ons "
-"te stuur jou kompliment."
+"Dankie. Ons sal binnekort vir jou 'n boodskap stuur met instruksies oor hoe "
+"om vir ons 'n kompliment te stuur."
 
 #: go-app-personal.js:1059
 msgid ""
@@ -100,17 +99,16 @@ msgid ""
 "relates to the service at a clinic, tell us the name of the clinic or clinic "
 "worker."
 msgstr ""
-"Please reply to this message with your compliment. If your compliment "
-"relates to the service at a clinic, tell us the name of the clinic or clinic "
-"worker."
+"Antwoord op hierdie boodskap met jou kompliment. As dit gaan oor die diens "
+"by 'n kliniek verskaf asb die naam van die kliniek of werker by die kliniek."
 
 #: go-app-personal.js:1068
 msgid ""
 "Thank you. We will send you a message shortly with instructions on how to "
 "send us your complaint."
 msgstr ""
-"Dankie. Ons sal binnekort stuur 'n boodskap met instruksies oor hoe om ons "
-"te stuur jou klagte."
+"Dankie. Ons sal binnekort vir jou 'n boodskap stuur met instruksies oor hoe "
+"om vir ons 'n klagte stuur."
 
 #: go-app-personal.js:1077
 msgid ""
@@ -118,36 +116,37 @@ msgid ""
 "to the service at a clinic, please tell us the name of the clinic or clinic "
 "worker."
 msgstr ""
-"Please reply to this message with your complaint. If your complaint relates "
-"to the service at a clinic, please tell us the name of the clinic or clinic "
-"worker."
+"Antwoord op hierdie boodskap met jou klagte. As dit gaan oor die diens by 'n "
+"kliniek verskaf asb die naam van die kliniek of werker by die kliniek."
 
 #: go-app-personal.js:1088
 msgid "Welcome to the Department of Health's MomConnect. Choose an option:"
-msgstr "Welcome to the Department of Health's MomConnect. Choose an option:"
+msgstr "Welkom by die Dep Gesondheid se MomConnect. Kies 'n opsie:"
 
 #: go-app-personal.js:1092
 msgid "Baby and pregnancy info (English only)"
-msgstr "Baba en swangerskap info (slegs in Engels)"
+msgstr "Baba en Swangerskap info (slegs in Engels)"
 
 #: go-app-personal.js:1093
 msgid "Get the full set of messages"
-msgstr "Kry die volledige stel van die boodskappe"
+msgstr "Kry die hele stel boodskappe"
 
 #: go-app-personal.js:1107
 msgid ""
 "To register for the full set of MomConnect messages, please visit your "
 "nearest clinic."
 msgstr ""
-"Jy kan registreer vir die volle stel GRATIS & nuttige SMSe by ’n kliniek."
+"Besoek asb jou naaste kliniek om te registreer vir die hele stel MomConnect-"
+"boodskappe."
 
 #: go-app-personal.js:1117
 msgid "Welcome to the Department of Health's MomConnect. Choose your language:"
-msgstr "Welcome to the Department of Health's MomConnect. Kies jou taal:"
+msgstr ""
+"Welcome to the Department of Health's MomConnect. Choose your language:"
 
 #: go-app-personal.js:1120
 msgid "English"
-msgstr "Engels"
+msgstr "English"
 
 #: go-app-personal.js:1121
 msgid "Afrikaans"
@@ -167,11 +166,11 @@ msgstr "Sotho"
 
 #: go-app-personal.js:1125
 msgid "Setswana"
-msgstr "Setswana"
+msgstr "Tswana"
 
 #: go-app-personal.js:1157
 msgid "Welcome to the Department of Health's MomConnect. Please select:"
-msgstr "Welcome to the Department of Health's MomConnect. Please select:"
+msgstr "Welkom by die Dep Gesondheid se MomConnect. Kies asseblief:"
 
 #: go-app-personal.js:1161
 msgid "Register for messages"
@@ -179,15 +178,15 @@ msgstr "Registreer vir boodskappe"
 
 #: go-app-personal.js:1162
 msgid "Baby and Pregnancy info (English only)"
-msgstr "Baba en swangerskap info (slegs in Engels)"
+msgstr "Baba en Swangerskap info (slegs in Engels)"
 
 #: go-app-personal.js:1177
 msgid ""
 "MomConnect sends free support SMSs to pregnant mothers. Are you or do you "
 "suspect that you are pregnant?"
 msgstr ""
-"MomConnect sends free support SMSs to pregnant mothers. Are you or do you "
-"suspect that you are pregnant?"
+"MomConnect stuur gratis SMSe uit om swanger moeders te ondersteun. Is jy of "
+"vermoed jy dat jy swanger is?"
 
 #: go-app-personal.js:1182
 msgid "Yes"
@@ -210,8 +209,8 @@ msgid ""
 "We need some info to message you. This is private and will only be used to "
 "help you at a clinic. What kind of ID do you have?"
 msgstr ""
-"Jammer maar hierdie diens is slegs vir swanger moeders. As jy ander "
-"kwellings oor jou gesondheid het, gaan na jou naaste kliniek."
+"Ons benodig jou inligting. Dit is privaat & sal slegs gebruik word om jou te "
+"help as jy na 'n kliniek  gaan."
 
 #: go-app-personal.js:1217
 msgid "SA ID"
@@ -228,8 +227,7 @@ msgstr "Geen"
 #: go-app-personal.js:1239
 msgid ""
 "Sorry, your ID number did not validate. Please reenter your SA ID number:"
-msgstr ""
-"Sorry, your ID number did not validate. Please reenter your SA ID number:"
+msgstr "Jammer, jou ID-no is nie geldig nie.  Tik jou SA ID-no weer in:"
 
 #: go-app-personal.js:1242
 msgid "Please enter your SA ID number:"
@@ -253,7 +251,7 @@ msgstr "Malawi"
 
 #: go-app-personal.js:1281
 msgid "Nigeria"
-msgstr "Nigerië"
+msgstr "Nigerie"
 
 #: go-app-personal.js:1282
 msgid "DRC"
@@ -261,7 +259,7 @@ msgstr "DRC"
 
 #: go-app-personal.js:1283
 msgid "Somalia"
-msgstr "Somalië"
+msgstr "Somalie"
 
 #: go-app-personal.js:1284
 msgid "Other"
@@ -271,30 +269,25 @@ msgstr "Ander"
 msgid ""
 "There was an error in your entry. Please carefully enter your passport "
 "number again."
-msgstr ""
-"There was an error in your entry. Please carefully enter your passport "
-"number again."
+msgstr "Jy het 'n fout gemaak. Tik asb jou paspoortnommer"
 
 #: go-app-personal.js:1304
 msgid "Please enter your Passport number:"
-msgstr ""
-"Geluk met jou swangerskap. Jy sal jou gratis SMSe van  MomConnect ontvang. "
-"Jy kan registreer vir die volle stel GRATIS & nuttige SMSe by ’n kliniek."
+msgstr "Tik asb jou paspoortnommer in."
 
 #: go-app-personal.js:1330
 msgid ""
 "There was an error in your entry. Please carefully enter your year of birth "
 "again (for example: 2001)"
 msgstr ""
-"There was an error in your entry. Please carefully enter your year of birth "
-"again (for example: 2001)"
+"Jy het 'n fout gemaak. Tik asb die jaar toe jy gebore is, weer in (bv. 2001)"
 
 #: go-app-personal.js:1334
 msgid ""
 "Since you don't have an ID or passport, please enter the year that you were "
 "born (for example: 1981)"
 msgstr ""
-"Aangesien jy nie ’n ID of ’n paspoort het nie, tik asb die jaar in toe jy "
+"Aangesien jy nie 'n ID of 'n paspoort het nie, tik asb die jaar in toe jy "
 "gebore is (bv 1981)"
 
 #: go-app-personal.js:1363
@@ -306,8 +299,7 @@ msgid ""
 "There was an error in your entry. Please carefully enter your day of birth "
 "again (for example: 8)"
 msgstr ""
-"There was an error in your entry. Please carefully enter your day of birth "
-"again (for example: 8)"
+"Jy het 'n fout gemaak. Tik asb die dag toe jy gebore is, weer in (bv. 8)"
 
 #: go-app-personal.js:1386
 msgid "Please enter the day that you were born (for example: 14)."
@@ -320,7 +312,7 @@ msgid ""
 "clinic."
 msgstr ""
 "Geluk met jou swangerskap. Jy sal jou gratis SMSe van  MomConnect ontvang. "
-"Jy kan registreer vir die volle stel GRATIS & nuttige SMSe by ’n kliniek."
+"Jy kan registreer vir die volle stel GRATIS & nuttige SMSe by 'n kliniek."
 
 #: go-app-personal.js:1486
 msgid "We have gathered information in the areas below. Please select:"
@@ -328,8 +320,8 @@ msgstr "We have gathered information in the areas below. Please select:"
 
 #: go-app-personal.js:1508
 msgid "Please select one:"
-msgstr "Kies asseblief een:"
+msgstr "Please select one:"
 
 #: go-app-personal.js:1568
 msgid "Thank you. Your SMS will be delivered shortly."
-msgstr "Dankie. "
+msgstr "Dankie. Jou SMS sal binnekort aan jou gestuur word."

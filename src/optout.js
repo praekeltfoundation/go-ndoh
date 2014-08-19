@@ -52,7 +52,6 @@ go.app = function() {
                                     return self.im.contacts
                                         .save(self.contact)
                                         .then(function() {
-                                            //TODO: run unsub
                                             if (_.contains(['not_useful', 'other'], choice.value)){
                                                 return 'states_end_no';
                                             } else {

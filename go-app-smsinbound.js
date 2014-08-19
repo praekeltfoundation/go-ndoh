@@ -795,7 +795,7 @@ go.utils = {
         });
     },
 
-    subscription_unsubscribe_all: function(contact, im, opts) {
+    subscription_unsubscribe_all: function(contact, im) {
         var payload = {
             to_addr: contact.msisdn
         };
@@ -971,6 +971,28 @@ go.utils = {
         return im.msg.session_event === 'new'
             && im.user.state.name
             && im.user.state.name !== 'states_start';
+    },
+
+    opt_out: function(im, contact) {
+        return im.api_request('optout.optout', {
+            address_type: "msisdn",
+            address_value: contact.msisdn,
+            message_id: im.msg.message_id
+        });
+    },
+
+    opted_out: function(im, contact) {
+        return im.api_request('optout.status', {
+            address_type: "msisdn",
+            address_value: contact.msisdn
+        });
+    },
+
+    opt_in: function(im, contact) {
+        return im.api_request('optout.cancel_optout', {
+            address_type: "msisdn",
+            address_value: contact.msisdn
+        });
     }
 };
 
@@ -1029,14 +1051,11 @@ go.app = function() {
 
                 events: {
                     'state:enter': function() {
-                        return self.im
-                            .api_request('optout.optout', {
-                                address_type: "msisdn",
-                                address_value: self.im.user.addr,
-                                message_id: self.im.msg.message_id
-                            })
+                        return go.utils
+                            .opt_out(self.im, self.contact)
                             .then(function() {
-                                go.utils.subscription_unsubscribe_all(self.contact, self.im, opts);
+                                return go.utils
+                                    .subscription_unsubscribe_all(self.contact, self.im, opts);
                             });
                     }
                 }
@@ -1052,10 +1071,7 @@ go.app = function() {
 
                 events: {
                     'state:enter': function() {
-                        return self.im.api_request('optout.cancel_optout', {
-                            address_type: "msisdn",
-                            address_value: self.im.user.addr
-                        });
+                        return go.utils.opt_in(self.im, self.contact);
                     }
                 }
             });
@@ -1075,7 +1091,7 @@ go.app = function() {
                         self.contact.extra.subscription_rate = opts.sub_rate.toString();
 
                         return go.utils
-                            .subscription_unsubscribe_all(self.contact, self.im, opts)
+                            .subscription_unsubscribe_all(self.contact, self.im)
                             .then(function() {
                                 return Q.all([
                                     go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix, opts),

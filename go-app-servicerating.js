@@ -795,7 +795,7 @@ go.utils = {
         });
     },
 
-    subscription_unsubscribe_all: function(contact, im, opts) {
+    subscription_unsubscribe_all: function(contact, im) {
         var payload = {
             to_addr: contact.msisdn
         };
@@ -971,6 +971,28 @@ go.utils = {
         return im.msg.session_event === 'new'
             && im.user.state.name
             && im.user.state.name !== 'states_start';
+    },
+
+    opt_out: function(im, contact) {
+        return im.api_request('optout.optout', {
+            address_type: "msisdn",
+            address_value: contact.msisdn,
+            message_id: im.msg.message_id
+        });
+    },
+
+    opted_out: function(im, contact) {
+        return im.api_request('optout.status', {
+            address_type: "msisdn",
+            address_value: contact.msisdn
+        });
+    },
+
+    opt_in: function(im, contact) {
+        return im.api_request('optout.cancel_optout', {
+            address_type: "msisdn",
+            address_value: contact.msisdn
+        });
     }
 };
 

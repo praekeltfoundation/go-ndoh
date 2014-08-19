@@ -583,7 +583,7 @@ describe("app", function() {
                                 msisdn: '+27002',
                             });
                         })
-                        .setup.user.addr('+27001')
+                        .setup.user.addr('27001')
                         .setup.user.state('states_mobile_no')
                         .input('+27002')
                         .check.interaction({
@@ -595,6 +595,71 @@ describe("app", function() {
                                 '1. Yes',
                                 '2. No'
                             ].join('\n')
+                        })
+                        .check(function(api) {
+                            var contact = api.contacts.store[0];
+                            assert.equal(contact.extra.working_on, "+27002");
+                        })
+                        .run();
+                });
+            });
+
+            describe("if the user confirms opting back in", function() {
+                it("should ask for the clinic code", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27001',
+                                extra : {
+                                    working_on: '+27002'
+                                }
+                            });
+                        })
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27002',
+                            });
+                        })
+                        .setup.user.addr('27001')
+                        .setup.user.state('states_opt_in')
+                        .input('1')
+                        .check.interaction({
+                            state: 'states_clinic_code',
+                            reply: (
+                                'Please enter the clinic code for the facility ' +
+                                'where this pregnancy is being registered:')
+                        })
+                        .run();
+                });
+            });
+
+            describe("if the user does not choose to opt back in", function() {
+                it("should tell them they cannot complete registration", function() {
+                    // make changes here
+                    // remove working_on from user?
+                    // and other stuff that will affect metrics, etc?
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27001',
+                                extra : {
+                                    working_on: '+27002'
+                                }
+                            });
+                        })
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27002',
+                            });
+                        })
+                        .setup.user.addr('27001')
+                        .setup.user.state('states_opt_in')
+                        .input('1')
+                        .check.interaction({
+                            state: 'states_clinic_code',
+                            reply: (
+                                'Please enter the clinic code for the facility ' +
+                                'where this pregnancy is being registered:')
                         })
                         .run();
                 });

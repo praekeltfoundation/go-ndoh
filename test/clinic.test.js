@@ -477,6 +477,7 @@ describe("app", function() {
                                 msisdn: '+27001',
                             });
                         })
+                        .setup.user.addr('27001')
                         .setup.user.state('states_start')
                         .input('1')
                         .check.interaction({
@@ -497,7 +498,7 @@ describe("app", function() {
                                 msisdn: '+27002',
                             });
                         })
-                        .setup.user.addr('+27002')
+                        .setup.user.addr('27002')
                         .setup.user.state('states_start')
                         .input('1')
                         .check.interaction({
@@ -513,6 +514,80 @@ describe("app", function() {
                         .run();
                 });
             });
+
+            describe("if the user confirms opting back in", function() {
+                it("should ask for the clinic code", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27002',
+                            });
+                        })
+                        .setup.user.addr('27002')
+                        .setup.user.state('states_opt_in')
+                        .input('1')
+                        .check.interaction({
+                            state: 'states_clinic_code',
+                            reply: (
+                                'Please enter the clinic code for the facility ' +
+                                'where this pregnancy is being registered:')
+                        })
+                        .run();
+                });
+            });
+
+            describe("if the user declines opting back in", function() {
+                it("should tell them they cannot complete registration", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27002',
+                            });
+                        })
+                        .setup.user.addr('27002')
+                        .setup.user.state('states_opt_in')
+                        .input('2')
+                        .check.interaction({
+                            state: 'states_stay_out',
+                            reply: [(
+                                'You have chosen not to receive MomConnect SMSs ' +
+                                'and so cannot complete registration.'),
+                                '1. Main Menu'
+                            ].join('\n')
+                        })
+                        .check(function(api) {
+                            var contact = api.contacts.store[0];
+                            assert.equal(contact.extra.working_on, "");
+                        })
+                        .run();
+                });
+            });
+
+            describe("if the user selects Main Menu", function() {
+                it("should take them back to states_start", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27002',
+                            });
+                        })
+                        .setup.user.addr('27002')
+                        .setup.user.state('states_stay_out')
+                        .input('1')
+                        .check.interaction({
+                            state: 'states_start',
+                            reply: [
+                                'Welcome to The Department of Health\'s ' +
+                                'MomConnect. Tell us if this is the no. that ' +
+                                'the mother would like to get SMSs on: 0821234444',
+                                '1. Yes',
+                                '2. No'
+                            ].join('\n')
+                        })
+                        .run();
+                });
+            });
+            
         });
 
         describe("when the no. is not the pregnant woman's no.", function() {
@@ -635,9 +710,6 @@ describe("app", function() {
 
             describe("if the user does not choose to opt back in", function() {
                 it("should tell them they cannot complete registration", function() {
-                    // make changes here
-                    // remove working_on from user?
-                    // and other stuff that will affect metrics, etc?
                     return tester
                         .setup(function(api) {
                             api.contacts.add({
@@ -654,12 +726,51 @@ describe("app", function() {
                         })
                         .setup.user.addr('27001')
                         .setup.user.state('states_opt_in')
+                        .input('2')
+                        .check.interaction({
+                            state: 'states_stay_out',
+                            reply: [(
+                                'You have chosen not to receive MomConnect SMSs ' +
+                                'and so cannot complete registration.'),
+                                '1. Main Menu'
+                            ].join('\n')
+                        })
+                        .check(function(api) {
+                            var contact = api.contacts.store[0];
+                            assert.equal(contact.extra.working_on, "");
+                        })
+                        .run();
+                });
+            });
+
+            describe("if the user selects 1. Main Menu", function() {
+                it("should return to states_start", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27001',
+                                extra : {
+                                    working_on: ''
+                                }
+                            });
+                        })
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27002',
+                            });
+                        })
+                        .setup.user.addr('27001')
+                        .setup.user.state('states_stay_out')
                         .input('1')
                         .check.interaction({
-                            state: 'states_clinic_code',
-                            reply: (
-                                'Please enter the clinic code for the facility ' +
-                                'where this pregnancy is being registered:')
+                            state: 'states_start',
+                            reply: [
+                                'Welcome to The Department of Health\'s ' +
+                                'MomConnect. Tell us if this is the no. that ' +
+                                'the mother would like to get SMSs on: 0821234444',
+                                '1. Yes',
+                                '2. No'
+                            ].join('\n')
                         })
                         .run();
                 });

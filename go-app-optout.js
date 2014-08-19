@@ -973,10 +973,25 @@ go.utils = {
             && im.user.state.name !== 'states_start';
     },
 
-    opted_out: function(im, user) {
+    opt_out: function(im, contact) {
+        return im.api_request('optout.optout', {
+            address_type: "msisdn",
+            address_value: contact.msisdn,
+            message_id: im.msg.message_id
+        });
+    },
+
+    opted_out: function(im, contact) {
         return im.api_request('optout.status', {
             address_type: "msisdn",
-            address_value: im.user.addr
+            address_value: contact.msisdn
+        });
+    },
+
+    opt_in: function(im, contact) {
+        return im.api_request('optout.cancel_optout', {
+            address_type: "msisdn",
+            address_value: contact.msisdn
         });
     }
 };
@@ -1010,7 +1025,7 @@ go.app = function() {
         self.states.add('states_start', function(name) {
             return go.utils.set_language(self.im.user, self.contact)
                 .then(function() {
-                    return go.utils.opted_out(self.im, self.im.user)
+                    return go.utils.opted_out(self.im, self.contact)
                         .then(function(json_result) {
                             if (json_result.opted_out === false) {
                                 question = $('Please let us know why you do not want MomConnect messages');
@@ -1073,6 +1088,8 @@ go.app = function() {
                             .subscription_unsubscribe_all(self.contact, self.im, opts)
                             .then(function() {
                                 return Q.all([
+                                    // ensure user is not opted out
+                                    go.utils.opt_in(self.im, self.contact),
                                     // Registration is sent to optout endpoint at Jembi to indicate removal
                                     go.utils.jembi_send_json(self.contact, self.contact, 'subscription', self.im, self.metric_prefix),
                                     // activate new subscription
@@ -1102,12 +1119,8 @@ go.app = function() {
 
                 events: {
                     'state:enter': function() {
-                        return self.im
-                            .api_request('optout.optout', {
-                                address_type: "msisdn",
-                                address_value: self.im.user.addr,
-                                message_id: self.im.msg.message_id
-                            })
+                        return go.utils
+                            .opt_out(self.im, self.contact)
                             .then(function() {
                                 go.utils.subscription_unsubscribe_all(self.contact, self.im);
                             });

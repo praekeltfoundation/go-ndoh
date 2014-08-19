@@ -940,5 +940,12 @@ go.utils = {
         return im.msg.session_event === 'new'
             && im.user.state.name
             && im.user.state.name !== 'states_start';
+    },
+
+    opted_out: function(im, user) {
+        return im.api_request('optout.status', {
+            address_type: "msisdn",
+            address_value: im.user.addr
+        });
     }
 };

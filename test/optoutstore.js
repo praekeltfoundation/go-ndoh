@@ -6,19 +6,21 @@ var DummyOptoutResource = DummyResource.extend(function(self) {
     DummyResource.call(self, 'optout');
 
     /* opt-out stubbery */
-    self.optout_store = [];
+    self.optout_store = [
+        // 'msisdn:27001'
+    ];
 
 
-    self.handlers.optout = function (address_type, address_value) {
-        var key = address_type + ':' + address_value;
+    self.handlers.optout = function (payload) {
+        var key = payload.address_type + ':' + payload.address_value;
         self.optout_store.push(key);
         return {
             success: true
         };
     };
 
-    self.handlers.status = function (address_type, address_value) {
-        var key = address_type + ':' + address_value;
+    self.handlers.status = function (payload) {
+        var key = payload.address_type + ':' + payload.address_value;
         return {
             success: true,
             opted_out: self.optout_store.indexOf(key) >= 0,
@@ -27,8 +29,8 @@ var DummyOptoutResource = DummyResource.extend(function(self) {
         };
     };
 
-    self.handlers.cancel_optout = function (address_type, address_value) {
-        var key = address_type + ':' + address_value;
+    self.handlers.cancel_optout = function (payload) {
+        var key = payload.address_type + ':' + payload.address_value;
         var index = self.optout_store.indexOf(key);
         if(index > -1) {
             self.optout_store.splice(index, 1);

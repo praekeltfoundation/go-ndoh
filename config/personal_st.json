@@ -6,7 +6,7 @@
         "mime-version": "1.0",
         "content-type": "text/plain; charset=UTF-8",
         "content-transfer-encoding": "8bit",
-        "po-revision-date": "2014-08-06 13:07+0200",
+        "po-revision-date": "2014-08-18 16:48+0200",
         "last-translator": "",
         "x-generator": "Poedit 1.6.7",
         "plural-forms": "nplurals=2; plural=(n != 1);",
@@ -66,59 +66,59 @@
     ],
     "Welcome to the Department of Health's MomConnect. Please choose an option:": [
         null,
-        "Welcome to the Department of Health's MomConnect. Tlhopha puo ya gago:"
+        "O amohelehile ho MomConnect wa Lefapha la Bophelo bo Botle. Etsa kgetho:"
     ],
     "Baby and pregnancy info": [
         null,
-        "Baby and pregnancy info"
+        "Tsebo ka lesea le boimana (Senyesemane feela)"
     ],
     "Send us a compliment": [
         null,
-        "Send us a compliment"
+        "Re romelle thoholetso "
     ],
     "Send us a complaint": [
         null,
-        "Send us a complaint"
+        "Kenya tletlebo"
     ],
     "Thank you. We will send you a message shortly with instructions on how to send us your compliment.": [
         null,
-        "Thank you. We will send you a message shortly with instructions on how to send us your compliment."
+        "Re a leboha. Re tla o romella molaetsa ka haufi-ufi le ditaelo tsa mokgwa wa ho re romella ditakaletso tsa hao."
     ],
     "Please reply to this message with your compliment. If your compliment relates to the service at a clinic, tell us the name of the clinic or clinic worker.": [
         null,
-        "Please reply to this message with your compliment. If your compliment relates to the service at a clinic, tell us the name of the clinic or clinic worker."
+        "Ka kopo araba molaetsa ona ka takaletso ya hao.Ha takaletso e le mabapi le  tshebeletso ya tleleniki,re bolelle lebitso la tleleniki kapa mosebetsi wa tleleniki"
     ],
     "Thank you. We will send you a message shortly with instructions on how to send us your complaint.": [
         null,
-        "Thank you. We will send you a message shortly with instructions on how to send us your complaint."
+        "Re a leboha. Re tla o romella molaetsa haufiufi le ditaelo tsa mokgwa wa ho kenya tletlebo."
     ],
     "Please reply to this message with your complaint. If your complaint relates to the service at a clinic, please tell us the name of the clinic or clinic worker.": [
         null,
-        "Please reply to this message with your complaint. If your complaint relates to the service at a clinic, please tell us the name of the clinic or clinic worker."
+        "Ka kopo araba molaetsa ona le tletlebo ya hao.Ha tletlebo e le ya tshebeletso tleleniking,ka kopo re bolelle bitso la tleleniki kapa mosebetsi wa tleleniki."
     ],
     "Welcome to the Department of Health's MomConnect. Choose an option:": [
         null,
-        "Welcome to the Department of Health's MomConnect. Choose an option:"
+        "O amohelehile ho MomConnect wa Lefapha la Bophelo bo Botle. Etsa kgetho:"
     ],
     "Baby and pregnancy info (English only)": [
         null,
-        "Baby and pregnancy info (English only)"
+        "Tsebo ka lesea le boimana (Senyesemane feela)"
     ],
     "Get the full set of messages": [
         null,
-        "Get the full set of messages"
+        "Fumana sete e feletseng ya melaetsa"
     ],
     "To register for the full set of MomConnect messages, please visit your nearest clinic.": [
         null,
-        "To register for the full set of MomConnect messages, please visit your nearest clinic."
+        "Ho ngodisa bakeng sa sete e feletseng ya melaetsa ya MomConnect,ka kopo etela tleleniki ya hao e haufi."
     ],
     "Welcome to the Department of Health's MomConnect. Choose your language:": [
         null,
-        "Welcome to the Department of Health's MomConnect. Kgetha puo ya hao:"
+        "Welcome to the Department of Health's MomConnect. Choose your language:"
     ],
     "English": [
         null,
-        "Senyesemane"
+        "English"
     ],
     "Afrikaans": [
         null,
@@ -126,31 +126,31 @@
     ],
     "Zulu": [
         null,
-        "Sezulu"
+        "Zulu"
     ],
     "Xhosa": [
         null,
-        "Sexhosa"
+        "Xhosa"
     ],
     "Sotho": [
         null,
-        "Sesotho"
+        "Sotho"
     ],
     "Setswana": [
         null,
-        "Setswana"
+        "Tswana"
     ],
     "Welcome to the Department of Health's MomConnect. Please select:": [
         null,
-        "Welcome to the Department of Health's MomConnect. Please select:"
+        "O amohelehile ho MomConnect wa Lefapha la Bophelo bo Botle. Ka kopo kgetha:"
     ],
     "Register for messages": [
         null,
-        "Register for messages"
+        "Ngodisetsa melaetsa"
     ],
     "Baby and Pregnancy info (English only)": [
         null,
-        "Baby and Pregnancy info (English only)"
+        "Tsebo ka Lesea le Boimana (Senyesemane feela)"
     ],
     "MomConnect sends free support SMSs to pregnant mothers. Are you or do you suspect that you are pregnant?": [
         null,
@@ -186,7 +186,7 @@
     ],
     "Sorry, your ID number did not validate. Please reenter your SA ID number:": [
         null,
-        "Sorry, your ID number did not validate. Please reenter your SA ID number:"
+        "Tshwarelo, nomoro ya hao ya ID ha e a netefatsa. Ka kopo kenya hape nomoro ya ID ya SA:"
     ],
     "Please enter your SA ID number:": [
         null,
@@ -226,7 +226,7 @@
     ],
     "There was an error in your entry. Please carefully enter your passport number again.": [
         null,
-        "There was an error in your entry. Please carefully enter your passport number again."
+        "Ho na le phoso kenellong ya. Ka kopo kenya nomoro ya hao ya phasepoto."
     ],
     "Please enter your Passport number:": [
         null,
@@ -234,7 +234,7 @@
     ],
     "There was an error in your entry. Please carefully enter your year of birth again (for example: 2001)": [
         null,
-        "There was an error in your entry. Please carefully enter your year of birth again (for example: 2001)"
+        "Ho na le phoso kenellong ya. Ka kopo kenya ka hloko hape selemo sa hao sa tlhaho (mohlala: 2001)"
     ],
     "Since you don't have an ID or passport, please enter the year that you were born (for example: 1981)": [
         null,
@@ -246,7 +246,7 @@
     ],
     "There was an error in your entry. Please carefully enter your day of birth again (for example: 8)": [
         null,
-        "Ka kopo kenya mohla oo o tswetsweng ka wona (Mohlala 14)"
+        "Ho na le phoso kenellong ya hao. Ka kopo kenya ka hloko letsatsi la hao la tlhaho hape (mohlala: 8)"
     ],
     "Please enter the day that you were born (for example: 14).": [
         null,
@@ -266,6 +266,6 @@
     ],
     "Thank you. Your SMS will be delivered shortly.": [
         null,
-        "Re a leboha."
+        "Re a leboha. SMS ya hao e tla romelwa haufiufi."
     ]
 }

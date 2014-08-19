@@ -6,7 +6,7 @@
         "mime-version": "1.0",
         "content-type": "text/plain; charset=UTF-8",
         "content-transfer-encoding": "8bit",
-        "po-revision-date": "2014-08-06 14:52+0200",
+        "po-revision-date": "2014-08-18 17:51+0200",
         "last-translator": "",
         "x-generator": "Poedit 1.6.7",
         "plural-forms": "nplurals=2; plural=(n != 1);",
@@ -66,47 +66,47 @@
     ],
     "Welcome to the Department of Health's MomConnect. Please choose an option:": [
         null,
-        "Welcome to the Department of Health's MomConnect. Please choose an option:"
+        "Siyakwemukela kwaMomConnect woMnyango Wezempilo. Khetha kokulandelayo:"
     ],
     "Baby and pregnancy info": [
         null,
-        "Ingane na nokukhulelwa info"
+        "Ulwazi ngokukhulelwa nengane  (IsiNgisi sodwa)"
     ],
     "Send us a compliment": [
         null,
-        "Usithumelele ukuncoma"
+        "Ukusincoma"
     ],
     "Send us a complaint": [
         null,
-        "Usithumelele isikhalazo"
+        "Ukukhalaza"
     ],
     "Thank you. We will send you a message shortly with instructions on how to send us your compliment.": [
         null,
-        "Ngiyabonga. Sizokuthumela umlayezo ngokushesha nge iziyalezo usithumelele ukuncoma wakho."
+        "Siyabonga. Sizokuthumelela umyalezo maduze nje onemiyalelo yokuthi usithumelela kanjani isincomo sakho."
     ],
     "Please reply to this message with your compliment. If your compliment relates to the service at a clinic, tell us the name of the clinic or clinic worker.": [
         null,
-        "Please reply to this message with your compliment. If your compliment relates to the service at a clinic, tell us the name of the clinic or clinic worker."
+        "Phendula lo myalezo nesikhalazo sakho. Uma isikhalazo siphatehelene nesevisi yasekliniki, siza usitshele igama lekliniki noma lomsebenzi wasekliniki."
     ],
     "Thank you. We will send you a message shortly with instructions on how to send us your complaint.": [
         null,
-        "Ngiyabonga. Sizokuthumela umlayezo ngokushesha nge iziyalezo usithumelele isikhalazo sakho."
+        "Siyabonga. Sizokuthumelela umyalezo maduze nje onemiyalelo yokuthi usithumelela kanjani isikhalazo sakho."
     ],
     "Please reply to this message with your complaint. If your complaint relates to the service at a clinic, please tell us the name of the clinic or clinic worker.": [
         null,
-        "Please reply to this message with your complaint. If your complaint relates to the service at a clinic, please tell us the name of the clinic or clinic worker."
+        "Phendula lo myalezo nesikhalazo sakho. Uma isikhalazo siphatehelene nesevisi yasekliniki, siza usitshele igama lekliniki noma lomsebenzi wasekliniki."
     ],
     "Welcome to the Department of Health's MomConnect. Choose an option:": [
         null,
-        "Welcome to the Department of Health's MomConnect. Choose an option:"
+        "Siyakwemukela kwaMomConnect woMnyango Wezempilo. Khetha kokulandelayo:"
     ],
     "Baby and pregnancy info (English only)": [
         null,
-        "Ingane na nokukhulelwa info (English kuphela)"
+        "Ulwazi ngokukhulelwa nengane (IsiNgisi sodwa)"
     ],
     "Get the full set of messages": [
         null,
-        "Thola isethi eligcwele imiyalezo"
+        "Ukuthola lonke iqoqo lemiyalezo"
     ],
     "To register for the full set of MomConnect messages, please visit your nearest clinic.": [
         null,
@@ -114,43 +114,43 @@
     ],
     "Welcome to the Department of Health's MomConnect. Choose your language:": [
         null,
-        "Welcome to the Department of Health's MomConnect. Khetha ulimi lwakho: "
+        "Welcome to the Department of Health's MomConnect. Choose your language:"
     ],
     "English": [
         null,
-        "IsiNgisi"
+        "English"
     ],
     "Afrikaans": [
         null,
-        "IsiBhunu"
+        "Afrikaans"
     ],
     "Zulu": [
         null,
-        "isiZulu"
+        "Zulu"
     ],
     "Xhosa": [
         null,
-        "isiXhosa"
+        "Xhosa"
     ],
     "Sotho": [
         null,
-        "isiSotho"
+        "Sotho"
     ],
     "Setswana": [
         null,
-        "iSetswana"
+        "Tswana"
     ],
     "Welcome to the Department of Health's MomConnect. Please select:": [
         null,
-        "Welcome to the Department of Health's MomConnect. Please select:"
+        "Siyakwemukela kwaMomConnect woMnyango Wezempilo. Khetha"
     ],
     "Register for messages": [
         null,
-        "Bhalisa for imiyalezo"
+        "Ukurejistela imiyalezo"
     ],
     "Baby and Pregnancy info (English only)": [
         null,
-        "Ingane na nokukhulelwa info (English kuphela)"
+        "Ulwazi ngokukhulelwa nengane (IsiNgisi sodwa)"
     ],
     "MomConnect sends free support SMSs to pregnant mothers. Are you or do you suspect that you are pregnant?": [
         null,
@@ -186,7 +186,7 @@
     ],
     "Sorry, your ID number did not validate. Please reenter your SA ID number:": [
         null,
-        "Sorry, your ID number did not validate. Please reenter your SA ID number:"
+        "Uxolo, Inombolo yakho ye-ID ayaziwa. Phinda ufake iNombolo yakho ye-ID:"
     ],
     "Please enter your SA ID number:": [
         null,
@@ -226,7 +226,7 @@
     ],
     "There was an error in your entry. Please carefully enter your passport number again.": [
         null,
-        "There was an error in your entry. Please carefully enter your passport number again."
+        "Kuye kwaba nephutha kokufakile. Siza ufake inombolo yePhasiphothi lakho."
     ],
     "Please enter your Passport number:": [
         null,
@@ -234,23 +234,23 @@
     ],
     "There was an error in your entry. Please carefully enter your year of birth again (for example: 2001)": [
         null,
-        "There was an error in your entry. Please carefully enter your year of birth again (for example: 2001)"
+        "Khona iphutha olenzile. Phinda ufake usuku lwakho lokuzalwa ngokucophelela (isibonelo: 2001)"
     ],
     "Since you don't have an ID or passport, please enter the year that you were born (for example: 1981)": [
         null,
-        "Since you don't have an ID or passport, please enter the year that you were born (for example: 1981)"
+        "Njengoba ungena- ID naphasiphothi nje, siza ufake unyaka owazalwa ngawo (Isibonelo 1981)"
     ],
     "Please enter the month that you were born.": [
         null,
-        "Njengoba ungena- ID naphasiphothi nje, siza ufake unyaka owazalwa ngawo (Isibonelo 1981)"
+        "Siza ufake inyanga owazalwa ngayo"
     ],
     "There was an error in your entry. Please carefully enter your day of birth again (for example: 8)": [
         null,
-        "There was an error in your entry. Please carefully enter your day of birth again (for example: 8)"
+        "Kuye kwaba nephutha kokufakile. Phinda ufake usuku owazalwa ngalo ngokucophelela (isibonelo: 8)"
     ],
     "Please enter the day that you were born (for example: 14).": [
         null,
-        "Siza ufake usuku owazalwa ngalo (Isibonelo 14)s"
+        "Siza ufake usuku owazalwa ngalo (Isibonelo 14)"
     ],
     "Congratulations on your pregnancy. You will now get free SMSs about MomConnect. You can register for the full set of FREE helpful messages at a clinic.": [
         null,
@@ -262,10 +262,10 @@
     ],
     "Please select one:": [
         null,
-        "Sicela ukhethe eyodwa:"
+        "Please select one:"
     ],
     "Thank you. Your SMS will be delivered shortly.": [
         null,
-        "Siyabonga."
+        "Siyabonga. Uzoyithola maduze nje iSMS yakho."
     ]
 }

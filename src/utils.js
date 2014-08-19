@@ -970,6 +970,14 @@ go.utils = {
             && im.user.state.name !== 'states_start';
     },
 
+    opt_out: function(im, contact) {
+        return im.api_request('optout.optout', {
+            address_type: "msisdn",
+            address_value: contact.msisdn,
+            message_id: im.msg.message_id
+        });
+    },
+
     opted_out: function(im, contact) {
         return im.api_request('optout.status', {
             address_type: "msisdn",

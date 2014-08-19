@@ -121,12 +121,8 @@ go.app = function() {
 
                 events: {
                     'state:enter': function() {
-                        return self.im
-                            .api_request('optout.optout', {
-                                address_type: "msisdn",
-                                address_value: self.im.user.addr,
-                                message_id: self.im.msg.message_id
-                            })
+                        return go.utils
+                            .opt_out(self.im, self.contact)
                             .then(function() {
                                 go.utils.subscription_unsubscribe_all(self.contact, self.im);
                             });

@@ -6,7 +6,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2014-08-06 15:25+0200\n"
+"PO-Revision-Date: 2014-08-18 18:02+0200\n"
 "Last-Translator: \n"
 "X-Generator: Poedit 1.6.7\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -71,28 +71,27 @@ msgstr ""
 #: go-app-personal.js:1028
 msgid ""
 "Welcome to the Department of Health's MomConnect. Please choose an option:"
-msgstr ""
-"Welcome to the Department of Health's MomConnect. Please choose an option:"
+msgstr "Wamkelekile kwiMomConnect yeSebe lezeMpilo. Yenza ukhetho:"
 
 #: go-app-personal.js:1032
 msgid "Baby and pregnancy info"
-msgstr "Baby and pregnancy info"
+msgstr "Ulwazi ngoSana nokuKhulelwa (isiNgesi kuphela)"
 
 #: go-app-personal.js:1033
 msgid "Send us a compliment"
-msgstr "Send us a compliment"
+msgstr "Sithumelele isincomo"
 
 #: go-app-personal.js:1034
 msgid "Send us a complaint"
-msgstr "Send us a complaint"
+msgstr "Faka isikhalazo"
 
 #: go-app-personal.js:1049
 msgid ""
 "Thank you. We will send you a message shortly with instructions on how to "
 "send us your compliment."
 msgstr ""
-"Thank you. We will send you a message shortly with instructions on how to "
-"send us your compliment."
+"Enkosi. Siza kukuthumelela umyalezo kungekudala nemiyalelo yendlela yokus "
+"isikhalazo sakho."
 
 #: go-app-personal.js:1059
 msgid ""
@@ -100,17 +99,16 @@ msgid ""
 "relates to the service at a clinic, tell us the name of the clinic or clinic "
 "worker."
 msgstr ""
-"Please reply to this message with your compliment. If your compliment "
-"relates to the service at a clinic, tell us the name of the clinic or clinic "
-"worker."
+"Nceda uphendule lo myalezo nesincomo sakho. Ukuba isincomo simalunga "
+"nenkonzo yasekliniki, sixelele igama lekliniki okanye umsebenzi wasekliniki."
 
 #: go-app-personal.js:1068
 msgid ""
 "Thank you. We will send you a message shortly with instructions on how to "
 "send us your complaint."
 msgstr ""
-"Thank you. We will send you a message shortly with instructions on how to "
-"send us your complaint."
+"Enkosi. Siza kukuthumelela umyalezo kungekudala nemiyalelo yendlela "
+"yokusithumelela isincomo sakho."
 
 #: go-app-personal.js:1077
 msgid ""
@@ -118,68 +116,70 @@ msgid ""
 "to the service at a clinic, please tell us the name of the clinic or clinic "
 "worker."
 msgstr ""
-"Please reply to this message with your complaint. If your complaint relates "
-"to the service at a clinic, please tell us the name of the clinic or clinic "
-"worker."
+"Nceda uphendule lo myalezo ngesikhalazo sakho. Ukuba isikhalazo simalunga "
+"nenkonzi ekliniki, nceda usixelele igama lekliniki okanye umsebenzi "
+"wasekliniki."
 
 #: go-app-personal.js:1088
 msgid "Welcome to the Department of Health's MomConnect. Choose an option:"
-msgstr "Welcome to the Department of Health's MomConnect. Choose an option:"
+msgstr "Wamkelekile kwiMomConnect yeSebe lezeMpilo. Yenza ukhetho:"
 
 #: go-app-personal.js:1092
 msgid "Baby and pregnancy info (English only)"
-msgstr "Baby and pregnancy info (English only)"
+msgstr "Ulwazi ngoSana nokuKhulelwa (isiNgesi kuphela)"
 
 #: go-app-personal.js:1093
 msgid "Get the full set of messages"
-msgstr "Get the full set of messages"
+msgstr "Fumana iseti epheleleyo yemiyalezo"
 
 #: go-app-personal.js:1107
 msgid ""
 "To register for the full set of MomConnect messages, please visit your "
 "nearest clinic."
-msgstr "Ungabhalisela iseti epheleleyo yaSIMAHLA yemiyalezo eluncedo ekliniki."
+msgstr ""
+"Ukubhalisela iseti epheleleyo yemiyalezo yeMomConnect, nceda utyelele "
+"ikliniki yakho ekufuphi."
 
 #: go-app-personal.js:1117
 msgid "Welcome to the Department of Health's MomConnect. Choose your language:"
 msgstr ""
-"Welcome to the Department of Health's MomConnect. Khetha ulwimi lwakho: "
+"Welcome to the Department of Health's MomConnect. Choose your language:"
 
 #: go-app-personal.js:1120
 msgid "English"
-msgstr "IsiNgesi"
+msgstr "English"
 
 #: go-app-personal.js:1121
 msgid "Afrikaans"
-msgstr "I-Afrikaans "
+msgstr "Afrikaans "
 
 #: go-app-personal.js:1122
 msgid "Zulu"
-msgstr "IsiZulu"
+msgstr "Zulu"
 
 #: go-app-personal.js:1123
 msgid "Xhosa"
-msgstr "IsiXhosa"
+msgstr "Xhosa"
 
 #: go-app-personal.js:1124
 msgid "Sotho"
-msgstr "IsiSuthu"
+msgstr "Sotho"
 
 #: go-app-personal.js:1125
 msgid "Setswana"
-msgstr "IsiTswana"
+msgstr "Tswana"
 
 #: go-app-personal.js:1157
 msgid "Welcome to the Department of Health's MomConnect. Please select:"
-msgstr "Welcome to the Department of Health's MomConnect. Please select:"
+msgstr "Wamkelekile kwiMomConnect yeSebe lezeMpilo. Nceda ukhethe:"
 
 #: go-app-personal.js:1161
 msgid "Register for messages"
-msgstr "Register for messages"
+msgstr "Bhalisa imiyalezo"
 
 #: go-app-personal.js:1162
 msgid "Baby and Pregnancy info (English only)"
-msgstr "Baby and Pregnancy info (English only)"
+msgstr "Ulwazi ngoSana nokuKhulelwa (isiNgesi kuphela)"
 
 #: go-app-personal.js:1177
 msgid ""
@@ -229,15 +229,16 @@ msgstr "Akukho nanye"
 msgid ""
 "Sorry, your ID number did not validate. Please reenter your SA ID number:"
 msgstr ""
-"Sorry, your ID number did not validate. Please reenter your SA ID number:"
+"Uxolo, inombolo yakho yeID ayiqinisekiswanga. Nceda ufake kwakhona inomboli "
+"yeID yaseSA:"
 
 #: go-app-personal.js:1242
 msgid "Please enter your SA ID number:"
-msgstr "Leliphi ilizwe lentsusa lepasipoti? "
+msgstr "Nceda ufake inombolo ye-ID yakho yaseMzantsi Afrika."
 
 #: go-app-personal.js:1275
 msgid "What is the country of origin of the passport?"
-msgstr "What is the country of origin of the passport?"
+msgstr "Leliphi ilizwe lentsusa lepasipoti? "
 
 #: go-app-personal.js:1278
 msgid "Zimbabwe"
@@ -272,8 +273,7 @@ msgid ""
 "There was an error in your entry. Please carefully enter your passport "
 "number again."
 msgstr ""
-"There was an error in your entry. Please carefully enter your passport "
-"number again."
+"Kubekho isiphosiso kungenelo lwakho. Nceda ufake inombolo yakho yePasipoti."
 
 #: go-app-personal.js:1304
 msgid "Please enter your Passport number:"
@@ -284,8 +284,8 @@ msgid ""
 "There was an error in your entry. Please carefully enter your year of birth "
 "again (for example: 2001)"
 msgstr ""
-"There was an error in your entry. Please carefully enter your year of birth "
-"again (for example: 2001)s"
+"Kubekho isiphosiso kungenelo lwakho. Nceda faka ngobunono unyaka wakho "
+"wokuzalwa kwakhona (umzekelo: 2001)"
 
 #: go-app-personal.js:1334
 msgid ""
@@ -297,19 +297,19 @@ msgstr ""
 
 #: go-app-personal.js:1363
 msgid "Please enter the month that you were born."
-msgstr "Please enter the month of that you were born"
+msgstr "Nceda ufake inyanga owazalwa ngayo"
 
 #: go-app-personal.js:1382
 msgid ""
 "There was an error in your entry. Please carefully enter your day of birth "
 "again (for example: 8)"
 msgstr ""
-"There was an error in your entry. Please carefully enter your day of birth "
-"again (for example: 8)"
+"Kubekho isiphosiso kungenelo lwakho. Nceda ufake ngobunono usuku lwakho "
+"lokuzalwa kwakhona (umzekelo: 8)"
 
 #: go-app-personal.js:1386
 msgid "Please enter the day that you were born (for example: 14)."
-msgstr "Please enter the day that you were born (For example 14)"
+msgstr "Nceda ufake umhla owazalwa ngawo (Umzekelo 14)"
 
 #: go-app-personal.js:1436
 msgid ""
@@ -331,4 +331,4 @@ msgstr "Please select one:"
 
 #: go-app-personal.js:1568
 msgid "Thank you. Your SMS will be delivered shortly."
-msgstr "Enkosi."
+msgstr "Enkosi. I-SMS iza kuthunyelwa kungekudala."

@@ -4,7 +4,10 @@ var AppTester = vumigo.AppTester;
 var assert = require('assert');
 var _ = require('lodash');
 var messagestore = require('./messagestore');
+var optoutstore = require('./optoutstore');
 var DummyMessageStoreResource = messagestore.DummyMessageStoreResource;
+var DummyOptoutResource = optoutstore.DummyOptoutResource;
+
 
 describe("utils", function() {
     describe("for clinic use", function() {
@@ -68,6 +71,7 @@ describe("app", function() {
             tester
                 .setup(function(api) {
                     api.resources.add(new DummyMessageStoreResource());
+                    api.resources.add(new DummyOptoutResource());
                     api.resources.attach(api);
                     api.groups.add( {
                         key: 'en_key',
@@ -557,7 +561,7 @@ describe("app", function() {
                         })
                         .check(function(api) {
                             var contact = api.contacts.store[0];
-                            assert.equal(contact.extra.working_on, "");
+                            assert.equal(contact.extra.working_on, undefined);
                         })
                         .run();
                 });
@@ -579,7 +583,7 @@ describe("app", function() {
                             reply: [
                                 'Welcome to The Department of Health\'s ' +
                                 'MomConnect. Tell us if this is the no. that ' +
-                                'the mother would like to get SMSs on: 0821234444',
+                                'the mother would like to get SMSs on: 07002',
                                 '1. Yes',
                                 '2. No'
                             ].join('\n')
@@ -660,7 +664,7 @@ describe("app", function() {
                         })
                         .setup.user.addr('27001')
                         .setup.user.state('states_mobile_no')
-                        .input('+27002')
+                        .input('002')
                         .check.interaction({
                             state: 'states_opt_in',
                             reply: [(
@@ -767,7 +771,7 @@ describe("app", function() {
                             reply: [
                                 'Welcome to The Department of Health\'s ' +
                                 'MomConnect. Tell us if this is the no. that ' +
-                                'the mother would like to get SMSs on: 0821234444',
+                                'the mother would like to get SMSs on: 07001',
                                 '1. Yes',
                                 '2. No'
                             ].join('\n')

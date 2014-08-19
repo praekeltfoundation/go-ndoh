@@ -973,14 +973,14 @@ go.utils = {
     opted_out: function(im, contact) {
         return im.api_request('optout.status', {
             address_type: "msisdn",
-            address_value: contact.addr
+            address_value: contact.msisdn
         });
     },
 
     opt_in: function(im, contact) {
         return im.api_request('optout.cancel_optout', {
             address_type: "msisdn",
-            address_value: contact.addr
+            address_value: contact.msisdn
         });
     }
 };

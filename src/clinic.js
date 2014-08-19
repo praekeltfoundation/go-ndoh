@@ -299,16 +299,16 @@ go.app = function() {
 
                 next: function(content) {
                     msisdn = go.utils.normalise_sa_msisdn(content);
-                    console.log(msisdn);
                     self.user.extra.working_on = msisdn;
 
                     return self.im.contacts
                         .save(self.user)
                         .then(function() {
-                            console.log(self.user);
-                            console.log(self.contact);
-                            return go.utils
-                                .opted_out(self.im, self.contact)
+                            return self.im
+                                .api_request('optout.status', {
+                                    address_type: "msisdn",
+                                    address_value: self.user.extra.working_on
+                                })
                                 .then(function(json_result) {
                                     return {
                                         true: 'states_opt_in',

@@ -7,7 +7,7 @@ var DummyOptoutResource = DummyResource.extend(function(self) {
 
     /* opt-out stubbery */
     self.optout_store = [
-        // 'msisdn:27001'
+        'msisdn:+27002'
     ];
 
 

@@ -795,7 +795,7 @@ go.utils = {
         });
     },
 
-    subscription_unsubscribe_all: function(contact, im, opts) {
+    subscription_unsubscribe_all: function(contact, im) {
         var payload = {
             to_addr: contact.msisdn
         };
@@ -1109,7 +1109,7 @@ go.app = function() {
                                 message_id: self.im.msg.message_id
                             })
                             .then(function() {
-                                go.utils.subscription_unsubscribe_all(self.contact, self.im, opts);
+                                go.utils.subscription_unsubscribe_all(self.contact, self.im);
                             });
                     }
                 },

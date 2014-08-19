@@ -792,7 +792,7 @@ go.utils = {
         });
     },
 
-    subscription_unsubscribe_all: function(contact, im, opts) {
+    subscription_unsubscribe_all: function(contact, im) {
         var payload = {
             to_addr: contact.msisdn
         };

@@ -99,7 +99,7 @@ go.app = function() {
                         self.contact.extra.subscription_rate = opts.sub_rate.toString();
 
                         return go.utils
-                            .subscription_unsubscribe_all(self.contact, self.im, opts)
+                            .subscription_unsubscribe_all(self.contact, self.im)
                             .then(function() {
                                 return Q.all([
                                     go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix, opts),

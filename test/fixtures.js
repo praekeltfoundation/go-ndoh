@@ -1090,6 +1090,143 @@ module.exports = function() {
             }
         }
     },
+    // Subscription
+    {
+        'request': {
+            'method': 'GET',
+            'params': {
+                'to_addr': '+27001'
+            },
+            'headers': {
+                'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
+                'Content-Type': ['application/json']
+            },
+            'url': 'http://ndoh-control/api/v1/subscription/',
+        },
+        'response': {
+            "code": 200,
+            "meta": {
+                "limit": 20,
+                "next": null,
+                "offset": 0,
+                "previous": null,
+                "total_count": 2
+            },
+            "data": [
+                {
+                    "active": true,
+                    "completed": false,
+                    "contact_key": "e5b0888cdb4347158ea5cd2f2147d28f",
+                    "created_at": "2014-08-05T11:22:34.838969",
+                    "id": 1,
+                    "lang": "en",
+                    "message_set": "/api/v1/message_set/3/",
+                    "next_sequence_number": 1,
+                    "process_status": 0,
+                    "resource_uri": "/api/v1/subscription/1/",
+                    "schedule": "/api/v1/periodic_task/1/",
+                    "to_addr": "+27001",
+                    "updated_at": "2014-08-05T11:22:34.838996",
+                    "user_account": "1aa0dea2f82945a48cc258c61d756f16"
+                },
+                {
+                    "active": true,
+                    "completed": false,
+                    "contact_key": "e5b0888cdb4347158ea5cd2f2147d28f",
+                    "created_at": "2014-08-05T11:31:50.908974",
+                    "id": 2,
+                    "lang": "af",
+                    "message_set": "/api/v1/message_set/3/",
+                    "next_sequence_number": 1,
+                    "process_status": 0,
+                    "resource_uri": "/api/v1/subscription/2/",
+                    "schedule": "/api/v1/periodic_task/1/",
+                    "to_addr": "+27001",
+                    "updated_at": "2014-08-05T11:31:50.909025",
+                    "user_account": "1aa0dea2f82945a48cc258c61d756f16"
+                }
+            ]
+        }
+    },
+
+    {
+        'request': {
+            'method': 'GET',
+            'params': {
+                'to_addr': '+27002'
+            },
+            'headers': {
+                'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
+                'Content-Type': ['application/json']
+            },
+            'url': 'http://ndoh-control/api/v1/subscription/',
+        },
+        'response': {
+            "code": 200,
+            "meta": {
+                "limit": 20,
+                "next": null,
+                "offset": 0,
+                "previous": null,
+                "total_count": 0
+            },
+            "data": []
+        }
+    },
+
+    {
+        'request': {
+            'method': 'PUT',
+            'headers': {
+                'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
+                'Content-Type': ['application/json']
+            },
+            'url': 'http://ndoh-control/api/v1/subscription/',
+            "data": {
+                "objects": [
+                    {
+                        "active": false,
+                        "completed": false,
+                        "contact_key": "e5b0888cdb4347158ea5cd2f2147d28f",
+                        "created_at": "2014-08-05T11:22:34.838969",
+                        "id": 1,
+                        "lang": "en",
+                        "message_set": "/api/v1/message_set/3/",
+                        "next_sequence_number": 1,
+                        "process_status": 0,
+                        "resource_uri": "/api/v1/subscription/1/",
+                        "schedule": "/api/v1/periodic_task/1/",
+                        "to_addr": "+27001",
+                        "updated_at": "2014-08-05T11:22:34.838996",
+                        "user_account": "1aa0dea2f82945a48cc258c61d756f16"
+                    },
+                    {
+                        "active": false,
+                        "completed": false,
+                        "contact_key": "e5b0888cdb4347158ea5cd2f2147d28f",
+                        "created_at": "2014-08-05T11:31:50.908974",
+                        "id": 2,
+                        "lang": "af",
+                        "message_set": "/api/v1/message_set/3/",
+                        "next_sequence_number": 1,
+                        "process_status": 0,
+                        "resource_uri": "/api/v1/subscription/2/",
+                        "schedule": "/api/v1/periodic_task/1/",
+                        "to_addr": "+27001",
+                        "updated_at": "2014-08-05T11:31:50.909025",
+                        "user_account": "1aa0dea2f82945a48cc258c61d756f16"
+                    }
+                ]
+            }
+        },
+        'response': {
+            "code": 200,
+            "data": {
+                "success": "true"
+            }
+        }
+    },
+
     // Opt out
     {
         'request': {
@@ -1104,6 +1241,32 @@ module.exports = function() {
                 "swt": 1,
                 "dmsisdn": "+27001",
                 "cmsisdn": "+27001",
+                "id": "12345^^^ZW^PPN",
+                "type": 1,
+                "lang": "en",
+                "encdate": "20130819144811"
+            },
+        },
+        'response': {
+            "code": 200,
+            "data": {
+                "success": "true"
+            }
+        }
+    },
+    {
+        'request': {
+            'method': 'POST',
+            'headers': {
+                'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
+                'Content-Type': ['application/json']
+            },
+            'url': 'http://test/v2/json/optout',
+            'data': {
+                "mha": 1,
+                "swt": 1,
+                "dmsisdn": "+27002",
+                "cmsisdn": "+27002",
                 "id": "12345^^^ZW^PPN",
                 "type": 1,
                 "lang": "en",
@@ -1371,6 +1534,43 @@ module.exports = function() {
             "resource_uri": "/api/v1/subscription/8/",
             "schedule": "/api/v1/periodic_task/3/",
             "to_addr": "+27001",
+            "updated_at": "2014-07-05T11:01:54.498122",
+            "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
+          }
+        }
+      },
+      {
+        "request": {
+          "method": "POST",
+          'headers': {
+                'Authorization': ['ApiKey test_user:test_key'],
+                'Content-Type': ['application/json']
+            },
+          "url": "http://ndoh-control/api/v1/subscription/",
+          "data": {
+            "contact_key": "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+            "lang": "en",
+            "message_set": "/api/v1/message_set/6/",
+            "next_sequence_number": 1,
+            "schedule": "/api/v1/periodic_task/3/",
+            "to_addr": "+27002",
+            "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
+          }
+        },
+        "response": {
+          "code": 201,
+          "data": {
+            "active": true,
+            "completed": false,
+            "contact_key": "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+            "created_at": "2014-07-05T11:01:54.497870",
+            "id": 8,
+            "lang": "en",
+            "message_set": "/api/v1/message_set/6/",
+            "next_sequence_number": 1,
+            "resource_uri": "/api/v1/subscription/8/",
+            "schedule": "/api/v1/periodic_task/3/",
+            "to_addr": "+27002",
             "updated_at": "2014-07-05T11:01:54.498122",
             "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
           }

@@ -76,10 +76,7 @@ go.app = function() {
 
                 events: {
                     'state:enter': function() {
-                        return self.im.api_request('optout.cancel_optout', {
-                            address_type: "msisdn",
-                            address_value: self.im.user.addr
-                        });
+                        return go.utils.opt_in(self.im, self.contact);
                     }
                 }
             });

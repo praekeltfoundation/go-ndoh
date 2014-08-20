@@ -4,7 +4,9 @@ var AppTester = vumigo.AppTester;
 var assert = require('assert');
 var _ = require('lodash');
 var messagestore = require('./messagestore');
+var optoutstore = require('./optoutstore');
 var DummyMessageStoreResource = messagestore.DummyMessageStoreResource;
+var DummyOptoutResource = optoutstore.DummyOptoutResource;
 
 describe("app", function() {
     describe("for chw use", function() {
@@ -29,6 +31,7 @@ describe("app", function() {
             tester
                 .setup(function(api) {
                     api.resources.add(new DummyMessageStoreResource());
+                    api.resources.add(new DummyOptoutResource());
                     api.resources.attach(api);
                     api.groups.add( {
                         key: 'en_key',
@@ -423,24 +426,138 @@ describe("app", function() {
             });
         });
 
+        // opt-in flow for contact phone usage
         describe("when the no. is the pregnant woman's no.", function() {
-            it("should ask for the id type", function() {
-                return tester
-                    .setup.user.state('states_start')
-                    .input('1')
-                    .check.interaction({
-                        state: 'states_id_type',
-                        reply: [
-                            'What kind of identification does the pregnant ' +
-                            'mother have?',
-                            '1. SA ID',
-                            '2. Passport',
-                            '3. None'
-                        ].join('\n')
-                    })
-                    .run();
+
+            describe("if not previously opted out", function() {
+                it("should ask for the id type", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27001',
+                            });
+                        })
+                        .setup.user.addr('27001')
+                        .setup.user.state('states_start')
+                        .input('1')
+                        .check.interaction({
+                            state: 'states_id_type',
+                            reply: [
+                                'What kind of identification does the pregnant ' +
+                                'mother have?',
+                                '1. SA ID',
+                                '2. Passport',
+                                '3. None'
+                            ].join('\n')
+                        })
+                        .run();
+                });
             });
+
+            describe("if the user previously opted out", function() {
+                it("should ask to confirm opting back in", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27002',
+                            });
+                        })
+                        .setup.user.addr('27002')
+                        .setup.user.state('states_start')
+                        .input('1')
+                        .check.interaction({
+                            state: 'states_opt_in',
+                            reply: [(
+                                'This number has previously opted out of MomConnect ' +
+                                'SMSs. Please confirm that the mom would like to ' +
+                                'opt in to receive messages again?'),
+                                '1. Yes',
+                                '2. No'
+                            ].join('\n')
+                        })
+                        .run();
+                });
+            });
+
+            describe("if the user confirms opting back in", function() {
+                it("should ask for the id type", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27002',
+                            });
+                        })
+                        .setup.user.addr('27002')
+                        .setup.user.state('states_opt_in')
+                        .input('1')
+                        .check.interaction({
+                            state: 'states_id_type',
+                            reply: [
+                                'What kind of identification does the pregnant ' +
+                                'mother have?',
+                                '1. SA ID',
+                                '2. Passport',
+                                '3. None'
+                            ].join('\n')
+                        })
+                        .run();
+                });
+            });
+
+            describe("if the user declines opting back in", function() {
+                it("should tell them they cannot complete registration", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27002',
+                            });
+                        })
+                        .setup.user.addr('27002')
+                        .setup.user.state('states_opt_in')
+                        .input('2')
+                        .check.interaction({
+                            state: 'states_stay_out',
+                            reply: [(
+                                'You have chosen not to receive MomConnect SMSs ' +
+                                'and so cannot complete registration.'),
+                                '1. Main Menu'
+                            ].join('\n')
+                        })
+                        .check(function(api) {
+                            var contact = api.contacts.store[0];
+                            assert.equal(contact.extra.working_on, undefined);
+                        })
+                        .run();
+                });
+            });
+
+            describe("if the user selects Main Menu", function() {
+                it("should take them back to states_start", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27002',
+                            });
+                        })
+                        .setup.user.addr('27002')
+                        .setup.user.state('states_stay_out')
+                        .input('1')
+                        .check.interaction({
+                            state: 'states_start',
+                            reply: [
+                                'Welcome to The Department of Health\'s ' +
+                                'MomConnect. Tell us if this is the no. that ' +
+                                'the mother would like to get SMSs on: 07002',
+                                '1. Yes',
+                                '2. No'
+                            ].join('\n')
+                        })
+                        .run();
+                });
+            });
+
         });
+        // end opt-in flow for contact phone usage
 
         describe("when the no. is not the pregnant woman's no.", function() {
             it("should ask for the pregnant woman's no.", function() {
@@ -472,30 +589,171 @@ describe("app", function() {
             });
         });
 
-
+        // opt in flow for chw worker's phone usage
         describe("after entering the pregnant woman's number", function() {
-            it("should ask for the id type", function() {
-                return tester
-                    .setup.user.addr('270001')
-                    .setup.user.state('states_mobile_no')
-                    .input('0821234567')
-                    .check.interaction({
-                        state: 'states_id_type',
-                        reply: [
-                            'What kind of identification does the pregnant ' +
-                            'mother have?',
-                            '1. SA ID',
-                            '2. Passport',
-                            '3. None'
-                        ].join('\n')
-                    })
-                    .check(function(api) {
-                        var contact = api.contacts.store[0];
-                        assert.equal(contact.extra.working_on, "+27821234567");
-                    })
-                    .run();
+
+            describe("if the number has not opted out before", function() {
+                it("should ask for the id type", function() {
+                    return tester
+                        .setup.user.addr('270001')
+                        .setup.user.state('states_mobile_no')
+                        .input('0821234567')
+                        .check.interaction({
+                            state: 'states_id_type',
+                            reply: [
+                                'What kind of identification does the pregnant ' +
+                                'mother have?',
+                                '1. SA ID',
+                                '2. Passport',
+                                '3. None'
+                            ].join('\n')
+                        })
+                        .check(function(api) {
+                            var contact = api.contacts.store[0];
+                            assert.equal(contact.extra.working_on, "+27821234567");
+                        })
+                        .run();
+                });
             });
+
+            describe("if the user previously opted out", function() {
+                it("should ask to confirm opting back in", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27001',
+                            });
+                        })
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27002',
+                            });
+                        })
+                        .setup.user.addr('27001')
+                        .setup.user.state('states_mobile_no')
+                        .input('002')
+                        .check.interaction({
+                            state: 'states_opt_in',
+                            reply: [(
+                                'This number has previously opted out of MomConnect ' +
+                                'SMSs. Please confirm that the mom would like to ' +
+                                'opt in to receive messages again?'),
+                                '1. Yes',
+                                '2. No'
+                            ].join('\n')
+                        })
+                        .check(function(api) {
+                            var contact = api.contacts.store[0];
+                            assert.equal(contact.extra.working_on, "+27002");
+                        })
+                        .run();
+                });
+            });
+
+            describe("if the user confirms opting back in", function() {
+                it("should ask for the id type", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27001',
+                                extra : {
+                                    working_on: '+27002'
+                                }
+                            });
+                        })
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27002',
+                            });
+                        })
+                        .setup.user.addr('27001')
+                        .setup.user.state('states_opt_in')
+                        .input('1')
+                        .check.interaction({
+                            state: 'states_id_type',
+                            reply: [
+                                'What kind of identification does the pregnant ' +
+                                'mother have?',
+                                '1. SA ID',
+                                '2. Passport',
+                                '3. None'
+                            ].join('\n')
+                        })
+                        .run();
+                });
+            });
+
+            describe("if the user does not choose to opt back in", function() {
+                it("should tell them they cannot complete registration", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27001',
+                                extra : {
+                                    working_on: '+27002'
+                                }
+                            });
+                        })
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27002',
+                            });
+                        })
+                        .setup.user.addr('27001')
+                        .setup.user.state('states_opt_in')
+                        .input('2')
+                        .check.interaction({
+                            state: 'states_stay_out',
+                            reply: [(
+                                'You have chosen not to receive MomConnect SMSs ' +
+                                'and so cannot complete registration.'),
+                                '1. Main Menu'
+                            ].join('\n')
+                        })
+                        .check(function(api) {
+                            var contact = api.contacts.store[0];
+                            assert.equal(contact.extra.working_on, "");
+                        })
+                        .run();
+                });
+            });
+
+            describe("if the user selects 1. Main Menu", function() {
+                it("should return to states_start", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27001',
+                                extra : {
+                                    working_on: ''
+                                }
+                            });
+                        })
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27002',
+                            });
+                        })
+                        .setup.user.addr('27001')
+                        .setup.user.state('states_stay_out')
+                        .input('1')
+                        .check.interaction({
+                            state: 'states_start',
+                            reply: [
+                                'Welcome to The Department of Health\'s ' +
+                                'MomConnect. Tell us if this is the no. that ' +
+                                'the mother would like to get SMSs on: 07001',
+                                '1. Yes',
+                                '2. No'
+                            ].join('\n')
+                        })
+                        .run();
+                });
+            });
+                
         });
+        // end opt-in flow for chw's phone usage
+
 
         describe("if the user selects SA ID (id type)", function() {
             describe("if the user is the pregnant woman", function() {

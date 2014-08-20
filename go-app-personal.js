@@ -1364,14 +1364,63 @@ go.app = function() {
                     return self.im.contacts
                         .save(self.contact)
                         .then(function() {
-                            return {
-                                yes: 'states_id_type',
-                                no: 'states_end_not_pregnant'
-                            } [choice.value];
+                            if (choice.value === 'yes') {
+                                return go.utils
+                                    .opted_out(self.im, self.contact)
+                                    .then(function(json_result) {
+                                        return {
+                                            true: 'states_opt_in',
+                                            false: 'states_id_type'
+                                        } [json_result.opted_out];
+                                    });
+                            } else {
+                                return 'states_end_not_pregnant';
+                            }
                         });
                 }
             });
         });
+
+        self.add('states_opt_in', function(name) {
+            return new ChoiceState(name, {
+                question: $('You have previously opted out of MomConnect ' +
+                            'SMSs. Please confirm that you would like to ' +
+                            'opt in to receive messages again?'),
+
+                choices: [
+                    new Choice('yes', $('Yes')),
+                    new Choice('no', $('No'))
+                ],
+
+                next: function(choice) {
+                    if (choice.value === 'yes') {
+                        return go.utils
+                            .opt_in(self.im, self.contact)
+                            .then(function() {
+                                return 'states_id_type';
+                            });
+                    } else {
+                        return 'states_stay_out';
+                    }
+                }
+            });
+        });
+
+        self.add('states_stay_out', function(name) {
+            return new ChoiceState(name, {
+                question: $('You have chosen not to receive MomConnect SMSs ' +
+                            'and so cannot complete registration.'),
+
+                choices: [
+                    new Choice('main_menu', $('Main Menu'))
+                ],
+
+                next: function(choice) {
+                    return 'states_start';
+                }
+            });
+        });
+
 
         self.add('states_end_not_pregnant', function(name) {
             return new EndState(name, {

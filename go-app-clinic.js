@@ -1172,10 +1172,67 @@ go.app = function() {
                 ],
 
                 next: function(choice) {
-                    return {
-                        yes: 'states_clinic_code',
-                        no: 'states_mobile_no'
-                    } [choice.value];
+                    if (choice.value === 'yes') {
+                        return go.utils
+                            .opted_out(self.im, self.contact)
+                            .then(function(json_result) {
+                                return {
+                                    true: 'states_opt_in',
+                                    false: 'states_clinic_code',
+                                } [json_result.opted_out];
+                            });
+                    } else {
+                        return 'states_mobile_no';
+                    }
+                }
+            });
+        });
+
+        self.add('states_opt_in', function(name) {
+            return new ChoiceState(name, {
+                question: $('This number has previously opted out of MomConnect ' +
+                            'SMSs. Please confirm that the mom would like to ' +
+                            'opt in to receive messages again?'),
+
+                choices: [
+                    new Choice('yes', $('Yes')),
+                    new Choice('no', $('No'))
+                ],
+
+                next: function(choice) {
+                    if (choice.value === 'yes') {
+                        return go.utils
+                            .opt_in(self.im, self.contact)
+                            .then(function() {
+                                return 'states_clinic_code';
+                            });
+                    } else {
+                        if (!_.isUndefined(self.user.extra.working_on)) {
+                            self.user.extra.working_on = "";
+                            return self.im.contacts
+                                .save(self.user)
+                                .then(function() {
+                                    return 'states_stay_out';
+                                });
+                        } else {
+                            return 'states_stay_out';
+                        }
+                    }
+                }
+            });
+        });
+
+        self.add('states_stay_out', function(name) {
+            return new ChoiceState(name, {
+                question: $('You have chosen not to receive MomConnect SMSs ' +
+                            'and so cannot complete registration.'),
+
+                choices: [
+                    new Choice('main_menu', $('Main Menu'))
+                ],
+
+                next: function(choice) {
+                    return 'states_start';
                 }
             });
         });
@@ -1245,9 +1302,17 @@ go.app = function() {
                     return self.im.contacts
                         .save(self.user)
                         .then(function() {
-                            return {
-                                name: 'states_clinic_code'
-                            };
+                            return self.im
+                                .api_request('optout.status', {
+                                    address_type: "msisdn",
+                                    address_value: self.user.extra.working_on
+                                })
+                                .then(function(json_result) {
+                                    return {
+                                        true: 'states_opt_in',
+                                        false: 'states_clinic_code',
+                                    } [json_result.opted_out];
+                                });
                         });
                 }
             });

@@ -1135,7 +1135,7 @@ go.app = function() {
 
         self.states.add('states_error', function(name) {
             return new EndState(name, {
-              text: $('Sorry, something went wrong when saving the data. Please try again.'),
+              text: 'Sorry, something went wrong when saving the data. Please try again.',
               next: 'states_start'
             });
         });

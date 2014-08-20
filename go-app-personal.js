@@ -1673,8 +1673,8 @@ go.app = function() {
                             go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix, opts),
                             self.im.outbound.send_to_user({
                                 endpoint: 'sms',
-                                content: "Congratulations on your pregnancy. You will now get free SMSs about MomConnect. " +
-                                         "You can register for the full set of FREE helpful messages at a clinic."
+                                content: $("Congratulations on your pregnancy. You will now get free SMSs about MomConnect. " +
+                                         "You can register for the full set of FREE helpful messages at a clinic.")
                             }),
                             self.im.contacts.save(self.contact)
                         ]);

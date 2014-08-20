@@ -4,6 +4,7 @@
     "metric_store": "ndoh_qa",
     "endpoints": {"sms": {"delivery_class": "sms"}},
     "channel": "*120*4216*4#",
+    "public_channel": "*120*4216#",
     "conversation_key": "replaceme",
     "control": {
         "username": "test_user",

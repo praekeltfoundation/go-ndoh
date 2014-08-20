@@ -1112,7 +1112,7 @@ go.app = function() {
                             go.utils.servicerating_log(self.contact, self.im, self.metric_prefix),
                             self.im.outbound.send_to_user({
                                     endpoint: 'sms',
-                                    content: "Thank you for rating our service."
+                                    content: $("Thank you for rating our service.")
                             }),
                         ])
                         .then(function() {
@@ -1126,16 +1126,16 @@ go.app = function() {
 
         self.states.add('end_thanks_revisit', function(name) {
             return new EndState(name, {
-              text: 'Sorry, you\'ve already rated service. For baby and pregnancy ' +
-                    'help or if you have compliments or complaints ' +
-                    'dial *134*550# or reply to any of the SMSs you receive',
+              text: $('Sorry, you\'ve already rated service. For baby and pregnancy ' +
+                      'help or if you have compliments or complaints ' +
+                      'dial *134*550# or reply to any of the SMSs you receive'),
               next: 'end_thanks_revisit'
             });
         });
 
         self.states.add('states_error', function(name) {
             return new EndState(name, {
-              text: 'Sorry, something went wrong when saving the data. Please try again.',
+              text: $('Sorry, something went wrong when saving the data. Please try again.'),
               next: 'states_start'
             });
         });

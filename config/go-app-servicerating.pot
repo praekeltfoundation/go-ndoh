@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2014-08-14 04:36:+0200\n"
+"POT-Creation-Date: 2014-08-20 10:15:+0000\n"
 "Project-Id-Version: PACKAGE VERSION\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -57,58 +57,65 @@ msgstr ""
 msgid "Dec"
 msgstr ""
 
-#: go-app-servicerating.js:932
+#: go-app-servicerating.js:1028
 msgid "Welcome. When you signed up, were staff at the facility friendly & helpful?"
 msgstr ""
 
-#: go-app-servicerating.js:935 go-app-servicerating.js:952 go-app-servicerating.js:982 go-app-servicerating.js:997
+#: go-app-servicerating.js:1031 go-app-servicerating.js:1048 go-app-servicerating.js:1078 go-app-servicerating.js:1093
 msgid "Very Satisfied"
 msgstr ""
 
-#: go-app-servicerating.js:936 go-app-servicerating.js:953 go-app-servicerating.js:983 go-app-servicerating.js:998
+#: go-app-servicerating.js:1032 go-app-servicerating.js:1049 go-app-servicerating.js:1079 go-app-servicerating.js:1094
 msgid "Satisfied"
 msgstr ""
 
-#: go-app-servicerating.js:937 go-app-servicerating.js:954 go-app-servicerating.js:984 go-app-servicerating.js:999
+#: go-app-servicerating.js:1033 go-app-servicerating.js:1050 go-app-servicerating.js:1080 go-app-servicerating.js:1095
 msgid "Not Satisfied"
 msgstr ""
 
-#: go-app-servicerating.js:938 go-app-servicerating.js:955 go-app-servicerating.js:985 go-app-servicerating.js:1000
+#: go-app-servicerating.js:1034 go-app-servicerating.js:1051 go-app-servicerating.js:1081 go-app-servicerating.js:1096
 msgid "Very unsatisfied"
 msgstr ""
 
-#: go-app-servicerating.js:949
+#: go-app-servicerating.js:1045
 msgid "How do you feel about the time you had to wait at the facility?"
 msgstr ""
 
-#: go-app-servicerating.js:964
+#: go-app-servicerating.js:1060
 msgid "How long did you wait to be helped at the clinic?"
 msgstr ""
 
-#: go-app-servicerating.js:967
+#: go-app-servicerating.js:1063
 msgid "Less than an hour"
 msgstr ""
 
-#: go-app-servicerating.js:968
+#: go-app-servicerating.js:1064
 msgid "Between 1 and 3 hours"
 msgstr ""
 
-#: go-app-servicerating.js:969
+#: go-app-servicerating.js:1065
 msgid "More than 4 hours"
 msgstr ""
 
-#: go-app-servicerating.js:970
+#: go-app-servicerating.js:1066
 msgid "All day"
 msgstr ""
 
-#: go-app-servicerating.js:979
+#: go-app-servicerating.js:1075
 msgid "Was the facility clean?"
 msgstr ""
 
-#: go-app-servicerating.js:994
+#: go-app-servicerating.js:1090
 msgid "Did you feel that your privacy was respected by the staff?"
 msgstr ""
 
-#: go-app-servicerating.js:1009
+#: go-app-servicerating.js:1105 go-app-servicerating.js:1115
 msgid "Thank you for rating our service."
+msgstr ""
+
+#: go-app-servicerating.js:1129
+msgid ""
+"Sorry, you've already rated service. For baby and pregnancy help or if you "
+"have compliments or complaints dial *134*550# or reply to any of the SMSs "
+"you receive"
 msgstr ""

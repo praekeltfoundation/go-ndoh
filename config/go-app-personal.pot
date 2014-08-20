@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2014-08-14 04:34:+0200\n"
+"POT-Creation-Date: 2014-08-20 10:14:+0000\n"
 "Project-Id-Version: PACKAGE VERSION\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -57,265 +57,265 @@ msgstr ""
 msgid "Dec"
 msgstr ""
 
-#: go-app-personal.js:1001
+#: go-app-personal.js:1097
 msgid ""
 "Your session timed out. Please dial back in to {{USSD_number}} to complete "
 "the pregnancy registration so that you can receive messages."
 msgstr ""
 
-#: go-app-personal.js:1086
+#: go-app-personal.js:1182
 msgid "Welcome back. Please select an option:"
 msgstr ""
 
-#: go-app-personal.js:1089
+#: go-app-personal.js:1185
 msgid "Continue signing up for messages"
 msgstr ""
 
-#: go-app-personal.js:1090
+#: go-app-personal.js:1186
 msgid "Main menu"
 msgstr ""
 
-#: go-app-personal.js:1104
+#: go-app-personal.js:1200
 msgid "Welcome to the Department of Health's MomConnect. Please choose an option:"
 msgstr ""
 
-#: go-app-personal.js:1108
+#: go-app-personal.js:1204
 msgid "Baby and pregnancy info"
 msgstr ""
 
-#: go-app-personal.js:1109
+#: go-app-personal.js:1205
 msgid "Send us a compliment"
 msgstr ""
 
-#: go-app-personal.js:1110
+#: go-app-personal.js:1206
 msgid "Send us a complaint"
 msgstr ""
 
-#: go-app-personal.js:1125
+#: go-app-personal.js:1221
 msgid ""
 "Thank you. We will send you a message shortly with instructions on how to "
 "send us your compliment."
 msgstr ""
 
-#: go-app-personal.js:1135
+#: go-app-personal.js:1231
 msgid ""
 "Please reply to this message with your compliment. If your compliment "
 "relates to the service at a clinic, tell us the name of the clinic or "
 "clinic worker."
 msgstr ""
 
-#: go-app-personal.js:1144
+#: go-app-personal.js:1240
 msgid ""
 "Thank you. We will send you a message shortly with instructions on how to "
 "send us your complaint."
 msgstr ""
 
-#: go-app-personal.js:1153
+#: go-app-personal.js:1249
 msgid ""
 "Please reply to this message with your complaint. If your complaint relates "
 "to the service at a clinic, please tell us the name of the clinic or clinic "
 "worker."
 msgstr ""
 
-#: go-app-personal.js:1164
+#: go-app-personal.js:1260
 msgid "Welcome to the Department of Health's MomConnect. Choose an option:"
 msgstr ""
 
-#: go-app-personal.js:1168
+#: go-app-personal.js:1264
 msgid "Baby and pregnancy info (English only)"
 msgstr ""
 
-#: go-app-personal.js:1169
+#: go-app-personal.js:1265
 msgid "Get the full set of messages"
 msgstr ""
 
-#: go-app-personal.js:1183
+#: go-app-personal.js:1279
 msgid ""
 "To register for the full set of MomConnect messages, please visit your "
 "nearest clinic."
 msgstr ""
 
-#: go-app-personal.js:1193
+#: go-app-personal.js:1289
 msgid "Welcome to the Department of Health's MomConnect. Choose your language:"
 msgstr ""
 
-#: go-app-personal.js:1196
+#: go-app-personal.js:1292
 msgid "English"
 msgstr ""
 
-#: go-app-personal.js:1197
+#: go-app-personal.js:1293
 msgid "Afrikaans"
 msgstr ""
 
-#: go-app-personal.js:1198
+#: go-app-personal.js:1294
 msgid "Zulu"
 msgstr ""
 
-#: go-app-personal.js:1199
+#: go-app-personal.js:1295
 msgid "Xhosa"
 msgstr ""
 
-#: go-app-personal.js:1200
+#: go-app-personal.js:1296
 msgid "Sotho"
 msgstr ""
 
-#: go-app-personal.js:1201
+#: go-app-personal.js:1297
 msgid "Setswana"
 msgstr ""
 
-#: go-app-personal.js:1233
+#: go-app-personal.js:1332
 msgid "Welcome to the Department of Health's MomConnect. Please select:"
 msgstr ""
 
-#: go-app-personal.js:1237
+#: go-app-personal.js:1336
 msgid "Register for messages"
 msgstr ""
 
-#: go-app-personal.js:1238
+#: go-app-personal.js:1337
 msgid "Baby and Pregnancy info (English only)"
 msgstr ""
 
-#: go-app-personal.js:1253
+#: go-app-personal.js:1352
 msgid ""
 "MomConnect sends free support SMSs to pregnant mothers. Are you or do you "
 "suspect that you are pregnant?"
 msgstr ""
 
-#: go-app-personal.js:1258
+#: go-app-personal.js:1357
 msgid "Yes"
 msgstr ""
 
-#: go-app-personal.js:1259
+#: go-app-personal.js:1358
 msgid "No"
 msgstr ""
 
-#: go-app-personal.js:1279
+#: go-app-personal.js:1378
 msgid ""
 "We are sorry but this service is only for pregnant mothers. If you have "
 "other health concerns please visit your nearest clinic."
 msgstr ""
 
-#: go-app-personal.js:1288
+#: go-app-personal.js:1387
 msgid ""
 "We need some info to message you. This is private and will only be used to "
 "help you at a clinic. What kind of ID do you have?"
 msgstr ""
 
-#: go-app-personal.js:1293
+#: go-app-personal.js:1392
 msgid "SA ID"
 msgstr ""
 
-#: go-app-personal.js:1294
+#: go-app-personal.js:1393
 msgid "Passport"
 msgstr ""
 
-#: go-app-personal.js:1295
+#: go-app-personal.js:1394
 msgid "None"
 msgstr ""
 
-#: go-app-personal.js:1315
+#: go-app-personal.js:1414
 msgid "Sorry, your ID number did not validate. Please reenter your SA ID number:"
 msgstr ""
 
-#: go-app-personal.js:1318
+#: go-app-personal.js:1417
 msgid "Please enter your SA ID number:"
 msgstr ""
 
-#: go-app-personal.js:1351
+#: go-app-personal.js:1450
 msgid "What is the country of origin of the passport?"
 msgstr ""
 
-#: go-app-personal.js:1354
+#: go-app-personal.js:1453
 msgid "Zimbabwe"
 msgstr ""
 
-#: go-app-personal.js:1355
+#: go-app-personal.js:1454
 msgid "Mozambique"
 msgstr ""
 
-#: go-app-personal.js:1356
+#: go-app-personal.js:1455
 msgid "Malawi"
 msgstr ""
 
-#: go-app-personal.js:1357
+#: go-app-personal.js:1456
 msgid "Nigeria"
 msgstr ""
 
-#: go-app-personal.js:1358
+#: go-app-personal.js:1457
 msgid "DRC"
 msgstr ""
 
-#: go-app-personal.js:1359
+#: go-app-personal.js:1458
 msgid "Somalia"
 msgstr ""
 
-#: go-app-personal.js:1360
+#: go-app-personal.js:1459
 msgid "Other"
 msgstr ""
 
-#: go-app-personal.js:1378
+#: go-app-personal.js:1477
 msgid ""
 "There was an error in your entry. Please carefully enter your passport "
 "number again."
 msgstr ""
 
-#: go-app-personal.js:1380
+#: go-app-personal.js:1479
 msgid "Please enter your Passport number:"
 msgstr ""
 
-#: go-app-personal.js:1406
+#: go-app-personal.js:1505
 msgid ""
 "There was an error in your entry. Please carefully enter your year of birth "
 "again (for example: 2001)"
 msgstr ""
 
-#: go-app-personal.js:1410
+#: go-app-personal.js:1509
 msgid ""
 "Since you don't have an ID or passport, please enter the year that you were "
 "born (for example: 1981)"
 msgstr ""
 
-#: go-app-personal.js:1439
+#: go-app-personal.js:1538
 msgid "Please enter the month that you were born."
 msgstr ""
 
-#: go-app-personal.js:1458
+#: go-app-personal.js:1557
 msgid ""
 "There was an error in your entry. Please carefully enter your day of birth "
 "again (for example: 8)"
 msgstr ""
 
-#: go-app-personal.js:1462
+#: go-app-personal.js:1561
 msgid "Please enter the day that you were born (for example: 14)."
 msgstr ""
 
-#: go-app-personal.js:1512
+#: go-app-personal.js:1613 go-app-personal.js:1627
 msgid ""
 "Congratulations on your pregnancy. You will now get free SMSs about "
 "MomConnect. You can register for the full set of FREE helpful messages at a "
 "clinic."
 msgstr ""
 
-#: go-app-personal.js:1562
+#: go-app-personal.js:1663
 msgid "We have gathered information in the areas below. Please select:"
 msgstr ""
 
-#: go-app-personal.js:1584
+#: go-app-personal.js:1685
 msgid "Please select one:"
 msgstr ""
 
-#: go-app-personal.js:1609
+#: go-app-personal.js:1710
 msgid "More"
 msgstr ""
 
-#: go-app-personal.js:1610
+#: go-app-personal.js:1711
 msgid "Back"
 msgstr ""
 
-#: go-app-personal.js:1611
+#: go-app-personal.js:1712
 msgid "Send to me by SMS"
 msgstr ""
 
-#: go-app-personal.js:1626
+#: go-app-personal.js:1727
 msgid "Thank you. Your SMS will be delivered shortly."
 msgstr ""

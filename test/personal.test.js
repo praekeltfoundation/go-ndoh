@@ -4,8 +4,9 @@ var AppTester = vumigo.AppTester;
 var _ = require('lodash');
 var assert = require('assert');
 var messagestore = require('./messagestore');
+var optoutstore = require('./optoutstore');
 var DummyMessageStoreResource = messagestore.DummyMessageStoreResource;
-
+var DummyOptoutResource = optoutstore.DummyOptoutResource;
 
 describe("app", function() {
     describe("for personal use", function() {
@@ -30,6 +31,7 @@ describe("app", function() {
             tester
                 .setup(function(api) {
                     api.resources.add(new DummyMessageStoreResource());
+                    api.resources.add(new DummyOptoutResource());
                     api.resources.attach(api);
                     api.groups.add(
                         {
@@ -638,7 +640,7 @@ describe("app", function() {
             });
         });
 
-        // // check other language since default is 'en'
+        // check other language since default is 'en'
         describe("when the user selects a different language", function() {
             it("should ask if they want to register or get info", function() {
                 return tester
@@ -728,29 +730,154 @@ describe("app", function() {
             });
         });
 
+        // start opt-in flow checks
         describe("if the user suspects pregnancy", function() {
-            it("should set pregnancy status, ask for their id type", function() {
-                return tester
-                    .setup.user.addr('27001')
-                    .setup.user.state('states_suspect_pregnancy')
-                    .input('1')
-                    .check.interaction({
-                        state: 'states_id_type',
-                        reply: [
-                            'We need some info to message you. This is ' +
-                            'private and will only be used to help you at ' +
-                            'a clinic. What kind of ID do you have?',
-                            '1. SA ID',
-                            '2. Passport',
-                            '3. None'
-                        ].join('\n')
-                    })
-                    .check(function(api) {
-                        var contact = api.contacts.store[0];
-                        assert.equal(contact.extra.suspect_pregnancy, 'yes');
-                    })
-                    .run();
+
+
+
+
+
+
+            describe("if the user has not previously opted out", function() {
+                it("should set pregnancy status, ask for their id type", function() {
+                    return tester
+                        .setup.user.addr('27001')
+                        .setup.user.state('states_suspect_pregnancy')
+                        .input('1')
+                        .check.interaction({
+                            state: 'states_id_type',
+                            reply: [
+                                'We need some info to message you. This is ' +
+                                'private and will only be used to help you at ' +
+                                'a clinic. What kind of ID do you have?',
+                                '1. SA ID',
+                                '2. Passport',
+                                '3. None'
+                            ].join('\n')
+                        })
+                        .check(function(api) {
+                            var contact = api.contacts.store[0];
+                            assert.equal(contact.extra.suspect_pregnancy, 'yes');
+                        })
+                        .run();
+                });
             });
+
+            describe("if the user previously opted out", function() {
+                it("should ask to confirm opting back in", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27002',
+                            });
+                        })
+                        .setup.user.addr('27002')
+                        .setup.user.state('states_suspect_pregnancy')
+                        .input('1')
+                        .check.interaction({
+                            state: 'states_opt_in',
+                            reply: [(
+                                'You have previously opted out of MomConnect ' +
+                                'SMSs. Please confirm that you would like to ' +
+                                'opt in to receive messages again?'),
+                                '1. Yes',
+                                '2. No'
+                            ].join('\n')
+                        })
+                        .run();
+                });
+            });
+
+            describe("if the user confirms opting back in", function() {
+                it("should ask for the id type", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27002',
+                            });
+                        })
+                        .setup.user.addr('27002')
+                        .setup.user.state('states_opt_in')
+                        .input('1')
+                        .check.interaction({
+                            state: 'states_id_type',
+                            reply: [
+                                'We need some info to message you. This is ' +
+                                'private and will only be used to help you at ' +
+                                'a clinic. What kind of ID do you have?',
+                                '1. SA ID',
+                                '2. Passport',
+                                '3. None'
+                            ].join('\n')
+                        })
+                        .check(function(api) {
+                            var optouts = api.optout.optout_store;
+                            assert.equal(optouts.length, 0);
+                        })
+                        .run();
+                });
+            });
+
+            describe("if the user declines opting back in", function() {
+                it("should tell them they cannot complete registration", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27002',
+                            });
+                        })
+                        .setup.user.addr('27002')
+                        .setup.user.state('states_opt_in')
+                        .input('2')
+                        .check.interaction({
+                            state: 'states_stay_out',
+                            reply: [(
+                                'You have chosen not to receive MomConnect SMSs ' +
+                                'and so cannot complete registration.'),
+                                '1. Main Menu'
+                            ].join('\n')
+                        })
+                        .check(function(api) {
+                            var contact = api.contacts.store[0];
+                            assert.equal(contact.extra.working_on, undefined);
+                        })
+                        .check(function(api) {
+                            var optouts = api.optout.optout_store;
+                            assert.equal(optouts.length, 1);
+                        })
+                        .run();
+                });
+            });
+
+            describe("if the user selects Main Menu", function() {
+                it("should take them back through states_start", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27002',
+                            });
+                        })
+                        .setup.user.addr('27002')
+                        .setup.user.state('states_stay_out')
+                        .input('1')
+                        .check.interaction({
+                            state: 'states_language',
+                            reply: [
+                                'Welcome to the Department of Health\'s MomConnect. Choose your language:',
+                                '1. English',
+                                '2. Afrikaans',
+                                '3. Zulu',
+                                '4. Xhosa',
+                                '5. Sotho',
+                                '6. Setswana'
+                            ].join('\n')
+                        })
+                        .run();
+                });
+            });
+
+
+
         });
 
         describe("if the user selects SA ID (id type)", function() {

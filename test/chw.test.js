@@ -500,6 +500,10 @@ describe("app", function() {
                                 '3. None'
                             ].join('\n')
                         })
+                        .check(function(api) {
+                            var optouts = api.optout.optout_store;
+                            assert.equal(optouts.length, 0);
+                        })
                         .run();
                 });
             });
@@ -526,6 +530,10 @@ describe("app", function() {
                         .check(function(api) {
                             var contact = api.contacts.store[0];
                             assert.equal(contact.extra.working_on, undefined);
+                        })
+                        .check(function(api) {
+                            var optouts = api.optout.optout_store;
+                            assert.equal(optouts.length, 1);
                         })
                         .run();
                 });

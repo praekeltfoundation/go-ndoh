@@ -1128,7 +1128,10 @@ go.app = function() {
             return new EndState(name, {
               text: $('Sorry, you\'ve already rated service. For baby and pregnancy ' +
                       'help or if you have compliments or complaints ' +
-                      'dial *134*550# or reply to any of the SMSs you receive'),
+                      'dial {{public_channel}} or reply to any of the SMSs you receive')
+                .context({
+                    public_channel: self.im.config.public_channel
+                }),
               next: 'end_thanks_revisit'
             });
         });

@@ -46,7 +46,8 @@ describe("app", function() {
                     endpoints: {
                         "sms": {"delivery_class": "sms"}
                     },
-                    channel: "*120*550#",
+                    channel: "*120*550*4#",
+                    public_channel: "*120*550#",
                     control: {
                         username: 'test_user',
                         api_key: 'test_key',
@@ -222,7 +223,7 @@ describe("app", function() {
                         reply: [
                             'Sorry, you\'ve already rated service. For baby and pregnancy ' +
                             'help or if you have compliments or complaints ' +
-                            'dial *134*550# or reply to any of the SMSs you receive'
+                            'dial *120*550# or reply to any of the SMSs you receive'
                         ].join('\n')
                     })
                     .check.reply.ends_session()

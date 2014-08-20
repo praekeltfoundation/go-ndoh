@@ -471,6 +471,7 @@ describe("app", function() {
             });
         });
 
+        // opt-in flow for contact phone usage
         describe("when the no. is the pregnant woman's no.", function() {
 
             describe("if not previously opted out", function() {
@@ -593,6 +594,7 @@ describe("app", function() {
             });
             
         });
+        // end opt-in flow for contact phone usage
 
         describe("when the no. is not the pregnant woman's no.", function() {
             it("should ask for the pregnant woman's no.", function() {
@@ -624,7 +626,7 @@ describe("app", function() {
             });
         });
 
-
+        // opt-in flow for clinic worker's phone usage
         describe("after entering the pregnant woman's number", function() {
 
             describe("if the number has not opted out before", function() {
@@ -781,6 +783,8 @@ describe("app", function() {
             });
 
         });
+        // end opt-in flow for clinic worker's phone usage
+
 
         describe("after entering the clinic code", function() {
             describe("if the clinic code is not valid", function() {

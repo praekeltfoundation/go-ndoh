@@ -687,6 +687,10 @@ describe("app", function() {
                                 '3. None'
                             ].join('\n')
                         })
+                        .check(function(api) {
+                            var optouts = api.optout.optout_store;
+                            assert.equal(optouts.length, 0);
+                        })
                         .run();
                 });
             });

@@ -718,6 +718,10 @@ describe("app", function() {
                                 'Please enter the clinic code for the facility ' +
                                 'where this pregnancy is being registered:')
                         })
+                        .check(function(api) {
+                            var optouts = api.optout.optout_store;
+                            assert.equal(optouts.length, 0);
+                        })
                         .run();
                 });
             });

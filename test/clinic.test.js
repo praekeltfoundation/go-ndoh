@@ -138,6 +138,94 @@ describe("app", function() {
                     fixtures().forEach(api.http.fixtures.add);
                 });
         });
+        
+
+        describe("after the user runs through the whole flow", function() {
+            it("should have all their extras saved", function() {
+                return tester
+                    .setup(function(api) {
+                        api.contacts.add({
+                            msisdn: '+27821234567',
+                            key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4",
+                        });
+                    })
+                    .setup.user.addr('27821234567')
+                    .inputs(
+                        {session_event: 'start'},
+                        '1',        // states_start - yes
+                        '12345',    // states_clinic_code - 12345
+                        '2',        // states_due_date_month - 05
+                        '30',       // states_due_date_day - 30
+                        '1',        // states_id_type - sa_id
+                        {session_event: 'new'},
+                        '1',        // states_timed_out - yes
+                        '5101025009086', // states_sa_id
+                        '1'         // states_language - en
+                        )
+                    .check.interaction({
+                        state: 'states_end_success'
+                    })
+                    .check(function(api) {
+                        var contact = _.find(api.contacts.store, {
+                          msisdn: '+27821234567'
+                        });
+                        assert.equal(contact.extra.clinic_code, '12345');
+                        assert.equal(contact.extra.due_date_month, '05');
+                        assert.equal(contact.extra.due_date_day, '30');
+                        assert.equal(contact.extra.id_type, 'sa_id');
+                        assert.equal(contact.extra.sa_id, '5101025009086');
+                        assert.equal(contact.extra.language_choice, 'en');
+                    })
+                    .run();
+            });
+        });
+
+        describe("when the user runs through the whole flow", function() {
+            it("should have all their extras saved", function() {
+                return tester
+                    .setup(function(api) {
+                        api.contacts.add({
+                            msisdn: '+27821234567',
+                            key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4",
+                        });
+                        api.contacts.add({
+                            msisdn: '+270001',
+                        });
+                    })
+                    .setup.user.addr('270001')
+                    .inputs(
+                        {session_event: 'start'},
+                        '2',        // states_start - no
+                        '0821234567', // states_mobile_no - +27821234567
+                        '12345',    // states_clinic_code - 12345
+                        '2',        // states_due_date_month - 05
+                        '30',       // states_due_date_day - 30
+                        '1',        // states_id_type - sa_id
+                        {session_event: 'new'},
+                        '1',        // states_timed_out - yes
+                        '5101025009086', // states_sa_id
+                        '1'         // states_language - en
+                        )
+                    .check.interaction({
+                        state: 'states_end_success'
+                    })
+                    .check(function(api) {
+                        var contact = _.find(api.contacts.store, {
+                          msisdn: '+27821234567'
+                        });
+                        // complete
+                        assert.equal(contact.extra.clinic_code, '12345');
+                        assert.equal(contact.extra.due_date_month, '05');
+                        assert.equal(contact.extra.due_date_day, '30');
+                        assert.equal(contact.extra.id_type, 'sa_id');
+                        assert.equal(contact.extra.sa_id, '5101025009086');
+                        assert.equal(contact.extra.language_choice, 'en');
+                    })
+                    .run();
+            });
+        });
 
         // describe("when the user is missing extras", function() {
         //     it("will fail on extras missing", function() {

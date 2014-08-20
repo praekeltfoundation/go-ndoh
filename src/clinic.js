@@ -363,10 +363,10 @@ go.app = function() {
                 },
 
                 next: function(content) {
-                    self.user.extra.due_date_day = content;
+                    self.contact.extra.due_date_day = content;
 
                     return self.im.contacts
-                        .save(self.user)
+                        .save(self.contact)
                         .then(function() {
                             return {
                                 name: 'states_id_type'

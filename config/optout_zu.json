@@ -1,16 +1,16 @@
 {
     "": {
-        "pot-creation-date": "2014-08-05 12:54:+0200",
         "project-id-version": "opt_out_zu",
+        "pot-creation-date": "2014-08-20 10:49:+0000",
+        "po-revision-date": "2014-08-26 10:22-0000",
+        "last-translator": "Lieze <lieze@praekelt.com>",
         "language-team": "Language <LL@li.org>",
+        "language": "zu",
         "mime-version": "1.0",
         "content-type": "text/plain; charset=UTF-8",
         "content-transfer-encoding": "8bit",
-        "po-revision-date": "2014-08-06 13:20+0200",
-        "last-translator": "",
-        "x-generator": "Poedit 1.6.7",
-        "plural-forms": "nplurals=2; plural=(n != 1);",
-        "language": "zu"
+        "x-generator": "Poedit 1.6.8",
+        "plural-forms": "nplurals=2; plural=(n != 1);"
     },
     "Jan": [
         null,

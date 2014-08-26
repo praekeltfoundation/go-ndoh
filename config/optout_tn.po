@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2014-08-05 12:54:+0200\n"
 "Project-Id-Version: opt_out_TN\n"
+"POT-Creation-Date: 2014-08-20 10:49:+0000\n"
+"PO-Revision-Date: 2014-08-26 10:20-0000\n"
+"Last-Translator: Lieze <lieze@praekelt.com>\n"
 "Language-Team: Language <LL@li.org>\n"
+"Language: tn\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2014-08-06 13:40+0200\n"
-"Last-Translator: \n"
-"X-Generator: Poedit 1.6.7\n"
-"Language: tn\n"
+"X-Generator: Poedit 1.6.8\n"
 
 #: go-app-optout.js:27
 msgid "Jan"
@@ -59,31 +59,36 @@ msgstr "Nov"
 msgid "Dec"
 msgstr "Dec"
 
-#: go-app-optout.js:924
+#: go-app-optout.js:1031
 msgid "Please let us know why you do not want MomConnect messages"
 msgstr "Bua goreng o sa batle melaetsa ya Mconnect"
 
-#: go-app-optout.js:927
+#: go-app-optout.js:1033
+#, fuzzy
+msgid "Please tell us why you previously opted out of messages"
+msgstr "Bua goreng o sa batle melaetsa ya Mconnect"
+
+#: go-app-optout.js:1040
 msgid "Miscarriage"
 msgstr "Ke boile tseleng"
 
-#: go-app-optout.js:928
+#: go-app-optout.js:1041
 msgid "Baby was stillborn"
 msgstr "Ngwana o fetile"
 
-#: go-app-optout.js:929
+#: go-app-optout.js:1042
 msgid "Baby died"
 msgstr "Ngwana o sule"
 
-#: go-app-optout.js:930
+#: go-app-optout.js:1043
 msgid "Messages not useful"
 msgstr "Melaetsa ga e mosola"
 
-#: go-app-optout.js:931
+#: go-app-optout.js:1044
 msgid "Other"
 msgstr "Tse dingwe"
 
-#: go-app-optout.js:965
+#: go-app-optout.js:1069
 msgid ""
 "We are sorry for your loss. Would you like to receive a small set of free "
 "messages to help you in this difficult time?"
@@ -91,15 +96,15 @@ msgstr ""
 "Re botlhoko ka tatlhegelo ya gago. A o rata go amogela sete ya melaetsa e e "
 "ka go thusang mo nakong e e thata e? "
 
-#: go-app-optout.js:970
+#: go-app-optout.js:1074
 msgid "Yes"
 msgstr "Ee"
 
-#: go-app-optout.js:971
+#: go-app-optout.js:1075
 msgid "No"
 msgstr "Nnyaa"
 
-#: go-app-optout.js:997
+#: go-app-optout.js:1117
 msgid ""
 "Thank you. You will no longer receive messages from us. If you have any "
 "medical concerns please visit your nearest clinic."
@@ -107,7 +112,7 @@ msgstr ""
 "Re leboga. Gankitla o tlhola o amogela melaetsa go tswa go rona. Fa o na le "
 "matshwenyego a tsa kalafo, etela tliliniki e e gaufi nao."
 
-#: go-app-optout.js:1007
+#: go-app-optout.js:1137
 msgid ""
 "Thank you. You will receive support messages from MomConnect in the coming "
 "weeks."

@@ -1,16 +1,16 @@
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2014-08-05 12:54:+0200\n"
 "Project-Id-Version: public line\n"
+"POT-Creation-Date: 2014-08-20 10:49:+0000\n"
+"PO-Revision-Date: 2014-08-26 10:51-0000\n"
+"Last-Translator: Lieze <lieze@praekelt.com>\n"
 "Language-Team: Language <LL@li.org>\n"
+"Language: st\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2014-08-18 16:48+0200\n"
-"Last-Translator: \n"
-"X-Generator: Poedit 1.6.7\n"
+"X-Generator: Poedit 1.6.8\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"Language: st\n"
 
 #: go-app-personal.js:27
 msgid "Jan"
@@ -60,33 +60,47 @@ msgstr "Pudu"
 msgid "Dec"
 msgstr "Tshitwe"
 
-#: go-app-personal.js:990
+#: go-app-personal.js:1097
 msgid ""
 "Your session timed out. Please dial back in to {{USSD_number}} to complete "
 "the pregnancy registration so that you can receive messages."
 msgstr ""
-"Seshone ya hao e feletswe ke nako. Ka kopo letsetsa mona *134*550# ho kgutla "
-"o qete ho kenya data ya hao hore o fumane melaetsa."
+"Seshone ya hao e feletswe ke nako. Ka kopo letsetsa mona {{USSD_number}}  ho "
+"kgutla o qete ho kenya data ya hao hore o fumane melaetsa."
 
-#: go-app-personal.js:1028
+#: go-app-personal.js:1182
+#, fuzzy
+msgid "Welcome back. Please select an option:"
+msgstr "Please select one:"
+
+#: go-app-personal.js:1185
+#, fuzzy
+msgid "Continue signing up for messages"
+msgstr "Ngodisetsa melaetsa"
+
+#: go-app-personal.js:1186
+msgid "Main menu"
+msgstr "Menu ya Sehlooho"
+
+#: go-app-personal.js:1200
 msgid ""
 "Welcome to the Department of Health's MomConnect. Please choose an option:"
 msgstr ""
 "O amohelehile ho MomConnect wa Lefapha la Bophelo bo Botle. Etsa kgetho:"
 
-#: go-app-personal.js:1032
+#: go-app-personal.js:1204
 msgid "Baby and pregnancy info"
 msgstr "Tsebo ka lesea le boimana (Senyesemane feela)"
 
-#: go-app-personal.js:1033
+#: go-app-personal.js:1205
 msgid "Send us a compliment"
 msgstr "Re romelle thoholetso "
 
-#: go-app-personal.js:1034
+#: go-app-personal.js:1206
 msgid "Send us a complaint"
 msgstr "Kenya tletlebo"
 
-#: go-app-personal.js:1049
+#: go-app-personal.js:1221
 msgid ""
 "Thank you. We will send you a message shortly with instructions on how to "
 "send us your compliment."
@@ -94,7 +108,7 @@ msgstr ""
 "Re a leboha. Re tla o romella molaetsa ka haufi-ufi le ditaelo tsa mokgwa wa "
 "ho re romella ditakaletso tsa hao."
 
-#: go-app-personal.js:1059
+#: go-app-personal.js:1231
 msgid ""
 "Please reply to this message with your compliment. If your compliment "
 "relates to the service at a clinic, tell us the name of the clinic or clinic "
@@ -104,7 +118,7 @@ msgstr ""
 "tshebeletso ya tleleniki,re bolelle lebitso la tleleniki kapa mosebetsi wa "
 "tleleniki"
 
-#: go-app-personal.js:1068
+#: go-app-personal.js:1240
 msgid ""
 "Thank you. We will send you a message shortly with instructions on how to "
 "send us your complaint."
@@ -112,7 +126,7 @@ msgstr ""
 "Re a leboha. Re tla o romella molaetsa haufiufi le ditaelo tsa mokgwa wa ho "
 "kenya tletlebo."
 
-#: go-app-personal.js:1077
+#: go-app-personal.js:1249
 msgid ""
 "Please reply to this message with your complaint. If your complaint relates "
 "to the service at a clinic, please tell us the name of the clinic or clinic "
@@ -122,20 +136,20 @@ msgstr ""
 "tshebeletso tleleniking,ka kopo re bolelle bitso la tleleniki kapa mosebetsi "
 "wa tleleniki."
 
-#: go-app-personal.js:1088
+#: go-app-personal.js:1260
 msgid "Welcome to the Department of Health's MomConnect. Choose an option:"
 msgstr ""
 "O amohelehile ho MomConnect wa Lefapha la Bophelo bo Botle. Etsa kgetho:"
 
-#: go-app-personal.js:1092
+#: go-app-personal.js:1264
 msgid "Baby and pregnancy info (English only)"
 msgstr "Tsebo ka lesea le boimana (Senyesemane feela)"
 
-#: go-app-personal.js:1093
+#: go-app-personal.js:1265
 msgid "Get the full set of messages"
 msgstr "Fumana sete e feletseng ya melaetsa"
 
-#: go-app-personal.js:1107
+#: go-app-personal.js:1279
 msgid ""
 "To register for the full set of MomConnect messages, please visit your "
 "nearest clinic."
@@ -143,49 +157,49 @@ msgstr ""
 "Ho ngodisa bakeng sa sete e feletseng ya melaetsa ya MomConnect,ka kopo "
 "etela tleleniki ya hao e haufi."
 
-#: go-app-personal.js:1117
+#: go-app-personal.js:1289
 msgid "Welcome to the Department of Health's MomConnect. Choose your language:"
 msgstr ""
 "Welcome to the Department of Health's MomConnect. Choose your language:"
 
-#: go-app-personal.js:1120
+#: go-app-personal.js:1292
 msgid "English"
 msgstr "English"
 
-#: go-app-personal.js:1121
+#: go-app-personal.js:1293
 msgid "Afrikaans"
 msgstr "Afrikaans"
 
-#: go-app-personal.js:1122
+#: go-app-personal.js:1294
 msgid "Zulu"
 msgstr "Zulu"
 
-#: go-app-personal.js:1123
+#: go-app-personal.js:1295
 msgid "Xhosa"
 msgstr "Xhosa"
 
-#: go-app-personal.js:1124
+#: go-app-personal.js:1296
 msgid "Sotho"
 msgstr "Sotho"
 
-#: go-app-personal.js:1125
+#: go-app-personal.js:1297
 msgid "Setswana"
 msgstr "Tswana"
 
-#: go-app-personal.js:1157
+#: go-app-personal.js:1332
 msgid "Welcome to the Department of Health's MomConnect. Please select:"
 msgstr ""
 "O amohelehile ho MomConnect wa Lefapha la Bophelo bo Botle. Ka kopo kgetha:"
 
-#: go-app-personal.js:1161
+#: go-app-personal.js:1336
 msgid "Register for messages"
 msgstr "Ngodisetsa melaetsa"
 
-#: go-app-personal.js:1162
+#: go-app-personal.js:1337
 msgid "Baby and Pregnancy info (English only)"
 msgstr "Tsebo ka Lesea le Boimana (Senyesemane feela)"
 
-#: go-app-personal.js:1177
+#: go-app-personal.js:1352
 msgid ""
 "MomConnect sends free support SMSs to pregnant mothers. Are you or do you "
 "suspect that you are pregnant?"
@@ -193,15 +207,35 @@ msgstr ""
 "MomConnect o romela mahala diSMS tsa tshehetso ho bomme ba immeng. Na o  "
 "imme kapa o belaela hore o imme?"
 
-#: go-app-personal.js:1182
+#: go-app-personal.js:1357 go-app-personal.js:1391
 msgid "Yes"
 msgstr "E"
 
-#: go-app-personal.js:1183
+#: go-app-personal.js:1358 go-app-personal.js:1392
 msgid "No"
 msgstr "Tjhee"
 
-#: go-app-personal.js:1203
+#: go-app-personal.js:1386
+msgid ""
+"You have previously opted out of MomConnect SMSs. Please confirm that you "
+"would like to opt in to receive messages again?"
+msgstr ""
+"Nakong e fetileng o kgethile ho tswa ho diSMS tsa MomConnect. Ka kopo tiisa "
+"hore o ka rata ho kgetha ho amohela melaetsa hape."
+
+#: go-app-personal.js:1411
+msgid ""
+"You have chosen not to receive MomConnect SMSs and so cannot complete "
+"registration."
+msgstr ""
+"O kgethile ho se fumane diSMS tsa MomConnect mme kahoo ha o kgone ho qeta "
+"ngodiso."
+
+#: go-app-personal.js:1415
+msgid "Main Menu"
+msgstr "Menu ya Sehlooho"
+
+#: go-app-personal.js:1427
 msgid ""
 "We are sorry but this service is only for pregnant mothers. If you have "
 "other health concerns please visit your nearest clinic."
@@ -209,7 +243,7 @@ msgstr ""
 "Re kopa tshwarelo empa tshebeletso ena ke ya bomme ba immeng feela. Ha o na "
 "le tse ding dingongoreho ka bophelo ka kopo etela tleleniki ya hao e haufi."
 
-#: go-app-personal.js:1212
+#: go-app-personal.js:1436
 msgid ""
 "We need some info to message you. This is private and will only be used to "
 "help you at a clinic. What kind of ID do you have?"
@@ -217,72 +251,72 @@ msgstr ""
 "Re batla tsebo e itseng ho romela melaetsa.Hona ho ka thoko mme ho sebediswa "
 "feela ho o thusa ha o ya tleleniki."
 
-#: go-app-personal.js:1217
+#: go-app-personal.js:1441
 msgid "SA ID"
 msgstr "ID ya RSA"
 
-#: go-app-personal.js:1218
+#: go-app-personal.js:1442
 msgid "Passport"
 msgstr "Phasepoto"
 
-#: go-app-personal.js:1219
+#: go-app-personal.js:1443
 msgid "None"
 msgstr "Letho"
 
-#: go-app-personal.js:1239
+#: go-app-personal.js:1463
 msgid ""
 "Sorry, your ID number did not validate. Please reenter your SA ID number:"
 msgstr ""
 "Tshwarelo, nomoro ya hao ya ID ha e a netefatsa. Ka kopo kenya hape nomoro "
 "ya ID ya SA:"
 
-#: go-app-personal.js:1242
+#: go-app-personal.js:1466
 msgid "Please enter your SA ID number:"
 msgstr "Ka kopo kenya nomoro ya ID ya hao ya Afrika Borwa."
 
-#: go-app-personal.js:1275
+#: go-app-personal.js:1499
 msgid "What is the country of origin of the passport?"
 msgstr "Ke efe naha ya sethatho ya phasepoto? "
 
-#: go-app-personal.js:1278
+#: go-app-personal.js:1502
 msgid "Zimbabwe"
 msgstr "Zimbabwe"
 
-#: go-app-personal.js:1279
+#: go-app-personal.js:1503
 msgid "Mozambique"
 msgstr "Mozambiki"
 
-#: go-app-personal.js:1280
+#: go-app-personal.js:1504
 msgid "Malawi"
 msgstr "Malawi"
 
-#: go-app-personal.js:1281
+#: go-app-personal.js:1505
 msgid "Nigeria"
 msgstr "Nigeria"
 
-#: go-app-personal.js:1282
+#: go-app-personal.js:1506
 msgid "DRC"
 msgstr "DRC"
 
-#: go-app-personal.js:1283
+#: go-app-personal.js:1507
 msgid "Somalia"
 msgstr "Somalia"
 
-#: go-app-personal.js:1284
+#: go-app-personal.js:1508
 msgid "Other"
 msgstr "E nngwe"
 
-#: go-app-personal.js:1302
+#: go-app-personal.js:1526
 msgid ""
 "There was an error in your entry. Please carefully enter your passport "
 "number again."
 msgstr "Ho na le phoso kenellong ya. Ka kopo kenya nomoro ya hao ya phasepoto."
 
-#: go-app-personal.js:1304
+#: go-app-personal.js:1528
 msgid "Please enter your Passport number:"
 msgstr "Ka kopo kenya nomoro ya hao ya phasepoto."
 
-#: go-app-personal.js:1330
+#: go-app-personal.js:1554
 msgid ""
 "There was an error in your entry. Please carefully enter your year of birth "
 "again (for example: 2001)"
@@ -290,7 +324,7 @@ msgstr ""
 "Ho na le phoso kenellong ya. Ka kopo kenya ka hloko hape selemo sa hao sa "
 "tlhaho (mohlala: 2001)"
 
-#: go-app-personal.js:1334
+#: go-app-personal.js:1558
 msgid ""
 "Since you don't have an ID or passport, please enter the year that you were "
 "born (for example: 1981)"
@@ -298,11 +332,11 @@ msgstr ""
 "Jwalo ka ha o se na ID kapa phasepoto, ka kopo kenya selemo o tswetsweng ka "
 "sona (Mohlala 1981)"
 
-#: go-app-personal.js:1363
+#: go-app-personal.js:1587
 msgid "Please enter the month that you were born."
 msgstr "Ka kopo kenya kgwedi eo o tswetsweng ka yona"
 
-#: go-app-personal.js:1382
+#: go-app-personal.js:1606
 msgid ""
 "There was an error in your entry. Please carefully enter your day of birth "
 "again (for example: 8)"
@@ -310,11 +344,11 @@ msgstr ""
 "Ho na le phoso kenellong ya hao. Ka kopo kenya ka hloko letsatsi la hao la "
 "tlhaho hape (mohlala: 8)"
 
-#: go-app-personal.js:1386
+#: go-app-personal.js:1610
 msgid "Please enter the day that you were born (for example: 14)."
 msgstr "Ka kopo kenya mohla oo o tswetsweng ka wona (Mohlala 14)"
 
-#: go-app-personal.js:1436
+#: go-app-personal.js:1662 go-app-personal.js:1676
 msgid ""
 "Congratulations on your pregnancy. You will now get free SMSs about "
 "MomConnect. You can register for the full set of FREE helpful messages at a "
@@ -324,14 +358,26 @@ msgstr ""
 "MomConnect.O ka ngodisetsa sete e feletseng ya MAHALA ya melaetsa e molemo "
 "tleleniki."
 
-#: go-app-personal.js:1486
+#: go-app-personal.js:1712
 msgid "We have gathered information in the areas below. Please select:"
 msgstr "We have gathered information in the areas below. Please select:"
 
-#: go-app-personal.js:1508
+#: go-app-personal.js:1734
 msgid "Please select one:"
 msgstr "Please select one:"
 
-#: go-app-personal.js:1568
+#: go-app-personal.js:1759
+msgid "More"
+msgstr ""
+
+#: go-app-personal.js:1760
+msgid "Back"
+msgstr ""
+
+#: go-app-personal.js:1761
+msgid "Send to me by SMS"
+msgstr ""
+
+#: go-app-personal.js:1776
 msgid "Thank you. Your SMS will be delivered shortly."
 msgstr "Re a leboha. SMS ya hao e tla romelwa haufiufi."

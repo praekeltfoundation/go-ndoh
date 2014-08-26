@@ -1,15 +1,15 @@
 {
     "": {
-        "pot-creation-date": "2014-08-05 12:54:+0200",
         "project-id-version": "public",
+        "pot-creation-date": "2014-08-20 10:49:+0000",
+        "po-revision-date": "2014-08-26 10:51-0000",
+        "last-translator": "Lieze <lieze@praekelt.com>",
         "language-team": "Language <LL@li.org>",
+        "language": "tn",
         "mime-version": "1.0",
         "content-type": "text/plain; charset=UTF-8",
         "content-transfer-encoding": "8bit",
-        "po-revision-date": "2014-08-18 17:52+0200",
-        "last-translator": "",
-        "x-generator": "Poedit 1.6.7",
-        "language": "tn"
+        "x-generator": "Poedit 1.6.8"
     },
     "Jan": [
         null,
@@ -61,7 +61,11 @@
     ],
     "Your session timed out. Please dial back in to {{USSD_number}} to complete the pregnancy registration so that you can receive messages.": [
         null,
-        "Nako ya gago e fedile. Tsweetsweee leletsa *134*550# gape go fetsa go tsenya tshedimosetso ya gago le go amogela melaetsa. "
+        "Nako ya gago e fedile. Tsweetsweee leletsa {{USSD_number}} gape go fetsa go tsenya tshedimosetso ya gago le go amogela melaetsa. "
+    ],
+    "Main menu": [
+        null,
+        "Lenanelegolo"
     ],
     "Welcome to the Department of Health's MomConnect. Please choose an option:": [
         null,
@@ -163,6 +167,18 @@
         null,
         "Nnyaa"
     ],
+    "You have previously opted out of MomConnect SMSs. Please confirm that you would like to opt in to receive messages again?": [
+        null,
+        "Mo nakong e e fetileng o itlhophetse go tswa go diSMS tsa MomConnet. Tsweetswee netefatsa gore o rata go amogela diSMS gape."
+    ],
+    "You have chosen not to receive MomConnect SMSs and so cannot complete registration.": [
+        null,
+        "O tlhophile go se amogela diSMS tsa MomConnect mme ka jalo gankitla o kgona go ikwadisa. "
+    ],
+    "Main Menu": [
+        null,
+        "Lenanelegolo"
+    ],
     "We are sorry but this service is only for pregnant mothers. If you have other health concerns please visit your nearest clinic.": [
         null,
         "Re maswabi. Tirelo eno ke ya baimana fela.Fa o na le matshwenyego a mangwe a boitekanelo tsweetswee etela tliliniki e e gaufi nao."
@@ -262,6 +278,18 @@
     "Please select one:": [
         null,
         "Please select one:"
+    ],
+    "More": [
+        null,
+        ""
+    ],
+    "Back": [
+        null,
+        ""
+    ],
+    "Send to me by SMS": [
+        null,
+        ""
     ],
     "Thank you. Your SMS will be delivered shortly.": [
         null,

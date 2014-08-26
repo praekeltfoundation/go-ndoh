@@ -1,16 +1,16 @@
 {
     "": {
-        "pot-creation-date": "2014-08-05 12:54:+0200",
         "project-id-version": "public line",
+        "pot-creation-date": "2014-08-20 10:49:+0000",
+        "po-revision-date": "2014-08-26 10:51-0000",
+        "last-translator": "Lieze <lieze@praekelt.com>",
         "language-team": "Language <LL@li.org>",
+        "language": "st",
         "mime-version": "1.0",
         "content-type": "text/plain; charset=UTF-8",
         "content-transfer-encoding": "8bit",
-        "po-revision-date": "2014-08-18 16:48+0200",
-        "last-translator": "",
-        "x-generator": "Poedit 1.6.7",
-        "plural-forms": "nplurals=2; plural=(n != 1);",
-        "language": "st"
+        "x-generator": "Poedit 1.6.8",
+        "plural-forms": "nplurals=2; plural=(n != 1);"
     },
     "Jan": [
         null,
@@ -62,7 +62,11 @@
     ],
     "Your session timed out. Please dial back in to {{USSD_number}} to complete the pregnancy registration so that you can receive messages.": [
         null,
-        "Seshone ya hao e feletswe ke nako. Ka kopo letsetsa mona *134*550# ho kgutla o qete ho kenya data ya hao hore o fumane melaetsa."
+        "Seshone ya hao e feletswe ke nako. Ka kopo letsetsa mona {{USSD_number}}  ho kgutla o qete ho kenya data ya hao hore o fumane melaetsa."
+    ],
+    "Main menu": [
+        null,
+        "Menu ya Sehlooho"
     ],
     "Welcome to the Department of Health's MomConnect. Please choose an option:": [
         null,
@@ -164,6 +168,18 @@
         null,
         "Tjhee"
     ],
+    "You have previously opted out of MomConnect SMSs. Please confirm that you would like to opt in to receive messages again?": [
+        null,
+        "Nakong e fetileng o kgethile ho tswa ho diSMS tsa MomConnect. Ka kopo tiisa hore o ka rata ho kgetha ho amohela melaetsa hape."
+    ],
+    "You have chosen not to receive MomConnect SMSs and so cannot complete registration.": [
+        null,
+        "O kgethile ho se fumane diSMS tsa MomConnect mme kahoo ha o kgone ho qeta ngodiso."
+    ],
+    "Main Menu": [
+        null,
+        "Menu ya Sehlooho"
+    ],
     "We are sorry but this service is only for pregnant mothers. If you have other health concerns please visit your nearest clinic.": [
         null,
         "Re kopa tshwarelo empa tshebeletso ena ke ya bomme ba immeng feela. Ha o na le tse ding dingongoreho ka bophelo ka kopo etela tleleniki ya hao e haufi."
@@ -263,6 +279,18 @@
     "Please select one:": [
         null,
         "Please select one:"
+    ],
+    "More": [
+        null,
+        ""
+    ],
+    "Back": [
+        null,
+        ""
+    ],
+    "Send to me by SMS": [
+        null,
+        ""
     ],
     "Thank you. Your SMS will be delivered shortly.": [
         null,

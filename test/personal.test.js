@@ -12,6 +12,9 @@ describe("app", function() {
     describe("for personal use", function() {
         var app;
         var tester;
+        var locale_data = {
+            'af': fs.readFileSync('config/personal.af.json'),
+        };
 
         beforeEach(function() {
             app = new go.app.GoNDOH();
@@ -1350,7 +1353,7 @@ describe("app", function() {
                         'states:birth_year': '1981',
                         'states:birth_month': '01'
                     })
-                    .setup.user.state('states:birth_day')
+                    .setup.user.state('states_birth_day')
                     .input('1')
                     .check.interaction({
                         state: 'states:end_success',

@@ -5,6 +5,7 @@ var _ = require('lodash');
 var assert = require('assert');
 var messagestore = require('./messagestore');
 var optoutstore = require('./optoutstore');
+var fs = require('fs');
 var DummyMessageStoreResource = messagestore.DummyMessageStoreResource;
 var DummyOptoutResource = optoutstore.DummyOptoutResource;
 
@@ -13,7 +14,7 @@ describe("app", function() {
         var app;
         var tester;
         var locale_data = {
-            'af': fs.readFileSync('config/personal.af.json'),
+            'af': fs.readFileSync('config/personal_af.json'),
         };
 
         beforeEach(function() {
@@ -1322,6 +1323,58 @@ describe("app", function() {
                         assert.equal(sms.content, 
                             "Congratulations on your pregnancy. You will now get free SMSs about MomConnect. " +
                             "You can register for the full set of FREE helpful messages at a clinic."
+                        );
+                        assert.equal(sms.to_addr,'27001');
+                    })
+                    .check.reply.ends_session()
+                    .run();
+            });
+        });
+
+        describe("if the user has chosen Afrikaans as language", function() {
+            it("should display ussd & sms in Afrikaans", function() {
+                return tester
+                    .setup(function(api) {
+                        api.contacts.add({
+                            msisdn: '+27001',
+                            extra : {
+                                language_choice: 'af',
+                                suspect_pregnancy: 'yes',
+                                id_type: 'passport',
+                                passport_origin: 'zw',
+                                passport_no: '12345',
+                                ussd_sessions: '5'
+                            },
+                            key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
+                        });
+                    })
+                    .setup(function(api) {
+                        console.log(locale_data.af);
+                        api.config.store["translation.af"] = locale_data.af;
+                    })
+                    .setup.user.lang('af')
+                    .setup.user.addr('27001')
+                    .setup.user.answers({
+                        'states_birth_year': '1981',
+                        'states_birth_month': '01'
+                    })
+                    .setup.user.state('states_birth_day')
+                    .input('1')
+                    .check.interaction({
+                        state: 'states_end_success',
+                        reply: ("Geluk met jou swangerskap. Jy sal jou gratis SMSe van  MomConnect ontvang. " +
+                                "Jy kan registreer vir die volle stel GRATIS & nuttige SMSe by 'n kliniek.")
+                    })
+                    .check(function(api) {
+                        var smses = _.where(api.outbound.store, {
+                            endpoint: 'sms'
+                        });
+                        var sms = smses[0];
+                        assert.equal(smses.length,1);
+                        assert.equal(sms.content, 
+                            "Geluk met jou swangerskap. Jy sal jou gratis SMSe van  MomConnect ontvang. " +
+                            "Jy kan registreer vir die volle stel GRATIS & nuttige SMSe by 'n kliniek."
                         );
                         assert.equal(sms.to_addr,'27001');
                     })

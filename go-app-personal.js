@@ -1761,7 +1761,7 @@ go.app = function() {
                 exit: $('Send to me by SMS'),
                 next: function() {
                     return {
-                        name: 'states_faq_end',
+                        name: 'states_faq_sms_send',
                         creator_opts: {
                             answer: opts.answer
                         }
@@ -1770,21 +1770,24 @@ go.app = function() {
             });
         });
 
+        // Sms answer to user
+        self.add('states_faq_sms_send', function(name, opts) {
+            return self.im
+                .outbound.send_to_user({
+                    endpoint: 'sms',
+                    content: opts.answer
+                })
+                .then(function() {
+                    return self.states.create('states_faq_end');
+                });
+        });
+
         // FAQ End
         self.add('states_faq_end', function(name, opts) {
             return new EndState(name, {
                 text: $('Thank you. Your SMS will be delivered shortly.'),
 
-                next: 'states_start',
-
-                events: {
-                    'state:enter': function() {
-                        return self.im.outbound.send_to_user({
-                            endpoint: 'sms',
-                            content: opts.answer
-                        });
-                    }
-                }
+                next: 'states_start'
             });
         });
 

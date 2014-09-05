@@ -298,7 +298,9 @@ go.utils = {
             return go.utils.update_attr(
               element, 'value', [year, month, day, '000000'].join(''));
         } else {
-            return go.utils.null_element(element);
+            // Jembi can't handle null duedates
+            return go.utils.update_attr(
+              element, 'value', '17000101000000');
         }
     },
 

@@ -1706,6 +1706,56 @@ describe("app", function() {
             });
         });
 
+        describe("When the user returns after completing a session", function () {
+            it("should *not* send them the previous SMS again", function () {
+                return tester
+                    .setup.user.state('states_faq_end')
+                    .check.interaction({
+                        state: 'states_language',
+                        reply: [
+                            'Welcome to the Department of Health\'s MomConnect. Choose your language:',
+                                '1. English',
+                                '2. Afrikaans',
+                                '3. Zulu',
+                                '4. Xhosa',
+                                '5. Sotho',
+                                '6. Setswana'
+                        ].join('\n')
+                    })
+                    .check(function(api) {
+                        var smses = _.where(api.outbound.store, {
+                            endpoint: 'sms'
+                        });
+                        assert.equal(smses.length, 0, 'It should not send the SMS!');
+                    })
+                    .run();
+            });
+
+            it('should use a delegator state for sending the SMS', function () {
+                return tester
+                    .setup.user.state('states_faq_sms_send', {
+                        creator_opts: {
+                            answer: 'foo'
+                        }
+                    })
+                    .input('hi')
+                    .check.interaction({
+                        state: 'states_faq_end',
+                        reply: ('Thank you. Your SMS will be delivered shortly.')
+                    })
+                    .check(function(api) {
+                        var smses = _.where(api.outbound.store, {
+                            endpoint: 'sms'
+                        });
+                        var sms = smses[0];
+                        assert.equal(smses.length, 1);
+                        assert.equal(sms.content, 'foo');
+                    })
+                    .check.reply.ends_session()
+                    .run();
+            });
+        });
+
 
     });
 });

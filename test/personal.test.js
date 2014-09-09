@@ -1567,6 +1567,14 @@ describe("app", function() {
                     })
                     .run();
             });
+
+            it("should fire topics metric once", function() {
+                return tester
+                    .setup.user.state('states_faq_topics')
+                    .input('1')
+
+                    .run();
+            });
         });
 
         describe("When the user chooses topic 881 and then 3. More", function() {
@@ -1600,6 +1608,14 @@ describe("app", function() {
                             '2. Back'
                         ].join('\n')
                     })
+                    .run();
+            });
+
+            it("should fire topics metric once, should not fire questions metric", function() {
+                return tester
+                    .setup.user.state('states_faq_topics')
+                    .inputs('1', '3', '2')
+
                     .run();
             });
         });
@@ -1641,6 +1657,28 @@ describe("app", function() {
             });
         });
 
+        describe("When the user chooses a question", function() {
+            it("should fire view question metric once", function() {
+                return tester
+                    .setup.user.state('states_faq_questions')
+                    .setup.user.answers({'states_faq_topics': '881'})
+                    .inputs('3', '1')
+                    
+                    .run();
+            });
+        });
+
+        describe("When the user times out and logs back in", function() {
+            it("should not fire a faq metric", function() {
+                return tester
+                    .setup.user.state('states_faq_questions')
+                    .setup.user.answers({'states_faq_topics': '881'})
+                    .input.session_event('new')
+                    
+                    .run();
+            });
+        });
+
         describe("When the user chooses question 999 and then 2. Next", function() {
             it("should show the second part of the answer to 999", function() {
                 return tester
@@ -1675,6 +1713,15 @@ describe("app", function() {
                     })
                     .run();
             });
+
+            it("should fire view questions metric once", function() {
+                return tester
+                    .setup.user.state('states_faq_questions')
+                    .setup.user.answers({'states_faq_topics': '881'})
+                    .inputs('3', '1', '1', '1')
+
+                    .run();
+            });
         });
 
         describe("When the user chooses to Send by SMS", function() {
@@ -1704,6 +1751,15 @@ describe("app", function() {
                     .check.reply.ends_session()
                     .run();
             });
+
+            it("should fire faq sent via sms metric", function() {
+                return tester
+                    .setup.user.state('states_faq_questions')
+                    .setup.user.answers({'states_faq_topics': '881'})
+                    .inputs('3', '1', '2')
+
+                    .run();
+            });
         });
 
         describe("When the user returns after completing a session", function () {
@@ -1728,6 +1784,13 @@ describe("app", function() {
                         });
                         assert.equal(smses.length, 0, 'It should not send the SMS!');
                     })
+                    .run();
+            });
+
+            it("should *not* fire sent by sms metric again", function () {
+                return tester
+                    .setup.user.state('states_faq_end')
+                    
                     .run();
             });
 

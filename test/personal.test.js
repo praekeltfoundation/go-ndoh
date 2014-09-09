@@ -1572,7 +1572,10 @@ describe("app", function() {
                 return tester
                     .setup.user.state('states_faq_topics')
                     .input('1')
-
+                    .check(function(api) {
+                        var metrics = api.metrics.stores.test_metric_store;
+                        assert.deepEqual(metrics['test.faq_view_topic.881'].values, [1]);
+                    })
                     .run();
             });
         });
@@ -1615,7 +1618,11 @@ describe("app", function() {
                 return tester
                     .setup.user.state('states_faq_topics')
                     .inputs('1', '3', '2')
-
+                    .check(function(api) {
+                        var metrics = api.metrics.stores.test_metric_store;
+                        assert.deepEqual(metrics['test.faq_view_topic.881'].values, [1]);
+                        assert.equal(metrics['test.faq_view_question'], undefined);
+                    })
                     .run();
             });
         });
@@ -1663,7 +1670,10 @@ describe("app", function() {
                     .setup.user.state('states_faq_questions')
                     .setup.user.answers({'states_faq_topics': '881'})
                     .inputs('3', '1')
-                    
+                    .check(function(api) {
+                        var metrics = api.metrics.stores.test_metric_store;
+                        assert.deepEqual(metrics['test.faq_view_question'].values, [1]);
+                    })
                     .run();
             });
         });
@@ -1674,7 +1684,10 @@ describe("app", function() {
                     .setup.user.state('states_faq_questions')
                     .setup.user.answers({'states_faq_topics': '881'})
                     .input.session_event('new')
-                    
+                    .check(function(api) {
+                        var metrics = api.metrics.stores.test_metric_store;
+                        assert.equal(metrics['test.faq_view_question'], undefined);
+                    })
                     .run();
             });
         });
@@ -1719,7 +1732,10 @@ describe("app", function() {
                     .setup.user.state('states_faq_questions')
                     .setup.user.answers({'states_faq_topics': '881'})
                     .inputs('3', '1', '1', '1')
-
+                    .check(function(api) {
+                        var metrics = api.metrics.stores.test_metric_store;
+                        assert.deepEqual(metrics['test.faq_view_question'].values, [1]);
+                    })
                     .run();
             });
         });
@@ -1757,7 +1773,10 @@ describe("app", function() {
                     .setup.user.state('states_faq_questions')
                     .setup.user.answers({'states_faq_topics': '881'})
                     .inputs('3', '1', '2')
-
+                    .check(function(api) {
+                        var metrics = api.metrics.stores.test_metric_store;
+                        assert.deepEqual(metrics['test.faq_sent_via_sms'].values, [1]);
+                    })
                     .run();
             });
         });
@@ -1790,7 +1809,10 @@ describe("app", function() {
             it("should *not* fire sent by sms metric again", function () {
                 return tester
                     .setup.user.state('states_faq_end')
-                    
+                    .check(function(api) {
+                        var metrics = api.metrics.stores.test_metric_store;
+                        assert.deepEqual(metrics['test.faq_sent_via_sms'], undefined);
+                    })
                     .run();
             });
 

@@ -1098,31 +1098,31 @@ go.app = function() {
                     new Choice('very-unsatisfied', $('Very unsatisfied'))
                 ],
 
-                next: 'end_thanks'
+                next: 'log_servicerating_send_sms'
+            });
+        });
+
+        self.states.add('log_servicerating_send_sms', function(name) {
+            return Q.all([
+                go.utils.servicerating_log(self.contact, self.im, self.metric_prefix),
+                self.im.outbound.send_to_user({
+                        endpoint: 'sms',
+                        content: $("Thank you for rating our service.")
+                }),
+            ])
+            .then(function() {
+                self.contact.extra.last_service_rating = go.utils.get_timestamp();
+                return self.im.contacts.save(self.contact);
+            })
+            .then(function() {
+                return self.states.create('end_thanks');
             });
         });
 
         self.states.add('end_thanks', function(name) {
             return new EndState(name, {
                 text: $('Thank you for rating our service.'),
-
-                next: 'end_thanks_revisit',
-
-                events: {
-                    'state:enter': function() {
-                        return Q.all([
-                            go.utils.servicerating_log(self.contact, self.im, self.metric_prefix),
-                            self.im.outbound.send_to_user({
-                                    endpoint: 'sms',
-                                    content: $("Thank you for rating our service.")
-                            }),
-                        ])
-                        .then(function() {
-                            self.contact.extra.last_service_rating = go.utils.get_timestamp();
-                            return self.im.contacts.save(self.contact);
-                        });
-                    }
-                }
+                next: 'end_thanks_revisit'
             });
         });
 

@@ -1779,6 +1779,30 @@ describe("app", function() {
                     })
                     .run();
             });
+
+            it('should use a delegator state for sending the SMS', function () {
+                return tester
+                    .setup.user.state('states_faq_sms_send', {
+                        creator_opts: {
+                            answer: 'foo'
+                        }
+                    })
+                    .input('hi')
+                    .check.interaction({
+                        state: 'states_faq_end',
+                        reply: ('Thank you. Your SMS will be delivered shortly.')
+                    })
+                    .check(function(api) {
+                        var smses = _.where(api.outbound.store, {
+                            endpoint: 'sms'
+                        });
+                        var sms = smses[0];
+                        assert.equal(smses.length, 1);
+                        assert.equal(sms.content, 'foo');
+                    })
+                    .check.reply.ends_session()
+                    .run();
+            });
         });
 
         describe("When the user returns after completing a session", function () {
@@ -1813,30 +1837,6 @@ describe("app", function() {
                         var metrics = api.metrics.stores.test_metric_store;
                         assert.deepEqual(metrics['test.faq_sent_via_sms'], undefined);
                     })
-                    .run();
-            });
-
-            it('should use a delegator state for sending the SMS', function () {
-                return tester
-                    .setup.user.state('states_faq_sms_send', {
-                        creator_opts: {
-                            answer: 'foo'
-                        }
-                    })
-                    .input('hi')
-                    .check.interaction({
-                        state: 'states_faq_end',
-                        reply: ('Thank you. Your SMS will be delivered shortly.')
-                    })
-                    .check(function(api) {
-                        var smses = _.where(api.outbound.store, {
-                            endpoint: 'sms'
-                        });
-                        var sms = smses[0];
-                        assert.equal(smses.length, 1);
-                        assert.equal(sms.content, 'foo');
-                    })
-                    .check.reply.ends_session()
                     .run();
             });
         });

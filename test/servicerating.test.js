@@ -198,7 +198,7 @@ describe("app", function() {
             });
         });
 
-        describe("when the user revisits", function() {
+        describe("when the user revisits after rating service previously", function() {
             it("should thank and end", function() {
                 return tester
                     .setup(function(api) {
@@ -229,7 +229,46 @@ describe("app", function() {
                     .check.reply.ends_session()
                     .run();
             });
+
+            it("should not send another sms", function() {
+                return tester
+                    .setup(function(api) {
+                        api.contacts.add({
+                            msisdn: '+27001',
+                            created_at: "2014-07-28 09:35:26.732",
+                            key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"                            
+                        });
+                    })
+                    .setup.user.addr('27001')
+                    .setup.user.answers({
+                        'question_1_friendliness': 'very-satisfied',
+                        'question_2_waiting_times_feel': 'very-satisfied',
+                        'question_3_waiting_times_length': 'less-than-an-hour',
+                        'question_4_cleanliness': 'very-satisfied',
+                        'question_5_privacy': 'very-satisfied'
+                    })
+                    .setup.user.state('end_thanks')
+                    .check.interaction({
+                        state: 'end_thanks_revisit',
+                        reply: [
+                            'Sorry, you\'ve already rated service. For baby and pregnancy ' +
+                            'help or if you have compliments or complaints ' +
+                            'dial *120*550# or reply to any of the SMSs you receive'
+                        ].join('\n')
+                    })
+                    .check(function(api) {
+                        var smses = _.where(api.outbound.store, {
+                            endpoint: 'sms'
+                        });
+                        assert.equal(smses.length, 0);
+                    })
+                    .check.reply.ends_session()
+                    .run();
+            });
         });
+
+        // gsvr: I notice we never test the logging of the servicerating
 
         describe("when the user answers their privacy rating", function() {
             it("should send them an sms thanking them for their rating", function() {
@@ -255,7 +294,6 @@ describe("app", function() {
                         var smses = _.where(api.outbound.store, {
                             endpoint: 'sms'
                         });
-                        // console.log(smses);
                         var sms = smses[0];
                         assert.equal(smses.length,1);
                         assert.equal(sms.content, 
@@ -270,6 +308,38 @@ describe("app", function() {
                             assert.equal(contact.extra.last_service_rating, '20130819144811');
                         })
                     .check.reply.ends_session()
+                    .run();
+            });
+
+            it("should use a delegator state to send sms", function() {
+                return tester
+                    .setup(function(api) {
+                        api.contacts.add({
+                            msisdn: '+27001',
+                            created_at: "2014-07-28 09:35:26.732",
+                            key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"                            
+                        });
+                    })
+                    .setup.user.addr('27001')
+                    .setup.user.answers({
+                        'question_1_friendliness': 'very-satisfied',
+                        'question_2_waiting_times_feel': 'very-satisfied',
+                        'question_3_waiting_times_length': 'less-than-an-hour',
+                        'question_4_cleanliness': 'very-satisfied',
+                        'question_5_privacy': 'very-satisfied'
+                    })
+                    .setup.user.state('log_servicerating_send_sms')
+                    .check(function(api) {
+                        var smses = _.where(api.outbound.store, {
+                            endpoint: 'sms'
+                        });
+                        var sms = smses[0];
+                        assert.equal(smses.length, 1);
+                        assert.equal(sms.content, 
+                            "Thank you for rating our service."
+                        );
+                    })
                     .run();
             });
         });

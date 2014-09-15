@@ -7,8 +7,8 @@
             "name": "Total Unique Users",
             "target": {
                 "metric_type": "account",
-                "store": "ndoh_qa",
-                "name": "qa.sum.unique_users",
+                "store": "ndoh_prd_live",
+                "name": "prd.sum.unique_users",
                 "aggregator": "last"
             }
         },
@@ -22,24 +22,24 @@
                     "name": "Clinic",
                     "target": {
                         "metric_type": "account",
-                        "store": "ndoh_qa",
-                        "name": "qa.clinic.sum.unique_users",
+                        "store": "ndoh_prd_live",
+                        "name": "prd.clinic.sum.unique_users",
                         "aggregator": "last"
                         }
                 },{
                     "name": "CHW",
                     "target": {
                         "metric_type": "account",
-                        "store": "ndoh_qa",
-                        "name": "qa.chw.sum.unique_users",
+                        "store": "ndoh_prd_live",
+                        "name": "prd.chw.sum.unique_users",
                         "aggregator": "last"
                         }    
                 },{
                     "name": "Public",
                     "target": {
                         "metric_type": "account",
-                        "store": "ndoh_qa",
-                        "name": "qa.personal.sum.unique_users",
+                        "store": "ndoh_prd_live",
+                        "name": "prd.personal.sum.unique_users",
                         "aggregator": "last"
                         }    
                 }
@@ -55,24 +55,24 @@
                     "name": "Clinic",
                     "target": {
                         "metric_type": "account",
-                        "store": "ndoh_qa",
-                        "name": "qa.clinic.percentage_users",
+                        "store": "ndoh_prd_live",
+                        "name": "prd.clinic.percentage_users",
                         "aggregator": "last"
                         }
                 },{
                     "name": "CHW",
                     "target": {
                         "metric_type": "account",
-                        "store": "ndoh_qa",
-                        "name": "qa.chw.percentage_users",
+                        "store": "ndoh_prd_live",
+                        "name": "prd.chw.percentage_users",
                         "aggregator": "last"
                         }    
                 },{
                     "name": "Public",
                     "target": {
                         "metric_type": "account",
-                        "store": "ndoh_qa",
-                        "name": "qa.personal.percentage_users",
+                        "store": "ndoh_prd_live",
+                        "name": "prd.personal.percentage_users",
                         "aggregator": "last"
                         }    
                 }
@@ -91,8 +91,8 @@
                     "name": "Dropoffs: states_start",
                     "target": {
                         "metric_type": "account",
-                        "store": "ndoh_qa",
-                        "name": "qa.clinic.states_start.no_incomplete",
+                        "store": "ndoh_prd_live",
+                        "name": "prd.clinic.states_start.no_incomplete",
                         "aggregator": "last"
                     }
                 },
@@ -100,8 +100,8 @@
                     "name": "Dropoffs: states_clinic_code",
                     "target": {
                         "metric_type": "account",
-                        "store": "ndoh_qa",
-                        "name": "qa.clinic.states_clinic_code.no_incomplete",
+                        "store": "ndoh_prd_live",
+                        "name": "prd.clinic.states_clinic_code.no_incomplete",
                         "aggregator": "last"
                         }
                 },
@@ -109,8 +109,8 @@
                     "name": "Dropoffs: states_mobile_no",
                     "target": {
                         "metric_type": "account",
-                        "store": "ndoh_qa",
-                        "name": "qa.clinic.states_mobile_no.no_incomplete",
+                        "store": "ndoh_prd_live",
+                        "name": "prd.clinic.states_mobile_no.no_incomplete",
                         "aggregator": "last"
                         }
                 }
@@ -124,8 +124,8 @@
             "name": "Clinic Average Sessions to Register",
             "target": {
                 "metric_type": "account",
-                "store": "ndoh_qa",
-                "name": "qa.clinic.avg.sessions_to_register",
+                "store": "ndoh_prd_live",
+                "name": "prd.clinic.avg.sessions_to_register",
                 "aggregator": "avg"
             }
         },
@@ -135,8 +135,8 @@
             "name": "CHW Average Sessions to Register",
             "target": {
                 "metric_type": "account",
-                "store": "ndoh_qa",
-                "name": "qa.chw.avg.sessions_to_register",
+                "store": "ndoh_prd_live",
+                "name": "prd.chw.avg.sessions_to_register",
                 "aggregator": "avg"
             }
         },
@@ -146,8 +146,8 @@
             "name": "Public Average Sessions to Register",
             "target": {
                 "metric_type": "account",
-                "store": "ndoh_qa",
-                "name": "qa.personal.avg.sessions_to_register",
+                "store": "ndoh_prd_live",
+                "name": "prd.personal.avg.sessions_to_register",
                 "aggregator": "avg"
             }
         },
@@ -159,8 +159,8 @@
             "name": "Clinic Percentage Complete Registrations",
             "target": {
                 "metric_type": "account",
-                "store": "ndoh_qa",
-                "name": "qa.clinic.percent_complete_registrations",
+                "store": "ndoh_prd_live",
+                "name": "prd.clinic.percent_complete_registrations",
                 "aggregator": "last"
             }
         },
@@ -170,8 +170,8 @@
             "name": "Clinic Percentage Incomplete Registrations",
             "target": {
                 "metric_type": "account",
-                "store": "ndoh_qa",
-                "name": "qa.clinic.percent_incomplete_registrations",
+                "store": "ndoh_prd_live",
+                "name": "prd.clinic.percent_incomplete_registrations",
                 "aggregator": "last"
             }
         },
@@ -181,8 +181,8 @@
             "name": "CHW Percentage Complete Registrations",
             "target": {
                 "metric_type": "account",
-                "store": "ndoh_qa",
-                "name": "qa.chw.percent_complete_registrations",
+                "store": "ndoh_prd_live",
+                "name": "prd.chw.percent_complete_registrations",
                 "aggregator": "last"
             }
         },
@@ -192,8 +192,8 @@
             "name": "CHW Percentage Incomplete Registrations",
             "target": {
                 "metric_type": "account",
-                "store": "ndoh_qa",
-                "name": "qa.chw.percent_incomplete_registrations",
+                "store": "ndoh_prd_live",
+                "name": "prd.chw.percent_incomplete_registrations",
                 "aggregator": "last"
             }
         },
@@ -203,8 +203,8 @@
             "name": "Public Percentage Complete Registrations",
             "target": {
                 "metric_type": "account",
-                "store": "ndoh_qa",
-                "name": "qa.personal.percent_complete_registrations",
+                "store": "ndoh_prd_live",
+                "name": "prd.personal.percent_complete_registrations",
                 "aggregator": "last"
             }
         },
@@ -214,8 +214,8 @@
             "name": "Public Percentage Incomplete Registrations",
             "target": {
                 "metric_type": "account",
-                "store": "ndoh_qa",
-                "name": "qa.personal.percent_incomplete_registrations",
+                "store": "ndoh_prd_live",
+                "name": "prd.personal.percent_incomplete_registrations",
                 "aggregator": "last"
             }
         },
@@ -227,8 +227,8 @@
             "name": "Clinic Jembi Successful Docs Transmissions",
             "target": {
                 "metric_type": "account",
-                "store": "ndoh_qa",
-                "name": "qa.clinic.sum.doc_to_jembi_success",
+                "store": "ndoh_prd_live",
+                "name": "prd.clinic.sum.doc_to_jembi_success",
                 "aggregator": "last"
             }
         },
@@ -238,8 +238,8 @@
             "name": "Clinic Jembi Failed Docs Transmissions",
             "target": {
                 "metric_type": "account",
-                "store": "ndoh_qa",
-                "name": "qa.clinic.sum.doc_to_jembi_fail",
+                "store": "ndoh_prd_live",
+                "name": "prd.clinic.sum.doc_to_jembi_fail",
                 "aggregator": "last"
             }
         },
@@ -251,8 +251,8 @@
             "name": "Clinic Jembi Successful Json Transmissions",
             "target": {
                 "metric_type": "account",
-                "store": "ndoh_qa",
-                "name": "qa.clinic.sum.json_to_jembi_success",
+                "store": "ndoh_prd_live",
+                "name": "prd.clinic.sum.json_to_jembi_success",
                 "aggregator": "last"
             }
         },
@@ -262,8 +262,8 @@
             "name": "Clinic Jembi Failed Json Transmissions",
             "target": {
                 "metric_type": "account",
-                "store": "ndoh_qa",
-                "name": "qa.clinic.sum.json_to_jembi_fail",
+                "store": "ndoh_prd_live",
+                "name": "prd.clinic.sum.json_to_jembi_fail",
                 "aggregator": "last"
             }
         },
@@ -273,8 +273,8 @@
             "name": "CHW Jembi Successful Json Transmissions",
             "target": {
                 "metric_type": "account",
-                "store": "ndoh_qa",
-                "name": "qa.chw.sum.json_to_jembi_success",
+                "store": "ndoh_prd_live",
+                "name": "prd.chw.sum.json_to_jembi_success",
                 "aggregator": "last"
             }
         },
@@ -284,8 +284,8 @@
             "name": "CHW Jembi Failed Json Transmissions",
             "target": {
                 "metric_type": "account",
-                "store": "ndoh_qa",
-                "name": "qa.chw.sum.json_to_jembi_fail",
+                "store": "ndoh_prd_live",
+                "name": "prd.chw.sum.json_to_jembi_fail",
                 "aggregator": "last"
             }
         },
@@ -295,8 +295,8 @@
             "name": "Public Jembi Successful Json Transmissions",
             "target": {
                 "metric_type": "account",
-                "store": "ndoh_qa",
-                "name": "qa.personal.sum.json_to_jembi_success",
+                "store": "ndoh_prd_live",
+                "name": "prd.personal.sum.json_to_jembi_success",
                 "aggregator": "last"
             }
         },
@@ -306,8 +306,8 @@
             "name": "Public Jembi Failed Json Transmissions",
             "target": {
                 "metric_type": "account",
-                "store": "ndoh_qa",
-                "name": "qa.personal.sum.json_to_jembi_fail",
+                "store": "ndoh_prd_live",
+                "name": "prd.personal.sum.json_to_jembi_fail",
                 "aggregator": "last"
             }
         },
@@ -319,8 +319,8 @@
             "name": "Optout Jembi Successful Json Transmissions",
             "target": {
                 "metric_type": "account",
-                "store": "ndoh_qa",
-                "name": "qa.optout.sum.json_to_jembi_success",
+                "store": "ndoh_prd_live",
+                "name": "prd.optout.sum.json_to_jembi_success",
                 "aggregator": "last"
                 }
         },
@@ -330,10 +330,11 @@
             "name": "Optout Jembi Failed Json Transmissions",
             "target": {
                 "metric_type": "account",
-                "store": "ndoh_qa",
-                "name": "qa.optout.sum.json_to_jembi_fail",
+                "store": "ndoh_prd_live",
+                "name": "prd.optout.sum.json_to_jembi_fail",
                 "aggregator": "last"
                 }
         }
+
     ]
 }

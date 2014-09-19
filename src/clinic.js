@@ -621,7 +621,7 @@ go.app = function() {
                                         go.utils.decr_kv(self.im, [self.store_name, 'no_incomplete_registrations'].join('.'))
                                     ])
                                         .then(function() {
-                                            go.utils.adjust_percentage_registrations(self.im, self.metric_prefix);
+                                            return go.utils.adjust_percentage_registrations(self.im, self.metric_prefix);
                                         });
                                 })
                                 .then(function() {

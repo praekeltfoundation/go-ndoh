@@ -151,7 +151,7 @@ describe("app", function() {
                         });
                     })
                     .setup.user.addr('27001')
-                    .input('stop')
+                    .input('"stop" in the name of love')
                     .check.interaction({
                         state: 'states_opt_out',
                         reply: 
@@ -176,7 +176,7 @@ describe("app", function() {
                         });
                     })
                     .setup.user.addr('27001')
-                    .input('START')
+                    .input('"START"')
                     .check.interaction({
                         state: 'states_opt_in',
                         reply: 

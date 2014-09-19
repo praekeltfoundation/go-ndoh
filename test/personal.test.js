@@ -614,8 +614,7 @@ describe("app", function() {
             it("should ask if they want to register or get info", function() {
                 return tester
                     .setup.user.addr('27001')
-                    .setup.user.state('states_language')
-                    .input('1')
+                    .inputs('start', '1')
                     .check.interaction({
                         state: 'states_register_info',
                         reply: [

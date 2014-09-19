@@ -772,8 +772,7 @@ describe("app", function() {
                 it("should set id type, ask for their id number", function() {
                     return tester
                         .setup.user.addr('270001')
-                        .setup.user.state('states_id_type')
-                        .input('1')
+                        .inputs('start', '1', '1')
                         .check.interaction({
                             state: 'states_sa_id',
                             reply: (
@@ -809,8 +808,7 @@ describe("app", function() {
                                 }
                             });
                         })
-                        .setup.user.state('states_id_type')
-                        .input('1')
+                        .inputs('start', '2', '0821234567', '1')
                         .check.interaction({
                             state: 'states_sa_id',
                             reply: (

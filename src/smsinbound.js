@@ -31,7 +31,7 @@ go.app = function() {
 
 
         self.states.add('states_start', function() {
-            switch (self.im.msg.content.split(" ")[0].toUpperCase()) {
+            switch (self.im.msg.content.split(" ")[0].replace(/\W/g, '').toUpperCase()) {
                 case "STOP":
                     return self.states.create("states_opt_out");
                 case "START":

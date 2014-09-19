@@ -906,17 +906,8 @@ describe("app", function() {
             describe("if the number used is not the mom's", function() {
                 it("should save clinic code, ask for the month the baby is due", function() {
                     return tester
-                        .setup(function(api) {
-                            api.contacts.add( {
-                                msisdn: '+270001',
-                                extra : {
-                                    working_on: '+27821234567'
-                                }
-                            });
-                        })
                         .setup.user.addr('270001')
-                        .setup.user.state('states_clinic_code')
-                        .input('12345')
+                        .inputs('start', '2', '0821234567', '12345')
                         .check.interaction({
                             state: 'states_due_date_month',
                             reply: [
@@ -953,8 +944,7 @@ describe("app", function() {
                 it("should save the clinic code, ask for the month the baby is due", function() {
                     return tester
                         .setup.user.addr('270001')
-                        .setup.user.state('states_clinic_code')
-                        .input('234567')
+                        .inputs('start', '1', '234567')
                         .check.interaction({
                             state: 'states_due_date_month',
                             reply: [

@@ -296,6 +296,98 @@
                 "name": "prd.optout.sum.json_to_jembi_fail",
                 "aggregator": "last"
                 }
+        },
+
+        "new_row",
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "FAQ Browsing Topic: Pregnancy (881)",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_prd_live",
+                "name": "prd.faq_view_topic.881",
+                "aggregator": "last"
+                }
+        },
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "FAQ Browsing Topic: Labour (902)",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_prd_live",
+                "name": "prd.faq_view_topic.902",
+                "aggregator": "last"
+                }
+        },
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "FAQ Browsing Topic: Baby (903)",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_prd_live",
+                "name": "prd.faq_view_topic.903",
+                "aggregator": "last"
+                }
+        },
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "FAQ Browsing Topic: HIV (904)",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_prd_live",
+                "name": "prd.faq_view_topic.904",
+                "aggregator": "last"
+                }
+        },
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "FAQ Browsing Topic: Other Diseases (905)",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_prd_live",
+                "name": "prd.faq_view_topic.905",
+                "aggregator": "last"
+                }
+        },
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "FAQ Browsing Topic: Support (906)",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_prd_live",
+                "name": "prd.faq_view_topic.906",
+                "aggregator": "last"
+                }
+        },
+
+        "new_row",
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "FAQ Browsing: View Questions",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_prd_live",
+                "name": "prd.faq_view_question",
+                "aggregator": "last"
+                }
+        },
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "FAQ Browsing: Sent via SMS",
+            "target": {
+                "metric_type": "account",
+                "store": "ndoh_prd_live",
+                "name": "prd.faq_sent_via_sms",
+                "aggregator": "last"
+                }
         }
 
     ]

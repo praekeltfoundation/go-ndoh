@@ -151,7 +151,32 @@ describe("app", function() {
                         });
                     })
                     .setup.user.addr('27001')
-                    .input('stop')
+                    .input('"stop" in the name of love')
+                    .check.interaction({
+                        state: 'states_opt_out',
+                        reply: 
+                            'Thank you. You will no longer receive messages from us. ' +
+                            'If you have any medical concerns please visit your nearest clinic'
+                    })
+                    .run();
+            });
+        });
+
+        describe("when the user sends a BLOCK message", function() {
+            it("should set their opt out status", function() {
+                return tester
+                    .setup(function(api) {
+                        api.contacts.add({
+                            msisdn: '+27001',
+                            extra : {
+                                language_choice: 'en'
+                            },
+                            key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
+                        });
+                    })
+                    .setup.user.addr('27001')
+                    .input('BLOCK')
                     .check.interaction({
                         state: 'states_opt_out',
                         reply: 
@@ -176,7 +201,7 @@ describe("app", function() {
                         });
                     })
                     .setup.user.addr('27001')
-                    .input('START')
+                    .input('"START"')
                     .check.interaction({
                         state: 'states_opt_in',
                         reply: 

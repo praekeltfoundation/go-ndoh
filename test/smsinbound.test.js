@@ -82,7 +82,7 @@ describe("app", function() {
                 .setup(function(api) {
                     api.metrics.stores = {'test_metric_store': {}};
                 })
-                
+
                 .setup(function(api) {
                     fixtures().forEach(api.http.fixtures.add);
                 });
@@ -129,9 +129,34 @@ describe("app", function() {
                     .input('DONUTS')
                     .check.interaction({
                         state: 'states_default',
-                        reply: 
+                        reply:
                             'Thank you for your message, it has been captured and you will ' +
                             'receive a response soon. Kind regards. MomConnect.'
+                    })
+                    .run();
+            });
+        });
+
+        describe("when the user sends a message containing a USSD code", function() {
+            it("should tell them to dial the number, not sms it", function() {
+                return tester
+                    .setup(function(api) {
+                        api.contacts.add({
+                            msisdn: '+27001',
+                            extra : {
+                                language_choice: 'en'
+                            },
+                            key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
+                        });
+                    })
+                    .setup.user.addr('27001')
+                    .input('*134*12345# rate')
+                    .check.interaction({
+                        state: 'states_dial_not_sms',
+                        reply:
+                            "Please use your handset's keypad to dial the number that you " +
+                            "received, rather than sending it to us in an sms."
                     })
                     .run();
             });
@@ -154,7 +179,7 @@ describe("app", function() {
                     .input('"stop" in the name of love')
                     .check.interaction({
                         state: 'states_opt_out',
-                        reply: 
+                        reply:
                             'Thank you. You will no longer receive messages from us. ' +
                             'If you have any medical concerns please visit your nearest clinic'
                     })
@@ -179,7 +204,7 @@ describe("app", function() {
                     .input('BLOCK')
                     .check.interaction({
                         state: 'states_opt_out',
-                        reply: 
+                        reply:
                             'Thank you. You will no longer receive messages from us. ' +
                             'If you have any medical concerns please visit your nearest clinic'
                     })
@@ -204,7 +229,7 @@ describe("app", function() {
                     .input('"START"')
                     .check.interaction({
                         state: 'states_opt_in',
-                        reply: 
+                        reply:
                             'Thank you. You will now receive messages from us again. ' +
                             'If you have any medical concerns please visit your nearest clinic'
                     })
@@ -229,14 +254,14 @@ describe("app", function() {
                     .input('baBy has been born, bub')
                     .check.interaction({
                         state: 'states_baby',
-                        reply: 
+                        reply:
                             'Thank you. You will now receive messages related to newborn babies. ' +
                             'If you have any medical concerns please visit your nearest clinic'
                     })
                     .check(function(api) {
                         var contact = _.find(api.contacts.store, {
                           msisdn: '+27001'
-                        });                      
+                        });
                         assert.equal(contact.extra.subscription_type, '4');
                         assert.equal(contact.extra.subscription_rate, '3');
                     })

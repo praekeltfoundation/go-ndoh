@@ -21,7 +21,7 @@ go.app = function() {
                 self.contact.extra.last_stage = e.state.name;
                 return self.im.contacts.save(self.contact);
             });
-            
+
             return self.im.contacts
                 .for_user()
                 .then(function(user_contact) {
@@ -31,20 +31,35 @@ go.app = function() {
 
 
         self.states.add('states_start', function() {
-            switch (self.im.msg.content.split(" ")[0].replace(/\W/g, '').toUpperCase()) {
-                case "STOP":
-                    return self.states.create("states_opt_out");
-                case "BLOCK":
-                    return self.states.create("states_opt_out");
-                case "START":
-                    return self.states.create("states_opt_in");
-                case "BABY":
-                    return self.states.create("states_baby");
-                default: // Logs a support ticket
-                    return self.states.create("states_default");  
+            // check if message contains a ussd code
+            if (self.im.msg.content.indexOf('*120*') > -1 || self.im.msg.content.indexOf('*134*') > -1) {
+                return self.states.create("states_dial_not_sms");
+            } else {
+                // get the first word, remove non-alphanumerics, capitalise
+                switch (self.im.msg.content.split(" ")[0].replace(/\W/g, '').toUpperCase()) {
+                    case "STOP":
+                        return self.states.create("states_opt_out");
+                    case "BLOCK":
+                        return self.states.create("states_opt_out");
+                    case "START":
+                        return self.states.create("states_opt_in");
+                    case "BABY":
+                        return self.states.create("states_baby");
+                    default: // Logs a support ticket
+                        return self.states.create("states_default");
+                }
             }
         });
 
+
+        self.states.add('states_dial_not_sms', function(name) {
+            return new EndState(name, {
+                text: $("Please use your handset's keypad to dial the number that you received, " +
+                        "rather than sending it to us in an sms."),
+
+                next: 'states_start',
+            });
+        });
 
         self.states.add('states_opt_out', function(name) {
             return new EndState(name, {

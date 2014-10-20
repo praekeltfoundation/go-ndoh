@@ -86,6 +86,14 @@ go.utils = {
         return go.utils.check_valid_number(input) && (parseInt(input, 10) >= start) && (parseInt(input, 10) <= end);
     },
 
+    double_digit_day: function(input) {
+        if (parseInt(input, 10) < 10) {
+            return "0" + input;
+        } else {
+            return input;
+        }
+    },
+
     validate_id_sa: function(id) {
         var i, c,
             even = '',
@@ -196,7 +204,7 @@ go.utils = {
     get_subscription_type: function(type){
       var types = {
         "subscription": 1,
-        "pre-registration": 2, 
+        "pre-registration": 2,
         "registration": 3
       };
       return types[type];
@@ -278,7 +286,7 @@ go.utils = {
     },
 
     get_pregnancy_code: function(im, element){
-      if (im.config.name.substring(0,3) == "chw") {        
+      if (im.config.name.substring(0,3) == "chw") {
         return go.utils.update_attr(element, 'code', '102874004');
       } else {
         return go.utils.update_attr(element, 'code', '77386006');
@@ -299,11 +307,11 @@ go.utils = {
           var month = contact.extra.due_date_month;
           var year = go.utils.get_due_year_from_month(month, go.utils.get_today(config));
             return go.utils.update_attr(
-              element, 'value', [year, month, day, '000000'].join(''));
+              element, 'value', [year, month, day].join(''));
         } else {
             // Jembi can't handle null duedates
             return go.utils.update_attr(
-              element, 'value', '17000101000000');
+              element, 'value', '17000101');
         }
     },
 
@@ -436,15 +444,15 @@ go.utils = {
     },
 
     build_json_doc: function(contact, user, type) {
-        var JSON_template = { 
-          "mha": 1, 
-          "swt": 1, 
-          "dmsisdn": user.msisdn, 
-          "cmsisdn": contact.msisdn, 
-          "id": go.utils.get_patient_id(contact), 
-          "type": go.utils.get_subscription_type(type), 
-          "lang": contact.extra.language_choice, 
-          "encdate": go.utils.get_timestamp() 
+        var JSON_template = {
+          "mha": 1,
+          "swt": 1,
+          "dmsisdn": user.msisdn,
+          "cmsisdn": contact.msisdn,
+          "id": go.utils.get_patient_id(contact),
+          "type": go.utils.get_subscription_type(type),
+          "lang": contact.extra.language_choice,
+          "encdate": go.utils.get_timestamp()
         };
         return JSON_template;
     },
@@ -815,9 +823,9 @@ go.utils = {
                     };
                     return go.utils.control_api_call("put", payload, 'subscription/', im);
                 } else {
-                    return Q();  
+                    return Q();
                 }
-                
+
             });
     },
 
@@ -1025,7 +1033,7 @@ go.app = function() {
                 self.contact.extra.ussd_sessions = go.utils.incr_user_extra(
                     self.contact.extra.ussd_sessions, 1);
                 self.contact.extra.metric_sum_sessions = go.utils.incr_user_extra(self.contact.extra.metric_sum_sessions, 1);
-                
+
                 return Q.all([
                     self.im.contacts.save(self.contact),
                     self.im.metrics.fire.inc([self.env, 'sum.sessions'].join('.'), 1),
@@ -1052,7 +1060,7 @@ go.app = function() {
                 self.contact.extra.last_stage = e.state.name;
                 return self.im.contacts.save(self.contact);
             });
-            
+
             return self.im.contacts
                 .for_user()
                 .then(function(user_contact) {
@@ -1149,9 +1157,9 @@ go.app = function() {
                 if (!_.contains(registration_states, name)) {
                     return self.states.create('states_start', opts);
                 }
-                
+
                 return self.states.create('states_timed_out', opts);
-                
+
             });
         };
 
@@ -1169,7 +1177,7 @@ go.app = function() {
                     .then(function() {
                         return self.states.create('states_registered_full', opts);
                     });
-                    
+
             } else {
                 // registered on chw / public lines
                 return go.utils.set_language(self.im.user, self.contact)
@@ -1223,7 +1231,7 @@ go.app = function() {
                 text: $('Thank you. We will send you a message ' +
                     'shortly with instructions on how to send us ' +
                     'your compliment.'),
-                
+
                 next: 'states_start',
 
                 events: {
@@ -1622,13 +1630,10 @@ go.app = function() {
                 },
 
                 next: function(content) {
-                    if (content.length === 1) {
-                        content = '0' + content;
-                    }
-                    self.contact.extra.birth_day = content;
+                    self.contact.extra.birth_day = go.utils.double_digit_day(content);
                     self.contact.extra.dob = (self.im.user.answers.states_birth_year +
                         '-' + self.im.user.answers.states_birth_month +
-                        '-' + content);
+                        '-' + go.utils.double_digit_day(content));
                     self.contact.extra.is_registered = 'true';
                     self.contact.extra.is_registered_by = 'personal';
                     self.contact.extra.metric_sessions_to_register = self.contact.extra.ussd_sessions;
@@ -1731,7 +1736,7 @@ go.app = function() {
 
         // Show questions in selected topic
         self.add('states_faq_questions', function(name, opts) {
-            return go.utils.get_snappy_topic_content(self.im, 
+            return go.utils.get_snappy_topic_content(self.im,
                         self.im.config.snappy.default_faq, self.im.user.answers.states_faq_topics)
                 .then(function(response) {
                     if (typeof response.data.error  !== 'undefined') {
@@ -1751,7 +1756,7 @@ go.app = function() {
                                 var question_id = choice.value;
                                 var index = _.findIndex(response.data, { 'id': question_id});
                                 var answer = response.data[index].answer.trim();
-                                
+
                                 return self.im.metrics.fire
                                     .inc([self.env, 'faq_view_question'].join('.'), 1)
                                     .then(function() {

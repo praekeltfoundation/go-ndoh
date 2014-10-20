@@ -49,7 +49,7 @@ go.app = function() {
                 self.contact.extra.last_state = e.state.name;
                 return self.im.contacts.save(self.contact);
             });
-            
+
             return self.im.contacts
                 .for_user()
                 .then(function(user_contact) {
@@ -464,10 +464,7 @@ go.app = function() {
                 },
 
                 next: function(content) {
-                    if (content.length === 1) {
-                        content = '0' + content;
-                    }
-                    self.contact.extra.birth_day = content;
+                    self.contact.extra.birth_day = go.utils.double_digit_day(content);
                     self.contact.extra.dob = moment({year: self.im.user.answers.states_birth_year, month: (self.im.user.answers.states_birth_month - 1), day: content}).format('YYYY-MM-DD');
                     // -1 for 0-bound month
 

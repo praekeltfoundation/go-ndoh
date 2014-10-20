@@ -86,6 +86,14 @@ go.utils = {
         return go.utils.check_valid_number(input) && (parseInt(input, 10) >= start) && (parseInt(input, 10) <= end);
     },
 
+    double_digit_day: function(input) {
+        if (parseInt(input, 10) < 10) {
+            return "0" + input;
+        } else {
+            return input;
+        }
+    },
+
     validate_id_sa: function(id) {
         var i, c,
             even = '',
@@ -196,7 +204,7 @@ go.utils = {
     get_subscription_type: function(type){
       var types = {
         "subscription": 1,
-        "pre-registration": 2, 
+        "pre-registration": 2,
         "registration": 3
       };
       return types[type];
@@ -278,7 +286,7 @@ go.utils = {
     },
 
     get_pregnancy_code: function(im, element){
-      if (im.config.name.substring(0,3) == "chw") {        
+      if (im.config.name.substring(0,3) == "chw") {
         return go.utils.update_attr(element, 'code', '102874004');
       } else {
         return go.utils.update_attr(element, 'code', '77386006');
@@ -299,11 +307,11 @@ go.utils = {
           var month = contact.extra.due_date_month;
           var year = go.utils.get_due_year_from_month(month, go.utils.get_today(config));
             return go.utils.update_attr(
-              element, 'value', [year, month, day, '000000'].join(''));
+              element, 'value', [year, month, day].join(''));
         } else {
             // Jembi can't handle null duedates
             return go.utils.update_attr(
-              element, 'value', '17000101000000');
+              element, 'value', '17000101');
         }
     },
 
@@ -436,15 +444,15 @@ go.utils = {
     },
 
     build_json_doc: function(contact, user, type) {
-        var JSON_template = { 
-          "mha": 1, 
-          "swt": 1, 
-          "dmsisdn": user.msisdn, 
-          "cmsisdn": contact.msisdn, 
-          "id": go.utils.get_patient_id(contact), 
-          "type": go.utils.get_subscription_type(type), 
-          "lang": contact.extra.language_choice, 
-          "encdate": go.utils.get_timestamp() 
+        var JSON_template = {
+          "mha": 1,
+          "swt": 1,
+          "dmsisdn": user.msisdn,
+          "cmsisdn": contact.msisdn,
+          "id": go.utils.get_patient_id(contact),
+          "type": go.utils.get_subscription_type(type),
+          "lang": contact.extra.language_choice,
+          "encdate": go.utils.get_timestamp()
         };
         return JSON_template;
     },
@@ -815,9 +823,9 @@ go.utils = {
                     };
                     return go.utils.control_api_call("put", payload, 'subscription/', im);
                 } else {
-                    return Q();  
+                    return Q();
                 }
-                
+
             });
     },
 
@@ -1048,7 +1056,7 @@ go.app = function() {
                 self.contact.extra.last_stage = e.state.name;
                 return self.im.contacts.save(self.contact);
             });
-            
+
             return self.im.contacts
                 .for_user()
                 .then(function(user_contact) {
@@ -1357,13 +1365,13 @@ go.app = function() {
                 question: question,
 
                 check: function(content) {
-                    if (!go.utils.check_valid_number(content)) {
+                    if (!go.utils.check_number_in_range(content, 1, 31)) {
                         return error;
                     }
                 },
 
                 next: function(content) {
-                    self.contact.extra.due_date_day = content;
+                    self.contact.extra.due_date_day = go.utils.double_digit_day(content);
 
                     return self.im.contacts
                         .save(self.contact)
@@ -1565,10 +1573,7 @@ go.app = function() {
                 },
 
                 next: function(content) {
-                    if (content.length === 1) {
-                        content = '0' + content;
-                    }
-                    self.contact.extra.birth_day = content;
+                    self.contact.extra.birth_day = go.utils.double_digit_day(content);
                     self.contact.extra.dob = moment({year: self.im.user.answers.states_birth_year, month: (self.im.user.answers.states_birth_month - 1), day: content}).format('YYYY-MM-DD');
                     // -1 for 0-bound month
 

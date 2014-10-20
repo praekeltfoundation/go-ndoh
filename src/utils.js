@@ -60,9 +60,11 @@ go.utils = {
     },
 
     is_out_of_hours: function(config) {
-        var date_time_now = new Date(config.testing_today);
-        var hour_now_local = date_time_now.getHours();
-        return (hour_now_local < 8 || hour_now_local >= 17);
+        var today = go.utils.get_today(config);
+        var motoday = moment.utc(today);
+        var mohours = parseInt(motoday.format('h'), 10);
+        var local_hours = mohours + 2;
+        return (local_hours < 8 || local_hours >= 17);
     },
 
     get_due_year_from_month: function(month, today) {

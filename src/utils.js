@@ -59,6 +59,12 @@ go.utils = {
         return today;
     },
 
+    is_out_of_hours: function(config) {
+        var date_time_now = new Date(config.testing_today);
+        var hour_now_local = date_time_now.getHours();
+        return (hour_now_local < 8 || hour_now_local >= 17);
+    },
+
     get_due_year_from_month: function(month, today) {
       // if due month is less than current month then mother must be due next year
       motoday = moment(today);
@@ -193,7 +199,7 @@ go.utils = {
     get_subscription_type: function(type){
       var types = {
         "subscription": 1,
-        "pre-registration": 2, 
+        "pre-registration": 2,
         "registration": 3
       };
       return types[type];
@@ -275,7 +281,7 @@ go.utils = {
     },
 
     get_pregnancy_code: function(im, element){
-      if (im.config.name.substring(0,3) == "chw") {        
+      if (im.config.name.substring(0,3) == "chw") {
         return go.utils.update_attr(element, 'code', '102874004');
       } else {
         return go.utils.update_attr(element, 'code', '77386006');
@@ -433,15 +439,15 @@ go.utils = {
     },
 
     build_json_doc: function(contact, user, type) {
-        var JSON_template = { 
-          "mha": 1, 
-          "swt": 1, 
-          "dmsisdn": user.msisdn, 
-          "cmsisdn": contact.msisdn, 
-          "id": go.utils.get_patient_id(contact), 
-          "type": go.utils.get_subscription_type(type), 
-          "lang": contact.extra.language_choice, 
-          "encdate": go.utils.get_timestamp() 
+        var JSON_template = {
+          "mha": 1,
+          "swt": 1,
+          "dmsisdn": user.msisdn,
+          "cmsisdn": contact.msisdn,
+          "id": go.utils.get_patient_id(contact),
+          "type": go.utils.get_subscription_type(type),
+          "lang": contact.extra.language_choice,
+          "encdate": go.utils.get_timestamp()
         };
         return JSON_template;
     },
@@ -812,9 +818,9 @@ go.utils = {
                     };
                     return go.utils.control_api_call("put", payload, 'subscription/', im);
                 } else {
-                    return Q();  
+                    return Q();
                 }
-                
+
             });
     },
 

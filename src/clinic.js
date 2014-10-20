@@ -48,7 +48,7 @@ go.app = function() {
                 self.contact.extra.last_stage = e.state.name;
                 return self.im.contacts.save(self.contact);
             });
-            
+
             return self.im.contacts
                 .for_user()
                 .then(function(user_contact) {
@@ -357,13 +357,13 @@ go.app = function() {
                 question: question,
 
                 check: function(content) {
-                    if (!go.utils.check_valid_number(content)) {
+                    if (!go.utils.check_number_in_range(content, 1, 31)) {
                         return error;
                     }
                 },
 
                 next: function(content) {
-                    self.contact.extra.due_date_day = content;
+                    self.contact.extra.due_date_day = go.utils.double_digit_day(content);
 
                     return self.im.contacts
                         .save(self.contact)
@@ -565,10 +565,7 @@ go.app = function() {
                 },
 
                 next: function(content) {
-                    if (content.length === 1) {
-                        content = '0' + content;
-                    }
-                    self.contact.extra.birth_day = content;
+                    self.contact.extra.birth_day = go.utils.double_digit_day(content);
                     self.contact.extra.dob = moment({year: self.im.user.answers.states_birth_year, month: (self.im.user.answers.states_birth_month - 1), day: content}).format('YYYY-MM-DD');
                     // -1 for 0-bound month
 

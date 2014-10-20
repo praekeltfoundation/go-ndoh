@@ -91,6 +91,14 @@ go.utils = {
         return go.utils.check_valid_number(input) && (parseInt(input, 10) >= start) && (parseInt(input, 10) <= end);
     },
 
+    double_digit_day: function(input) {
+        if (parseInt(input, 10) < 10) {
+            return "0" + input;
+        } else {
+            return input;
+        }
+    },
+
     validate_id_sa: function(id) {
         var i, c,
             even = '',
@@ -304,11 +312,11 @@ go.utils = {
           var month = contact.extra.due_date_month;
           var year = go.utils.get_due_year_from_month(month, go.utils.get_today(config));
             return go.utils.update_attr(
-              element, 'value', [year, month, day, '000000'].join(''));
+              element, 'value', [year, month, day].join(''));
         } else {
             // Jembi can't handle null duedates
             return go.utils.update_attr(
-              element, 'value', '17000101000000');
+              element, 'value', '17000101');
         }
     },
 

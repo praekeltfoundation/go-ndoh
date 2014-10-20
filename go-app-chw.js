@@ -65,9 +65,10 @@ go.utils = {
     is_out_of_hours: function(config) {
         var today = go.utils.get_today(config);
         var motoday = moment.utc(today);
-        var mohours = parseInt(motoday.format('h'), 10);
-        var local_hours = mohours + 2;
-        return (local_hours < 8 || local_hours >= 17);
+        console.log(motoday);
+        console.log(motoday.hour());
+        // hours are between 8 and 17 local SA time
+        return (motoday.hour() < 6 || motoday.hour() >= 15);
     },
 
     get_due_year_from_month: function(month, today) {

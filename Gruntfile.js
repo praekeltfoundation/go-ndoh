@@ -151,9 +151,9 @@ module.exports = function (grunt) {
             options: {
                 reporter: 'spec'
             },
-            // test_clinic: {
-            //     src: ['<%= paths.test.clinic %>']
-            // },
+            test_clinic: {
+                src: ['<%= paths.test.clinic %>']
+            },
             test_chw: {
                 src: ['<%= paths.test.chw %>']
             },

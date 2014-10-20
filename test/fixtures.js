@@ -1664,7 +1664,7 @@ module.exports = function() {
                 "msisdn": "+27001",
                 "created_at": "2014-07-28 09:35:26.732",
                 "key": "63ee4fa9-6888-4f0c-065a-939dc2473a99",
-                "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4",                
+                "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4",
                 "name": null,
                 "surname": null,
                 "email_address": null,
@@ -1833,7 +1833,7 @@ module.exports = function() {
                         "is_paid": true,
                         "is_trial": false
                     }
-                }, 
+                },
                 {
                     "id": "999",
                     "account_id": "50",
@@ -1967,7 +1967,7 @@ module.exports = function() {
                         "is_paid": true,
                         "is_trial": false
                     }
-                }, 
+                },
                 {
                     "id": "999",
                     "account_id": "50",
@@ -2100,7 +2100,7 @@ module.exports = function() {
                         "is_paid": true,
                         "is_trial": false
                     }
-                }, 
+                },
                 {
                     "id": "999",
                     "account_id": "50",

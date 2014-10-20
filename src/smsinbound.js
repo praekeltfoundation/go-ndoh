@@ -123,9 +123,23 @@ go.app = function() {
         });
 
         self.states.add('states_default', function(name) {
+            var out_of_hours_text =
+                $("The MomConnect HelpDesk is open from 8am to 5pm. If you are experiencing " +
+                "heavy bleeding, cramps or pain, go straight to the clinic to have yourself " +
+                "checked.");
+
+            var business_hours_text =
+                $("Thank you for your message, it has been captured and you will receive a " +
+                "response soon. Kind regards. MomConnect.");
+
+            if (go.utils.is_out_of_hours(self.im.config)) {
+                text = out_of_hours_text;
+            } else {
+                text = business_hours_text;
+            }
+
             return new EndState(name, {
-                text: $('Thank you for your message, it has been captured and you will receive a ' +
-                        'response soon. Kind regards. MomConnect.'),
+                text: text,
                 next: 'states_start',
 
                 events: {

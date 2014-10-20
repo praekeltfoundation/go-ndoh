@@ -128,7 +128,7 @@ describe("app", function() {
                             });
                         })
                         .setup.config.app({
-                            testing_today: 'April 4, 2014 09:07:07', // during working hours
+                            testing_today: 'April 4, 2014 09:07:07 GMT+0200 (SAST)', // during working hours
                         })
                         .setup.user.addr('27001')
                         .input('DONUTS')
@@ -156,7 +156,7 @@ describe("app", function() {
                             });
                         })
                         .setup.config.app({
-                            testing_today: 'April 4, 2014 07:07:07', // time out of hours
+                            testing_today: 'April 4, 2014 07:07:07  GMT+0200 (SAST)', // time out of hours
                         })
                         .setup.user.addr('27001')
                         .input('DONUTS')

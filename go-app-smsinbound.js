@@ -62,6 +62,12 @@ go.utils = {
         return today;
     },
 
+    is_out_of_hours: function(config) {
+        var date_time_now = new Date(config.testing_today);
+        var hour_now_local = date_time_now.getHours();
+        return (hour_now_local < 8 || hour_now_local >= 17);
+    },
+
     get_due_year_from_month: function(month, today) {
       // if due month is less than current month then mother must be due next year
       motoday = moment(today);
@@ -196,7 +202,7 @@ go.utils = {
     get_subscription_type: function(type){
       var types = {
         "subscription": 1,
-        "pre-registration": 2, 
+        "pre-registration": 2,
         "registration": 3
       };
       return types[type];
@@ -278,7 +284,7 @@ go.utils = {
     },
 
     get_pregnancy_code: function(im, element){
-      if (im.config.name.substring(0,3) == "chw") {        
+      if (im.config.name.substring(0,3) == "chw") {
         return go.utils.update_attr(element, 'code', '102874004');
       } else {
         return go.utils.update_attr(element, 'code', '77386006');
@@ -436,15 +442,15 @@ go.utils = {
     },
 
     build_json_doc: function(contact, user, type) {
-        var JSON_template = { 
-          "mha": 1, 
-          "swt": 1, 
-          "dmsisdn": user.msisdn, 
-          "cmsisdn": contact.msisdn, 
-          "id": go.utils.get_patient_id(contact), 
-          "type": go.utils.get_subscription_type(type), 
-          "lang": contact.extra.language_choice, 
-          "encdate": go.utils.get_timestamp() 
+        var JSON_template = {
+          "mha": 1,
+          "swt": 1,
+          "dmsisdn": user.msisdn,
+          "cmsisdn": contact.msisdn,
+          "id": go.utils.get_patient_id(contact),
+          "type": go.utils.get_subscription_type(type),
+          "lang": contact.extra.language_choice,
+          "encdate": go.utils.get_timestamp()
         };
         return JSON_template;
     },
@@ -815,9 +821,9 @@ go.utils = {
                     };
                     return go.utils.control_api_call("put", payload, 'subscription/', im);
                 } else {
-                    return Q();  
+                    return Q();
                 }
-                
+
             });
     },
 
@@ -1031,9 +1037,11 @@ go.app = function() {
 
 
         self.states.add('states_start', function() {
+            // check if message contains a ussd code
             if (self.im.msg.content.indexOf('*120*') > -1 || self.im.msg.content.indexOf('*134*') > -1) {
                 return self.states.create("states_dial_not_sms");
             } else {
+                // get the first word, remove non-alphanumerics, capitalise
                 switch (self.im.msg.content.split(" ")[0].replace(/\W/g, '').toUpperCase()) {
                     case "STOP":
                         return self.states.create("states_opt_out");
@@ -1121,9 +1129,23 @@ go.app = function() {
         });
 
         self.states.add('states_default', function(name) {
+            var out_of_hours_text =
+                $("The MomConnect HelpDesk is open from 8am to 5pm. If you are experiencing " +
+                "heavy bleeding, cramps or pain, go straight to the clinic to have yourself " +
+                "checked.");
+
+            var business_hours_text =
+                $("Thank you for your message, it has been captured and you will receive a " +
+                "response soon. Kind regards. MomConnect.");
+
+            if (go.utils.is_out_of_hours(self.im.config)) {
+                text = out_of_hours_text;
+            } else {
+                text = business_hours_text;
+            }
+
             return new EndState(name, {
-                text: $('Thank you for your message, it has been captured and you will receive a ' +
-                        'response soon. Kind regards. MomConnect.'),
+                text: text,
                 next: 'states_start',
 
                 events: {

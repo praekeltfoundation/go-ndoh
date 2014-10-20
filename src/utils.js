@@ -304,11 +304,11 @@ go.utils = {
           var month = contact.extra.due_date_month;
           var year = go.utils.get_due_year_from_month(month, go.utils.get_today(config));
             return go.utils.update_attr(
-              element, 'value', [year, month, day, '000000'].join(''));
+              element, 'value', [year, month, day].join(''));
         } else {
             // Jembi can't handle null duedates
             return go.utils.update_attr(
-              element, 'value', '17000101000000');
+              element, 'value', '17000101');
         }
     },
 

@@ -948,8 +948,7 @@ go.utils = {
           data: JSON.stringify(),
           headers: {
             'Content-Type': ['application/json']
-          },
-          ssl_method: "SSLv3"
+          }
         });
     },
 
@@ -964,8 +963,7 @@ go.utils = {
           data: JSON.stringify(),
           headers: {
             'Content-Type': ['application/json']
-          },
-          ssl_method: "SSLv3"
+          }
         });
     },
 

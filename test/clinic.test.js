@@ -46,6 +46,21 @@ describe("utils", function() {
                 false);
             done();
         });
+        it('should find the right sms to start sending', function(done) {
+            // week 3
+            assert.equal(go.utils.sequence_start(3), 1);
+            // week 5
+            assert.equal(go.utils.sequence_start(5), 1);
+            // week 31
+            assert.equal(go.utils.sequence_start(31), 53);
+            // week 32
+            assert.equal(go.utils.sequence_start(32), 4);
+            // week 35
+            assert.equal(go.utils.sequence_start(35), 13);
+            // week 36
+            assert.equal(go.utils.sequence_start(36), 1);
+            done();
+        });
     });
 });
 
@@ -102,7 +117,7 @@ describe("app", function() {
                         username: 'test_user',
                         api_key: 'test_key',
                         url: 'http://ndoh-control/api/v1/'
-                    },                    
+                    },
                     subscription: {
                         standard: 1,
                         later: 2,
@@ -138,7 +153,7 @@ describe("app", function() {
                     fixtures().forEach(api.http.fixtures.add);
                 });
         });
-        
+
 
         describe("after the user runs through the whole flow", function() {
             it("should have all their extras saved", function() {
@@ -157,6 +172,7 @@ describe("app", function() {
                         '12345',    // states_clinic_code - 12345
                         '2',        // states_due_date_month - 05
                         '30',       // states_due_date_day - 30
+                                    // user is registering in week 33
                         '1',        // states_id_type - sa_id
                         {session_event: 'new'},
                         '1',        // states_timed_out - yes
@@ -688,7 +704,7 @@ describe("app", function() {
                         .run();
                 });
             });
-            
+
         });
         // end opt-in flow for contact phone usage
 
@@ -1472,7 +1488,7 @@ describe("app", function() {
                         .run();
                 });
             });
-            
+
             describe("if the phone used is the mom's", function() {
                 it("should save msg language, thank them and exit", function() {
                     return tester
@@ -1514,7 +1530,7 @@ describe("app", function() {
                             assert.equal(contact.extra.last_stage, 'states_end_success');
                             assert.equal(contact.extra.metric_sessions_to_register, '5');
                             assert.equal(contact.extra.no_registrations, undefined);
-                            assert.equal(contact.extra.registered_by, undefined);                            
+                            assert.equal(contact.extra.registered_by, undefined);
                             assert.equal(contact.extra.subscription_type, '2');
                             assert.equal(contact.extra.subscription_rate, '4');
                             assert.equal(contact.extra.is_registered, 'true');
@@ -1601,7 +1617,7 @@ describe("app", function() {
                             });
                             var sms = smses[0];
                             assert.equal(smses.length,1);
-                            assert.equal(sms.content, 
+                            assert.equal(sms.content,
                                 "Welcome to MomConnect. For more info or to log a complaint or compliment, " +
                                 "please dial *120*550#. If you ever want to stop getting SMSs dial *120*550*1#"
                             );
@@ -1649,7 +1665,7 @@ describe("app", function() {
                             });
                             var sms = smses[0];
                             assert.equal(smses.length,1);
-                            assert.equal(sms.content, 
+                            assert.equal(sms.content,
                                 "Welcome to MomConnect. For more info or to log a complaint or compliment, " +
                                 "please dial *120*550#. If you ever want to stop getting SMSs dial *120*550*1#"
                             );
@@ -1711,7 +1727,7 @@ describe("app", function() {
                         .run();
                 });
             });
-            
+
             describe("if jembi sends fail", function() {
                 it.skip("should fire fail metrics", function() {
                     return tester
@@ -1804,7 +1820,7 @@ describe("app", function() {
                                 });
                                 var sms = smses[0];
                                 assert.equal(smses.length,1);
-                                assert.equal(sms.content, 
+                                assert.equal(sms.content,
                                     "Please dial back in to *120*550*2# to complete the pregnancy registration."
                                 );
                                 assert.equal(sms.to_addr,'273323');

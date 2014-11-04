@@ -114,8 +114,8 @@ go.app = function() {
                             .subscription_unsubscribe_all(self.contact, self.im)
                             .then(function() {
                                 return Q.all([
-                                    self.im.contacts.save(self.contact),
-                                    go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix, opts)
+                                    go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix, opts),
+                                    self.im.contacts.save(self.contact)
                                 ]);
                             });
                     }

@@ -48,17 +48,17 @@ describe("utils", function() {
         });
         it('should find the right sms to start sending', function(done) {
             // week 3
-            assert.equal(go.utils.sequence_start(3), 1);
+            assert.equal(go.utils.calc_sequence_start(3), 1);
             // week 5
-            assert.equal(go.utils.sequence_start(5), 1);
+            assert.equal(go.utils.calc_sequence_start(5), 1);
             // week 31
-            assert.equal(go.utils.sequence_start(31), 53);
+            assert.equal(go.utils.calc_sequence_start(31), 53);
             // week 32
-            assert.equal(go.utils.sequence_start(32), 4);
+            assert.equal(go.utils.calc_sequence_start(32), 4);
             // week 35
-            assert.equal(go.utils.sequence_start(35), 13);
+            assert.equal(go.utils.calc_sequence_start(35), 13);
             // week 36
-            assert.equal(go.utils.sequence_start(36), 1);
+            assert.equal(go.utils.calc_sequence_start(36), 1);
             done();
         });
     });

@@ -776,7 +776,7 @@ go.utils = {
           var week = go.utils.calc_weeks(go.utils.get_today(im.config),
                   contact.extra.due_date_month, contact.extra.due_date_day);
           var mapped = go.utils.protocol_mapper(week, im);
-          var sub_seq_start = go.utils.sequence_start(week);
+          var sub_seq_start = go.utils.calc_sequence_start(week);
           response.sub_type = mapped.sub_type;
           response.sub_rate = mapped.sub_rate;
           response.sub_seq_start = sub_seq_start;
@@ -897,7 +897,7 @@ go.utils = {
       return response;
     },
 
-    sequence_start: function(weeks) {
+    calc_sequence_start: function(weeks) {
         // calculates which sms in the sequence to start with
         var seq_start;
         if (weeks < 5) {

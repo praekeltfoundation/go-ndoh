@@ -811,20 +811,51 @@ go.utils = {
             .then(function(json_result) {
                 // make all subscriptions inactive
                 var update = JSON.parse(json_result.data);
-                if (update.length > 0) {
-                    for (var i=0; i<update.length; i++) {
-                        update[i].active = false;
+                console.log(json_result);
+                console.log(update);
+                var clean = true;
+                for (i=0;i<update.objects.length;i++) {
+                    if (update.objects[i].active === true){
+                        update.objects[i].active = false;
+                        clean = false;
                     }
-                    payload = {
-                        objects: update
-                    };
-                    return go.utils.control_api_call("put", payload, 'subscription/', im);
+                }
+                if (!clean) {
+                    return go.utils.control_api_call("put", update, 'subscription/', im);
                 } else {
                     return Q();
                 }
 
             });
     },
+
+
+    // subscription_unsubscribe_all: function(contact, im) {
+    //     var payload = {
+    //         to_addr: contact.msisdn
+    //     };
+    //     return go.utils
+    //         .control_api_call("get", payload, 'subscription/', im)
+    //         .then(function(json_result) {
+    //             // make all subscriptions inactive
+    //             var update = JSON.parse(json_result.data);
+    //             console.log('--------------------');
+    //             console.log(update.length);
+    //             console.log('--------------------');
+    //             if (update.length > 0) {
+    //                 for (var i=0; i<update.length; i++) {
+    //                     update[i].active = false;
+    //                 }
+    //                 payload = {
+    //                     objects: update
+    //                 };
+    //                 return go.utils.control_api_call("put", payload, 'subscription/', im);
+    //             } else {
+    //                 return Q();
+    //             }
+
+    //         });
+    // },
 
 
     is_month_this_year: function(today, month) {

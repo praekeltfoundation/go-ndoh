@@ -198,15 +198,24 @@ go.app = function() {
         });
 
         self.add('states_registered_full', function(name) {
+            if (self.im.config.faq_enabled){ 
+                choices = [
+                    new Choice('info', $('Baby and pregnancy info')),
+                    new Choice('compliment', $('Send us a compliment')),
+                    new Choice('complaint', $('Send us a complaint'))
+                ];
+            } else {
+                choices = [
+                    new Choice('compliment', $('Send us a compliment')),
+                    new Choice('complaint', $('Send us a complaint'))
+                ];
+            }
+
             return new ChoiceState(name, {
                 question: $('Welcome to the Department of Health\'s ' +
                     'MomConnect. Please choose an option:'),
 
-                choices: [
-                    new Choice('info', $('Baby and pregnancy info')),
-                    new Choice('compliment', $('Send us a compliment')),
-                    new Choice('complaint', $('Send us a complaint'))
-                ],
+                choices: choices,
 
                 next: function(choice) {
                     return {
@@ -258,14 +267,22 @@ go.app = function() {
 
 
         self.add('states_registered_not_full', function(name) {
+            if (self.im.config.faq_enabled){ 
+                choices = [
+                    new Choice('info', $('Baby and pregnancy info (English only)')),
+                    new Choice('full_set', $('Get the full set of messages'))
+                ];
+            } else {
+                choices = [
+                    new Choice('full_set', $('Get the full set of messages'))
+                ];
+            }
+
             return new ChoiceState(name, {
                 question: $('Welcome to the Department of Health\'s ' +
                     'MomConnect. Choose an option:'),
 
-                choices: [
-                    new Choice('info', $('Baby and pregnancy info (English only)')),
-                    new Choice('full_set', $('Get the full set of messages'))
-                ],
+                choices: choices,
 
                 next: function(choice) {
                     return {
@@ -330,14 +347,22 @@ go.app = function() {
         });
 
         self.add('states_register_info', function(name) {
+            if (self.im.config.faq_enabled){ 
+                choices = [
+                    new Choice('register', $('Register for messages')),
+                    new Choice('info', $('Baby and Pregnancy info (English only)'))
+                ];
+            } else {
+                choices = [
+                    new Choice('register', $('Register for messages'))
+                ];
+            }
+
             return new ChoiceState(name, {
                 question: $('Welcome to the Department of Health\'s ' +
                     'MomConnect. Please select:'),
 
-                choices: [
-                    new Choice('register', $('Register for messages')),
-                    new Choice('info', $('Baby and Pregnancy info (English only)'))
-                ],
+                choices: choices,
 
                 next: function(choice) {
                     return {

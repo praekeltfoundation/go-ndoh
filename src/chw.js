@@ -553,6 +553,7 @@ go.app = function() {
                         opts = go.utils.subscription_type_and_rate(self.contact, self.im);
                         self.contact.extra.subscription_type = opts.sub_type.toString();
                         self.contact.extra.subscription_rate = opts.sub_rate.toString();
+                        self.contact.extra.subscription_seq_start = opts.sub_seq_start.toString();
                         if (self.contact.extra.id_type !== undefined){
                             if (self.contact.extra.id_type === 'none') {
                                 return Q.all([

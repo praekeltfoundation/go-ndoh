@@ -755,7 +755,8 @@ go.utils = {
     subscription_type_and_rate: function(contact, im) {
       var response = {
           sub_type: null,
-          sub_rate: null
+          sub_rate: null,
+          sub_seq_start: 1
       };
       // substrings because QA names are appended with _qa
       if (im.config.name.substring(0,8) == "personal") {
@@ -775,8 +776,10 @@ go.utils = {
           var week = go.utils.calc_weeks(go.utils.get_today(im.config),
                   contact.extra.due_date_month, contact.extra.due_date_day);
           var mapped = go.utils.protocol_mapper(week, im);
+          var sub_seq_start = go.utils.calc_sequence_start(week);
           response.sub_type = mapped.sub_type;
           response.sub_rate = mapped.sub_rate;
+          response.sub_seq_start = sub_seq_start;
       }
       return response;
     },
@@ -786,7 +789,7 @@ go.utils = {
           contact_key: contact.key,
           lang: contact.extra.language_choice,
           message_set: "/api/v1/message_set/" + opts.sub_type + "/",
-          next_sequence_number: 1,
+          next_sequence_number: opts.sub_seq_start,
           schedule: "/api/v1/periodic_task/" + opts.sub_rate + "/",
           to_addr: contact.msisdn,
           user_account: contact.user_account
@@ -894,8 +897,22 @@ go.utils = {
       return response;
     },
 
+    calc_sequence_start: function(weeks) {
+        // calculates which sms in the sequence to start with
+        var seq_start;
+        if (weeks < 5) {
+            seq_start = 1;
+        } else if (weeks <= 31) {
+            seq_start = ((weeks-4)*2)-1;
+        } else if (weeks <= 35) {
+            seq_start = ((weeks-30)*3)-2;
+        } else {
+            seq_start = 1;
+        }
+        return seq_start;
+    },
+
     support_log_ticket: function(message, contact, im, metric_prefix) {
-        opts = go.utils.subscription_type_and_rate(contact, im);
         var payload = {
           conversation: "/api/v1/snappybouncer/conversation/key/" + im.config.snappybouncer.conversation + "/",
           message: message,
@@ -1063,7 +1080,7 @@ go.app = function() {
                                             } else {
                                                 return 'states_subscribe_option';
                                             }
-                                            
+
                                         });
                                 }
 
@@ -1089,6 +1106,7 @@ go.app = function() {
                         // set new subscription user extras
                         self.contact.extra.subscription_type = opts.sub_type.toString();
                         self.contact.extra.subscription_rate = opts.sub_rate.toString();
+                        self.contact.extra.subscription_seq_start = opts.sub_seq_start.toString();
 
                         return go.utils
                             // deactivate current subscriptions
@@ -1113,8 +1131,8 @@ go.app = function() {
                                 return choice.value;
                             });
                     }
-                    
-                    
+
+
                 }
 
             });

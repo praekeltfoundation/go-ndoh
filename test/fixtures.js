@@ -1588,7 +1588,7 @@ module.exports = function() {
             "contact_key": "63ee4fa9-6888-4f0c-065a-939dc2473a99",
             "lang": "en",
             "message_set": "/api/v1/message_set/2/",
-            "next_sequence_number": 1,
+            "next_sequence_number": 7,
             "schedule": "/api/v1/periodic_task/4/",
             "to_addr": "+27821234567",
             "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
@@ -1604,7 +1604,7 @@ module.exports = function() {
             "id": 8,
             "lang": "en",
             "message_set": "/api/v1/message_set/2/",
-            "next_sequence_number": 1,
+            "next_sequence_number": 7,
             "resource_uri": "/api/v1/subscription/8/",
             "schedule": "/api/v1/periodic_task/4/",
             "to_addr": "+27821234567",

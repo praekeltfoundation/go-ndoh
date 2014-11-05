@@ -57,7 +57,7 @@ go.app = function() {
                                             } else {
                                                 return 'states_subscribe_option';
                                             }
-                                            
+
                                         });
                                 }
 
@@ -83,6 +83,7 @@ go.app = function() {
                         // set new subscription user extras
                         self.contact.extra.subscription_type = opts.sub_type.toString();
                         self.contact.extra.subscription_rate = opts.sub_rate.toString();
+                        self.contact.extra.subscription_seq_start = opts.sub_seq_start.toString();
 
                         return go.utils
                             // deactivate current subscriptions
@@ -107,8 +108,8 @@ go.app = function() {
                                 return choice.value;
                             });
                     }
-                    
-                    
+
+
                 }
 
             });

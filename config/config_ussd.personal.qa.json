@@ -40,5 +40,6 @@
         "username": "980d2423-292b-4c34-be81-c74784b9e99a",
         "account_id": "3088",
         "default_faq": "3134"
-    }
+    }, 
+    "faq_enabled": false
 }

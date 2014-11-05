@@ -2011,7 +2011,7 @@ describe("app", function() {
             });
         });
         describe("when the user has registered on clinic", function() {
-            it("should prompt for info / compliment / complaint", function() {
+            it("should prompt for compliment / complaint", function() {
                 return tester
                     .setup(function(api) {
                         api.contacts.add({
@@ -2039,7 +2039,7 @@ describe("app", function() {
             });
         });
         describe("when the user registered on chw/personal", function() {
-            it("should prompt for info / full message set", function() {
+            it("should prompt for full message set", function() {
                 return tester
                     .setup(function(api) {
                         api.contacts.add({

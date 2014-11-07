@@ -91,7 +91,7 @@ go.utils = {
         if (parseInt(input, 10) < 10) {
             return "0" + input_numeric.toString();
         } else {
-            return input;
+            return input_numeric.toString();
         }
     },
 

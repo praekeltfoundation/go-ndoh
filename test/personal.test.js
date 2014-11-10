@@ -50,6 +50,7 @@ describe("app", function() {
                 .setup.config.app({
                     name: 'personal',
                     testing: 'true',
+                    testing_today: 'April 4, 2014 07:07:07',
                     env: 'test',
                     metric_store: 'test_metric_store',
                     endpoints: {
@@ -105,10 +106,51 @@ describe("app", function() {
                 .setup(function(api) {
                     api.metrics.stores = {'test_metric_store': {}};
                 })
-                
+
                 .setup(function(api) {
                     fixtures().forEach(api.http.fixtures.add);
                 });
+        });
+
+        describe('using the session length helper', function () {
+            it('should publish metrics', function () {
+                return tester
+                    .setup(function(api) {
+                        api.kv.store['session_length_helper.foodacom.sentinel'] = '2000-12-12';
+                        api.kv.store['session_length_helper.foodacom'] = 42;
+                    })
+                    .setup.user({
+                        state: 'states_start',
+                        metadata: {
+                          session_length_helper: {
+                            // one minute before the mocked timestamp
+                            start: Number(new Date('April 4, 2014 07:06:07'))
+                          }
+                        }
+                    })
+                    .input({
+                        content: '1',
+                        transport_metadata: {
+                            aat_ussd: {
+                                provider: 'foodacom'
+                            }
+                        }
+                    })
+                    .input.session_event('close')
+                    .check(function(api) {
+
+                        var kv_store = api.kv.store;
+                        assert.equal(kv_store['session_length_helper.foodacom'], 60000);
+                        assert.equal(
+                          kv_store['session_length_helper.foodacom.sentinel'], '2014-04-04');
+
+                        var m_store = api.metrics.stores.test_metric_store;
+                        assert.equal(
+                          m_store['session_length_helper.foodacom'].agg, 'max');
+                        assert.equal(
+                          m_store['session_length_helper.foodacom'].values[0], 60000);
+                    }).run();
+            });
         });
 
         // no_incomplete metric tests
@@ -1316,7 +1358,7 @@ describe("app", function() {
                         });
                         var sms = smses[0];
                         assert.equal(smses.length,1);
-                        assert.equal(sms.content, 
+                        assert.equal(sms.content,
                             "Congratulations on your pregnancy. You will now get free SMSs about MomConnect. " +
                             "You can register for the full set of FREE helpful messages at a clinic."
                         );
@@ -1409,7 +1451,7 @@ describe("app", function() {
                                 });
                                 var sms = smses[0];
                                 assert.equal(smses.length,1);
-                                assert.equal(sms.content, 
+                                assert.equal(sms.content,
                                     "Your session timed out. Please dial back in to *134*550# to complete the pregnancy registration so that you can receive messages."
                                 );
                                 assert.equal(sms.to_addr,'273323');
@@ -1528,7 +1570,7 @@ describe("app", function() {
             });
         });
 
-        
+
         // FAQ browser tests
         describe("When the user reaches faq topics state", function() {
             it("should welcome and ask to choose topic", function() {
@@ -1942,7 +1984,7 @@ describe("app", function() {
                 .setup(function(api) {
                     api.metrics.stores = {'test_metric_store': {}};
                 })
-                
+
                 .setup(function(api) {
                     fixtures().forEach(api.http.fixtures.add);
                 });

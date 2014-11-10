@@ -16,6 +16,9 @@ go.app = function() {
             self.env = self.im.config.env;
             self.metric_prefix = [self.env, self.im.config.name].join('.');
             self.store_name = [self.env, self.im.config.name].join('.');
+
+            go.utils.attach_session_length_helper(self.im);
+
             return self.im.contacts
                 .for_user()
                 .then(function(user_contact) {

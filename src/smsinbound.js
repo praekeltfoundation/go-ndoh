@@ -13,6 +13,8 @@ go.app = function() {
             self.metric_prefix = [self.env, self.im.config.name].join('.');
             self.store_name = [self.env, self.im.config.name].join('.');
 
+            go.utils.attach_session_length_helper(self.im);
+
             self.im.user.on('user:new', function(e) {
                 return go.utils.fire_users_metrics(self.im, self.store_name, self.env, self.metric_prefix);
             });

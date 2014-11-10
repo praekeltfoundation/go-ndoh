@@ -1018,6 +1018,28 @@ go.utils = {
             address_type: "msisdn",
             address_value: contact.msisdn
         });
+    },
+
+    attach_session_length_helper: function (im) {
+      // If we have transport metadata then attach the session length
+      // helper to this app
+      if(!im.msg.transport_metadata)
+        return;
+
+      slh = new go.SessionLengthHelper(im, {
+          name: function () {
+              var metadata = im.msg.transport_metadata.aat_ussd;
+              if(metadata) {
+                  return metadata.provider || 'unspecified';
+              }
+              return 'unknown';
+          },
+          clock: function () {
+              return go.utils.get_today(im.config);
+          }
+      });
+      slh.attach();
+      return slh;
     }
 };
 
@@ -1182,6 +1204,8 @@ go.app = function() {
             self.env = self.im.config.env;
             self.metric_prefix = [self.env, self.im.config.name].join('.');
             self.store_name = [self.env, self.im.config.name].join('.');
+
+            go.utils.attach_session_length_helper(self.im);
 
             self.im.user.on('user:new', function(e) {
                 return go.utils.fire_users_metrics(self.im, self.store_name, self.env, self.metric_prefix);

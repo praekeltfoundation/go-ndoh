@@ -20,36 +20,42 @@ module.exports = function (grunt) {
                 clinic: [
                     'src/index.js',
                     'src/utils.js',
+                    'src/session_length_helper.js',
                     '<%= paths.src.app.clinic %>',
                     'src/init.js'
                 ],
                 chw: [
                     'src/index.js',
                     'src/utils.js',
+                    'src/session_length_helper.js',
                     '<%= paths.src.app.chw %>',
                     'src/init.js'
                 ],
                 personal: [
                     'src/index.js',
                     'src/utils.js',
+                    'src/session_length_helper.js',
                     '<%= paths.src.app.personal %>',
                     'src/init.js'
                 ],
                 optout: [
                     'src/index.js',
                     'src/utils.js',
+                    'src/session_length_helper.js',
                     '<%= paths.src.app.optout %>',
                     'src/init.js'
                 ],
                 smsinbound: [
                     'src/index.js',
                     'src/utils.js',
+                    'src/session_length_helper.js',
                     '<%= paths.src.app.smsinbound %>',
                     'src/init.js'
                 ],
                 servicerating: [
                     'src/index.js',
                     'src/utils.js',
+                    'src/session_length_helper.js',
                     '<%= paths.src.app.servicerating %>',
                     'src/init.js'
                 ],
@@ -69,38 +75,48 @@ module.exports = function (grunt) {
                 clinic: [
                     'test/setup.js',
                     'src/utils.js',
+                    'src/session_length_helper.js',
                     '<%= paths.src.app.clinic %>',
                     'test/clinic.test.js'
                 ],
                 chw: [
                     'test/setup.js',
                     'src/utils.js',
+                    'src/session_length_helper.js',
                     '<%= paths.src.app.chw %>',
                     'test/chw.test.js'
                 ],
                 personal: [
                     'test/setup.js',
                     'src/utils.js',
+                    'src/session_length_helper.js',
                     '<%= paths.src.app.personal %>',
                     'test/personal.test.js'
                 ],
                 optout: [
                     'test/setup.js',
                     'src/utils.js',
+                    'src/session_length_helper.js',
                     '<%= paths.src.app.optout %>',
                     'test/optout.test.js'
                 ],
                 smsinbound: [
                     'test/setup.js',
                     'src/utils.js',
+                    'src/session_length_helper.js',
                     '<%= paths.src.app.smsinbound %>',
                     'test/smsinbound.test.js'
                 ],
                 servicerating: [
                     'test/setup.js',
                     'src/utils.js',
+                    'src/session_length_helper.js',
                     '<%= paths.src.app.servicerating %>',
                     'test/servicerating.test.js'
+                ],
+                session_length_helper: [
+                    'src/session_length_helper.js',
+                    'test/session_length_helper.test.js'
                 ]
             }
         },
@@ -168,6 +184,9 @@ module.exports = function (grunt) {
             },
             test_servicerating: {
                 src: ['<%= paths.test.servicerating %>']
+            },
+            test_session_length_helper: {
+                src: ['<%= paths.test.session_length_helper %>']
             }
         }
     });

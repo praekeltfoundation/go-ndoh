@@ -1026,7 +1026,7 @@ go.utils = {
       if(!im.msg.transport_metadata)
         return;
 
-      slh = new go.SessionLengthHelper(im, {
+      var slh = new go.SessionLengthHelper(im, {
           name: function () {
               var metadata = im.msg.transport_metadata.aat_ussd;
               if(metadata) {

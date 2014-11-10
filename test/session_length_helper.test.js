@@ -114,14 +114,24 @@ describe('SessionLengthHelper', function() {
         return timehop_tester(tester, -1000)
           .input('bar')
           .check(function(api, im , app) {
-            var store = api.kv.store;
-            assert.equal(store['session_length_helper.vodacom'], 1000);
+            var kv_store = api.kv.store;
+            assert.equal(kv_store['session_length_helper.vodacom'], 1000);
             assert.equal(
-              store['session_length_helper.vodacom.sentinel'],
+              kv_store['session_length_helper.vodacom.sentinel'],
               '2014-12-09');
+
+            var m_store = api.metrics.stores['sessionlengthhelper-tester'];
+            assert.equal(
+              m_store['session_length_helper.vodacom'].agg, 'max');
+            assert.equal(
+              m_store['session_length_helper.vodacom'].values[0], 1000);
           })
           .run();
       });
+
+      it('should reset the daily sentinel');
+
+      it('should add to what is already in the kv store');
   });
 
 });

@@ -87,8 +87,9 @@ var SessionLengthHelper = Eventable.extend(function(self, im, params) {
       });
   };
 
-  self.fire_metrics = function (name) {
-    return '!!!';
+  self.fire_metrics = function (name, result) {
+    return self
+      .im.metrics.fire.max([self.metrics_prefix, name].join('.'), result);
   };
 
   self.increment_and_fire = function (fn_or_str) {
@@ -99,7 +100,7 @@ var SessionLengthHelper = Eventable.extend(function(self, im, params) {
         return self.store(name);
       })
       .then(function (result) {
-        return self.fire_metrics(name);
+        return self.fire_metrics(name, result);
       });
   };
 

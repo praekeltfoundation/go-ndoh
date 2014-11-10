@@ -50,10 +50,11 @@ var SessionLengthHelper = Eventable.extend(function(self, im, params) {
     if(data && data.stop && data.start) {
       return data.stop - data.start;
     }
+    return -1;
   };
 
   self.get_today_as_string = function() {
-    var today_iso = this.now().toISOString();
+    var today_iso = self.now().toISOString();
     return today_iso.split('T')[0];
   };
 
@@ -107,10 +108,16 @@ var SessionLengthHelper = Eventable.extend(function(self, im, params) {
     return self
       .ensure_today(name)
       .then(function (result) {
-        return self.store(name);
-      })
-      .then(function (result) {
-        return self.fire_metrics(name, result);
+
+        // return early if we've got nothing to report
+        if(self.duration() < 0)
+          return;
+
+        return self
+          .store(name)
+          .then(function (result) {
+            return self.fire_metrics(name, result);
+          });
       });
   };
 

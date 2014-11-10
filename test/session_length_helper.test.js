@@ -28,14 +28,7 @@ describe('SessionLengthHelper', function() {
           return default_start_time;
         }
       });
-
-      app.im.on('session:new', function (e) {
-        sessionH.mark.session_start();
-      });
-
-      app.im.on('session:close', function (e) {
-        sessionH.mark.session_close();
-      });
+      sessionH.attach();
 
       app.exit = function () {
         return sessionH.increment_and_fire(function () {

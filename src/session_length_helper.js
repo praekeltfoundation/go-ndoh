@@ -31,6 +31,16 @@ var SessionLengthHelper = Eventable.extend(function(self, im, params) {
 
   self.mark = {};
 
+  self.attach = function () {
+    self.im.on('session:new', function (e) {
+      return self.mark.session_start();
+    });
+
+    self.im.on('session:close', function (e) {
+      return self.mark.session_close();
+    });
+  };
+
   self.mark.session_start = function () {
     self.user.metadata.session_length_helper = {};
     self.user.metadata.session_length_helper.start = Number(self.now());

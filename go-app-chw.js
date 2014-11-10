@@ -1189,6 +1189,17 @@ go.app = function() {
             self.metric_prefix = [self.env, self.im.config.name].join('.');
             self.store_name = [self.env, self.im.config.name].join('.');
 
+            self.slh = new go.SessionLengthHelper(self.im, {
+                name: function () {
+                    var metadata = self.im.msg.transport_metadata.aat_ussd;
+                    if(metadata) {
+                        return metadata.provider || 'unspecified';
+                    }
+                    return 'unknown';
+                }
+            });
+            self.slh.attach();
+
             self.im.on('session:new', function(e) {
                 self.user.extra.ussd_sessions = go.utils.incr_user_extra(
                     self.user.extra.ussd_sessions, 1);

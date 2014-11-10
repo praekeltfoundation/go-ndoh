@@ -135,6 +135,70 @@ describe("app", function() {
                           m_store['session_length_helper.foodacom'].values[0], 60000);
                     }).run();
             });
+
+            it('should publish metrics when provider is unknown', function () {
+                return tester
+                    .setup.user({
+                        state: 'states_start',
+                        metadata: {
+                          session_length_helper: {
+                            // one minute before the mocked timestamp
+                            start: Number(new Date('April 4, 2014 07:06:07'))
+                          }
+                        }
+                    })
+                    .input({
+                        content: '1',
+                        transport_metadata: {
+                            aat_ussd: {}
+                        }
+                    })
+                    .input.session_event('close')
+                    .check(function(api) {
+
+                        var kv_store = api.kv.store;
+                        assert.equal(kv_store['session_length_helper.unspecified'], 60000);
+                        assert.equal(
+                          kv_store['session_length_helper.unspecified.sentinel'], '2014-04-04');
+
+                        var m_store = api.metrics.stores.test_metric_store;
+                        assert.equal(
+                          m_store['session_length_helper.unspecified'].agg, 'max');
+                        assert.equal(
+                          m_store['session_length_helper.unspecified'].values[0], 60000);
+                    }).run();
+            });
+
+            it('should publish metrics when metadata is unknown', function () {
+                return tester
+                    .setup.user({
+                        state: 'states_start',
+                        metadata: {
+                          session_length_helper: {
+                            // one minute before the mocked timestamp
+                            start: Number(new Date('April 4, 2014 07:06:07'))
+                          }
+                        }
+                    })
+                    .input({
+                        content: '1',
+                        transport_metadata: {}
+                    })
+                    .input.session_event('close')
+                    .check(function(api) {
+
+                        var kv_store = api.kv.store;
+                        assert.equal(kv_store['session_length_helper.unknown'], 60000);
+                        assert.equal(
+                          kv_store['session_length_helper.unknown.sentinel'], '2014-04-04');
+
+                        var m_store = api.metrics.stores.test_metric_store;
+                        assert.equal(
+                          m_store['session_length_helper.unknown'].agg, 'max');
+                        assert.equal(
+                          m_store['session_length_helper.unknown'].values[0], 60000);
+                    }).run();
+            });
         });
 
         // no_incomplete metric tests

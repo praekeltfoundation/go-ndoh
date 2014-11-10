@@ -46,7 +46,7 @@ var SessionLengthHelper = Eventable.extend(function(self, im, params) {
   };
 
   self.duration = function() {
-    data = self.user.metadata.session_length_helper;
+    var data = self.user.metadata.session_length_helper;
     if(data && data.stop && data.start) {
       return data.stop - data.start;
     }

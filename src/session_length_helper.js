@@ -1,7 +1,6 @@
 var vumigo = require('vumigo_v02');
 var events = vumigo.events;
 var Eventable = events.Eventable;
-//var Q = require('q');
 
 var SessionLengthHelper = Eventable.extend(function(self, im, params) {
   /**class:SessionLengthHelper
@@ -10,6 +9,17 @@ var SessionLengthHelper = Eventable.extend(function(self, im, params) {
 
   :param InteractionMachine im:
     The interaction machine that the metrics should be run on.
+  :param object params:
+    Optional parameters:
+
+    {
+      clock: function () {
+        return new Date();
+      },
+
+      metrics_prefix: 'session_length_helper'
+    }
+
   */
   self.im = im;
 

@@ -3,8 +3,6 @@ var App = vumigo.App;
 var AppTester = vumigo.AppTester;
 var EndState = vumigo.states.EndState;
 var FreeText = vumigo.states.FreeText;
-var slh = require('../src/session_length_helper');
-var SessionLengthHelper = slh.SessionLengthHelper;
 var assert = require('assert');
 var moment = require('moment');
 
@@ -22,9 +20,11 @@ describe('SessionLengthHelper', function() {
 
       tester = new AppTester(app);
       // stub out the clock
-      sessionH = new SessionLengthHelper(app.im,
-        function () { return 'vodacom'; },
+      sessionH = new go.SessionLengthHelper(app.im,
         {
+          name: function () {
+            return 'vodacom';
+          },
           clock: function () {
             return default_start_time;
           }

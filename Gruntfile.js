@@ -101,6 +101,10 @@ module.exports = function (grunt) {
                     'src/utils.js',
                     '<%= paths.src.app.servicerating %>',
                     'test/servicerating.test.js'
+                ],
+                session_length_helper: [
+                    'src/session_length_helper.js',
+                    'test/session_length_helper.test.js'
                 ]
             }
         },
@@ -168,6 +172,9 @@ module.exports = function (grunt) {
             },
             test_servicerating: {
                 src: ['<%= paths.test.servicerating %>']
+            },
+            test_session_length_helper: {
+                src: ['<%= paths.test.session_length_helper %>']
             }
         }
     });

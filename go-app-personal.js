@@ -1021,11 +1021,12 @@ go.utils = {
     }
 };
 
-var vumigo = require('vumigo_v02');
-var events = vumigo.events;
-var Eventable = events.Eventable;
-
 go.SessionLengthHelper = function () {
+
+  var vumigo = require('vumigo_v02');
+  var events = vumigo.events;
+  var Eventable = events.Eventable;
+
   var SessionLengthHelper = Eventable.extend(function(self, im, params) {
     /**class:SessionLengthHelper
 

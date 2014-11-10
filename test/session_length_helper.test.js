@@ -5,7 +5,6 @@ var EndState = vumigo.states.EndState;
 var FreeText = vumigo.states.FreeText;
 var slh = require('../src/session_length_helper');
 var SessionLengthHelper = slh.SessionLengthHelper;
-var Q = require('q');
 var assert = require('assert');
 var moment = require('moment');
 
@@ -40,13 +39,9 @@ describe('SessionLengthHelper', function() {
       });
 
       app.states.add('states:test2', function(name) {
-        return Q(function () {
-          return sessionH.mark.session_close();
-        }).then(function () {
-          return new EndState(name, {
-              text: 'This is the end state.',
-              next: 'states:test'
-          });
+        return new EndState(name, {
+            text: 'This is the end state.',
+            next: 'states:test'
         });
       });
 

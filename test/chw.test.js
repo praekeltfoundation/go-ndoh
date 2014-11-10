@@ -165,7 +165,7 @@ describe("app", function() {
                         assert.equal(
                           m_store['session_length_helper.unspecified'].agg, 'max');
                         assert.equal(
-                          m_store['session_length_helper.unspecified'].values[0], 60000);
+                          m_store['session_length_helper.unspecified'].values[0], 60);
                     }).run();
             });
 
@@ -196,7 +196,7 @@ describe("app", function() {
                         assert.equal(
                           m_store['session_length_helper.unknown'].agg, 'max');
                         assert.equal(
-                          m_store['session_length_helper.unknown'].values[0], 60000);
+                          m_store['session_length_helper.unknown'].values[0], 60);
                     }).run();
             });
         });

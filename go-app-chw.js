@@ -1163,7 +1163,9 @@ var SessionLengthHelper = Eventable.extend(function(self, im, params) {
 });
 
 
-go.SessionLengthHelper = SessionLengthHelper;
+go.SessionLengthHelper = function () {
+  return SessionLengthHelper;
+}();
 
 go.app = function() {
     var vumigo = require('vumigo_v02');

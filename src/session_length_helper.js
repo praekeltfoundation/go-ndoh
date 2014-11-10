@@ -2,13 +2,15 @@ var vumigo = require('vumigo_v02');
 var events = vumigo.events;
 var Eventable = events.Eventable;
 
-var SessionLengthHelper = Eventable.extend(function(self, im, params) {
+var SessionLengthHelper = Eventable.extend(function(self, im, name, params) {
   /**class:SessionLengthHelper
 
   A helper for common session length calculation tasks.
 
   :param InteractionMachine im:
     The interaction machine that the metrics should be run on.
+  :param fn_or_str name:
+    The name to use when publishing metrics.
   :param object params:
     Optional parameters:
 
@@ -25,6 +27,8 @@ var SessionLengthHelper = Eventable.extend(function(self, im, params) {
 
   self.user = im.user;
 
+  self.name = name;
+
   self.now = params.clock || function () { return new Date(); };
 
   self.metrics_prefix = params.metrics_prefix || 'session_length_helper';
@@ -38,6 +42,10 @@ var SessionLengthHelper = Eventable.extend(function(self, im, params) {
 
     self.im.on('session:close', function (e) {
       return self.mark.session_close();
+    });
+
+    self.im.on('im:shutdown', function() {
+      return self.increment_and_fire(self.name);
     });
   };
 

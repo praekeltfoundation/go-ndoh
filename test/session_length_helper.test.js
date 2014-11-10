@@ -23,18 +23,14 @@ describe('SessionLengthHelper', function() {
 
       tester = new AppTester(app);
       // stub out the clock
-      sessionH = new SessionLengthHelper(app.im, {
-        clock: function () {
-          return default_start_time;
-        }
-      });
-      sessionH.attach();
-
-      app.exit = function () {
-        return sessionH.increment_and_fire(function () {
-          return 'vodacom';
+      sessionH = new SessionLengthHelper(app.im,
+        function () { return 'vodacom'; },
+        {
+          clock: function () {
+            return default_start_time;
+          }
         });
-      };
+      sessionH.attach();
 
       app.states.add('states:test', function(name) {
         return new FreeText(name, {

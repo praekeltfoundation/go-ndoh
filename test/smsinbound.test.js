@@ -134,7 +134,7 @@ describe("app", function() {
                         assert.equal(
                           m_store['session_length_helper.foodacom'].agg, 'max');
                         assert.equal(
-                          m_store['session_length_helper.foodacom'].values[0], 60000);
+                          m_store['session_length_helper.foodacom'].values[0], 60);
                     }).run();
             });
         });

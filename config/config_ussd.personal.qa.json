@@ -41,5 +41,6 @@
         "account_id": "3088",
         "default_faq": "3134"
     }, 
-    "faq_enabled": false
+    "faq_enabled": false,
+    "detailed_data_collection": false
 }

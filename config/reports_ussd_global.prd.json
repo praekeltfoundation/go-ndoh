@@ -33,7 +33,7 @@
                         "store": "ndoh_prd_live",
                         "name": "prd.chw.sum.unique_users",
                         "aggregator": "last"
-                        }    
+                        }
                 },{
                     "name": "Public",
                     "target": {
@@ -41,7 +41,7 @@
                         "store": "ndoh_prd_live",
                         "name": "prd.personal.sum.unique_users",
                         "aggregator": "last"
-                        }    
+                        }
                 }
             ]
         },
@@ -66,7 +66,7 @@
                         "store": "ndoh_prd_live",
                         "name": "prd.chw.percentage_users",
                         "aggregator": "last"
-                        }    
+                        }
                 },{
                     "name": "Public",
                     "target": {
@@ -74,7 +74,7 @@
                         "store": "ndoh_prd_live",
                         "name": "prd.personal.percentage_users",
                         "aggregator": "last"
-                        }    
+                        }
                 }
             ]
         },
@@ -388,6 +388,291 @@
                 "name": "prd.faq_sent_via_sms",
                 "aggregator": "last"
                 }
+        },
+        "new_row",
+        {
+            "type": "diamondash.widgets.graph.GraphWidget",
+            "name": "Session length break down for Personal registration",
+            "time_range": "1d",
+            "bucket_size": "1h",
+            "width": 12,
+            "metrics": [{
+                "name": "MTN",
+                "target": {
+                    "metric_type": "account",
+                    "store": "ndoh_prd_live",
+                    "name": "session_length_helper.personal.mtn",
+                    "aggregator": "max"
+                }
+            }, {
+                "name": "Cell-C",
+                "target": {
+                    "metric_type": "account",
+                    "store": "ndoh_prd_live",
+                    "name": "session_length_helper.personal.cellc",
+                    "aggregator": "max"
+                }
+            }, {
+                "name": "Telkom",
+                "target": {
+                    "metric_type": "account",
+                    "store": "ndoh_prd_live",
+                    "name": "session_length_helper.personal.telkom_8ta",
+                    "aggregator": "max"
+                }
+            }, {
+                "name": "Vodacom",
+                "target": {
+                    "metric_type": "account",
+                    "store": "ndoh_prd_live",
+                    "name": "session_length_helper.personal.vodacom",
+                    "aggregator": "max"
+                }
+            }, {
+                "name": "Unknown",
+                "target": {
+                    "metric_type": "account",
+                    "store": "ndoh_prd_live",
+                    "name": "session_length_helper.personal.unknown",
+                    "aggregator": "max"
+                }
+            }, {
+                "name": "Unspecified",
+                "target": {
+                    "metric_type": "account",
+                    "store": "ndoh_prd_live",
+                    "name": "session_length_helper.personal.unspecified",
+                    "aggregator": "max"
+                }
+            }]
+        },
+        "new_row",
+        {
+            "type": "diamondash.widgets.graph.GraphWidget",
+            "name": "Session length break down for Clinic registration",
+            "time_range": "1d",
+            "bucket_size": "1h",
+            "width": 12,
+            "metrics": [{
+                "name": "MTN",
+                "target": {
+                    "metric_type": "account",
+                    "store": "ndoh_prd_live",
+                    "name": "session_length_helper.clinic.mtn",
+                    "aggregator": "max"
+                }
+            }, {
+                "name": "Cell-C",
+                "target": {
+                    "metric_type": "account",
+                    "store": "ndoh_prd_live",
+                    "name": "session_length_helper.clinic.cellc",
+                    "aggregator": "max"
+                }
+            }, {
+                "name": "Telkom",
+                "target": {
+                    "metric_type": "account",
+                    "store": "ndoh_prd_live",
+                    "name": "session_length_helper.clinic.telkom_8ta",
+                    "aggregator": "max"
+                }
+            }, {
+                "name": "Vodacom",
+                "target": {
+                    "metric_type": "account",
+                    "store": "ndoh_prd_live",
+                    "name": "session_length_helper.clinic.vodacom",
+                    "aggregator": "max"
+                }
+            }, {
+                "name": "Unknown",
+                "target": {
+                    "metric_type": "account",
+                    "store": "ndoh_prd_live",
+                    "name": "session_length_helper.clinic.unknown",
+                    "aggregator": "max"
+                }
+            }, {
+                "name": "Unspecified",
+                "target": {
+                    "metric_type": "account",
+                    "store": "ndoh_prd_live",
+                    "name": "session_length_helper.clinic.unspecified",
+                    "aggregator": "max"
+                }
+            }]
+        },
+        "new_row",
+        {
+            "type": "diamondash.widgets.graph.GraphWidget",
+            "name": "Session length break down for CHW registration",
+            "time_range": "1d",
+            "bucket_size": "1h",
+            "width": 12,
+            "metrics": [{
+                "name": "MTN",
+                "target": {
+                    "metric_type": "account",
+                    "store": "ndoh_prd_live",
+                    "name": "session_length_helper.chw.mtn",
+                    "aggregator": "max"
+                }
+            }, {
+                "name": "Cell-C",
+                "target": {
+                    "metric_type": "account",
+                    "store": "ndoh_prd_live",
+                    "name": "session_length_helper.chw.cellc",
+                    "aggregator": "max"
+                }
+            }, {
+                "name": "Telkom",
+                "target": {
+                    "metric_type": "account",
+                    "store": "ndoh_prd_live",
+                    "name": "session_length_helper.chw.telkom_8ta",
+                    "aggregator": "max"
+                }
+            }, {
+                "name": "Vodacom",
+                "target": {
+                    "metric_type": "account",
+                    "store": "ndoh_prd_live",
+                    "name": "session_length_helper.chw.vodacom",
+                    "aggregator": "max"
+                }
+            }, {
+                "name": "Unknown",
+                "target": {
+                    "metric_type": "account",
+                    "store": "ndoh_prd_live",
+                    "name": "session_length_helper.chw.unknown",
+                    "aggregator": "max"
+                }
+            }, {
+                "name": "Unspecified",
+                "target": {
+                    "metric_type": "account",
+                    "store": "ndoh_prd_live",
+                    "name": "session_length_helper.chw.unspecified",
+                    "aggregator": "max"
+                }
+            }]
+        },
+        "new_row",
+        {
+            "type": "diamondash.widgets.graph.GraphWidget",
+            "name": "Session length break down for Opt-Outs",
+            "time_range": "1d",
+            "bucket_size": "1h",
+            "width": 12,
+            "metrics": [{
+                "name": "MTN",
+                "target": {
+                    "metric_type": "account",
+                    "store": "ndoh_prd_live",
+                    "name": "session_length_helper.optout.mtn",
+                    "aggregator": "max"
+                }
+            }, {
+                "name": "Cell-C",
+                "target": {
+                    "metric_type": "account",
+                    "store": "ndoh_prd_live",
+                    "name": "session_length_helper.optout.cellc",
+                    "aggregator": "max"
+                }
+            }, {
+                "name": "Telkom",
+                "target": {
+                    "metric_type": "account",
+                    "store": "ndoh_prd_live",
+                    "name": "session_length_helper.optout.telkom_8ta",
+                    "aggregator": "max"
+                }
+            }, {
+                "name": "Vodacom",
+                "target": {
+                    "metric_type": "account",
+                    "store": "ndoh_prd_live",
+                    "name": "session_length_helper.optout.vodacom",
+                    "aggregator": "max"
+                }
+            }, {
+                "name": "Unknown",
+                "target": {
+                    "metric_type": "account",
+                    "store": "ndoh_prd_live",
+                    "name": "session_length_helper.optout.unknown",
+                    "aggregator": "max"
+                }
+            }, {
+                "name": "Unspecified",
+                "target": {
+                    "metric_type": "account",
+                    "store": "ndoh_prd_live",
+                    "name": "session_length_helper.optout.unspecified",
+                    "aggregator": "max"
+                }
+            }]
+        },
+        "new_row",
+        {
+            "type": "diamondash.widgets.graph.GraphWidget",
+            "name": "Session length break down for Service Rating",
+            "time_range": "1d",
+            "bucket_size": "1h",
+            "width": 12,
+            "metrics": [{
+                "name": "MTN",
+                "target": {
+                    "metric_type": "account",
+                    "store": "ndoh_prd_live",
+                    "name": "session_length_helper.servicerating.mtn",
+                    "aggregator": "max"
+                }
+            }, {
+                "name": "Cell-C",
+                "target": {
+                    "metric_type": "account",
+                    "store": "ndoh_prd_live",
+                    "name": "session_length_helper.servicerating.cellc",
+                    "aggregator": "max"
+                }
+            }, {
+                "name": "Telkom",
+                "target": {
+                    "metric_type": "account",
+                    "store": "ndoh_prd_live",
+                    "name": "session_length_helper.servicerating.telkom_8ta",
+                    "aggregator": "max"
+                }
+            }, {
+                "name": "Vodacom",
+                "target": {
+                    "metric_type": "account",
+                    "store": "ndoh_prd_live",
+                    "name": "session_length_helper.servicerating.vodacom",
+                    "aggregator": "max"
+                }
+            }, {
+                "name": "Unknown",
+                "target": {
+                    "metric_type": "account",
+                    "store": "ndoh_prd_live",
+                    "name": "session_length_helper.servicerating.unknown",
+                    "aggregator": "max"
+                }
+            }, {
+                "name": "Unspecified",
+                "target": {
+                    "metric_type": "account",
+                    "store": "ndoh_prd_live",
+                    "name": "session_length_helper.servicerating.unspecified",
+                    "aggregator": "max"
+                }
+            }]
         }
 
     ]

@@ -1026,10 +1026,13 @@ go.utils = {
       var slh = new go.SessionLengthHelper(im, {
           name: function () {
               var metadata = im.msg.transport_metadata.aat_ussd;
+              var provider;
               if(metadata) {
-                  return (metadata.provider || 'unspecified').toLowerCase();
+                provider = (metadata.provider || 'unspecified').toLowerCase();
+              } else {
+                provider = 'unknown';
               }
-              return 'unknown';
+              return [im.config.name, provider].join('.');
           },
           clock: function () {
               return go.utils.get_today(im.config);

@@ -395,7 +395,7 @@
             "name": "Session length break down for Personal registration",
             "time_range": "1d",
             "bucket_size": "1h",
-            "width": 6,
+            "width": 12,
             "metrics": [{
                 "name": "MTN",
                 "target": {
@@ -452,7 +452,7 @@
             "name": "Session length break down for Clinic registration",
             "time_range": "1d",
             "bucket_size": "1h",
-            "width": 6,
+            "width": 12,
             "metrics": [{
                 "name": "MTN",
                 "target": {
@@ -509,7 +509,7 @@
             "name": "Session length break down for CHW registration",
             "time_range": "1d",
             "bucket_size": "1h",
-            "width": 6,
+            "width": 12,
             "metrics": [{
                 "name": "MTN",
                 "target": {
@@ -566,7 +566,7 @@
             "name": "Session length break down for Opt-Outs",
             "time_range": "1d",
             "bucket_size": "1h",
-            "width": 6,
+            "width": 12,
             "metrics": [{
                 "name": "MTN",
                 "target": {
@@ -623,7 +623,7 @@
             "name": "Session length break down for Service Rating",
             "time_range": "1d",
             "bucket_size": "1h",
-            "width": 6,
+            "width": 12,
             "metrics": [{
                 "name": "MTN",
                 "target": {

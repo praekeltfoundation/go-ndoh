@@ -130,7 +130,7 @@ describe('SessionLengthHelper', function() {
           assert.equal(
             m_store['session_length_helper.vodacom'].agg, 'max');
           assert.equal(
-            m_store['session_length_helper.vodacom'].values[0], 1000);
+            m_store['session_length_helper.vodacom'].values[0], 1);
         })
         .run();
     });

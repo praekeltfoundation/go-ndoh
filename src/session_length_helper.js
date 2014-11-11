@@ -117,8 +117,8 @@ go.SessionLengthHelper = function () {
     };
 
     self.fire_metrics = function (name, result) {
-      return self
-        .im.metrics.fire.max([self.metrics_prefix, name].join('.'), result);
+      var full_name = [self.metrics_prefix, name].join('.');
+      return self.im.metrics.fire.max(full_name, result / 1000);
     };
 
     self.increment_and_fire = function (fn_or_str) {

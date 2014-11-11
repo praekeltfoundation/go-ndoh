@@ -1037,6 +1037,33 @@ module.exports = function() {
             }
         }
     },
+    // PERSONAL - DATA LIMITED
+    {
+        'request': {
+            'method': 'POST',
+            'headers': {
+                'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
+                'Content-Type': ['application/json']
+            },
+            'url': 'http://test/v2/json/',
+            'data': {
+                "mha": 1,
+                "swt": 1,
+                "dmsisdn": "+27001",
+                "cmsisdn": "+27001",
+                "id": null,
+                "type": 1,
+                "lang": "en",
+                "encdate": "20130819144811"
+            },
+        },
+        'response': {
+            "code": 200,
+            "data": {
+                "success": "true"
+            }
+        }
+    },
     // CHW
     {
         'request': {

@@ -21,6 +21,8 @@ go.app = function() {
             self.metric_prefix = [self.env, self.im.config.name].join('.');
             self.store_name = [self.env, self.im.config.name].join('.');
 
+            go.utils.attach_session_length_helper(self.im);
+
             self.im.on('session:new', function(e) {
                 self.contact.extra.ussd_sessions = go.utils.incr_user_extra(
                     self.contact.extra.ussd_sessions, 1);
@@ -198,7 +200,7 @@ go.app = function() {
         });
 
         self.add('states_registered_full', function(name) {
-            if (self.im.config.faq_enabled){ 
+            if (self.im.config.faq_enabled){
                 choices = [
                     new Choice('info', $('Baby and pregnancy info')),
                     new Choice('compliment', $('Send us a compliment')),
@@ -267,7 +269,7 @@ go.app = function() {
 
 
         self.add('states_registered_not_full', function(name) {
-            if (self.im.config.faq_enabled){ 
+            if (self.im.config.faq_enabled){
                 choices = [
                     new Choice('info', $('Baby and pregnancy info (English only)')),
                     new Choice('full_set', $('Get the full set of messages'))
@@ -347,7 +349,7 @@ go.app = function() {
         });
 
         self.add('states_register_info', function(name) {
-            if (self.im.config.faq_enabled){ 
+            if (self.im.config.faq_enabled){
                 choices = [
                     new Choice('register', $('Register for messages')),
                     new Choice('info', $('Baby and Pregnancy info (English only)'))

@@ -25,7 +25,7 @@ describe("app", function() {
             go.utils.get_oid = function(){
                 return '2.25.169380846032024';
             };
-            
+
             tester = new AppTester(app);
 
             tester
@@ -96,6 +96,111 @@ describe("app", function() {
                 });
         });
 
+        describe('using the session length helper', function () {
+            it('should publish metrics', function () {
+                return tester
+                    .setup(function(api) {
+                        api.kv.store['session_length_helper.foodacom.sentinel'] = '2000-12-12';
+                        api.kv.store['session_length_helper.foodacom'] = 42;
+                    })
+                    .setup.user({
+                        state: 'states_start',
+                        metadata: {
+                          session_length_helper: {
+                            // one minute before the mocked timestamp
+                            start: Number(new Date('April 4, 2014 07:06:07'))
+                          }
+                        }
+                    })
+                    .input({
+                        content: '1',
+                        transport_metadata: {
+                            aat_ussd: {
+                                provider: 'foodacom'
+                            }
+                        }
+                    })
+                    .input.session_event('close')
+                    .check(function(api) {
+
+                        var kv_store = api.kv.store;
+                        assert.equal(kv_store['session_length_helper.foodacom'], 60000);
+                        assert.equal(
+                          kv_store['session_length_helper.foodacom.sentinel'], '2014-04-04');
+
+                        var m_store = api.metrics.stores.test_metric_store;
+                        assert.equal(
+                          m_store['session_length_helper.foodacom'].agg, 'max');
+                        assert.equal(
+                          m_store['session_length_helper.foodacom'].values[0], 60000);
+                    }).run();
+            });
+
+            it('should publish metrics when provider is unknown', function () {
+                return tester
+                    .setup.user({
+                        state: 'states_start',
+                        metadata: {
+                          session_length_helper: {
+                            // one minute before the mocked timestamp
+                            start: Number(new Date('April 4, 2014 07:06:07'))
+                          }
+                        }
+                    })
+                    .input({
+                        content: '1',
+                        transport_metadata: {
+                            aat_ussd: {}
+                        }
+                    })
+                    .input.session_event('close')
+                    .check(function(api) {
+
+                        var kv_store = api.kv.store;
+                        assert.equal(kv_store['session_length_helper.unspecified'], 60000);
+                        assert.equal(
+                          kv_store['session_length_helper.unspecified.sentinel'], '2014-04-04');
+
+                        var m_store = api.metrics.stores.test_metric_store;
+                        assert.equal(
+                          m_store['session_length_helper.unspecified'].agg, 'max');
+                        assert.equal(
+                          m_store['session_length_helper.unspecified'].values[0], 60000);
+                    }).run();
+            });
+
+            it('should publish metrics when metadata is unknown', function () {
+                return tester
+                    .setup.user({
+                        state: 'states_start',
+                        metadata: {
+                          session_length_helper: {
+                            // one minute before the mocked timestamp
+                            start: Number(new Date('April 4, 2014 07:06:07'))
+                          }
+                        }
+                    })
+                    .input({
+                        content: '1',
+                        transport_metadata: {}
+                    })
+                    .input.session_event('close')
+                    .check(function(api) {
+
+                        var kv_store = api.kv.store;
+                        assert.equal(kv_store['session_length_helper.unknown'], 60000);
+                        assert.equal(
+                          kv_store['session_length_helper.unknown.sentinel'], '2014-04-04');
+
+                        var m_store = api.metrics.stores.test_metric_store;
+                        assert.equal(
+                          m_store['session_length_helper.unknown'].agg, 'max');
+                        assert.equal(
+                          m_store['session_length_helper.unknown'].values[0], 60000);
+                    }).run();
+            });
+        });
+
         // no_incomplete metric tests
         describe("when a session is terminated", function() {
 
@@ -130,7 +235,7 @@ describe("app", function() {
                     return tester
                         .setup(function(api) {
                             api.metrics.stores.test_metric_store = {
-                                'test.chw.states_birth_day.no_incomplete': { agg: 'last', values: [ 1 ] } 
+                                'test.chw.states_birth_day.no_incomplete': { agg: 'last', values: [ 1 ] }
                             };
                             api.kv.store['test_metric_store.test.chw.states_birth_day.no_incomplete'] = 1;
                         })
@@ -397,7 +502,7 @@ describe("app", function() {
                     .check(function(api) {
                         var metrics = api.metrics.stores.test_metric_store;
                         assert.deepEqual(metrics['test.sum.sessions'].values, [1]);
-                    })  
+                    })
                     .run();
             });
         });
@@ -762,7 +867,7 @@ describe("app", function() {
                         .run();
                 });
             });
-                
+
         });
         // end opt-in flow for chw's phone usage
 
@@ -1203,7 +1308,7 @@ describe("app", function() {
                             state: 'states_end_success',
                             reply: ('Thank you, registration is complete. The ' +
                             'pregnant woman will now receive messages to ' +
-                            'encourage her to register at her nearest ' + 
+                            'encourage her to register at her nearest ' +
                             'clinic.')
                         })
                         .check(function(api) {
@@ -1236,7 +1341,7 @@ describe("app", function() {
                         .check.reply.ends_session()
                         .run();
                 });
-                
+
                 it("should send them an SMS on completion", function() {
                     return tester
                         .setup.user.addr('27001')
@@ -1268,7 +1373,7 @@ describe("app", function() {
                             });
                             var sms = smses[0];
                             assert.equal(smses.length,1);
-                            assert.equal(sms.content, 
+                            assert.equal(sms.content,
                                 "Congratulations on your pregnancy. You will now get free SMSs about MomConnect. " +
                                 "You can register for the full set of FREE helpful messages at a clinic."
                             );
@@ -1278,7 +1383,7 @@ describe("app", function() {
                 });
 
             });
-            
+
             describe("if the phone used is the mom's", function() {
                 it("should save msg language, thank them and exit", function() {
                     return tester
@@ -1303,7 +1408,7 @@ describe("app", function() {
                             state: 'states_end_success',
                             reply: ('Thank you, registration is complete. The ' +
                             'pregnant woman will now receive messages to ' +
-                            'encourage her to register at her nearest ' + 
+                            'encourage her to register at her nearest ' +
                             'clinic.')
                         })
                         .check(function(api) {
@@ -1383,7 +1488,7 @@ describe("app", function() {
                             });
                             var sms = smses[0];
                             assert.equal(smses.length,1);
-                            assert.equal(sms.content, 
+                            assert.equal(sms.content,
                                 "Congratulations on your pregnancy. You will now get free SMSs about MomConnect. " +
                                 "You can register for the full set of FREE helpful messages at a clinic."
                             );
@@ -1421,7 +1526,7 @@ describe("app", function() {
                             state: 'states_end_success',
                             reply: ('Thank you, registration is complete. The ' +
                             'pregnant woman will now receive messages to ' +
-                            'encourage her to register at her nearest ' + 
+                            'encourage her to register at her nearest ' +
                             'clinic.')
                         })
                         .check(function(api) {
@@ -1474,7 +1579,7 @@ describe("app", function() {
                             state: 'states:end_success',
                             reply: ('Thank you, registration is complete. The ' +
                             'pregnant woman will now receive messages to ' +
-                            'encourage her to register at her nearest ' + 
+                            'encourage her to register at her nearest ' +
                             'clinic.')
                         })
                         .check(function(api) {
@@ -1532,7 +1637,7 @@ describe("app", function() {
                                 });
                                 var sms = smses[0];
                                 assert.equal(smses.length,1);
-                                assert.equal(sms.content, 
+                                assert.equal(sms.content,
                                     "Please dial back in to *120*550*3# to complete the pregnancy registration."
                                 );
                                 assert.equal(sms.to_addr,'273323');

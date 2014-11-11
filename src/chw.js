@@ -19,6 +19,8 @@ go.app = function() {
             self.metric_prefix = [self.env, self.im.config.name].join('.');
             self.store_name = [self.env, self.im.config.name].join('.');
 
+            go.utils.attach_session_length_helper(self.im);
+
             self.im.on('session:new', function(e) {
                 self.user.extra.ussd_sessions = go.utils.incr_user_extra(
                     self.user.extra.ussd_sessions, 1);

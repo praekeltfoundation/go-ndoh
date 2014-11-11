@@ -35,6 +35,7 @@ describe("app", function() {
                 .setup.config.app({
                     name: 'smsinbound',
                     testing: 'true',
+                    testing_today: 'April 4, 2014 07:07:07',
                     env: 'test',
                     metric_store: 'test_metric_store',
                     endpoints: {
@@ -88,7 +89,55 @@ describe("app", function() {
                 });
         });
 
+        describe('using the session length helper', function () {
+            it('should publish metrics', function () {
 
+                return tester
+                    .setup(function(api) {
+                        api.kv.store['session_length_helper.foodacom.sentinel'] = '2000-12-12';
+                        api.kv.store['session_length_helper.foodacom'] = 42;
+                        api.contacts.add({
+                            msisdn: '+27001',
+                            extra : {
+                                language_choice: 'en'
+                            },
+                            key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
+                        });
+                    })
+                    .setup.user({
+                        state: 'states_start',
+                        metadata: {
+                          session_length_helper: {
+                            // one minute before the mocked timestamp
+                            start: Number(new Date('April 4, 2014 07:06:07'))
+                          }
+                        }
+                    })
+                    .input({
+                        content: 'start',
+                        transport_metadata: {
+                            aat_ussd: {
+                                provider: 'foodacom'
+                            }
+                        }
+                    })
+                    .input.session_event('close')
+                    .check(function(api) {
+
+                        var kv_store = api.kv.store;
+                        assert.equal(kv_store['session_length_helper.foodacom'], 60000);
+                        assert.equal(
+                          kv_store['session_length_helper.foodacom.sentinel'], '2014-04-04');
+
+                        var m_store = api.metrics.stores.test_metric_store;
+                        assert.equal(
+                          m_store['session_length_helper.foodacom'].agg, 'max');
+                        assert.equal(
+                          m_store['session_length_helper.foodacom'].values[0], 60000);
+                    }).run();
+            });
+        });
 
         describe("when a new unique user sends message in", function() {
             it("should increment the no. of unique users by 1", function() {

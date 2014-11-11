@@ -101,6 +101,47 @@ describe("app", function() {
                 });
         });
 
+        describe('using the session length helper', function () {
+            it('should publish metrics', function () {
+                return tester
+                    .setup(function(api) {
+                        api.kv.store['session_length_helper.foodacom.sentinel'] = '2000-12-12';
+                        api.kv.store['session_length_helper.foodacom'] = 42;
+                    })
+                    .setup.user({
+                        state: 'states_start',
+                        metadata: {
+                          session_length_helper: {
+                            // one minute before the mocked timestamp
+                            start: Number(new Date('April 4, 2014 07:06:07'))
+                          }
+                        }
+                    })
+                    .input({
+                        content: '1',
+                        transport_metadata: {
+                            aat_ussd: {
+                                provider: 'foodacom'
+                            }
+                        }
+                    })
+                    .input.session_event('close')
+                    .check(function(api) {
+
+                        var kv_store = api.kv.store;
+                        assert.equal(kv_store['session_length_helper.foodacom'], 60000);
+                        assert.equal(
+                          kv_store['session_length_helper.foodacom.sentinel'], '2014-04-04');
+
+                        var m_store = api.metrics.stores.test_metric_store;
+                        assert.equal(
+                          m_store['session_length_helper.foodacom'].agg, 'max');
+                        assert.equal(
+                          m_store['session_length_helper.foodacom'].values[0], 60000);
+                    }).run();
+            });
+        });
+
         describe("when the user starts a session", function() {
 
             describe("when the user has not previously opted out", function() {
@@ -228,7 +269,7 @@ describe("app", function() {
         });
 
         describe("when the user selects yes to futher help", function() {
-            
+
             describe("when the user has existing subscriptions", function() {
                 it("should unsubscribe from other lines, subscribe them and exit", function() {
                     return tester
@@ -246,7 +287,7 @@ describe("app", function() {
                         .check(function(api) {
                             var contact = _.find(api.contacts.store, {
                               msisdn: '+27001'
-                            });                      
+                            });
                             assert.equal(contact.extra.subscription_type, '6');
                             assert.equal(contact.extra.subscription_rate, '3');
                         })
@@ -272,7 +313,7 @@ describe("app", function() {
                         .check(function(api) {
                             var contact = _.find(api.contacts.store, {
                               msisdn: '+27002'
-                            });                      
+                            });
                             assert.equal(contact.extra.subscription_type, '6');
                             assert.equal(contact.extra.subscription_rate, '3');
                         })

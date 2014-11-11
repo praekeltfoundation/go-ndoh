@@ -94,8 +94,8 @@ describe("app", function() {
 
                 return tester
                     .setup(function(api) {
-                        api.kv.store['session_length_helper.' + api.config.store.name + '.foodacom.sentinel'] = '2000-12-12';
-                        api.kv.store['session_length_helper.' + api.config.store.name + '.foodacom'] = 42;
+                        api.kv.store['session_length_helper.' + api.config.app.name + '.foodacom.sentinel'] = '2000-12-12';
+                        api.kv.store['session_length_helper.' + api.config.app.name + '.foodacom'] = 42;
                         api.contacts.add({
                             msisdn: '+27001',
                             extra : {

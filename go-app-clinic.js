@@ -1030,7 +1030,7 @@ go.utils = {
           name: function () {
               var metadata = im.msg.transport_metadata.aat_ussd;
               if(metadata) {
-                  return metadata.provider || 'unspecified';
+                  return (metadata.provider || 'unspecified').toLowerCase();
               }
               return 'unknown';
           },

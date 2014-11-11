@@ -97,6 +97,41 @@ describe("app", function() {
         });
 
         describe('using the session length helper', function () {
+
+            it('should lower case the provider name', function () {
+                return tester
+                    .setup.user({
+                        state: 'states_start',
+                        metadata: {
+                          session_length_helper: {
+                            // one minute before the mocked timestamp
+                            start: Number(new Date('April 4, 2014 07:06:07'))
+                          }
+                        }
+                    })
+                    .input({
+                        content: '1',
+                        transport_metadata: {
+                            aat_ussd: {
+                                provider: 'FOODACOM'
+                            }
+                        }
+                    })
+                    .input.session_event('close')
+                    .check(function(api) {
+                        var kv_store = api.kv.store;
+                        assert.equal(kv_store['session_length_helper.foodacom'], 60000);
+                        assert.equal(
+                          kv_store['session_length_helper.foodacom.sentinel'], '2014-04-04');
+
+                        var m_store = api.metrics.stores.test_metric_store;
+                        assert.equal(
+                          m_store['session_length_helper.foodacom'].agg, 'max');
+                        assert.equal(
+                          m_store['session_length_helper.foodacom'].values[0], 60);
+                    }).run();
+            });
+
             it('should publish metrics', function () {
                 return tester
                     .setup(function(api) {

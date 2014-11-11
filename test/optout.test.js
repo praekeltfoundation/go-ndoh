@@ -105,8 +105,8 @@ describe("app", function() {
             it('should publish metrics', function () {
                 return tester
                     .setup(function(api) {
-                        api.kv.store['session_length_helper.foodacom.sentinel'] = '2000-12-12';
-                        api.kv.store['session_length_helper.foodacom'] = 42;
+                        api.kv.store['session_length_helper.' + api.config.store.name + '.foodacom.sentinel'] = '2000-12-12';
+                        api.kv.store['session_length_helper.' + api.config.store.name + '.foodacom'] = 42;
                     })
                     .setup.user({
                         state: 'states_start',
@@ -126,18 +126,18 @@ describe("app", function() {
                         }
                     })
                     .input.session_event('close')
-                    .check(function(api) {
+                    .check(function(api, im) {
 
                         var kv_store = api.kv.store;
-                        assert.equal(kv_store['session_length_helper.foodacom'], 60000);
+                        assert.equal(kv_store['session_length_helper.' + im.config.name + '.foodacom'], 60000);
                         assert.equal(
-                          kv_store['session_length_helper.foodacom.sentinel'], '2014-04-04');
+                          kv_store['session_length_helper.' + im.config.name + '.foodacom.sentinel'], '2014-04-04');
 
                         var m_store = api.metrics.stores.test_metric_store;
                         assert.equal(
-                          m_store['session_length_helper.foodacom'].agg, 'max');
+                          m_store['session_length_helper.' + im.config.name + '.foodacom'].agg, 'max');
                         assert.equal(
-                          m_store['session_length_helper.foodacom'].values[0], 60);
+                          m_store['session_length_helper.' + im.config.name + '.foodacom'].values[0], 60);
                     }).run();
             });
         });

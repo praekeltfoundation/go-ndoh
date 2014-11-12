@@ -2103,6 +2103,79 @@ describe("app", function() {
                         .run();
                 });
             });
+            describe("redialing after timeout", function() {
+                it("ask if want to continue", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27001',
+                                extra : {},
+                                key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                                user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
+                            });
+                        })
+                        .setup.user.addr("27001")
+                        .setup.user.lang(null)
+                        .setup.user.answers({})
+                        .setup.user.metadata({
+                            session_length_helper: {
+                                start:1415791076582
+                            }
+                        })
+                        .setup.user.state('states_language')
+                        .inputs({session_event: 'new'})
+                        .check.interaction({
+                            state: 'states_timed_out',
+                            reply: [
+                                'Welcome back. Please select an option:',
+                                '1. Continue signing up for messages',
+                                '2. Main menu'
+                            ].join('\n')
+                        })
+                        .run();
+                });
+            });
+            describe("redialing after timeout on timeout", function() {
+                it("ask if want to continue", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27001',
+                                extra : {},
+                                key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                                user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
+                            });
+                        })
+                        .setup.user.addr("27001")
+                        .setup.user.lang(null)
+                        .setup.user.answers({})
+                        .setup.user.metadata({
+                            session_length_helper: {
+                                start:1415791076582
+                            }
+                        })
+                        .setup.user.state("states_timed_out")
+                        .inputs({session_event: 'new'})
+                        .check.interaction({
+                            state: 'states_timed_out',
+                            reply: [
+                                'Welcome back. Please select an option:',
+                                '1. Continue signing up for messages',
+                                '2. Main menu'
+                            ].join('\n')
+                        })
+                        .run();
+                });
+            });
         });
     });
 });
+
+
+                        // .setup.user.state({
+                        //     name:"states_timed_out",
+                        //     metadata:{},
+                        //     creator_opts: {
+                        //         name:"states_language"
+                        //     }
+                        // })

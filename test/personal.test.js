@@ -2170,12 +2170,3 @@ describe("app", function() {
         });
     });
 });
-
-
-                        // .setup.user.state({
-                        //     name:"states_timed_out",
-                        //     metadata:{},
-                        //     creator_opts: {
-                        //         name:"states_language"
-                        //     }
-                        // })

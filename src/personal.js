@@ -181,7 +181,7 @@ go.app = function() {
             }
         });
 
-        self.add('states_timed_out', function(name, creator_opts) {
+        self.states.add('states_timed_out', function(name, creator_opts) {
             return new ChoiceState(name, {
                 question: $('Welcome back. Please select an option:'),
 

@@ -84,10 +84,11 @@ go.utils = {
     },
 
     double_digit_day: function(input) {
+        input_numeric = parseInt(input, 10);
         if (parseInt(input, 10) < 10) {
-            return "0" + input;
+            return "0" + input_numeric.toString();
         } else {
-            return input;
+            return input_numeric.toString();
         }
     },
 

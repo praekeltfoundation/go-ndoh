@@ -62,6 +62,15 @@ go.utils = {
         return today;
     },
 
+    is_out_of_hours: function(config) {
+        var today = go.utils.get_today(config);
+        var motoday = moment.utc(today);
+        console.log(motoday);
+        console.log(motoday.hour());
+        // hours are between 8 and 17 local SA time
+        return (motoday.hour() < 6 || motoday.hour() >= 15);
+    },
+
     get_due_year_from_month: function(month, today) {
       // if due month is less than current month then mother must be due next year
       motoday = moment(today);
@@ -1322,9 +1331,23 @@ go.app = function() {
         });
 
         self.states.add('states_default', function(name) {
+            var out_of_hours_text =
+                $("The MomConnect HelpDesk is open from 8am to 5pm. If you are experiencing " +
+                "heavy bleeding, cramps or pain, go straight to the clinic to have yourself " +
+                "checked.");
+
+            var business_hours_text =
+                $("Thank you for your message, it has been captured and you will receive a " +
+                "response soon. Kind regards. MomConnect.");
+
+            if (go.utils.is_out_of_hours(self.im.config)) {
+                text = out_of_hours_text;
+            } else {
+                text = business_hours_text;
+            }
+
             return new EndState(name, {
-                text: $('Thank you for your message, it has been captured and you will receive a ' +
-                        'response soon. Kind regards. MomConnect.'),
+                text: text,
                 next: 'states_start',
 
                 events: {

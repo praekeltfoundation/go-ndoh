@@ -59,6 +59,13 @@ go.utils = {
         return today;
     },
 
+    is_out_of_hours: function(config) {
+        var today = go.utils.get_today(config);
+        var motoday = moment.utc(today);
+        // hours are between 8 and 17 local SA time
+        return (motoday.hour() < 6 || motoday.hour() >= 15);
+    },
+
     get_due_year_from_month: function(month, today) {
       // if due month is less than current month then mother must be due next year
       motoday = moment(today);

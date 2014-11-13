@@ -162,28 +162,63 @@ describe("app", function() {
         });
 
         describe("when the user sends a non standard keyword message", function() {
-            it("should log a support ticket", function() {
-                return tester
-                    .setup(function(api) {
-                        api.contacts.add({
-                            msisdn: '+27001',
-                            extra : {
-                                language_choice: 'en'
-                            },
-                            key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
-                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
-                        });
-                    })
-                    .setup.user.addr('27001')
-                    .input('DONUTS')
-                    .check.interaction({
-                        state: 'states_default',
-                        reply:
-                            'Thank you for your message, it has been captured and you will ' +
-                            'receive a response soon. Kind regards. MomConnect.'
-                    })
-                    .run();
+            describe("when the message is received between 08:00 and 17:00", function() {
+                it("should log a support ticket", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27001',
+                                extra : {
+                                    language_choice: 'en'
+                                },
+                                key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                                user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
+                            });
+                        })
+                        .setup.config.app({
+                            testing_today: 'April 4, 2014 09:07:07 GMT+0200 (SAST)', // during working hours
+                        })
+                        .setup.user.addr('27001')
+                        .input('DONUTS')
+                        .check.interaction({
+                            state: 'states_default',
+                            reply:
+                                'Thank you for your message, it has been captured and you will ' +
+                                'receive a response soon. Kind regards. MomConnect.'
+                        })
+                        .run();
+                });
             });
+
+            describe("when the message is received out of hours", function() {
+                it("should give out of hours warning", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27001',
+                                extra : {
+                                    language_choice: 'en'
+                                },
+                                key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                                user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
+                            });
+                        })
+                        .setup.config.app({
+                            testing_today: 'April 4, 2014 07:07:07  GMT+0200 (SAST)', // time out of hours
+                        })
+                        .setup.user.addr('27001')
+                        .input('DONUTS')
+                        .check.interaction({
+                            state: 'states_default',
+                            reply:
+                                "The MomConnect HelpDesk is open from 8am to 5pm. If you are " +
+                                "experiencing heavy bleeding, cramps or pain, go straight to the " +
+                                "clinic to have yourself checked."
+                        })
+                        .run();
+                });
+            });
+
         });
 
         describe("when the user sends a message containing a USSD code", function() {

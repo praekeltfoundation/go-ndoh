@@ -62,6 +62,15 @@ go.utils = {
         return today;
     },
 
+    is_out_of_hours: function(config) {
+        var today = go.utils.get_today(config);
+        var motoday = moment.utc(today);
+        console.log(motoday);
+        console.log(motoday.hour());
+        // hours are between 8 and 17 local SA time
+        return (motoday.hour() < 6 || motoday.hour() >= 15);
+    },
+
     get_due_year_from_month: function(month, today) {
       // if due month is less than current month then mother must be due next year
       motoday = moment(today);
@@ -1377,7 +1386,7 @@ go.app = function() {
             }
         });
 
-        self.add('states_timed_out', function(name, creator_opts) {
+        self.states.add('states_timed_out', function(name, creator_opts) {
             return new ChoiceState(name, {
                 question: $('Welcome back. Please select an option:'),
 
@@ -1527,7 +1536,12 @@ go.app = function() {
                                     return self.im.contacts.save(self.contact);
                                 })
                                 .then(function() {
-                                    return 'states_register_info';
+                                    if (!self.im.config.faq_enabled && !self.im.config.detailed_data_collection){
+                                        return 'states_suspect_pregnancy';
+                                    } else {
+                                        return 'states_register_info'; 
+                                    }
+                                    
                                 });
                         });
                 },
@@ -1585,6 +1599,9 @@ go.app = function() {
 
                 next: function(choice) {
                     self.contact.extra.suspect_pregnancy = choice.value;
+                    if (!self.im.config.detailed_data_collection) {
+                        self.contact.extra.id_type = "none";
+                    }
 
                     return self.im.contacts
                         .save(self.contact)
@@ -1593,10 +1610,15 @@ go.app = function() {
                                 return go.utils
                                     .opted_out(self.im, self.contact)
                                     .then(function(json_result) {
-                                        return {
-                                            true: 'states_opt_in',
-                                            false: 'states_id_type'
-                                        } [json_result.opted_out];
+                                        if (json_result.opted_out) {
+                                            return 'states_opt_in';
+                                        } else {
+                                            if (self.im.config.detailed_data_collection){
+                                                return 'states_id_type';
+                                            } else {
+                                                return 'save_subscription_data';
+                                            }
+                                        }
                                     });
                             } else {
                                 return 'states_end_not_pregnant';
@@ -1712,7 +1734,7 @@ go.app = function() {
                         .save(self.contact)
                         .then(function() {
                             return {
-                                name: 'states_end_success'
+                                name: 'save_subscription_data'
                             };
                         });
                 }
@@ -1768,7 +1790,7 @@ go.app = function() {
                         .save(self.contact)
                         .then(function() {
                             return {
-                                name: 'states_end_success'
+                                name: 'save_subscription_data'
                             };
                         });
                 }
@@ -1849,59 +1871,52 @@ go.app = function() {
                     self.contact.extra.dob = (self.im.user.answers.states_birth_year +
                         '-' + self.im.user.answers.states_birth_month +
                         '-' + go.utils.double_digit_day(content));
-                    self.contact.extra.is_registered = 'true';
-                    self.contact.extra.is_registered_by = 'personal';
-                    self.contact.extra.metric_sessions_to_register = self.contact.extra.ussd_sessions;
 
-                    return self.im.contacts
-                        .save(self.contact)
-                        .then(function() {
-                            return Q.all([
-                                self.im.metrics.fire.avg((self.metric_prefix + ".avg.sessions_to_register"),
-                                    parseInt(self.contact.extra.ussd_sessions, 10)),
-                                go.utils.incr_kv(self.im, [self.store_name, 'no_complete_registrations'].join('.')),
-                                go.utils.decr_kv(self.im, [self.store_name, 'no_incomplete_registrations'].join('.'))
-                            ])
-                                .then(function() {
-                                    return go.utils.adjust_percentage_registrations(self.im, self.metric_prefix);
-                                });
-                        })
-                        .then(function() {
-                            self.contact.extra.ussd_sessions = '0';
-                            return self.im.contacts.save(self.contact);
-                        })
+                    return self.im.contacts.save(self.contact)
                         .then(function() {
                             return {
-                                name: 'states_end_success'
+                                name: 'save_subscription_data'
                             };
                         });
                 }
             });
         });
 
+        self.states.add('save_subscription_data', function(name) {
+
+            var opts = go.utils.subscription_type_and_rate(self.contact, self.im);
+            self.contact.extra.subscription_type = opts.sub_type.toString();
+            self.contact.extra.subscription_rate = opts.sub_rate.toString();
+            self.contact.extra.is_registered = 'true';
+            self.contact.extra.is_registered_by = 'personal';
+            self.contact.extra.metric_sessions_to_register = self.contact.extra.ussd_sessions;
+            self.contact.extra.ussd_sessions = '0';
+            return Q.all([
+                go.utils.jembi_send_json(self.contact, self.contact, 'subscription', self.im, self.metric_prefix),
+                go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix, opts),
+                self.im.outbound.send_to_user({
+                    endpoint: 'sms',
+                    content: $("Congratulations on your pregnancy. You will now get free SMSs about MomConnect. " +
+                             "You can register for the full set of FREE helpful messages at a clinic.")
+                }),
+                self.im.metrics.fire.avg((self.metric_prefix + ".avg.sessions_to_register"), parseInt(self.contact.extra.metric_sessions_to_register, 10)),
+                go.utils.incr_kv(self.im, [self.store_name, 'no_complete_registrations'].join('.')),
+                go.utils.decr_kv(self.im, [self.store_name, 'no_incomplete_registrations'].join('.')),
+                self.im.contacts.save(self.contact)
+            ])
+            .then(function() {
+                return go.utils.adjust_percentage_registrations(self.im, self.metric_prefix);
+            })
+            .then(function() {
+                return self.states.create('states_end_success');
+            });
+        });
+
+
         self.add('states_end_success', function(name) {
             return new EndState(name, {
                 text: $('Congratulations on your pregnancy. You will now get free SMSs about MomConnect. You can register for the full set of FREE helpful messages at a clinic.'),
-
-                next: 'states_start',
-
-                events: {
-                    'state:enter': function() {
-                        opts = go.utils.subscription_type_and_rate(self.contact, self.im);
-                        self.contact.extra.subscription_type = opts.sub_type.toString();
-                        self.contact.extra.subscription_rate = opts.sub_rate.toString();
-                        return Q.all([
-                            go.utils.jembi_send_json(self.contact, self.contact, 'subscription', self.im, self.metric_prefix),
-                            go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix, opts),
-                            self.im.outbound.send_to_user({
-                                endpoint: 'sms',
-                                content: $("Congratulations on your pregnancy. You will now get free SMSs about MomConnect. " +
-                                         "You can register for the full set of FREE helpful messages at a clinic.")
-                            }),
-                            self.im.contacts.save(self.contact)
-                        ]);
-                    }
-                }
+                next: 'states_start'
             });
         });
 

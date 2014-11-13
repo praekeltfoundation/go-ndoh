@@ -130,7 +130,7 @@ go.app = function() {
             });
         };
 
-        self.add('states_timed_out', function(name, creator_opts) {
+        self.states.add('states_timed_out', function(name, creator_opts) {
             var readable_no = go.utils.readable_sa_msisdn(self.contact.msisdn);
 
             return new ChoiceState(name, {

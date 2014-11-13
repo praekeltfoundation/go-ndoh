@@ -815,21 +815,21 @@ go.utils = {
             .then(function(json_result) {
                 // make all subscriptions inactive
                 var update = JSON.parse(json_result.data);
-                if (update.length > 0) {
-                    for (var i=0; i<update.length; i++) {
-                        update[i].active = false;
+                var clean = true;  // clean tracks if api call is unnecessary
+                for (i=0;i<update.objects.length;i++) {
+                    if (update.objects[i].active === true){
+                        update.objects[i].active = false;
+                        clean = false;
                     }
-                    payload = {
-                        objects: update
-                    };
-                    return go.utils.control_api_call("put", payload, 'subscription/', im);
+                }
+                if (!clean) {
+                    return go.utils.control_api_call("put", update, 'subscription/', im);
                 } else {
                     return Q();
                 }
 
             });
     },
-
 
     is_month_this_year: function(today, month) {
         return ((today.getMonth() + 1)) <= month;

@@ -814,9 +814,7 @@ go.utils = {
             .then(function(json_result) {
                 // make all subscriptions inactive
                 var update = JSON.parse(json_result.data);
-                // console.log(json_result);
-                // console.log(update);
-                var clean = true;
+                var clean = true;  // clean tracks if api call is unnecessary
                 for (i=0;i<update.objects.length;i++) {
                     if (update.objects[i].active === true){
                         update.objects[i].active = false;

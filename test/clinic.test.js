@@ -61,6 +61,13 @@ describe("utils", function() {
             assert.equal(go.utils.calc_sequence_start(36), 1);
             done();
         });
+        it('should parse single digit days correctly', function(done) {
+            assert.equal(go.utils.double_digit_day('1'), '01');
+            assert.equal(go.utils.double_digit_day('01'), '01');
+            assert.equal(go.utils.double_digit_day('21'), '21');
+            assert.equal(go.utils.double_digit_day('00027'), '27');
+            done();
+        });
     });
 });
 

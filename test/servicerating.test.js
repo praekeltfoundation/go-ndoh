@@ -53,37 +53,58 @@ describe("app", function() {
                         api_key: 'test_key',
                         url: 'http://ndoh-control/api/v1/'
                     }
-                })            
+                })
                 .setup(function(api) {
                     fixtures().forEach(api.http.fixtures.add);
                 });
         });
 
         describe("when the user starts a session", function() {
-            it("should ask for their friendliness rating", function() {
-                return tester
-                    .setup.user.addr('27001')
-                    .setup(function(api) {
-                        api.contacts.add({
-                            msisdn: '+27001',
-                            extra : {
-                                language_choice: 'zu'
-                            }
-                        });
-                    })
-                    .start()
-                    .check.interaction({
-                        state: 'question_1_friendliness',
-                        reply: [
-                            'Welcome. When you signed up, were staff at the facility friendly & helpful?',
-                            '1. Very Satisfied',
-                            '2. Satisfied',
-                            '3. Not Satisfied',
-                            '4. Very unsatisfied'
-                        ].join('\n')
-                    })
-                    .check.user.properties({lang: 'zu'})
-                    .run();
+            describe("when the user has NOT registered at a clinic", function() {
+                it("should tell them to register at a clinic first", function() {
+                    return tester
+                        .setup.user.addr('27001')
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27001',
+                            });
+                        })
+                        .start()
+                        .check.interaction({
+                            state: 'end_reg_clinic',
+                            reply: 'Please register at a clinic before using this line.'
+                        })
+                        .run();
+                });
+            });
+
+            describe("when the user HAS registered at a clinic", function() {
+                it("should ask for their friendliness rating", function() {
+                    return tester
+                        .setup.user.addr('27001')
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27001',
+                                extra : {
+                                    language_choice: 'zu',
+                                    is_registered_by: 'clinic'
+                                }
+                            });
+                        })
+                        .start()
+                        .check.interaction({
+                            state: 'question_1_friendliness',
+                            reply: [
+                                'Welcome. When you signed up, were staff at the facility friendly & helpful?',
+                                '1. Very Satisfied',
+                                '2. Satisfied',
+                                '3. Not Satisfied',
+                                '4. Very unsatisfied'
+                            ].join('\n')
+                        })
+                        .check.user.properties({lang: 'zu'})
+                        .run();
+                });
             });
         });
 
@@ -175,7 +196,7 @@ describe("app", function() {
                             msisdn: '+27001',
                             created_at: "2014-07-28 09:35:26.732",
                             key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
-                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"                            
+                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
                         });
                     })
                     .setup.user.addr('27001')
@@ -206,7 +227,7 @@ describe("app", function() {
                             msisdn: '+27001',
                             created_at: "2014-07-28 09:35:26.732",
                             key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
-                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"                            
+                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
                         });
                     })
                     .setup.user.addr('27001')
@@ -237,7 +258,7 @@ describe("app", function() {
                             msisdn: '+27001',
                             created_at: "2014-07-28 09:35:26.732",
                             key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
-                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"                            
+                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
                         });
                     })
                     .setup.user.addr('27001')
@@ -278,7 +299,7 @@ describe("app", function() {
                             msisdn: '+27001',
                             created_at: "2014-07-28 09:35:26.732",
                             key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
-                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"                            
+                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
                         });
                     })
                     .setup.user.addr('27001')
@@ -296,7 +317,7 @@ describe("app", function() {
                         });
                         var sms = smses[0];
                         assert.equal(smses.length,1);
-                        assert.equal(sms.content, 
+                        assert.equal(sms.content,
                             "Thank you for rating our service."
                         );
                         assert.equal(sms.to_addr,'27001');
@@ -318,7 +339,7 @@ describe("app", function() {
                             msisdn: '+27001',
                             created_at: "2014-07-28 09:35:26.732",
                             key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
-                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"                            
+                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
                         });
                     })
                     .setup.user.addr('27001')
@@ -336,7 +357,7 @@ describe("app", function() {
                         });
                         var sms = smses[0];
                         assert.equal(smses.length, 1);
-                        assert.equal(sms.content, 
+                        assert.equal(sms.content,
                             "Thank you for rating our service."
                         );
                     })

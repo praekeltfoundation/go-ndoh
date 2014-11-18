@@ -65,8 +65,6 @@ go.utils = {
     is_out_of_hours: function(config) {
         var today = go.utils.get_today(config);
         var motoday = moment.utc(today);
-        console.log(motoday);
-        console.log(motoday.hour());
         // hours are between 8 and 17 local SA time
         return (motoday.hour() < 6 || motoday.hour() >= 15);
     },
@@ -1212,20 +1210,28 @@ go.app = function() {
     var EndState = vumigo.states.EndState;
 
     var GoNDOH = App.extend(function(self) {
-        App.call(self, 'question_1_friendliness');
+        App.call(self, 'states_start');
         var $ = self.$;
 
         self.init = function() {
             self.env = self.im.config.env;
             self.metric_prefix = [self.env, self.im.config.name].join('.');
             self.store_name = [self.env, self.im.config.name].join('.');
-         
+
             return self.im.contacts
                 .for_user()
                 .then(function(user_contact) {
                    self.contact = user_contact;
                 });
         };
+
+        self.states.add('states_start', function(name) {
+            if (self.contact.extra.is_registered_by === 'clinic') {
+                return self.states.create('question_1_friendliness');
+            } else {
+                return self.states.create('end_reg_clinic');
+            }
+        });
 
         self.states.add('question_1_friendliness', function(name) {
             return go.utils.set_language(self.im.user, self.contact)
@@ -1243,7 +1249,7 @@ go.app = function() {
 
                         next: 'question_2_waiting_times_feel'
                     });
-                    
+
                 });
         });
 
@@ -1328,6 +1334,13 @@ go.app = function() {
             return new EndState(name, {
                 text: $('Thank you for rating our service.'),
                 next: 'end_thanks_revisit'
+            });
+        });
+
+        self.states.add('end_reg_clinic', function(name) {
+            return new EndState(name, {
+                text: 'Please register at a clinic before using this line.',
+                next: 'states_start'
             });
         });
 

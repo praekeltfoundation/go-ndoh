@@ -65,8 +65,6 @@ go.utils = {
     is_out_of_hours: function(config) {
         var today = go.utils.get_today(config);
         var motoday = moment.utc(today);
-        console.log(motoday);
-        console.log(motoday.hour());
         // hours are between 8 and 17 local SA time
         return (motoday.hour() < 6 || motoday.hour() >= 15);
     },

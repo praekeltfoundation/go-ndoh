@@ -136,7 +136,7 @@ go.app = function() {
 
         self.states.add('end_reg_clinic', function(name) {
             return new EndState(name, {
-                text: 'Please register at a clinic before using this line.',
+                text: $('Please register at a clinic before using this line.'),
                 next: 'states_start'
             });
         });

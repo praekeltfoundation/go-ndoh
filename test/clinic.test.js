@@ -68,6 +68,23 @@ describe("utils", function() {
             assert.equal(go.utils.double_digit_day('00027'), '27');
             done();
         });
+        it('should normalise msisdn numbers logically', function(done) {
+            assert.equal(go.utils.normalise_sa_msisdn('0821112222'), '+27821112222');
+            assert.equal(go.utils.normalise_sa_msisdn('821112222'), '+27821112222');
+            assert.equal(go.utils.normalise_sa_msisdn('27821112222'), '+27821112222');
+            done();
+        });
+        it.only('should reject invalid numbers', function(done) {
+            assert.equal(go.utils.check_valid_phone_number('0821112222'), true);
+            assert.equal(go.utils.check_valid_phone_number('821112222'), false);
+            assert.equal(go.utils.check_valid_phone_number('082 111 2222'), false);
+            assert.equal(go.utils.check_valid_phone_number('27 82 111 2222'), false);
+            assert.equal(go.utils.check_valid_phone_number('082111222'), false);
+            assert.equal(go.utils.check_valid_phone_number('21112222'), false);
+            assert.equal(go.utils.check_valid_phone_number('27821112222'), false);
+            assert.equal(go.utils.check_valid_phone_number('2721112222'), false);
+            done();
+        });
     });
 });
 

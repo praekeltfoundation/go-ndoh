@@ -89,6 +89,15 @@ go.utils = {
         }
     },
 
+    check_valid_phone_number: function(input) {
+        // check that it is a number and has at least 10 digits
+        if (go.utils.check_valid_number(input) && input[0] === '0' && input.length === 10) {
+            return true;
+        } else {
+            return false;
+        }
+    },
+
     check_number_in_range: function(input, start, end){
         return go.utils.check_valid_number(input) && (parseInt(input, 10) >= start) && (parseInt(input, 10) <= end);
     },
@@ -1497,7 +1506,7 @@ go.app = function() {
                 question: question,
 
                 check: function(content) {
-                    if (!go.utils.check_valid_number(content)) {
+                    if (!go.utils.check_valid_phone_number(content)) {
                         return error;
                     }
                 },

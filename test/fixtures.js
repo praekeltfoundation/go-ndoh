@@ -1182,7 +1182,7 @@ module.exports = function() {
         'request': {
             'method': 'GET',
             'params': {
-                'to_addr': '+27002'
+                'to_addr': '+27831112222'
             },
             'headers': {
                 'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
@@ -1296,8 +1296,8 @@ module.exports = function() {
             'data': {
                 "mha": 1,
                 "swt": 1,
-                "dmsisdn": "+27002",
-                "cmsisdn": "+27002",
+                "dmsisdn": "+27831112222",
+                "cmsisdn": "+27831112222",
                 "id": "12345^^^ZW^PPN",
                 "type": 1,
                 "lang": "en",
@@ -1584,7 +1584,7 @@ module.exports = function() {
             "message_set": "/api/v1/message_set/6/",
             "next_sequence_number": 1,
             "schedule": "/api/v1/periodic_task/3/",
-            "to_addr": "+27002",
+            "to_addr": "+27831112222",
             "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
           }
         },
@@ -1601,7 +1601,7 @@ module.exports = function() {
             "next_sequence_number": 1,
             "resource_uri": "/api/v1/subscription/8/",
             "schedule": "/api/v1/periodic_task/3/",
-            "to_addr": "+27002",
+            "to_addr": "+27831112222",
             "updated_at": "2014-07-05T11:01:54.498122",
             "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
           }

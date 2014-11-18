@@ -7,7 +7,7 @@ var DummyOptoutResource = DummyResource.extend(function(self) {
 
     /* opt-out stubbery */
     self.optout_store = [
-        'msisdn:+27002'
+        'msisdn:+27831112222'
     ];
 
 
@@ -40,7 +40,7 @@ var DummyOptoutResource = DummyResource.extend(function(self) {
             opted_out: false
         };
     };
-  
+
 });
 
 this.DummyOptoutResource = DummyOptoutResource;

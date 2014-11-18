@@ -294,7 +294,7 @@ go.app = function() {
                 question: question,
 
                 check: function(content) {
-                    if (!go.utils.check_valid_number(content)) {
+                    if (!go.utils.check_valid_phone_number(content)) {
                         return error;
                     }
                 },

@@ -68,6 +68,23 @@ describe("utils", function() {
             assert.equal(go.utils.double_digit_day('00027'), '27');
             done();
         });
+        it('should normalise msisdn numbers logically', function(done) {
+            assert.equal(go.utils.normalise_sa_msisdn('0821112222'), '+27821112222');
+            assert.equal(go.utils.normalise_sa_msisdn('821112222'), '+27821112222');
+            assert.equal(go.utils.normalise_sa_msisdn('27821112222'), '+27821112222');
+            done();
+        });
+        it.only('should reject invalid numbers', function(done) {
+            assert.equal(go.utils.check_valid_phone_number('0821112222'), true);
+            assert.equal(go.utils.check_valid_phone_number('821112222'), false);
+            assert.equal(go.utils.check_valid_phone_number('082 111 2222'), false);
+            assert.equal(go.utils.check_valid_phone_number('27 82 111 2222'), false);
+            assert.equal(go.utils.check_valid_phone_number('082111222'), false);
+            assert.equal(go.utils.check_valid_phone_number('21112222'), false);
+            assert.equal(go.utils.check_valid_phone_number('27821112222'), false);
+            assert.equal(go.utils.check_valid_phone_number('2721112222'), false);
+            done();
+        });
     });
 });
 
@@ -651,10 +668,10 @@ describe("app", function() {
                     return tester
                         .setup(function(api) {
                             api.contacts.add({
-                                msisdn: '+27002',
+                                msisdn: '+27831112222',
                             });
                         })
-                        .setup.user.addr('27002')
+                        .setup.user.addr('27831112222')
                         .setup.user.state('states_start')
                         .input('1')
                         .check.interaction({
@@ -676,10 +693,10 @@ describe("app", function() {
                     return tester
                         .setup(function(api) {
                             api.contacts.add({
-                                msisdn: '+27002',
+                                msisdn: '+27831112222',
                             });
                         })
-                        .setup.user.addr('27002')
+                        .setup.user.addr('27831112222')
                         .setup.user.state('states_opt_in')
                         .input('1')
                         .check.interaction({
@@ -701,10 +718,10 @@ describe("app", function() {
                     return tester
                         .setup(function(api) {
                             api.contacts.add({
-                                msisdn: '+27002',
+                                msisdn: '+27831112222',
                             });
                         })
-                        .setup.user.addr('27002')
+                        .setup.user.addr('27831112222')
                         .setup.user.state('states_opt_in')
                         .input('2')
                         .check.interaction({
@@ -732,10 +749,10 @@ describe("app", function() {
                     return tester
                         .setup(function(api) {
                             api.contacts.add({
-                                msisdn: '+27002',
+                                msisdn: '+27831112222',
                             });
                         })
-                        .setup.user.addr('27002')
+                        .setup.user.addr('27831112222')
                         .setup.user.state('states_stay_out')
                         .input('1')
                         .check.interaction({
@@ -743,7 +760,7 @@ describe("app", function() {
                             reply: [
                                 'Welcome to The Department of Health\'s ' +
                                 'MomConnect. Tell us if this is the no. that ' +
-                                'the mother would like to get SMSs on: 07002',
+                                'the mother would like to get SMSs on: 0831112222',
                                 '1. Yes',
                                 '2. No'
                             ].join('\n')
@@ -820,12 +837,12 @@ describe("app", function() {
                         })
                         .setup(function(api) {
                             api.contacts.add({
-                                msisdn: '+27002',
+                                msisdn: '+27831112222',
                             });
                         })
                         .setup.user.addr('27001')
                         .setup.user.state('states_mobile_no')
-                        .input('002')
+                        .input('0831112222')
                         .check.interaction({
                             state: 'states_opt_in',
                             reply: [(
@@ -838,7 +855,7 @@ describe("app", function() {
                         })
                         .check(function(api) {
                             var contact = api.contacts.store[0];
-                            assert.equal(contact.extra.working_on, "+27002");
+                            assert.equal(contact.extra.working_on, "+27831112222");
                         })
                         .run();
                 });
@@ -851,13 +868,13 @@ describe("app", function() {
                             api.contacts.add({
                                 msisdn: '+27001',
                                 extra : {
-                                    working_on: '+27002'
+                                    working_on: '+27831112222'
                                 }
                             });
                         })
                         .setup(function(api) {
                             api.contacts.add({
-                                msisdn: '+27002',
+                                msisdn: '+27831112222',
                             });
                         })
                         .setup.user.addr('27001')
@@ -884,13 +901,13 @@ describe("app", function() {
                             api.contacts.add({
                                 msisdn: '+27001',
                                 extra : {
-                                    working_on: '+27002'
+                                    working_on: '+27831112222'
                                 }
                             });
                         })
                         .setup(function(api) {
                             api.contacts.add({
-                                msisdn: '+27002',
+                                msisdn: '+27831112222',
                             });
                         })
                         .setup.user.addr('27001')
@@ -925,7 +942,7 @@ describe("app", function() {
                         })
                         .setup(function(api) {
                             api.contacts.add({
-                                msisdn: '+27002',
+                                msisdn: '+27831112222',
                             });
                         })
                         .setup.user.addr('27001')

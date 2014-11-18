@@ -65,8 +65,6 @@ go.utils = {
     is_out_of_hours: function(config) {
         var today = go.utils.get_today(config);
         var motoday = moment.utc(today);
-        console.log(motoday);
-        console.log(motoday.hour());
         // hours are between 8 and 17 local SA time
         return (motoday.hour() < 6 || motoday.hour() >= 15);
     },
@@ -85,6 +83,15 @@ go.utils = {
         // an attempt to solve the insanity of JavaScript numbers
         var numbers_only = new RegExp('^\\d+$');
         if (input !== '' && numbers_only.test(input) && !Number.isNaN(Number(input))){
+            return true;
+        } else {
+            return false;
+        }
+    },
+
+    check_valid_phone_number: function(input) {
+        // check that it is a number and has at least 10 digits
+        if (go.utils.check_valid_number(input) && input[0] === '0' && input.length === 10) {
             return true;
         } else {
             return false;
@@ -1499,7 +1506,7 @@ go.app = function() {
                 question: question,
 
                 check: function(content) {
-                    if (!go.utils.check_valid_number(content)) {
+                    if (!go.utils.check_valid_phone_number(content)) {
                         return error;
                     }
                 },

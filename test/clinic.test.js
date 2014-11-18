@@ -651,10 +651,10 @@ describe("app", function() {
                     return tester
                         .setup(function(api) {
                             api.contacts.add({
-                                msisdn: '+27002',
+                                msisdn: '+27831112222',
                             });
                         })
-                        .setup.user.addr('27002')
+                        .setup.user.addr('27831112222')
                         .setup.user.state('states_start')
                         .input('1')
                         .check.interaction({
@@ -676,10 +676,10 @@ describe("app", function() {
                     return tester
                         .setup(function(api) {
                             api.contacts.add({
-                                msisdn: '+27002',
+                                msisdn: '+27831112222',
                             });
                         })
-                        .setup.user.addr('27002')
+                        .setup.user.addr('27831112222')
                         .setup.user.state('states_opt_in')
                         .input('1')
                         .check.interaction({
@@ -701,10 +701,10 @@ describe("app", function() {
                     return tester
                         .setup(function(api) {
                             api.contacts.add({
-                                msisdn: '+27002',
+                                msisdn: '+27831112222',
                             });
                         })
-                        .setup.user.addr('27002')
+                        .setup.user.addr('27831112222')
                         .setup.user.state('states_opt_in')
                         .input('2')
                         .check.interaction({
@@ -732,10 +732,10 @@ describe("app", function() {
                     return tester
                         .setup(function(api) {
                             api.contacts.add({
-                                msisdn: '+27002',
+                                msisdn: '+27831112222',
                             });
                         })
-                        .setup.user.addr('27002')
+                        .setup.user.addr('27831112222')
                         .setup.user.state('states_stay_out')
                         .input('1')
                         .check.interaction({
@@ -743,7 +743,7 @@ describe("app", function() {
                             reply: [
                                 'Welcome to The Department of Health\'s ' +
                                 'MomConnect. Tell us if this is the no. that ' +
-                                'the mother would like to get SMSs on: 07002',
+                                'the mother would like to get SMSs on: 0831112222',
                                 '1. Yes',
                                 '2. No'
                             ].join('\n')
@@ -820,12 +820,12 @@ describe("app", function() {
                         })
                         .setup(function(api) {
                             api.contacts.add({
-                                msisdn: '+27002',
+                                msisdn: '+27831112222',
                             });
                         })
                         .setup.user.addr('27001')
                         .setup.user.state('states_mobile_no')
-                        .input('002')
+                        .input('0831112222')
                         .check.interaction({
                             state: 'states_opt_in',
                             reply: [(
@@ -838,7 +838,7 @@ describe("app", function() {
                         })
                         .check(function(api) {
                             var contact = api.contacts.store[0];
-                            assert.equal(contact.extra.working_on, "+27002");
+                            assert.equal(contact.extra.working_on, "+27831112222");
                         })
                         .run();
                 });
@@ -851,13 +851,13 @@ describe("app", function() {
                             api.contacts.add({
                                 msisdn: '+27001',
                                 extra : {
-                                    working_on: '+27002'
+                                    working_on: '+27831112222'
                                 }
                             });
                         })
                         .setup(function(api) {
                             api.contacts.add({
-                                msisdn: '+27002',
+                                msisdn: '+27831112222',
                             });
                         })
                         .setup.user.addr('27001')
@@ -884,13 +884,13 @@ describe("app", function() {
                             api.contacts.add({
                                 msisdn: '+27001',
                                 extra : {
-                                    working_on: '+27002'
+                                    working_on: '+27831112222'
                                 }
                             });
                         })
                         .setup(function(api) {
                             api.contacts.add({
-                                msisdn: '+27002',
+                                msisdn: '+27831112222',
                             });
                         })
                         .setup.user.addr('27001')
@@ -925,7 +925,7 @@ describe("app", function() {
                         })
                         .setup(function(api) {
                             api.contacts.add({
-                                msisdn: '+27002',
+                                msisdn: '+27831112222',
                             });
                         })
                         .setup.user.addr('27001')

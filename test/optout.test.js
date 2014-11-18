@@ -79,7 +79,7 @@ describe("app", function() {
                         user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
                     });
                     api.contacts.add( {
-                        msisdn: '+27002',
+                        msisdn: '+27831112222',
                         extra : {
                             language_choice: 'en',
                             suspect_pregnancy: 'yes',
@@ -168,7 +168,7 @@ describe("app", function() {
             describe("when the user has previously opted out", function() {
                 it("should ask for the reason they are opting out", function() {
                     return tester
-                        .setup.user.addr('27002')
+                        .setup.user.addr('27831112222')
                         .start()
                         .check.interaction({
                             state: 'states_start',
@@ -303,7 +303,7 @@ describe("app", function() {
                             'states_start': 'miscarriage'
                         })
                         .setup.user.state('states_subscribe_option')
-                        .setup.user.addr('27002')
+                        .setup.user.addr('27831112222')
                         .input('1')
                         .check.interaction({
                             state: 'states_end_yes',
@@ -312,7 +312,7 @@ describe("app", function() {
                         })
                         .check(function(api) {
                             var contact = _.find(api.contacts.store, {
-                              msisdn: '+27002'
+                              msisdn: '+27831112222'
                             });
                             assert.equal(contact.extra.subscription_type, '6');
                             assert.equal(contact.extra.subscription_rate, '3');

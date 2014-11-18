@@ -94,7 +94,7 @@ describe("app", function() {
                         "account_id": "1",
                         "default_faq": "1"
                     },
-                    faq_enabled: true, 
+                    faq_enabled: true,
                     detailed_data_collection: true
                 })
                 .setup(function(api) {
@@ -811,10 +811,10 @@ describe("app", function() {
                     return tester
                         .setup(function(api) {
                             api.contacts.add({
-                                msisdn: '+27002',
+                                msisdn: '+27831112222',
                             });
                         })
-                        .setup.user.addr('27002')
+                        .setup.user.addr('27831112222')
                         .setup.user.state('states_suspect_pregnancy')
                         .input('1')
                         .check.interaction({
@@ -836,10 +836,10 @@ describe("app", function() {
                     return tester
                         .setup(function(api) {
                             api.contacts.add({
-                                msisdn: '+27002',
+                                msisdn: '+27831112222',
                             });
                         })
-                        .setup.user.addr('27002')
+                        .setup.user.addr('27831112222')
                         .setup.user.state('states_opt_in')
                         .input('1')
                         .check.interaction({
@@ -866,10 +866,10 @@ describe("app", function() {
                     return tester
                         .setup(function(api) {
                             api.contacts.add({
-                                msisdn: '+27002',
+                                msisdn: '+27831112222',
                             });
                         })
-                        .setup.user.addr('27002')
+                        .setup.user.addr('27831112222')
                         .setup.user.state('states_opt_in')
                         .input('2')
                         .check.interaction({
@@ -897,10 +897,10 @@ describe("app", function() {
                     return tester
                         .setup(function(api) {
                             api.contacts.add({
-                                msisdn: '+27002',
+                                msisdn: '+27831112222',
                             });
                         })
-                        .setup.user.addr('27002')
+                        .setup.user.addr('27831112222')
                         .setup.user.state('states_stay_out')
                         .input('1')
                         .check.interaction({
@@ -1979,7 +1979,7 @@ describe("app", function() {
                         "account_id": "1",
                         "default_faq": "1"
                     },
-                    faq_enabled: false, 
+                    faq_enabled: false,
                     detailed_data_collection: false
                 })
                 .setup(function(api) {
@@ -2030,7 +2030,7 @@ describe("app", function() {
                         .run();
                 });
             });
-        
+
 
             describe("when the user selects english as language", function() {
                 it("should ask if they suspect pregnancy", function() {

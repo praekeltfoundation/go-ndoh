@@ -1208,6 +1208,9 @@ module.exports = function() {
     {
         'request': {
             'method': 'PUT',
+            'params': {
+                'to_addr': '+27001'
+            },
             'headers': {
                 'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
                 'Content-Type': ['application/json']

@@ -741,7 +741,7 @@ go.utils = {
         });
     },
 
-    control_api_call: function (method, payload, endpoint, im) {
+    control_api_call: function (method, params, payload, endpoint, im) {
         var http = new HttpApi(im, {
           headers: {
             'Content-Type': ['application/json'],
@@ -755,10 +755,11 @@ go.utils = {
               });
           case "get":
             return http.get(im.config.control.url + endpoint, {
-                params: payload
+                params: params
               });
           case "put":
             return http.put(im.config.control.url + endpoint, {
+                params: params,
                 data: JSON.stringify(payload)
               });
           case "delete":
@@ -809,7 +810,7 @@ go.utils = {
           user_account: contact.user_account
         };
         return go.utils
-            .control_api_call("post", payload, 'subscription/', im)
+            .control_api_call("post", null, payload, 'subscription/', im)
             .then(function(doc_result) {
                 var metric;
                 if (doc_result.code >= 200 && doc_result.code < 300){
@@ -823,11 +824,11 @@ go.utils = {
     },
 
     subscription_unsubscribe_all: function(contact, im) {
-        var payload = {
+        var params = {
             to_addr: contact.msisdn
         };
         return go.utils
-            .control_api_call("get", payload, 'subscription/', im)
+            .control_api_call("get", params, null, 'subscription/', im)
             .then(function(json_result) {
                 // make all subscriptions inactive
                 var update = JSON.parse(json_result.data);
@@ -839,7 +840,7 @@ go.utils = {
                     }
                 }
                 if (!clean) {
-                    return go.utils.control_api_call("put", update, 'subscription/', im);
+                    return go.utils.control_api_call("put", params, update, 'subscription/', im);
                 } else {
                     return Q();
                 }
@@ -934,7 +935,7 @@ go.utils = {
           msisdn: contact.msisdn
         };
         return go.utils
-            .control_api_call("post", payload, 'snappybouncer/ticket/', im)
+            .control_api_call("post", null, payload, 'snappybouncer/ticket/', im)
             .then(function(doc_result) {
                 var metric;
                 if (doc_result.code >= 200 && doc_result.code < 300){
@@ -955,7 +956,7 @@ go.utils = {
             "answers": im.user.answers
         };
         return go.utils
-            .control_api_call("post", payload, 'servicerating/rate/', im)
+            .control_api_call("post", null, payload, 'servicerating/rate/', im)
             .then(function(doc_result) {
                 var metric;
                 if (doc_result.code >= 200 && doc_result.code < 300){

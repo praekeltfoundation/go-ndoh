@@ -65,8 +65,8 @@ go.utils = {
     is_out_of_hours: function(config) {
         var today = go.utils.get_today(config);
         var motoday = moment.utc(today);
-        // hours are between 8 and 17 local SA time
-        return (motoday.hour() < 6 || motoday.hour() >= 15);
+        // hours are between 8 and 16 local SA time
+        return (motoday.hour() < 6 || motoday.hour() >= 14);
     },
 
     get_due_year_from_month: function(month, today) {
@@ -1340,9 +1340,9 @@ go.app = function() {
 
         self.states.add('states_default', function(name) {
             var out_of_hours_text =
-                $("The MomConnect HelpDesk is open from 8am to 5pm. If you are experiencing " +
-                "heavy bleeding, cramps or pain, go straight to the clinic to have yourself " +
-                "checked.");
+                $("The helpdesk operates from 8am to 4pm Mon to Fri. " +
+                  "Responses will be delayed outside of these hrs. In an " +
+                  "emergency please go to your health provider immediately.");
 
             var business_hours_text =
                 $("Thank you for your message, it has been captured and you will receive a " +

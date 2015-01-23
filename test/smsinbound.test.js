@@ -211,9 +211,9 @@ describe("app", function() {
                         .check.interaction({
                             state: 'states_default',
                             reply:
-                                "The MomConnect HelpDesk is open from 8am to 5pm. If you are " +
-                                "experiencing heavy bleeding, cramps or pain, go straight to the " +
-                                "clinic to have yourself checked."
+                                "The helpdesk operates from 8am to 4pm Mon to Fri. " +
+                                "Responses will be delayed outside of these hrs. In an " +
+                                "emergency please go to your health provider immediately."
                         })
                         .run();
                 });

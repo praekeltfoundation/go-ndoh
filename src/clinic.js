@@ -331,7 +331,7 @@ go.app = function() {
 
                 question: $('Please select the month when the baby is due:'),
 
-                choices: go.utils.make_month_choices($, month, 9),
+                choices: go.utils.make_month_choices($, month, 10),
 
                 next: function(choice) {
                     self.contact.extra.due_date_month = choice.value;

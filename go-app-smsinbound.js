@@ -1289,7 +1289,7 @@ go.app = function() {
                             .opt_out(self.im, self.contact)
                             .then(function() {
                                 return go.utils
-                                    .subscription_unsubscribe_all(self.contact, self.im, opts);
+                                    .subscription_unsubscribe_all(self.contact, self.im);
                             });
                     }
                 }

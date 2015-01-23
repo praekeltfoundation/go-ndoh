@@ -74,7 +74,7 @@ describe("utils", function() {
             assert.equal(go.utils.normalise_sa_msisdn('27821112222'), '+27821112222');
             done();
         });
-        it.only('should reject invalid numbers', function(done) {
+        it('should reject invalid numbers', function(done) {
             assert.equal(go.utils.check_valid_phone_number('0821112222'), true);
             assert.equal(go.utils.check_valid_phone_number('821112222'), false);
             assert.equal(go.utils.check_valid_phone_number('082 111 2222'), false);
@@ -1000,7 +1000,8 @@ describe("app", function() {
                                 '6. Sep',
                                 '7. Oct',
                                 '8. Nov',
-                                '9. Dec'
+                                '9. Dec',
+                                '10. Jan'
                             ].join('\n')
                         })
                         .check(function(api) {
@@ -1037,7 +1038,8 @@ describe("app", function() {
                                 '6. Sep',
                                 '7. Oct',
                                 '8. Nov',
-                                '9. Dec'
+                                '9. Dec',
+                                '10. Jan'
                             ].join('\n')
                         })
                         .check(function(api) {

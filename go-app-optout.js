@@ -1303,7 +1303,7 @@ go.app = function() {
 
                         return go.utils
                             // deactivate current subscriptions
-                            .subscription_unsubscribe_all(self.contact, self.im, opts)
+                            .subscription_unsubscribe_all(self.contact, self.im)
                             .then(function() {
                                 return Q.all([
                                     // Registration is sent to optout endpoint at Jembi to indicate removal

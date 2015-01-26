@@ -40,9 +40,9 @@ go.app = function() {
                 // get the first word, remove non-alphanumerics, capitalise
                 switch (self.im.msg.content.split(" ")[0].replace(/\W/g, '').toUpperCase()) {
                     case "STOP":
-                        return self.states.create("states_opt_out");
+                        return self.states.create("states_opt_out_enter");
                     case "BLOCK":
-                        return self.states.create("states_opt_out");
+                        return self.states.create("states_opt_out_enter");
                     case "START":
                         return self.states.create("states_opt_in");
                     case "BABY":
@@ -63,23 +63,24 @@ go.app = function() {
             });
         });
 
+        self.states.add('states_opt_out_enter', function(name) {
+            return go.utils
+                .opt_out(self.im, self.contact)
+                .then(function() {
+                    return go.utils
+                        .subscription_unsubscribe_all(self.contact, self.im)
+                        .then(function() {
+                            return self.states.create('states_opt_out');
+                        });
+                });
+        });
+
         self.states.add('states_opt_out', function(name) {
             return new EndState(name, {
                 text: $('Thank you. You will no longer receive messages from us. ' +
                         'If you have any medical concerns please visit your nearest clinic'),
 
-                next: 'states_start',
-
-                events: {
-                    'state:enter': function() {
-                        return go.utils
-                            .opt_out(self.im, self.contact)
-                            .then(function() {
-                                return go.utils
-                                    .subscription_unsubscribe_all(self.contact, self.im);
-                            });
-                    }
-                }
+                next: 'states_start'
             });
         });
 

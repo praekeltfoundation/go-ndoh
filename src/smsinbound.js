@@ -44,7 +44,7 @@ go.app = function() {
                     case "BLOCK":
                         return self.states.create("states_opt_out_enter");
                     case "START":
-                        return self.states.create("states_opt_in");
+                        return self.states.create("states_opt_in_enter");
                     case "BABY":
                         return self.states.create("states_baby");
                     default: // Logs a support ticket
@@ -84,18 +84,20 @@ go.app = function() {
             });
         });
 
+        self.states.add('states_opt_in_enter', function(name) {
+            return go.utils
+                .opt_in(self.im, self.contact)
+                .then(function() {
+                    return self.states.create('states_opt_in');
+                });
+        });
+
         self.states.add('states_opt_in', function(name) {
             return new EndState(name, {
                 text: $('Thank you. You will now receive messages from us again. ' +
                         'If you have any medical concerns please visit your nearest clinic'),
 
-                next: 'states_start',
-
-                events: {
-                    'state:enter': function() {
-                        return go.utils.opt_in(self.im, self.contact);
-                    }
-                }
+                next: 'states_start'
             });
         });
 

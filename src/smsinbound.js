@@ -40,15 +40,15 @@ go.app = function() {
                 // get the first word, remove non-alphanumerics, capitalise
                 switch (self.im.msg.content.split(" ")[0].replace(/\W/g, '').toUpperCase()) {
                     case "STOP":
-                        return self.states.create("states_opt_out");
+                        return self.states.create("states_opt_out_enter");
                     case "BLOCK":
-                        return self.states.create("states_opt_out");
+                        return self.states.create("states_opt_out_enter");
                     case "START":
-                        return self.states.create("states_opt_in");
+                        return self.states.create("states_opt_in_enter");
                     case "BABY":
-                        return self.states.create("states_baby");
+                        return self.states.create("states_baby_enter");
                     default: // Logs a support ticket
-                        return self.states.create("states_default");
+                        return self.states.create("states_default_enter");
                 }
             }
         });
@@ -63,24 +63,32 @@ go.app = function() {
             });
         });
 
+        self.states.add('states_opt_out_enter', function(name) {
+            return Q
+                .all([
+                    go.utils.opt_out(self.im, self.contact),
+                    go.utils.subscription_unsubscribe_all(self.contact, self.im)
+                ])
+                .then(function() {
+                    return self.states.create('states_opt_out');
+                });
+        });
+
         self.states.add('states_opt_out', function(name) {
             return new EndState(name, {
                 text: $('Thank you. You will no longer receive messages from us. ' +
                         'If you have any medical concerns please visit your nearest clinic'),
 
-                next: 'states_start',
-
-                events: {
-                    'state:enter': function() {
-                        return go.utils
-                            .opt_out(self.im, self.contact)
-                            .then(function() {
-                                return go.utils
-                                    .subscription_unsubscribe_all(self.contact, self.im);
-                            });
-                    }
-                }
+                next: 'states_start'
             });
+        });
+
+        self.states.add('states_opt_in_enter', function(name) {
+            return go.utils
+                .opt_in(self.im, self.contact)
+                .then(function() {
+                    return self.states.create('states_opt_in');
+                });
         });
 
         self.states.add('states_opt_in', function(name) {
@@ -88,14 +96,29 @@ go.app = function() {
                 text: $('Thank you. You will now receive messages from us again. ' +
                         'If you have any medical concerns please visit your nearest clinic'),
 
-                next: 'states_start',
-
-                events: {
-                    'state:enter': function() {
-                        return go.utils.opt_in(self.im, self.contact);
-                    }
-                }
+                next: 'states_start'
             });
+        });
+
+        self.states.add('states_baby_enter', function(name) {
+            var opts = go.utils.subscription_type_and_rate(self.contact, self.im);
+            self.contact.extra.subscription_type = opts.sub_type.toString();
+            self.contact.extra.subscription_rate = opts.sub_rate.toString();
+            self.contact.extra.subscription_seq_start = opts.sub_seq_start.toString();
+
+            return go.utils
+                .subscription_unsubscribe_all(self.contact, self.im)
+                .then(function() {
+                    return Q
+                        .all([
+                            go.utils.subscription_send_doc(self.contact,
+                                self.im, self.metric_prefix, opts),
+                            self.im.contacts.save(self.contact)
+                        ])
+                        .then(function() {
+                            return self.states.create('states_baby');
+                        });
+                });
         });
 
         self.states.add('states_baby', function(name) {
@@ -103,26 +126,17 @@ go.app = function() {
                 text: $('Thank you. You will now receive messages related to newborn babies. ' +
                         'If you have any medical concerns please visit your nearest clinic'),
 
-                next: 'states_start',
-
-                events: {
-                    'state:enter': function() {
-                        opts = go.utils.subscription_type_and_rate(self.contact, self.im);
-                        self.contact.extra.subscription_type = opts.sub_type.toString();
-                        self.contact.extra.subscription_rate = opts.sub_rate.toString();
-                        self.contact.extra.subscription_seq_start = opts.sub_seq_start.toString();
-
-                        return go.utils
-                            .subscription_unsubscribe_all(self.contact, self.im)
-                            .then(function() {
-                                return Q.all([
-                                    go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix, opts),
-                                    self.im.contacts.save(self.contact)
-                                ]);
-                            });
-                    }
-                }
+                next: 'states_start'
             });
+        });
+
+        self.states.add('states_default_enter', function(name) {
+            return go.utils
+                .support_log_ticket(self.im.msg.content, self.contact, self.im,
+                                    self.metric_prefix)
+                .then(function() {
+                    return self.states.create('states_default');
+                });
         });
 
         self.states.add('states_default', function(name) {
@@ -143,13 +157,8 @@ go.app = function() {
 
             return new EndState(name, {
                 text: text,
-                next: 'states_start',
 
-                events: {
-                    'state:enter': function() {
-                        return go.utils.support_log_ticket(self.im.msg.content, self.contact, self.im, self.metric_prefix);
-                    }
-                }
+                next: 'states_start'
             });
         });
 

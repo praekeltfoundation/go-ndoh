@@ -48,7 +48,7 @@ go.app = function() {
                     case "BABY":
                         return self.states.create("states_baby");
                     default: // Logs a support ticket
-                        return self.states.create("states_default");
+                        return self.states.create("states_default_enter");
                 }
             }
         });
@@ -128,6 +128,15 @@ go.app = function() {
             });
         });
 
+        self.states.add('states_default_enter', function(name) {
+            return go.utils
+                .support_log_ticket(self.im.msg.content, self.contact, self.im,
+                                    self.metric_prefix)
+                .then(function() {
+                    return self.states.create('states_default');
+                });
+        });
+
         self.states.add('states_default', function(name) {
             var out_of_hours_text =
                 $("The helpdesk operates from 8am to 4pm Mon to Fri. " +
@@ -146,13 +155,8 @@ go.app = function() {
 
             return new EndState(name, {
                 text: text,
-                next: 'states_start',
 
-                events: {
-                    'state:enter': function() {
-                        return go.utils.support_log_ticket(self.im.msg.content, self.contact, self.im, self.metric_prefix);
-                    }
-                }
+                next: 'states_start'
             });
         });
 

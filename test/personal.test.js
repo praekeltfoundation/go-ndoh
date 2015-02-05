@@ -5,6 +5,7 @@ var _ = require('lodash');
 var assert = require('assert');
 var messagestore = require('./messagestore');
 var optoutstore = require('./optoutstore');
+var translation_af = require('../config/personal_af');
 var DummyMessageStoreResource = messagestore.DummyMessageStoreResource;
 var DummyOptoutResource = optoutstore.DummyOptoutResource;
 
@@ -1886,6 +1887,51 @@ describe("app", function() {
                         assert.deepEqual(metrics['test.faq_sent_via_sms'], undefined);
                     })
                     .run();
+            });
+        });
+
+        describe('Test translations', function() {
+            describe('Afrikaans', function() {
+                it('states_suspect_pregnancy', function() {
+                    return tester
+                        .setup.user.addr('27001')
+                        .setup.config({'translation.af': translation_af})
+                        .setup.user.lang('af')
+                        .setup.user.state('states_suspect_pregnancy')
+                        .input('invalid input')
+                        .check.interaction({
+                            state: 'states_suspect_pregnancy',
+                            reply: [
+                                "MomConnect stuur gratis SMSe uit om swanger " +
+                                "moeders te ondersteun. Is jy of vermoed jy " +
+                                "dat jy swanger is?",
+                                '1. Ja',
+                                '2. Nee'
+                            ].join('\n')
+                        })
+                        .run();
+                });
+
+                it('states_id_type', function() {
+                    return tester
+                        .setup.user.addr('27001')
+                        .setup.config({'translation.af': translation_af})
+                        .setup.user.lang('af')
+                        .setup.user.state('states_id_type')
+                        .input('invalid input')
+                        .check.interaction({
+                            state: 'states_id_type',
+                            reply: [
+                                "Ons benodig jou inligting. Dit is privaat & " +
+                                "sal slegs gebruik word om jou te help as jy " +
+                                "na 'n kliniek  gaan.",
+                                '1. SA ID',
+                                '2. Passport',
+                                '3. Geen'
+                            ].join('\n')
+                        })
+                        .run();
+                });
             });
         });
 

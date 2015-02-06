@@ -519,32 +519,63 @@ describe("app", function() {
             });
 
             describe("when the user has registered on clinic", function() {
-                it("should prompt for info / compliment / complaint", function() {
-                    return tester
-                        .setup(function(api) {
-                            api.contacts.add({
-                                msisdn: '+27001',
-                                extra : {
-                                    language_choice: 'xh',
-                                    is_registered: 'true',
-                                    is_registered_by: 'clinic'
-                                },
-                            });
-                        })
-                        .setup.user.addr('27001')
-                        .start()
-                        .check.interaction({
-                            state: 'states_registered_full',
-                            reply: [
-                                'Welcome to the Department of Health\'s ' +
-                                'MomConnect. Please choose an option:',
-                                '1. Baby and pregnancy info',
-                                '2. Send us a compliment',
-                                '3. Send us a complaint'
-                            ].join('\n')
-                        })
-                        .check.user.properties({lang: 'xh'})
-                        .run();
+                describe("when the user has active subscriptions", function() {
+                    it("should prompt for info / compliment / complaint", function() {
+                        return tester
+                            .setup(function(api) {
+                                api.contacts.add({
+                                    msisdn: '+27001',
+                                    extra : {
+                                        language_choice: 'xh',
+                                        is_registered: 'true',
+                                        is_registered_by: 'clinic'
+                                    },
+                                });
+                            })
+                            .setup.user.addr('27001')
+                            .start()
+                            .check.interaction({
+                                state: 'states_registered_full',
+                                reply: [
+                                    'Welcome to the Department of Health\'s ' +
+                                    'MomConnect. Please choose an option:',
+                                    '1. Baby and pregnancy info',
+                                    '2. Send us a compliment',
+                                    '3. Send us a complaint'
+                                ].join('\n')
+                            })
+                            .check.user.properties({lang: 'xh'})
+                            .run();
+                    });
+                });
+
+                describe("when the user has no active subscriptions", function() {
+                    it("should ask if they want to register or get info", function() {
+                        return tester
+                            .setup(function(api) {
+                                api.contacts.add({
+                                    msisdn: '+27821235555',
+                                    extra : {
+                                        language_choice: 'xh',
+                                        is_registered: 'true',
+                                        is_registered_by: 'clinic'
+                                    },
+                                });
+                            })
+                            .setup.user.addr('27821235555')
+                            .start()
+                            .check.interaction({
+                                state: 'states_register_info',
+                                reply: [
+                                    'Welcome to the Department of Health\'s ' +
+                                    'MomConnect. Please select:',
+                                    '1. Register for messages',
+                                    '2. Baby and Pregnancy info (English only)'
+                                ].join('\n')
+                            })
+                            .check.user.properties({lang: 'xh'})
+                            .run();
+                    });
                 });
             });
 
@@ -2164,6 +2195,67 @@ describe("app", function() {
                                 '2. Main menu'
                             ].join('\n')
                         })
+                        .run();
+                });
+            });
+        });
+
+        describe("when the user has registered on clinic", function() {
+            describe("when the user has active subscriptions", function() {
+                it("should prompt for info / compliment / complaint", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27001',
+                                extra : {
+                                    language_choice: 'xh',
+                                    is_registered: 'true',
+                                    is_registered_by: 'clinic'
+                                },
+                            });
+                        })
+                        .setup.user.addr('27001')
+                        .start()
+                        .check.interaction({
+                            state: 'states_registered_full',
+                            reply: [
+                                'Welcome to the Department of Health\'s ' +
+                                'MomConnect. Please choose an option:',
+                                '1. Send us a compliment',
+                                '2. Send us a complaint'
+                            ].join('\n')
+                        })
+                        .check.user.properties({lang: 'xh'})
+                        .run();
+                });
+            });
+
+            describe("when the user has no active subscriptions", function() {
+                it("should ask if they want to register or get info", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27821235555',
+                                extra : {
+                                    language_choice: 'xh',
+                                    is_registered: 'true',
+                                    is_registered_by: 'clinic'
+                                },
+                            });
+                        })
+                        .setup.user.addr('27821235555')
+                        .start()
+                        .check.interaction({
+                            state: 'states_suspect_pregnancy',
+                            reply: [
+                                'MomConnect sends free support SMSs to ' +
+                                'pregnant mothers. Are you or do you suspect ' +
+                                'that you are pregnant?',
+                                '1. Yes',
+                                '2. No'
+                            ].join('\n')
+                        })
+                        .check.user.properties({lang: 'xh'})
                         .run();
                 });
             });

@@ -175,7 +175,7 @@ go.app = function() {
                             .then(function(count) {
                                 if (count === 0) {
                                     // if no active subscriptions, register user
-                                    if (!self.im.config.faq_enabled && !self.im.config.detailed_data_collection) {
+                                    if (!self.im.config.faq_enabled) {
                                         return self.states.create('states_suspect_pregnancy', opts);
                                     } else {
                                         return self.states.create('states_register_info', opts);
@@ -345,7 +345,7 @@ go.app = function() {
                                     return self.im.contacts.save(self.contact);
                                 })
                                 .then(function() {
-                                    if (!self.im.config.faq_enabled && !self.im.config.detailed_data_collection){
+                                    if (!self.im.config.faq_enabled){
                                         return 'states_suspect_pregnancy';
                                     } else {
                                         return 'states_register_info';

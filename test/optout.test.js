@@ -158,14 +158,14 @@ describe("app", function() {
                         .run();
                 });
 
-                it("should fire metrics if is_registered_by undefined", function() {
+                it("should not fire metrics if previously opted out", function() {
                     return tester
                         .setup.user.addr('27831112222')
                         .setup.user.state('states_start')
                         .input('4')
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
-                            assert.deepEqual(metrics['test.sum.optout.unknown'].values, [1]);
+                            assert.deepEqual(metrics, undefined);
                         })
                         .run();
                 });

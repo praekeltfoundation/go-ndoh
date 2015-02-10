@@ -1262,6 +1262,7 @@ go.app = function() {
                             if (json_result.opted_out === false) {
                                 question = $('Please let us know why you do not want MomConnect messages');
                             } else {
+                                self.contact.extra.prior_opt_out = 'true';
                                 question = $('Please tell us why you previously opted out of messages');
                             }
 
@@ -1283,7 +1284,11 @@ go.app = function() {
                                         .save(self.contact)
                                         .then(function() {
                                             if (_.contains(['not_useful', 'other'], choice.value)){
-                                                return 'states_end_no';
+                                                if (self.contact.extra.prior_opt_out === 'true') {
+                                                    return 'states_end_no';
+                                                } else {
+                                                    return 'states_end_no_optout';
+                                                }
                                             } else {
                                                 return 'states_subscribe_option';
                                             }
@@ -1335,14 +1340,27 @@ go.app = function() {
                         return go.utils
                             .jembi_send_json(self.contact, self.contact, 'subscription', self.im, self.metric_prefix)
                             .then(function() {
-                                return choice.value;
+                                if (self.contact.extra.prior_opt_out === 'true') {
+                                    return 'states_end_no';
+                                } else {
+                                    return 'states_end_no_optout';
+                                }
                             });
                     }
-
-
                 }
-
             });
+        });
+
+        self.states.add('states_end_no_optout', function(name) {
+            return go.utils
+                .opt_out(self.im, self.contact, self.env)
+                .then(function() {
+                    return go.utils
+                        .subscription_unsubscribe_all(self.contact, self.im)
+                        .then(function() {
+                            return self.states.create('states_end_no');
+                        });
+                });
         });
 
         self.states.add('states_end_no', function(name) {
@@ -1351,17 +1369,7 @@ go.app = function() {
                         'messages from us. If you have any medical ' +
                         'concerns please visit your nearest clinic.'),
 
-                next: 'states_start',
-
-                events: {
-                    'state:enter': function() {
-                        return go.utils
-                            .opt_out(self.im, self.contact, self.env)
-                            .then(function() {
-                                return go.utils.subscription_unsubscribe_all(self.contact, self.im);
-                            });
-                    }
-                },
+                next: 'states_start'
             });
         });
 

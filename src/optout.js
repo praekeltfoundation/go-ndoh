@@ -106,7 +106,15 @@ go.app = function() {
                                     go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix, opts),
                                     self.im.contacts.save(self.contact)
                                 ]).then(function() {
-                                    return choice.value;
+                                    if (self.contact.extra.prior_opt_out === 'true') {
+                                        return 'states_end_yes';
+                                    } else {
+                                        return self.im.metrics.fire
+                                            .inc([self.env, 'sum', 'optout', go.utils.get_reg_source(self.contact)].join('.'), 1)
+                                            .then(function() {
+                                                return 'states_end_yes';
+                                            });
+                                    }
                                 });
                             });
                     } else {

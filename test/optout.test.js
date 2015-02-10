@@ -146,11 +146,23 @@ describe("app", function() {
 
         describe('test metric firing:', function() {
             describe('when the user is opted out', function() {
-                it("should fire metrics if is_registered_by defined", function() {
+                it("should fire metrics if no loss message signup", function() {
                     return tester
                         .setup.user.addr('27001')
                         .setup.user.state('states_start')
                         .input('4')
+                        .check(function(api) {
+                            var metrics = api.metrics.stores.test_metric_store;
+                            assert.deepEqual(metrics['test.sum.optout.chw'].values, [1]);
+                        })
+                        .run();
+                });
+
+                it("should fire metrics if loss message signup", function() {
+                    return tester
+                        .setup.user.addr('27001')
+                        .setup.user.state('states_start')
+                        .inputs('start', '1', '1')
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
                             assert.deepEqual(metrics['test.sum.optout.chw'].values, [1]);
@@ -166,6 +178,17 @@ describe("app", function() {
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
                             assert.deepEqual(metrics, undefined);
+                        })
+                        .run();
+                });
+
+                it("should not fire metrics if previously opted out and signs up", function() {
+                    return tester
+                        .setup.user.addr('27831112222')
+                        .inputs('start', '1', '1')
+                        .check(function(api) {
+                            var metrics = api.metrics.stores.test_metric_store;
+                            assert.equal(metrics['test.sum.optout.unknown'], undefined);
                         })
                         .run();
                 });

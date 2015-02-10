@@ -1015,7 +1015,7 @@ go.utils = {
             && im.user.state.name !== 'states_start';
     },
 
-    opt_out: function(im, contact, env) {
+    get_reg_source: function(contact) {
         // determine registration source with default 'unknown'
         var reg_source;
         var registration_options = ['clinic', 'chw', 'personal'];
@@ -1024,14 +1024,17 @@ go.utils = {
         } else {
             reg_source = contact.extra.is_registered_by;
         }
+        return reg_source;
+    },
 
+    opt_out: function(im, contact, env) {
         return Q.all([
             im.api_request('optout.optout', {
                 address_type: "msisdn",
                 address_value: contact.msisdn,
                 message_id: im.msg.message_id
             }),
-            im.metrics.fire.inc([env, 'sum', 'optout', reg_source].join('.'), 1)
+            im.metrics.fire.inc([env, 'sum', 'optout', go.utils.get_reg_source(contact)].join('.'), 1)
         ]);
     },
 

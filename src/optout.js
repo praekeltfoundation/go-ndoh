@@ -110,7 +110,7 @@ go.app = function() {
                                         return 'states_end_yes';
                                     } else {
                                         return self.im.metrics.fire
-                                            .inc([self.env, 'sum', 'optout', go.utils.get_reg_source(self.contact)].join('.'), 1)
+                                            .inc([self.env, 'sum', 'optout', go.utils.get_reg_source(self.contact)].join('.'), {amount:1})
                                             .then(function() {
                                                 return 'states_end_yes';
                                             });

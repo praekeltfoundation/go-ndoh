@@ -681,7 +681,7 @@ go.utils = {
             return Q.all([
                 im.metrics.fire.last([metric_prefix, 'percent_incomplete_registrations'].join('.'), percentage_incomplete),
                 im.metrics.fire.last([metric_prefix, 'percent_complete_registrations'].join('.'), percentage_complete),
-                im.metrics.fire.inc([env, 'sum', 'registrations'].join('.'), 1),
+                im.metrics.fire.inc([env, 'sum', 'registrations'].join('.'), {amount:1}),
                 go.utils.incr_kv(im, [env, 'sum', 'registrations'].join('.'))
             ]);
         });
@@ -1037,7 +1037,7 @@ go.utils = {
                 address_value: contact.msisdn,
                 message_id: im.msg.message_id
             }),
-            im.metrics.fire.inc([env, 'sum', 'optout', go.utils.get_reg_source(contact)].join('.'), 1)
+            im.metrics.fire.inc([env, 'sum', 'optout', go.utils.get_reg_source(contact)].join('.'), {amount:1})
         ]);
     },
 
@@ -1340,7 +1340,7 @@ go.app = function() {
                                         return 'states_end_yes';
                                     } else {
                                         return self.im.metrics.fire
-                                            .inc([self.env, 'sum', 'optout', go.utils.get_reg_source(self.contact)].join('.'), 1)
+                                            .inc([self.env, 'sum', 'optout', go.utils.get_reg_source(self.contact)].join('.'), {amount:1})
                                             .then(function() {
                                                 return 'states_end_yes';
                                             });

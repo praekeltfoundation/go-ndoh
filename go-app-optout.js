@@ -1018,12 +1018,24 @@ go.utils = {
             && im.user.state.name !== 'states_start';
     },
 
-    opt_out: function(im, contact) {
-        return im.api_request('optout.optout', {
-            address_type: "msisdn",
-            address_value: contact.msisdn,
-            message_id: im.msg.message_id
-        });
+    opt_out: function(im, contact, env) {
+        // determine registration source with default 'unknown'
+        var reg_source;
+        var registration_options = ['clinic', 'chw', 'personal'];
+        if (!_.contains(registration_options, contact.extra.is_registered_by)) {
+            reg_source = 'unknown';
+        } else {
+            reg_source = contact.extra.is_registered_by;
+        }
+
+        return Q.all([
+            im.api_request('optout.optout', {
+                address_type: "msisdn",
+                address_value: contact.msisdn,
+                message_id: im.msg.message_id
+            }),
+            im.metrics.fire.inc([env, 'sum', 'optout', reg_source].join('.'), 1)
+        ]);
     },
 
     opted_out: function(im, contact) {
@@ -1344,7 +1356,7 @@ go.app = function() {
                 events: {
                     'state:enter': function() {
                         return go.utils
-                            .opt_out(self.im, self.contact)
+                            .opt_out(self.im, self.contact, self.env)
                             .then(function() {
                                 return go.utils.subscription_unsubscribe_all(self.contact, self.im);
                             });

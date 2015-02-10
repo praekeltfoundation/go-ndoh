@@ -129,7 +129,7 @@ go.app = function() {
                 events: {
                     'state:enter': function() {
                         return go.utils
-                            .opt_out(self.im, self.contact)
+                            .opt_out(self.im, self.contact, self.env)
                             .then(function() {
                                 return go.utils.subscription_unsubscribe_all(self.contact, self.im);
                             });

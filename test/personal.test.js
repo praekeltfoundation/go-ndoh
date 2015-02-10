@@ -1357,6 +1357,7 @@ describe("app", function() {
                         assert.deepEqual(metrics['test.personal.percent_incomplete_registrations'].values, [25]);
                         assert.deepEqual(metrics['test.personal.percent_complete_registrations'].values, [75]);
                         assert.deepEqual(metrics['test.personal.sum.json_to_jembi_success'].values, [1]);
+                        assert.deepEqual(metrics['test.sum.registrations'].values, [1]);
                     })
                     .check(function(api) {
                         var smses = _.where(api.outbound.store, {

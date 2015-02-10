@@ -334,9 +334,9 @@ go.app = function() {
                                     if (!self.im.config.faq_enabled && !self.im.config.detailed_data_collection){
                                         return 'states_suspect_pregnancy';
                                     } else {
-                                        return 'states_register_info'; 
+                                        return 'states_register_info';
                                     }
-                                    
+
                                 });
                         });
                 },
@@ -346,7 +346,7 @@ go.app = function() {
                         return go.utils
                             .incr_kv(self.im, [self.store_name, 'no_incomplete_registrations'].join('.'))
                             .then(function() {
-                                return go.utils.adjust_percentage_registrations(self.im, self.metric_prefix);
+                                return go.utils.adjust_percentage_registrations(self.im, self.metric_prefix, self.env);
                             });
                     }
                 }
@@ -700,7 +700,7 @@ go.app = function() {
                 self.im.contacts.save(self.contact)
             ])
             .then(function() {
-                return go.utils.adjust_percentage_registrations(self.im, self.metric_prefix);
+                return go.utils.adjust_percentage_registrations(self.im, self.metric_prefix, self.env);
             })
             .then(function() {
                 return self.states.create('states_end_success');

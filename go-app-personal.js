@@ -670,7 +670,7 @@ go.utils = {
             });
     },
 
-    adjust_percentage_registrations: function(im, metric_prefix) {
+    adjust_percentage_registrations: function(im, metric_prefix, env) {
         return Q.all([
             go.utils.get_kv(im, [metric_prefix, 'no_incomplete_registrations'].join('.'), 0),
             go.utils.get_kv(im, [metric_prefix, 'no_complete_registrations'].join('.'), 0)
@@ -680,7 +680,8 @@ go.utils = {
             var percentage_complete = (no_complete / total_attempted) * 100;
             return Q.all([
                 im.metrics.fire.last([metric_prefix, 'percent_incomplete_registrations'].join('.'), percentage_incomplete),
-                im.metrics.fire.last([metric_prefix, 'percent_complete_registrations'].join('.'), percentage_complete)
+                im.metrics.fire.last([metric_prefix, 'percent_complete_registrations'].join('.'), percentage_complete),
+                im.metrics.fire.inc([env, 'sum', 'registrations'].join('.'), 1)
             ]);
         });
     },
@@ -1547,9 +1548,9 @@ go.app = function() {
                                     if (!self.im.config.faq_enabled && !self.im.config.detailed_data_collection){
                                         return 'states_suspect_pregnancy';
                                     } else {
-                                        return 'states_register_info'; 
+                                        return 'states_register_info';
                                     }
-                                    
+
                                 });
                         });
                 },
@@ -1559,7 +1560,7 @@ go.app = function() {
                         return go.utils
                             .incr_kv(self.im, [self.store_name, 'no_incomplete_registrations'].join('.'))
                             .then(function() {
-                                return go.utils.adjust_percentage_registrations(self.im, self.metric_prefix);
+                                return go.utils.adjust_percentage_registrations(self.im, self.metric_prefix, self.env);
                             });
                     }
                 }
@@ -1913,7 +1914,7 @@ go.app = function() {
                 self.im.contacts.save(self.contact)
             ])
             .then(function() {
-                return go.utils.adjust_percentage_registrations(self.im, self.metric_prefix);
+                return go.utils.adjust_percentage_registrations(self.im, self.metric_prefix, self.env);
             })
             .then(function() {
                 return self.states.create('states_end_success');

@@ -667,7 +667,7 @@ go.utils = {
             });
     },
 
-    adjust_percentage_registrations: function(im, metric_prefix) {
+    adjust_percentage_registrations: function(im, metric_prefix, env) {
         return Q.all([
             go.utils.get_kv(im, [metric_prefix, 'no_incomplete_registrations'].join('.'), 0),
             go.utils.get_kv(im, [metric_prefix, 'no_complete_registrations'].join('.'), 0)
@@ -677,7 +677,8 @@ go.utils = {
             var percentage_complete = (no_complete / total_attempted) * 100;
             return Q.all([
                 im.metrics.fire.last([metric_prefix, 'percent_incomplete_registrations'].join('.'), percentage_incomplete),
-                im.metrics.fire.last([metric_prefix, 'percent_complete_registrations'].join('.'), percentage_complete)
+                im.metrics.fire.last([metric_prefix, 'percent_complete_registrations'].join('.'), percentage_complete),
+                im.metrics.fire.inc([env, 'sum', 'registrations'].join('.'), 1)
             ]);
         });
     },

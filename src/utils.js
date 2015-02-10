@@ -678,7 +678,8 @@ go.utils = {
             return Q.all([
                 im.metrics.fire.last([metric_prefix, 'percent_incomplete_registrations'].join('.'), percentage_incomplete),
                 im.metrics.fire.last([metric_prefix, 'percent_complete_registrations'].join('.'), percentage_complete),
-                im.metrics.fire.inc([env, 'sum', 'registrations'].join('.'), 1)
+                im.metrics.fire.inc([env, 'sum', 'registrations'].join('.'), 1),
+                go.utils.incr_kv(im, [env, 'sum', 'registrations'].join('.'))
             ]);
         });
     },

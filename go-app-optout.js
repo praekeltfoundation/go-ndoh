@@ -847,7 +847,24 @@ go.utils = {
                 } else {
                     return Q();
                 }
+            });
+    },
 
+    subscription_count_active: function(contact, im) {
+        var params = {
+            to_addr: contact.msisdn
+        };
+        return go.utils
+            .control_api_call("get", params, null, 'subscription/', im)
+            .then(function(json_result) {
+                var subs = JSON.parse(json_result.data);
+                var active = 0;
+                for (i=0;i<subs.objects.length;i++) {
+                    if (subs.objects[i].active === true) {
+                        active++;
+                    }
+                }
+                return active;
             });
     },
 

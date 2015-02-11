@@ -167,9 +167,23 @@ go.app = function() {
 
             } else if (self.contact.extra.is_registered_by === 'clinic') {
                 // registered on clinic line
-                return go.utils.set_language(self.im.user, self.contact)
+                return go.utils
+                    .set_language(self.im.user, self.contact)
                     .then(function() {
-                        return self.states.create('states_registered_full', opts);
+                        return go.utils
+                            .subscription_count_active(self.contact, self.im)
+                            .then(function(count) {
+                                if (count === 0) {
+                                    // if no active subscriptions, register user
+                                    if (!self.im.config.faq_enabled) {
+                                        return self.states.create('states_suspect_pregnancy', opts);
+                                    } else {
+                                        return self.states.create('states_register_info', opts);
+                                    }
+                                } else {
+                                    return self.states.create('states_registered_full', opts);
+                                }
+                            });
                     });
 
             } else {
@@ -331,12 +345,12 @@ go.app = function() {
                                     return self.im.contacts.save(self.contact);
                                 })
                                 .then(function() {
-                                    if (!self.im.config.faq_enabled && !self.im.config.detailed_data_collection){
+                                    if (!self.im.config.faq_enabled){
                                         return 'states_suspect_pregnancy';
                                     } else {
-                                        return 'states_register_info'; 
+                                        return 'states_register_info';
                                     }
-                                    
+
                                 });
                         });
                 },

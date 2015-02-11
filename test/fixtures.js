@@ -1037,6 +1037,125 @@ module.exports = function() {
             }
         }
     },
+    // PERSONAL - COUNT ACTIVE SUBSCRIPTIONS
+    {
+        'request': {
+            'method': 'GET',
+            'params': {
+                'to_addr': '+27821234444'
+            },
+            'headers': {
+                'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
+                'Content-Type': ['application/json']
+            },
+            'url': 'http://ndoh-control/api/v1/subscription/',
+        },
+        'response': {
+            "code": 200,
+            "meta": {
+                "limit": 20,
+                "next": null,
+                "offset": 0,
+                "previous": null,
+                "total_count": 2
+            },
+            "data": {
+                "objects": [
+                    {
+                        "active": false,
+                        "completed": false,
+                        "contact_key": "e5b0888cdb4347158ea5cd2f2147d28f",
+                        "created_at": "2014-08-05T11:22:34.838969",
+                        "id": 1,
+                        "lang": "en",
+                        "message_set": "/api/v1/message_set/3/",
+                        "next_sequence_number": 1,
+                        "process_status": 0,
+                        "resource_uri": "/api/v1/subscription/1/",
+                        "schedule": "/api/v1/periodic_task/1/",
+                        "to_addr": "+27821234444",
+                        "updated_at": "2014-08-05T11:22:34.838996",
+                        "user_account": "1aa0dea2f82945a48cc258c61d756f16"
+                    },
+                    {
+                        "active": true,
+                        "completed": false,
+                        "contact_key": "e5b0888cdb4347158ea5cd2f2147d28f",
+                        "created_at": "2014-08-05T11:31:50.908974",
+                        "id": 2,
+                        "lang": "af",
+                        "message_set": "/api/v1/message_set/3/",
+                        "next_sequence_number": 1,
+                        "process_status": 0,
+                        "resource_uri": "/api/v1/subscription/2/",
+                        "schedule": "/api/v1/periodic_task/1/",
+                        "to_addr": "+27821234444",
+                        "updated_at": "2014-08-05T11:31:50.909025",
+                        "user_account": "1aa0dea2f82945a48cc258c61d756f16"
+                    }
+                ]
+            }
+        }
+    },
+    {
+        'request': {
+            'method': 'GET',
+            'params': {
+                'to_addr': '+27821235555'
+            },
+            'headers': {
+                'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
+                'Content-Type': ['application/json']
+            },
+            'url': 'http://ndoh-control/api/v1/subscription/',
+        },
+        'response': {
+            "code": 200,
+            "meta": {
+                "limit": 20,
+                "next": null,
+                "offset": 0,
+                "previous": null,
+                "total_count": 2
+            },
+            "data": {
+                "objects": [
+                    {
+                        "active": false,
+                        "completed": false,
+                        "contact_key": "e5b0888cdb4347158ea5cd2f2147d28f",
+                        "created_at": "2014-08-05T11:22:34.838969",
+                        "id": 1,
+                        "lang": "en",
+                        "message_set": "/api/v1/message_set/3/",
+                        "next_sequence_number": 1,
+                        "process_status": 0,
+                        "resource_uri": "/api/v1/subscription/1/",
+                        "schedule": "/api/v1/periodic_task/1/",
+                        "to_addr": "+27821235555",
+                        "updated_at": "2014-08-05T11:22:34.838996",
+                        "user_account": "1aa0dea2f82945a48cc258c61d756f16"
+                    },
+                    {
+                        "active": false,
+                        "completed": false,
+                        "contact_key": "e5b0888cdb4347158ea5cd2f2147d28f",
+                        "created_at": "2014-08-05T11:31:50.908974",
+                        "id": 2,
+                        "lang": "af",
+                        "message_set": "/api/v1/message_set/3/",
+                        "next_sequence_number": 1,
+                        "process_status": 0,
+                        "resource_uri": "/api/v1/subscription/2/",
+                        "schedule": "/api/v1/periodic_task/1/",
+                        "to_addr": "+27821235555",
+                        "updated_at": "2014-08-05T11:31:50.909025",
+                        "user_account": "1aa0dea2f82945a48cc258c61d756f16"
+                    }
+                ]
+            }
+        }
+    },
     // PERSONAL - DATA LIMITED
     {
         'request': {

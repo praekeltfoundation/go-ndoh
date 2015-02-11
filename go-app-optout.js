@@ -861,7 +861,7 @@ go.utils = {
                 var active = 0;
                 for (i=0;i<subs.objects.length;i++) {
                     if (subs.objects[i].active === true) {
-                        active += 1;
+                        active++;
                     }
                 }
                 return active;

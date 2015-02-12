@@ -1027,14 +1027,15 @@ go.utils = {
         return reg_source;
     },
 
-    opt_out: function(im, contact, env) {
+    opt_out: function(im, contact, env, reason) {
         return Q.all([
             im.api_request('optout.optout', {
                 address_type: "msisdn",
                 address_value: contact.msisdn,
                 message_id: im.msg.message_id
             }),
-            im.metrics.fire.inc([env, 'sum', 'optout', go.utils.get_reg_source(contact)].join('.'), {amount:1})
+            im.metrics.fire.inc([env, 'sum', 'optout', go.utils.get_reg_source(contact)].join('.'), {amount:1}),
+            im.metrics.fire.inc([env, 'sum', 'optout_cause', reason].join('.'), {amount:1})
         ]);
     },
 

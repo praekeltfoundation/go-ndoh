@@ -288,6 +288,7 @@ describe("app", function() {
                     .check(function(api) {
                         var metrics = api.metrics.stores.test_metric_store;
                         assert.deepEqual(metrics['test.sum.optout.clinic'].values, [1]);
+                        assert.deepEqual(metrics['test.sum.optout_cause.unknown'].values, [1]);
                     })
                     .run();
             });

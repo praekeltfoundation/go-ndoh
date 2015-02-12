@@ -1030,14 +1030,15 @@ go.utils = {
         return reg_source;
     },
 
-    opt_out: function(im, contact, env) {
+    opt_out: function(im, contact, env, reason) {
         return Q.all([
             im.api_request('optout.optout', {
                 address_type: "msisdn",
                 address_value: contact.msisdn,
                 message_id: im.msg.message_id
             }),
-            im.metrics.fire.inc([env, 'sum', 'optout', go.utils.get_reg_source(contact)].join('.'), {amount:1})
+            im.metrics.fire.inc([env, 'sum', 'optout', go.utils.get_reg_source(contact)].join('.'), {amount:1}),
+            im.metrics.fire.inc([env, 'sum', 'optout_cause', reason].join('.'), {amount:1})
         ]);
     },
 
@@ -1288,7 +1289,11 @@ go.app = function() {
                                         .then(function() {
                                             if (_.contains(['not_useful', 'other'], choice.value)){
                                                 if (self.contact.extra.prior_opt_out === 'true') {
-                                                    return 'states_end_no';
+                                                    return self.im.metrics.fire
+                                                        .inc([self.env, 'sum', 'optout_cause', 'unknown'].join('.'), {amount:-1}) // decrease unknown opt_outs
+                                                        .then(function() {
+                                                            return 'states_end_no_optout';
+                                                        });
                                                 } else {
                                                     return 'states_end_no_optout';
                                                 }
@@ -1334,10 +1339,15 @@ go.app = function() {
                                     go.utils.opt_in(self.im, self.contact),
                                     // activate new subscription
                                     go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix, opts),
+                                    self.im.metrics.fire.inc([self.env, 'sum', 'optout_cause', self.contact.extra.opt_out_reason].join('.'), {amount:1}),
                                     self.im.contacts.save(self.contact)
                                 ]).then(function() {
                                     if (self.contact.extra.prior_opt_out === 'true') {
-                                        return 'states_end_yes';
+                                        return self.im.metrics.fire
+                                            .inc([self.env, 'sum', 'optout_cause', 'unknown'].join('.'), {amount:-1}) // decrease unknown opt_outs
+                                            .then(function() {
+                                                return 'states_end_yes';
+                                            });
                                     } else {
                                         return self.im.metrics.fire
                                             .inc([self.env, 'sum', 'optout', go.utils.get_reg_source(self.contact)].join('.'), {amount:1})
@@ -1364,7 +1374,7 @@ go.app = function() {
 
         self.states.add('states_end_no_optout', function(name) {
             return go.utils
-                .opt_out(self.im, self.contact, self.env)
+                .opt_out(self.im, self.contact, self.env, self.contact.extra.opt_out_reason)
                 .then(function() {
                     return go.utils
                         .subscription_unsubscribe_all(self.contact, self.im)

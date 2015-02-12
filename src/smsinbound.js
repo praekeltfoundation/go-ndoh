@@ -66,7 +66,7 @@ go.app = function() {
         self.states.add('states_opt_out_enter', function(name) {
             return Q
                 .all([
-                    go.utils.opt_out(self.im, self.contact, self.env),
+                    go.utils.opt_out(self.im, self.contact, self.env, 'unknown'),
                     go.utils.subscription_unsubscribe_all(self.contact, self.im)
                 ])
                 .then(function() {

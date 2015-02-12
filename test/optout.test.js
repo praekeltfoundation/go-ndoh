@@ -145,7 +145,7 @@ describe("app", function() {
         });
 
         describe('test metric firing:', function() {
-            describe('when the user is opted out', function() {
+            describe('when the user opts out', function() {
                 it("should fire metrics if no loss message signup", function() {
                     return tester
                         .setup.user.addr('27001')
@@ -154,6 +154,7 @@ describe("app", function() {
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
                             assert.deepEqual(metrics['test.sum.optout.chw'].values, [1]);
+                            assert.deepEqual(metrics['test.sum.optout_cause.not_useful'].values, [1]);
                         })
                         .run();
                 });
@@ -166,29 +167,32 @@ describe("app", function() {
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
                             assert.deepEqual(metrics['test.sum.optout.chw'].values, [1]);
+                            assert.deepEqual(metrics['test.sum.optout_cause.miscarriage'].values, [1]);
                         })
                         .run();
                 });
 
-                it("should not fire metrics if previously opted out", function() {
+                it("should fire correct metrics if previously opted out and does not sign up", function() {
                     return tester
                         .setup.user.addr('27831112222')
                         .setup.user.state('states_start')
                         .input('4')
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
-                            assert.deepEqual(metrics, undefined);
+                            assert.deepEqual(metrics['test.sum.optout_cause.unknown'].values, [-1]);
+                            assert.deepEqual(metrics['test.sum.optout_cause.not_useful'].values, [1]);
                         })
                         .run();
                 });
 
-                it("should not fire metrics if previously opted out and signs up", function() {
+                it("should fire metrics if previously opted out and signs up", function() {
                     return tester
                         .setup.user.addr('27831112222')
                         .inputs('start', '1', '1')
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
-                            assert.equal(metrics['test.sum.optout.unknown'], undefined);
+                            assert.deepEqual(metrics['test.sum.optout_cause.unknown'].values, [-1]);
+                            assert.deepEqual(metrics['test.sum.optout_cause.miscarriage'].values, [1]);
                         })
                         .run();
                 });

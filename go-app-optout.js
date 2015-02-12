@@ -1037,7 +1037,7 @@ go.utils = {
                 address_value: contact.msisdn,
                 message_id: im.msg.message_id
             }),
-            im.metrics.fire.inc([env, 'sum', 'optout', go.utils.get_reg_source(contact)].join('.'), {amount:1}),
+            im.metrics.fire.inc([env, 'sum', 'optout_on', go.utils.get_reg_source(contact)].join('.'), {amount:1}),
             im.metrics.fire.inc([env, 'sum', 'optout_cause', reason].join('.'), {amount:1})
         ]);
     },
@@ -1350,7 +1350,7 @@ go.app = function() {
                                             });
                                     } else {
                                         return self.im.metrics.fire
-                                            .inc([self.env, 'sum', 'optout', go.utils.get_reg_source(self.contact)].join('.'), {amount:1})
+                                            .inc([self.env, 'sum', 'optout_on', go.utils.get_reg_source(self.contact)].join('.'), {amount:1})
                                             .then(function() {
                                                 return 'states_end_yes';
                                             });

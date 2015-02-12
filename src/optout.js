@@ -119,7 +119,7 @@ go.app = function() {
                                             });
                                     } else {
                                         return self.im.metrics.fire
-                                            .inc([self.env, 'sum', 'optout', go.utils.get_reg_source(self.contact)].join('.'), {amount:1})
+                                            .inc([self.env, 'sum', 'optout_on', go.utils.get_reg_source(self.contact)].join('.'), {amount:1})
                                             .then(function() {
                                                 return 'states_end_yes';
                                             });

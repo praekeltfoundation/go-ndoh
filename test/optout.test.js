@@ -153,7 +153,7 @@ describe("app", function() {
                         .input('4')
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
-                            assert.deepEqual(metrics['test.sum.optout.chw'].values, [1]);
+                            assert.deepEqual(metrics['test.sum.optout_on.chw'].values, [1]);
                             assert.deepEqual(metrics['test.sum.optout_cause.not_useful'].values, [1]);
                         })
                         .run();
@@ -166,7 +166,7 @@ describe("app", function() {
                         .inputs('start', '1', '1')
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
-                            assert.deepEqual(metrics['test.sum.optout.chw'].values, [1]);
+                            assert.deepEqual(metrics['test.sum.optout_on.chw'].values, [1]);
                             assert.deepEqual(metrics['test.sum.optout_cause.miscarriage'].values, [1]);
                         })
                         .run();
@@ -179,6 +179,7 @@ describe("app", function() {
                         .input('4')
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
+                            assert.deepEqual(metrics['test.sum.optout_on'], undefined);
                             assert.deepEqual(metrics['test.sum.optout_cause.unknown'].values, [-1]);
                             assert.deepEqual(metrics['test.sum.optout_cause.not_useful'].values, [1]);
                         })
@@ -191,6 +192,7 @@ describe("app", function() {
                         .inputs('start', '1', '1')
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
+                            assert.deepEqual(metrics['test.sum.optout_on'], undefined);
                             assert.deepEqual(metrics['test.sum.optout_cause.unknown'].values, [-1]);
                             assert.deepEqual(metrics['test.sum.optout_cause.miscarriage'].values, [1]);
                         })

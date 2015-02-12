@@ -287,7 +287,7 @@ describe("app", function() {
                     .input('stop please!')
                     .check(function(api) {
                         var metrics = api.metrics.stores.test_metric_store;
-                        assert.deepEqual(metrics['test.sum.optout.clinic'].values, [1]);
+                        assert.deepEqual(metrics['test.sum.optout_on.clinic'].values, [1]);
                         assert.deepEqual(metrics['test.sum.optout_cause.unknown'].values, [1]);
                     })
                     .run();

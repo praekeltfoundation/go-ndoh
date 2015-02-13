@@ -1031,6 +1031,78 @@ go.utils = {
     },
 
     opt_out: function(im, contact, env, reason) {
+        // sms-inbound STOP
+            // api optout.optout
+            // unsubscribe_all
+            // metric | optout_on    = clinic/personal/chw +1
+            // metric | optout_cause = 'unknown' +1
+            // kv     | optout_total = +1
+            // kv     | optout_loss  = 0
+
+        // optout
+            // suffers baby loss
+                // signs up for loss messages
+                    // no previous optout
+                        // unsubscribe_all
+                        // subscribe to loss messages
+                        // metric | optout_on    = clinic/personal/chw +1
+                        // metric | optout_cause = miscarriage/babyloss/stillbirth +1
+                        //                       = unknown 0
+                        // kv     | optout_total = +1
+                        // kv     | optout_loss  = +1
+                        // kv     | signup = +1
+
+                    // previous optout
+                        // api opt_in.opt_in
+                        // subscribe to loss messages
+                        // metric | optout_on    = 0
+                        // metric | optout_cause = miscarriage/babyloss/stillbirth +1
+                        //                       = unknown -1
+                        // kv     | optout_total = 0
+                        // kv     | optout_loss  = +1
+                        // kv     | signup = +1
+
+
+                // doesn't sign up for loss messages
+                    // no previous optout
+                        // api optout.optout
+                        // unsubscribe_all
+                        // metric | optout_on    = clinic/personal/chw +1
+                        // metric | optout_cause = miscarriage/babyloss/stillbirth +1
+                        // kv     | optout_total = +1
+                        // kv     | optout_loss  = +1
+                        // kv     | signup = 0
+
+                    // previous optout
+                        // -
+                        // metric | optout_on    = 0
+                        // metric | optout_cause = miscarriage/babyloss/stillbirth +1
+                        //                       = unknown -1
+                        // kv     | optout_total = 0
+                        // kv     | optout_loss  = +1
+                        // kv     | signup = 0
+
+            // chooses not_useful / other
+                // no previous optout
+                    // api optout.optout
+                    // unsubscribe_all
+                    // metric | optout_on    = clinic/personal/chw +1
+                    // metric | optout_cause = not_useful/other +1
+                    // kv     | optout_total = +1
+                    // kv     | optout_loss  = 0
+
+                // previous optout
+                    // -
+                    // metric | optout_on    = 0
+                    // metric | optout_cause = not_useful/other +1
+                    //                       = unknown -1
+                    // kv     | optout_total = 0
+                    // kv     | optout_loss  = 0
+
+
+
+
+
         return Q.all([
             im.api_request('optout.optout', {
                 address_type: "msisdn",
@@ -1038,7 +1110,8 @@ go.utils = {
                 message_id: im.msg.message_id
             }),
             im.metrics.fire.inc([env, 'sum', 'optout_on', go.utils.get_reg_source(contact)].join('.'), {amount:1}),
-            im.metrics.fire.inc([env, 'sum', 'optout_cause', reason].join('.'), {amount:1})
+            im.metrics.fire.inc([env, 'sum', 'optout_cause', reason].join('.'), {amount:1}),
+            go.utils.incr_kv(im, [env, 'sum', 'optout', 'all'].join('.'))
         ]);
     },
 
@@ -1267,6 +1340,7 @@ go.app = function() {
                                 question = $('Please let us know why you do not want MomConnect messages');
                             } else {
                                 self.contact.extra.prior_opt_out = 'true';
+                                self.contact.extra.prior_opt_out_reason = self.contact.extra.opt_out_reason || 'unknown';
                                 question = $('Please tell us why you previously opted out of messages');
                             }
 
@@ -1290,7 +1364,9 @@ go.app = function() {
                                             if (_.contains(['not_useful', 'other'], choice.value)){
                                                 if (self.contact.extra.prior_opt_out === 'true') {
                                                     return self.im.metrics.fire
-                                                        .inc([self.env, 'sum', 'optout_cause', 'unknown'].join('.'), {amount:-1}) // decrease unknown opt_outs
+                                                        // decrease prior opt_outs
+                                                        .inc([self.env, 'sum', 'optout_cause',
+                                                            self.contact.extra.prior_opt_out_reason].join('.'), {amount:-1})
                                                         .then(function() {
                                                             return 'states_end_no_optout';
                                                         });
@@ -1344,7 +1420,7 @@ go.app = function() {
                                 ]).then(function() {
                                     if (self.contact.extra.prior_opt_out === 'true') {
                                         return self.im.metrics.fire
-                                            .inc([self.env, 'sum', 'optout_cause', 'unknown'].join('.'), {amount:-1}) // decrease unknown opt_outs
+                                            .inc([self.env, 'sum', 'optout_cause', self.contact.extra.prior_opt_out_reason].join('.'), {amount:-1}) // decrease unknown opt_outs
                                             .then(function() {
                                                 return 'states_end_yes';
                                             });
@@ -1362,7 +1438,11 @@ go.app = function() {
                             .jembi_send_json(self.contact, self.contact, 'subscription', self.im, self.metric_prefix)
                             .then(function() {
                                 if (self.contact.extra.prior_opt_out === 'true') {
-                                    return 'states_end_no';
+                                    return self.im.metrics.fire
+                                        .inc([self.env, 'sum', 'optout_cause', self.contact.extra.prior_opt_out_reason].join('.'), {amount:-1}) // decrease unknown opt_outs
+                                        .then(function() {
+                                            return 'states_end_no_optout';
+                                        });
                                 } else {
                                     return 'states_end_no_optout';
                                 }

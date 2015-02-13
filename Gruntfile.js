@@ -178,9 +178,9 @@ module.exports = function (grunt) {
             // },
             test_optout: {
                 src: ['<%= paths.test.optout %>']
-            },
-            test_smsinbound: {
-                src: ['<%= paths.test.smsinbound %>']
+            // },
+            // test_smsinbound: {
+            //     src: ['<%= paths.test.smsinbound %>']
             // },
             // test_servicerating: {
             //     src: ['<%= paths.test.servicerating %>']

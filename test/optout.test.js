@@ -87,7 +87,9 @@ describe("app", function() {
                             id_type: 'passport',
                             passport_origin: 'zw',
                             passport_no: '12345',
-                            ussd_sessions: '5'
+                            ussd_sessions: '5',
+                            is_registered_by: 'clinic',
+                            opt_out_reason: 'unknown'
                         },
                         key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                         user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
@@ -146,58 +148,86 @@ describe("app", function() {
 
         describe('test metric firing:', function() {
             describe('when the user opts out', function() {
-                it("should fire metrics if no loss message signup", function() {
-                    return tester
-                        .setup.user.addr('27001')
-                        .setup.user.state('states_start')
-                        .input('4')
-                        .check(function(api) {
-                            var metrics = api.metrics.stores.test_metric_store;
-                            assert.deepEqual(metrics['test.sum.optout_on.chw'].values, [1]);
-                            assert.deepEqual(metrics['test.sum.optout_cause.not_useful'].values, [1]);
-                        })
-                        .run();
+
+                describe('when the user was NOT previously opted-out', function() {
+                    it("should fire metrics if non-loss reason", function() {
+                        return tester
+                            .setup.user.addr('27001')
+                            .inputs('start', '4')
+                            .check(function(api) {
+                                var metrics = api.metrics.stores.test_metric_store;
+                                assert.deepEqual(metrics['test.sum.optout_on.chw'].values, [1]);
+                                assert.deepEqual(metrics['test.sum.optout_cause.not_useful'].values, [1]);
+                            })
+                            .run();
+                    });
+
+                    it("should fire metrics if loss but no message signup", function() {
+                        return tester
+                            .setup.user.addr('27001')
+                            .inputs('start', '1', '2')
+                            .check(function(api) {
+                                var metrics = api.metrics.stores.test_metric_store;
+                                assert.deepEqual(metrics['test.sum.optout_on.chw'].values, [1]);
+                                assert.deepEqual(metrics['test.sum.optout_cause.miscarriage'].values, [1]);
+                            })
+                            .run();
+                    });
+
+                    it("should fire metrics if loss message signup", function() {
+                        return tester
+                            .setup.user.addr('27001')
+                            .inputs('start', '1', '1')
+                            .check(function(api) {
+                                var metrics = api.metrics.stores.test_metric_store;
+                                assert.deepEqual(metrics['test.sum.optout_on.chw'].values, [1]);
+                                assert.deepEqual(metrics['test.sum.optout_cause.miscarriage'].values, [1]);
+                            })
+                            .run();
+                    });
                 });
 
-                it("should fire metrics if loss message signup", function() {
-                    return tester
-                        .setup.user.addr('27001')
-                        .setup.user.state('states_start')
-                        .inputs('start', '1', '1')
-                        .check(function(api) {
-                            var metrics = api.metrics.stores.test_metric_store;
-                            assert.deepEqual(metrics['test.sum.optout_on.chw'].values, [1]);
-                            assert.deepEqual(metrics['test.sum.optout_cause.miscarriage'].values, [1]);
-                        })
-                        .run();
+                describe('when the user WAS previously opted-out', function() {
+                    it("should fire correct metrics if non-loss reason", function() {
+                        return tester
+                            .setup.user.addr('27831112222')
+                            .inputs('start', '4')
+                            .check(function(api) {
+                                var metrics = api.metrics.stores.test_metric_store;
+                                assert.deepEqual(metrics['test.sum.optout_on'], undefined);
+                                assert.deepEqual(metrics['test.sum.optout_cause.unknown'].values, [-1]);
+                                assert.deepEqual(metrics['test.sum.optout_cause.not_useful'].values, [1]);
+                            })
+                            .run();
+                    });
+
+                    it("should fire correct metrics if loss but no message signup", function() {
+                        return tester
+                            .setup.user.addr('27831112222')
+                            .inputs('start', '1', '2')
+                            .check(function(api) {
+                                var metrics = api.metrics.stores.test_metric_store;
+                                assert.deepEqual(metrics['test.sum.optout_on'], undefined);
+                                assert.deepEqual(metrics['test.sum.optout_cause.unknown'].values, [-1]);
+                                assert.deepEqual(metrics['test.sum.optout_cause.miscarriage'].values, [1]);
+                            })
+                            .run();
+                    });
+
+                    it("should fire correct metrics if loss message signup", function() {
+                        return tester
+                            .setup.user.addr('27831112222')
+                            .inputs('start', '1', '1')
+                            .check(function(api) {
+                                var metrics = api.metrics.stores.test_metric_store;
+                                assert.deepEqual(metrics['test.sum.optout_on'], undefined);
+                                assert.deepEqual(metrics['test.sum.optout_cause.unknown'].values, [-1]);
+                                assert.deepEqual(metrics['test.sum.optout_cause.miscarriage'].values, [1]);
+                            })
+                            .run();
+                    });
                 });
 
-                it("should fire correct metrics if previously opted out and does not sign up", function() {
-                    return tester
-                        .setup.user.addr('27831112222')
-                        .setup.user.state('states_start')
-                        .input('4')
-                        .check(function(api) {
-                            var metrics = api.metrics.stores.test_metric_store;
-                            assert.deepEqual(metrics['test.sum.optout_on'], undefined);
-                            assert.deepEqual(metrics['test.sum.optout_cause.unknown'].values, [-1]);
-                            assert.deepEqual(metrics['test.sum.optout_cause.not_useful'].values, [1]);
-                        })
-                        .run();
-                });
-
-                it("should fire metrics if previously opted out and signs up", function() {
-                    return tester
-                        .setup.user.addr('27831112222')
-                        .inputs('start', '1', '1')
-                        .check(function(api) {
-                            var metrics = api.metrics.stores.test_metric_store;
-                            assert.deepEqual(metrics['test.sum.optout_on'], undefined);
-                            assert.deepEqual(metrics['test.sum.optout_cause.unknown'].values, [-1]);
-                            assert.deepEqual(metrics['test.sum.optout_cause.miscarriage'].values, [1]);
-                        })
-                        .run();
-                });
             });
         });
 

@@ -112,7 +112,7 @@ go.app = function() {
                     return Q
                         .all([
                             go.utils.subscription_send_doc(self.contact,
-                                self.im, self.metric_prefix, opts),
+                                self.im, self.metric_prefix, self.env, opts),
                             self.im.contacts.save(self.contact)
                         ])
                         .then(function() {

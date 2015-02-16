@@ -204,10 +204,6 @@ describe("app", function() {
                             '2. No'
                         ].join('\n')
                     })
-                    .check(function(api) {
-                        var contact = api.contacts.store[0];
-                        assert.equal(contact.extra.opt_out_reason, 'miscarriage');
-                    })
                     .run();
             });
         });
@@ -262,6 +258,10 @@ describe("app", function() {
                         reply: ('Thank you. You will no longer receive ' +
                             'messages from us. If you have any medical ' +
                             'concerns please visit your nearest clinic.')
+                    })
+                    .check(function(api) {
+                        var contact = api.contacts.store[0];
+                        assert.equal(contact.extra.opt_out_reason, 'miscarriage');
                     })
                     .check.reply.ends_session()
                     .run();

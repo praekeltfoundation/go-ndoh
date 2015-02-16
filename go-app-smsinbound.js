@@ -460,7 +460,7 @@ go.utils = {
         ]);
     },
 
-    build_json_doc: function(contact, user, type) {
+    build_json_doc: function(im, contact, user, type) {
         var JSON_template = {
           "mha": 1,
           "swt": 1,
@@ -715,7 +715,7 @@ go.utils = {
     },
 
     jembi_send_json: function(contact, user, type, im, metric_prefix) {
-        var built_json = go.utils.build_json_doc(contact, user, type);
+        var built_json = go.utils.build_json_doc(im, contact, user, type);
         return go.utils
             .jembi_json_api_call(built_json, im)
             .then(function(json_result) {
@@ -1033,12 +1033,34 @@ go.utils = {
             && im.user.state.name !== 'states_start';
     },
 
-    opt_out: function(im, contact) {
-        return im.api_request('optout.optout', {
-            address_type: "msisdn",
-            address_value: contact.msisdn,
-            message_id: im.msg.message_id
-        });
+    opt_out: function(im, contact, optout_reason, api_optout, unsub_all, jembi_optout, metric_prefix) {
+        var queue1 = [];
+
+        if (api_optout === true) {
+            queue1.push(
+                im.api_request('optout.optout', {
+                    address_type: "msisdn",
+                    address_value: contact.msisdn,
+                    message_id: im.msg.message_id
+                })
+            );
+        }
+
+        if (unsub_all === true) {
+            queue1.push(go.utils.subscription_unsubscribe_all(contact, im));
+        }
+
+        if (optout_reason !== undefined) {
+            contact.extra.opt_out_reason = optout_reason;
+            queue1.push(im.contacts.save(contact));
+        }
+
+        if (jembi_optout === true) {
+            queue1.push(go.utils.jembi_send_json(contact, contact, 'subscription', im,
+                metric_prefix));  // TODO change 'subscription' to 'optout'
+        }
+
+        return Q.all(queue1);
     },
 
     opted_out: function(im, contact) {
@@ -1049,10 +1071,15 @@ go.utils = {
     },
 
     opt_in: function(im, contact) {
-        return im.api_request('optout.cancel_optout', {
-            address_type: "msisdn",
-            address_value: contact.msisdn
-        });
+        contact.extra.opt_out_reason = '';
+
+        return Q.all([
+            im.api_request('optout.cancel_optout', {
+                address_type: "msisdn",
+                address_value: contact.msisdn
+            }),
+            im.contacts.save(contact)
+        ]);
     },
 
     attach_session_length_helper: function (im) {
@@ -1294,11 +1321,9 @@ go.app = function() {
         });
 
         self.states.add('states_opt_out_enter', function(name) {
-            return Q
-                .all([
-                    go.utils.opt_out(self.im, self.contact),
-                    go.utils.subscription_unsubscribe_all(self.contact, self.im)
-                ])
+            return go.utils
+                .opt_out(self.im, self.contact, optout_reason='unknown', api_optout=true,
+                    unsub_all=true, jembi_optout=false, self.metric_prefix)
                 .then(function() {
                     return self.states.create('states_opt_out');
                 });

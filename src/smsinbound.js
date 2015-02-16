@@ -113,6 +113,8 @@ go.app = function() {
                         .all([
                             go.utils.subscription_send_doc(self.contact,
                                 self.im, self.metric_prefix, opts),
+                            self.im.metrics.fire.inc([self.env, 'sum',
+                                'baby_sms'].join('.'), {amount: 1}),
                             self.im.contacts.save(self.contact)
                         ])
                         .then(function() {

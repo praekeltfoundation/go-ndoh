@@ -104,6 +104,8 @@ describe("app", function() {
                     api.kv.store['test.personal.unique_users'] = 0;
                     api.kv.store['test.personal.no_complete_registrations'] = 2;
                     api.kv.store['test.personal.no_incomplete_registrations'] = 2;
+                    api.kv.store['test.sum.registrations'] = 3;
+                    api.kv.store['test.chw.no_complete_registrations'] = 1;
                 })
                 .setup(function(api) {
                     api.metrics.stores = {'test_metric_store': {}};
@@ -1385,10 +1387,13 @@ describe("app", function() {
                     })
                     .check(function(api) {
                         var metrics = api.metrics.stores.test_metric_store;
+                        var kv_store = api.kv.store;
                         assert.deepEqual(metrics['test.personal.avg.sessions_to_register'].values, [5]);
                         assert.deepEqual(metrics['test.personal.percent_incomplete_registrations'].values, [25]);
                         assert.deepEqual(metrics['test.personal.percent_complete_registrations'].values, [75]);
                         assert.deepEqual(metrics['test.personal.sum.json_to_jembi_success'].values, [1]);
+                        assert.deepEqual(metrics['test.sum.registrations'].values, [1]);
+                        assert.equal(kv_store['test.sum.registrations'], 4);
                     })
                     .check(function(api) {
                         var smses = _.where(api.outbound.store, {

@@ -64,10 +64,13 @@ go.app = function() {
         });
 
         self.states.add('states_opt_out_enter', function(name) {
+            var reason = 'unknown';
+            self.contact.extra.opt_out_reason = reason;
             return Q
                 .all([
-                    go.utils.opt_out(self.im, self.contact),
-                    go.utils.subscription_unsubscribe_all(self.contact, self.im)
+                    go.utils.opt_out(self.im, self.contact, self.env, reason),
+                    go.utils.subscription_unsubscribe_all(self.contact, self.im),
+                    self.im.contacts.save(self.contact)
                 ])
                 .then(function() {
                     return self.states.create('states_opt_out');

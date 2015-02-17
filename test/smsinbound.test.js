@@ -295,6 +295,29 @@ describe("app", function() {
                     })
                     .run();
             });
+
+            it("should fire metrics", function() {
+                return tester
+                    .setup(function(api) {
+                        api.contacts.add({
+                            msisdn: '+27001',
+                            extra : {
+                                language_choice: 'en',
+                                is_registered_by: 'clinic'
+                            },
+                            key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
+                        });
+                    })
+                    .setup.user.addr('27001')
+                    .input('stop please!')
+                    .check(function(api) {
+                        var metrics = api.metrics.stores.test_metric_store;
+                        assert.deepEqual(metrics['test.sum.optout_on.clinic'].values, [1]);
+                        assert.deepEqual(metrics['test.sum.optout_cause.unknown'].values, [1]);
+                    })
+                    .run();
+            });
         });
 
         describe("when the user sends a BLOCK message", function() {

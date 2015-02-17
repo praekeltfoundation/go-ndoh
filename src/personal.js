@@ -360,7 +360,7 @@ go.app = function() {
                         return go.utils
                             .incr_kv(self.im, [self.store_name, 'no_incomplete_registrations'].join('.'))
                             .then(function() {
-                                return go.utils.adjust_percentage_registrations(self.im, self.metric_prefix);
+                                return go.utils.adjust_percentage_registrations(self.im, self.metric_prefix, self.env);
                             });
                     }
                 }
@@ -714,7 +714,7 @@ go.app = function() {
                 self.im.contacts.save(self.contact)
             ])
             .then(function() {
-                return go.utils.adjust_percentage_registrations(self.im, self.metric_prefix);
+                return go.utils.adjust_percentage_registrations(self.im, self.metric_prefix, self.env);
             })
             .then(function() {
                 return self.states.create('states_end_success');

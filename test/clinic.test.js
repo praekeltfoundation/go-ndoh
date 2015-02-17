@@ -169,6 +169,8 @@ describe("app", function() {
                     api.kv.store['test.personal.unique_users'] = 0;
                     api.kv.store['test.clinic.no_complete_registrations'] = 2;
                     api.kv.store['test.clinic.no_incomplete_registrations'] = 2;
+                    api.kv.store['test.sum.registrations'] = 3;
+                    api.kv.store['test.chw.no_complete_registrations'] = 1;
                 })
                 .setup(function(api) {
                     api.metrics.stores = {'test_metric_store': {}};
@@ -1605,13 +1607,15 @@ describe("app", function() {
                         })
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
+                            var kv_store = api.kv.store;
                             assert.deepEqual(metrics['test.clinic.avg.sessions_to_register'].values, [5]);
                             assert.deepEqual(metrics['test.clinic.percent_incomplete_registrations'].values, [25]);
                             assert.deepEqual(metrics['test.clinic.percent_complete_registrations'].values, [75]);
                             assert.deepEqual(metrics['test.clinic.states_end_success.no_incomplete'], undefined);
                             assert.deepEqual(metrics['test.clinic.sum.doc_to_jembi_success'].values, [1]);
                             assert.deepEqual(metrics['test.clinic.sum.json_to_jembi_success'].values, [1]);
-
+                            assert.deepEqual(metrics['test.sum.registrations'].values, [1]);
+                            assert.equal(kv_store['test.sum.registrations'], 4);
                         })
                         .check.reply.ends_session()
                         .run();
@@ -1782,12 +1786,15 @@ describe("app", function() {
                         })
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
+                            var kv_store = api.kv.store;
                             assert.deepEqual(metrics['test.clinic.avg.sessions_to_register'].values, [5]);
                             assert.deepEqual(metrics['test.clinic.percent_incomplete_registrations'].values, [25]);
                             assert.deepEqual(metrics['test.clinic.percent_complete_registrations'].values, [75]);
                             assert.deepEqual(metrics['test.clinic.states_end_success.no_incomplete'], undefined);
                             assert.deepEqual(metrics['test.clinic.sum.doc_to_jembi_success'], undefined);
                             assert.deepEqual(metrics['test.clinic.sum.json_to_jembi_success'].values, [1]);
+                            assert.deepEqual(metrics['test.sum.registrations'].values, [1]);
+                            assert.equal(kv_store['test.sum.registrations'], 4);
                         })
                         .check.reply.ends_session()
                         .run();

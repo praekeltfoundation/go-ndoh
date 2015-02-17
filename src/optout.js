@@ -35,6 +35,8 @@ go.app = function() {
                             if (json_result.opted_out === false) {
                                 question = $('Please let us know why you do not want MomConnect messages');
                             } else {
+                                self.contact.extra.prior_opt_out = 'true';
+                                self.contact.extra.prior_opt_out_reason = self.contact.extra.opt_out_reason || 'unknown';
                                 question = $('Please tell us why you previously opted out of messages');
                             }
 
@@ -56,7 +58,17 @@ go.app = function() {
                                         .save(self.contact)
                                         .then(function() {
                                             if (_.contains(['not_useful', 'other'], choice.value)){
-                                                return 'states_end_no';
+                                                if (self.contact.extra.prior_opt_out === 'true') {
+                                                    return self.im.metrics.fire
+                                                        // decrease prior opt_outs
+                                                        .inc([self.env, 'sum', 'optout_cause',
+                                                            self.contact.extra.prior_opt_out_reason].join('.'), {amount:-1})
+                                                        .then(function() {
+                                                            return 'states_end_no_optout';
+                                                        });
+                                                } else {
+                                                    return 'states_end_no_optout';
+                                                }
                                             } else {
                                                 return 'states_subscribe_option';
                                             }
@@ -99,23 +111,53 @@ go.app = function() {
                                     go.utils.opt_in(self.im, self.contact),
                                     // activate new subscription
                                     go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix, opts),
+                                    self.im.metrics.fire.inc([self.env, 'sum', 'optout_cause', self.contact.extra.opt_out_reason].join('.'), {amount:1}),
                                     self.im.contacts.save(self.contact)
                                 ]).then(function() {
-                                    return choice.value;
+                                    if (self.contact.extra.prior_opt_out === 'true') {
+                                        return self.im.metrics.fire
+                                            .inc([self.env, 'sum', 'optout_cause', self.contact.extra.prior_opt_out_reason].join('.'), {amount:-1}) // decrease unknown opt_outs
+                                            .then(function() {
+                                                return 'states_end_yes';
+                                            });
+                                    } else {
+                                        return self.im.metrics.fire
+                                            .inc([self.env, 'sum', 'optout_on', go.utils.get_reg_source(self.contact)].join('.'), {amount:1})
+                                            .then(function() {
+                                                return 'states_end_yes';
+                                            });
+                                    }
                                 });
                             });
                     } else {
                         return go.utils
                             .jembi_send_json(self.contact, self.contact, 'subscription', self.im, self.metric_prefix)
                             .then(function() {
-                                return choice.value;
+                                if (self.contact.extra.prior_opt_out === 'true') {
+                                    return self.im.metrics.fire
+                                        .inc([self.env, 'sum', 'optout_cause', self.contact.extra.prior_opt_out_reason].join('.'), {amount:-1}) // decrease unknown opt_outs
+                                        .then(function() {
+                                            return 'states_end_no_optout';
+                                        });
+                                } else {
+                                    return 'states_end_no_optout';
+                                }
                             });
                     }
-
-
                 }
-
             });
+        });
+
+        self.states.add('states_end_no_optout', function(name) {
+            return go.utils
+                .opt_out(self.im, self.contact, self.env, self.contact.extra.opt_out_reason)
+                .then(function() {
+                    return go.utils
+                        .subscription_unsubscribe_all(self.contact, self.im)
+                        .then(function() {
+                            return self.states.create('states_end_no');
+                        });
+                });
         });
 
         self.states.add('states_end_no', function(name) {
@@ -124,17 +166,7 @@ go.app = function() {
                         'messages from us. If you have any medical ' +
                         'concerns please visit your nearest clinic.'),
 
-                next: 'states_start',
-
-                events: {
-                    'state:enter': function() {
-                        return go.utils
-                            .opt_out(self.im, self.contact)
-                            .then(function() {
-                                return go.utils.subscription_unsubscribe_all(self.contact, self.im);
-                            });
-                    }
-                },
+                next: 'states_start'
             });
         });
 

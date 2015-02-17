@@ -670,7 +670,7 @@ go.utils = {
             });
     },
 
-    adjust_percentage_registrations: function(im, metric_prefix) {
+    adjust_percentage_registrations: function(im, metric_prefix, env) {
         return Q.all([
             go.utils.get_kv(im, [metric_prefix, 'no_incomplete_registrations'].join('.'), 0),
             go.utils.get_kv(im, [metric_prefix, 'no_complete_registrations'].join('.'), 0)
@@ -680,7 +680,9 @@ go.utils = {
             var percentage_complete = (no_complete / total_attempted) * 100;
             return Q.all([
                 im.metrics.fire.last([metric_prefix, 'percent_incomplete_registrations'].join('.'), percentage_incomplete),
-                im.metrics.fire.last([metric_prefix, 'percent_complete_registrations'].join('.'), percentage_complete)
+                im.metrics.fire.last([metric_prefix, 'percent_complete_registrations'].join('.'), percentage_complete),
+                im.metrics.fire.inc([env, 'sum', 'registrations'].join('.'), {amount:1}),
+                go.utils.incr_kv(im, [env, 'sum', 'registrations'].join('.'))
             ]);
         });
     },
@@ -1033,12 +1035,101 @@ go.utils = {
             && im.user.state.name !== 'states_start';
     },
 
-    opt_out: function(im, contact) {
-        return im.api_request('optout.optout', {
-            address_type: "msisdn",
-            address_value: contact.msisdn,
-            message_id: im.msg.message_id
-        });
+    get_reg_source: function(contact) {
+        // determine registration source with default 'unknown'
+        var reg_source;
+        var registration_options = ['clinic', 'chw', 'personal'];
+        if (!_.contains(registration_options, contact.extra.is_registered_by)) {
+            reg_source = 'unknown';
+        } else {
+            reg_source = contact.extra.is_registered_by;
+        }
+        return reg_source;
+    },
+
+    opt_out: function(im, contact, env, reason) {
+        // sms-inbound STOP
+            // api optout.optout
+            // unsubscribe_all
+            // metric | optout_on    = clinic/personal/chw +1
+            // metric | optout_cause = 'unknown' +1
+            // kv     | optout_total = +1
+            // kv     | optout_loss  = 0
+
+        // optout
+            // suffers baby loss
+                // signs up for loss messages
+                    // no previous optout
+                        // unsubscribe_all
+                        // subscribe to loss messages
+                        // metric | optout_on    = clinic/personal/chw +1
+                        // metric | optout_cause = miscarriage/babyloss/stillbirth +1
+                        //                       = unknown 0
+                        // kv     | optout_total = +1
+                        // kv     | optout_loss  = +1
+                        // kv     | signup = +1
+
+                    // previous optout
+                        // api opt_in.opt_in
+                        // subscribe to loss messages
+                        // metric | optout_on    = 0
+                        // metric | optout_cause = miscarriage/babyloss/stillbirth +1
+                        //                       = unknown -1
+                        // kv     | optout_total = 0
+                        // kv     | optout_loss  = +1
+                        // kv     | signup = +1
+
+
+                // doesn't sign up for loss messages
+                    // no previous optout
+                        // api optout.optout
+                        // unsubscribe_all
+                        // metric | optout_on    = clinic/personal/chw +1
+                        // metric | optout_cause = miscarriage/babyloss/stillbirth +1
+                        // kv     | optout_total = +1
+                        // kv     | optout_loss  = +1
+                        // kv     | signup = 0
+
+                    // previous optout
+                        // -
+                        // metric | optout_on    = 0
+                        // metric | optout_cause = miscarriage/babyloss/stillbirth +1
+                        //                       = unknown -1
+                        // kv     | optout_total = 0
+                        // kv     | optout_loss  = +1
+                        // kv     | signup = 0
+
+            // chooses not_useful / other
+                // no previous optout
+                    // api optout.optout
+                    // unsubscribe_all
+                    // metric | optout_on    = clinic/personal/chw +1
+                    // metric | optout_cause = not_useful/other +1
+                    // kv     | optout_total = +1
+                    // kv     | optout_loss  = 0
+
+                // previous optout
+                    // -
+                    // metric | optout_on    = 0
+                    // metric | optout_cause = not_useful/other +1
+                    //                       = unknown -1
+                    // kv     | optout_total = 0
+                    // kv     | optout_loss  = 0
+
+
+
+
+
+        return Q.all([
+            im.api_request('optout.optout', {
+                address_type: "msisdn",
+                address_value: contact.msisdn,
+                message_id: im.msg.message_id
+            }),
+            im.metrics.fire.inc([env, 'sum', 'optout_on', go.utils.get_reg_source(contact)].join('.'), {amount:1}),
+            im.metrics.fire.inc([env, 'sum', 'optout_cause', reason].join('.'), {amount:1}),
+            go.utils.incr_kv(im, [env, 'sum', 'optout', 'all'].join('.'))
+        ]);
     },
 
     opted_out: function(im, contact) {
@@ -1527,7 +1618,7 @@ go.app = function() {
                         return go.utils
                             .incr_kv(self.im, [self.store_name, 'no_incomplete_registrations'].join('.'))
                             .then(function() {
-                                return go.utils.adjust_percentage_registrations(self.im, self.metric_prefix);
+                                return go.utils.adjust_percentage_registrations(self.im, self.metric_prefix, self.env);
                             });
                     }
                 }
@@ -1749,7 +1840,7 @@ go.app = function() {
                                         go.utils.decr_kv(self.im, [self.store_name, 'no_incomplete_registrations'].join('.'))
                                     ])
                                         .then(function() {
-                                            return go.utils.adjust_percentage_registrations(self.im, self.metric_prefix);
+                                            return go.utils.adjust_percentage_registrations(self.im, self.metric_prefix, self.env);
                                         });
                                 })
                                 .then(function() {

@@ -802,7 +802,7 @@ go.utils = {
       return response;
     },
 
-    subscription_send_doc: function(contact, im, metric_prefix, opts) {
+    subscription_send_doc: function(contact, im, metric_prefix, env, opts) {
         var payload = {
           contact_key: contact.key,
           lang: contact.extra.language_choice,
@@ -815,14 +815,19 @@ go.utils = {
         return go.utils
             .control_api_call("post", null, payload, 'subscription/', im)
             .then(function(doc_result) {
-                var metric;
+                var metrics_to_fire;
                 if (doc_result.code >= 200 && doc_result.code < 300){
-                    metric = (([metric_prefix, "sum", "subscription_to_protocol_success"].join('.')));
+                    metrics_to_fire = [
+                        im.metrics.fire.inc([metric_prefix, "sum", "subscription_to_protocol_success"].join('.'), {amount:1}),
+                        im.metrics.fire.inc([env, "sum", "subscriptions"].join('.'), {amount:1})
+                    ];
                 } else {
                     //TODO - implement proper fail issue #36
-                    metric = (([metric_prefix, "sum", "subscription_to_protocol_fail"].join('.')));
+                    metrics_to_fire = [
+                        im.metrics.fire.inc([metric_prefix, "sum", "subscription_to_protocol_fail"].join('.'), {amount:1})
+                    ];
                 }
-                return im.metrics.fire.inc(metric, {amount: 1});
+                return Q.all(metrics_to_fire);
         });
     },
 
@@ -1892,7 +1897,7 @@ go.app = function() {
                             if (self.contact.extra.id_type === 'none') {
                                 return Q.all([
                                     go.utils.jembi_send_json(self.contact, self.user, 'registration', self.im, self.metric_prefix),
-                                    go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix, opts),
+                                    go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix, self.env, opts),
                                     self.send_registration_thanks(),
                                     self.im.contacts.save(self.contact)
                                 ]);
@@ -1900,7 +1905,7 @@ go.app = function() {
                                 return Q.all([
                                     go.utils.jembi_send_doc(self.contact, self.user, self.im, self.metric_prefix),
                                     go.utils.jembi_send_json(self.contact, self.user, 'registration', self.im, self.metric_prefix),
-                                    go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix, opts),
+                                    go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix, self.env, opts),
                                     self.send_registration_thanks(),
                                     self.im.contacts.save(self.contact)
                                 ]);

@@ -662,7 +662,7 @@ go.app = function() {
                             if (self.contact.extra.id_type === 'none') {
                                 return Q.all([
                                     go.utils.jembi_send_json(self.contact, self.user, 'registration', self.im, self.metric_prefix),
-                                    go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix, opts),
+                                    go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix, self.env, opts),
                                     self.send_registration_thanks(),
                                     self.im.contacts.save(self.contact)
                                 ]);
@@ -670,7 +670,7 @@ go.app = function() {
                                 return Q.all([
                                     go.utils.jembi_send_doc(self.contact, self.user, self.im, self.metric_prefix),
                                     go.utils.jembi_send_json(self.contact, self.user, 'registration', self.im, self.metric_prefix),
-                                    go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix, opts),
+                                    go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix, self.env, opts),
                                     self.send_registration_thanks(),
                                     self.im.contacts.save(self.contact)
                                 ]);

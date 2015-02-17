@@ -142,6 +142,40 @@ describe("app", function() {
             });
         });
 
+        describe("test metrics...", function() {
+
+            describe("when the user was NOT previously opted out", function() {
+
+                describe("when the user signs up for messages", function() {
+                    it("should increase total subscriptions metric", function() {
+                        return tester
+                            .setup.user.addr('27001')
+                            .inputs('start', '1', '1')
+                            .check(function(api) {
+                                var metrics = api.metrics.stores.test_metric_store;
+                                assert.deepEqual(metrics['test.sum.subscriptions'].values, [1]);
+                            })
+                            .run();
+                    });
+                });
+            });
+
+            describe("when the user was NOT previously opted out", function() {
+                describe("when the user signs up for messages", function() {
+                    it("should increase total subscriptions metric", function() {
+                        return tester
+                            .setup.user.addr('27831112222')
+                            .inputs('start', '1', '1')
+                            .check(function(api) {
+                                var metrics = api.metrics.stores.test_metric_store;
+                                assert.deepEqual(metrics['test.sum.subscriptions'].values, [1]);
+                            })
+                            .run();
+                    });
+                });
+            });
+        });
+
         describe("when the user starts a session", function() {
 
             describe("when the user has not previously opted out", function() {

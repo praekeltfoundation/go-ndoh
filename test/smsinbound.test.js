@@ -139,27 +139,53 @@ describe("app", function() {
             });
         });
 
-        describe("when a new unique user sends message in", function() {
-            it("should increment the no. of unique users by 1", function() {
-                return tester
-                    .setup(function(api) {
-                        api.contacts.add({
-                            msisdn: '+27001',
-                            extra : {
-                                language_choice: 'en'
-                            },
-                            key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
-                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
-                        });
-                    })
-                    .start()
-                    .input('start')
-                    .check(function(api) {
-                        var metrics = api.metrics.stores.test_metric_store;
-                        assert.deepEqual(metrics['test.smsinbound.sum.unique_users'].values, [1]);
-                    }).run();
+        describe("Testing metrics...", function() {
+
+            describe("when a new unique user sends message in", function() {
+                it("should increment the no. of unique users metric by 1", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27001',
+                                extra : {
+                                    language_choice: 'en'
+                                },
+                                key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                                user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
+                            });
+                        })
+                        .input('start')
+                        .check(function(api) {
+                            var metrics = api.metrics.stores.test_metric_store;
+                            assert.deepEqual(metrics['test.smsinbound.sum.unique_users'].values, [1]);
+                        }).run();
+                });
             });
+
+            describe("when user SMSs baby", function() {
+                it("should increment the number of baby SMSs metric", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27001',
+                                extra : {
+                                    language_choice: 'en'
+                                },
+                                key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                                user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
+                            });
+                        })
+                        .setup.user.addr('27001')
+                        .inputs('baby')
+                        .check(function(api) {
+                            var metrics = api.metrics.stores.test_metric_store;
+                            assert.deepEqual(metrics['test.sum.baby_sms'].values, [1]);
+                        }).run();
+                });
+            });
+
         });
+
 
         describe("when the user sends a non standard keyword message", function() {
             describe("when the message is received between 08:00 and 17:00", function() {
@@ -348,6 +374,27 @@ describe("app", function() {
                         });
                         assert.equal(contact.extra.subscription_type, '4');
                         assert.equal(contact.extra.subscription_rate, '3');
+                    })
+                    .run();
+            });
+
+            it("should add to the total subscriptions metric", function() {
+                return tester
+                    .setup(function(api) {
+                        api.contacts.add({
+                            msisdn: '+27001',
+                            extra : {
+                                language_choice: 'en'
+                            },
+                            key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
+                        });
+                    })
+                    .setup.user.addr('27001')
+                    .input('baby')
+                    .check(function(api) {
+                        var metrics = api.metrics.stores.test_metric_store;
+                        assert.deepEqual(metrics['test.sum.subscriptions'].values, [1]);
                     })
                     .run();
             });

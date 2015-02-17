@@ -91,7 +91,7 @@ go.app = function() {
                                     // ensure user is not opted out
                                     go.utils.opt_in(self.im, self.contact),
                                     // activate new subscription
-                                    go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix, opts)
+                                    go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix, self.env, opts)
                                 ]).then(function() {
                                     return choice.value;
                                 });

@@ -107,7 +107,6 @@ go.app = function() {
             return go.utils
                 .opt_out(self.im, self.contact, self.im.user.answers.states_start, api_optout=true,
                     unsub_all=true, jembi_optout=true, self.metric_prefix)
-                    // TODO need to trace what happens with jembi optout when user is already opted out, perhaps put if opted_out in utils
                 .then(function() {
                     return self.states.create('states_end_no');
                 });

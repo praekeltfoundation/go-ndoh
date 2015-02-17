@@ -457,17 +457,48 @@ go.utils = {
         ]);
     },
 
+    get_swt: function(im) {
+        if (im.config.name.substring(0,10) === "smsinbound") {
+            return 2;  // swt = 2 for sms optout
+        } else {
+            return 1;  // swt = 1 for ussd optout
+        }
+    },
+
+    get_optoutreason: function(contact) {
+        return contact.extra.opt_out_reason || 'unknown';
+    },
+
+    get_faccode: function(contact) {
+        return contact.extra.clinic_code || null;
+    },
+
+    get_dob: function(contact) {
+        if (!_.isUndefined(contact.extra.dob)) {
+            return moment(contact.extra.dob).format('YYYYMMDD');
+        } else {
+            return null;
+        }
+    },
+
     build_json_doc: function(im, contact, user, type) {
         var JSON_template = {
           "mha": 1,
-          "swt": 1,
+          "swt": go.utils.get_swt(im),
           "dmsisdn": user.msisdn,
           "cmsisdn": contact.msisdn,
           "id": go.utils.get_patient_id(contact),
           "type": go.utils.get_subscription_type(type),
           "lang": contact.extra.language_choice,
-          "encdate": go.utils.get_timestamp()
+          "encdate": go.utils.get_timestamp(),
+          "faccode": go.utils.get_faccode(contact),
+          "dob": go.utils.get_dob(contact)
         };
+
+        if (type === 'optout') {
+            JSON_template.optoutreason = go.utils.get_optoutreason(contact);
+        }
+
         return JSON_template;
     },
 
@@ -1032,9 +1063,18 @@ go.utils = {
 
     opt_out: function(im, contact, optout_reason, api_optout, unsub_all, jembi_optout, metric_prefix) {
         var queue1 = [];
+        var queue2 = [];
 
+        // Start Queue 1
+        if (optout_reason !== undefined) {
+            contact.extra.opt_out_reason = optout_reason;
+            queue1.push(im.contacts.save(contact));
+        }
+        // End Queue 1
+
+        // Start Queue 2
         if (api_optout === true) {
-            queue1.push(
+            queue2.push(
                 im.api_request('optout.optout', {
                     address_type: "msisdn",
                     address_value: contact.msisdn,
@@ -1044,20 +1084,20 @@ go.utils = {
         }
 
         if (unsub_all === true) {
-            queue1.push(go.utils.subscription_unsubscribe_all(contact, im));
+            queue2.push(go.utils.subscription_unsubscribe_all(contact, im));
         }
 
-        if (optout_reason !== undefined) {
-            contact.extra.opt_out_reason = optout_reason;
-            queue1.push(im.contacts.save(contact));
-        }
 
         if (jembi_optout === true) {
-            queue1.push(go.utils.jembi_send_json(contact, contact, 'subscription', im,
+            queue2.push(go.utils.jembi_send_json(contact, contact, 'subscription', im,
                 metric_prefix));  // TODO change 'subscription' to 'optout'
         }
+        // End Queue 2
 
-        return Q.all(queue1);
+        return Q.all(queue1)
+                .then(function() {
+                    return Q.all(queue2);
+                });
     },
 
     opted_out: function(im, contact) {

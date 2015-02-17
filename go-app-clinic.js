@@ -1109,10 +1109,22 @@ go.utils = {
     },
 
     opted_out: function(im, contact) {
-        return im.api_request('optout.status', {
-            address_type: "msisdn",
-            address_value: contact.msisdn
-        });
+        return im
+          .api_request('optout.status', {
+              address_type: "msisdn",
+              address_value: contact.msisdn
+          })
+          .then(function(result) {
+              return result.opted_out;
+          });
+    },
+
+    opted_out_by_msisdn: function(im, msisdn) {
+        return im.contacts
+          .get(msisdn, {create: true})
+          .then(function(contact) {
+              return go.utils.opted_out(im, contact);
+          });
     },
 
     opt_in: function(im, contact) {
@@ -1479,13 +1491,14 @@ go.app = function() {
 
                 next: function(choice) {
                     if (choice.value === 'yes') {
+
                         return go.utils
                             .opted_out(self.im, self.contact)
-                            .then(function(json_result) {
+                            .then(function(opted_out) {
                                 return {
                                     true: 'states_opt_in',
                                     false: 'states_clinic_code',
-                                } [json_result.opted_out];
+                                } [opted_out];
                             });
                     } else {
                         return 'states_mobile_no';
@@ -1608,16 +1621,13 @@ go.app = function() {
                     return self.im.contacts
                         .save(self.user)
                         .then(function() {
-                            return self.im
-                                .api_request('optout.status', {
-                                    address_type: "msisdn",
-                                    address_value: self.user.extra.working_on
-                                })
-                                .then(function(json_result) {
+                            return go.utils
+                                .opted_out_by_msisdn(self.im, msisdn)
+                                .then(function(opted_out) {
                                     return {
                                         true: 'states_opt_in',
                                         false: 'states_clinic_code',
-                                    } [json_result.opted_out];
+                                    } [opted_out];
                                 });
                         });
                 }

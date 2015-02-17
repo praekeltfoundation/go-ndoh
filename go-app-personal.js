@@ -1109,10 +1109,22 @@ go.utils = {
     },
 
     opted_out: function(im, contact) {
-        return im.api_request('optout.status', {
-            address_type: "msisdn",
-            address_value: contact.msisdn
-        });
+        return im
+          .api_request('optout.status', {
+              address_type: "msisdn",
+              address_value: contact.msisdn
+          })
+          .then(function(result) {
+              return result.opted_out;
+          });
+    },
+
+    opted_out_by_msisdn: function(im, msisdn) {
+        return im.contacts
+          .get(msisdn, {create: true})
+          .then(function(contact) {
+              return go.utils.opted_out(im, contact);
+          });
     },
 
     opt_in: function(im, contact) {
@@ -1720,8 +1732,8 @@ go.app = function() {
                             if (choice.value === 'yes') {
                                 return go.utils
                                     .opted_out(self.im, self.contact)
-                                    .then(function(json_result) {
-                                        if (json_result.opted_out) {
+                                    .then(function(opted_out) {
+                                        if (opted_out) {
                                             return 'states_opt_in';
                                         } else {
                                             if (self.im.config.detailed_data_collection){

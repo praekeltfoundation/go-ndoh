@@ -31,8 +31,8 @@ go.app = function() {
             return go.utils.set_language(self.im.user, self.contact)
                 .then(function() {
                     return go.utils.opted_out(self.im, self.contact)
-                        .then(function(json_result) {
-                            if (json_result.opted_out === false) {
+                        .then(function(opted_out) {
+                            if (opted_out === false) {
                                 question = $('Please let us know why you do not want MomConnect messages');
                             } else {
                                 question = $('Please tell us why you previously opted out of messages');

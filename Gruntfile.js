@@ -166,27 +166,27 @@ module.exports = function (grunt) {
         mochaTest: {
             options: {
                 reporter: 'spec'
-            // },
-            // test_clinic: {
-            //     src: ['<%= paths.test.clinic %>']
-            // },
-            // test_chw: {
-            //     src: ['<%= paths.test.chw %>']
-            // },
-            // test_personal: {
-            //     src: ['<%= paths.test.personal %>']
+            },
+            test_clinic: {
+                src: ['<%= paths.test.clinic %>']
+            },
+            test_chw: {
+                src: ['<%= paths.test.chw %>']
+            },
+            test_personal: {
+                src: ['<%= paths.test.personal %>']
             },
             test_optout: {
                 src: ['<%= paths.test.optout %>']
             },
             test_smsinbound: {
                 src: ['<%= paths.test.smsinbound %>']
-            // },
-            // test_servicerating: {
-            //     src: ['<%= paths.test.servicerating %>']
-            // },
-            // test_session_length_helper: {
-            //     src: ['<%= paths.test.session_length_helper %>']
+            },
+            test_servicerating: {
+                src: ['<%= paths.test.servicerating %>']
+            },
+            test_session_length_helper: {
+                src: ['<%= paths.test.session_length_helper %>']
             }
         }
     });

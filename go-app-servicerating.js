@@ -470,6 +470,7 @@ go.utils = {
 
     get_optoutreason: function(contact) {
         return contact.extra.opt_out_reason || 'unknown';
+        // TODO This should return an integer #154
     },
 
     get_faccode: function(contact) {
@@ -1103,7 +1104,7 @@ go.utils = {
 
         if (jembi_optout === true) {
             queue3.push(go.utils.jembi_send_json(contact, contact, 'subscription', im,
-                metric_prefix));  // TODO change 'subscription' to 'optout'
+                metric_prefix));
         }
       // End Queue 3
 

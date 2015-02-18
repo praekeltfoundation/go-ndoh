@@ -470,6 +470,7 @@ go.utils = {
 
     get_optoutreason: function(contact) {
         return contact.extra.opt_out_reason || 'unknown';
+        // TODO This should return an integer #154
     },
 
     get_faccode: function(contact) {
@@ -1103,7 +1104,7 @@ go.utils = {
 
         if (jembi_optout === true) {
             queue3.push(go.utils.jembi_send_json(contact, contact, 'subscription', im,
-                metric_prefix));  // TODO change 'subscription' to 'optout'
+                metric_prefix));
         }
       // End Queue 3
 
@@ -1435,7 +1436,6 @@ go.app = function() {
             return go.utils
                 .opt_out(self.im, self.contact, self.im.user.answers.states_start, api_optout=true,
                     unsub_all=true, jembi_optout=true, self.metric_prefix)
-                    // TODO need to trace what happens with jembi optout when user is already opted out, perhaps put if opted_out in utils
                 .then(function() {
                     return self.states.create('states_end_no');
                 });

@@ -1073,7 +1073,6 @@ go.utils = {
     opt_out: function(im, contact, optout_reason, api_optout, unsub_all, jembi_optout, metric_prefix) {
         var queue1 = [];
         var queue2 = [];
-        var queue3 = [];
 
       // Start Queue 1
         if (optout_reason !== undefined) {
@@ -1083,12 +1082,8 @@ go.utils = {
       // End Queue 1
 
       // Start Queue 2
-        queue2.push(go.utils.opted_out(im, contact));
-      // End Queue 2
-
-      // Start Queue 3
         if (api_optout === true) {
-            queue3.push(
+            queue2.push(
                 im.api_request('optout.optout', {
                     address_type: "msisdn",
                     address_value: contact.msisdn,
@@ -1098,24 +1093,24 @@ go.utils = {
         }
 
         if (unsub_all === true) {
-            queue3.push(go.utils.subscription_unsubscribe_all(contact, im));
+            queue2.push(go.utils.subscription_unsubscribe_all(contact, im));
         }
 
 
         if (jembi_optout === true) {
-            queue3.push(go.utils.jembi_send_json(contact, contact, 'subscription', im,
+            queue2.push(go.utils.jembi_send_json(contact, contact, 'subscription', im,
                 metric_prefix));
         }
-      // End Queue 3
+      // End Queue 2
 
         return Q
             .all(queue1)
             .then(function() {
-                return Q
-                    .all(queue2)
+                return go.utils
+                    .opted_out(im, contact)
                     .then(function(opted_out) {
                         if (opted_out === false) {
-                            return Q.all(queue3);
+                            return Q.all(queue2);
                         } else {
                             return Q();
                         }

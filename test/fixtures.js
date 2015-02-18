@@ -1433,7 +1433,7 @@ module.exports = function() {
         }
     },
 
-    // Opt out
+    // Opt out 1
     {
         'request': {
             'method': 'POST',
@@ -1448,11 +1448,12 @@ module.exports = function() {
                 "dmsisdn": "+27001",
                 "cmsisdn": "+27001",
                 "id": "12345^^^ZW^PPN",
-                "type": 1,
+                "type": 4,
                 "lang": "en",
                 "encdate": "20130819144811",
                 "faccode": null,
-                "dob": null
+                "dob": null,
+                "optoutreason": 1
             },
         },
         'response': {
@@ -1462,6 +1463,7 @@ module.exports = function() {
             }
         }
     },
+    // Opt out 2
     {
         'request': {
             'method': 'POST',
@@ -1473,14 +1475,75 @@ module.exports = function() {
             'data': {
                 "mha": 1,
                 "swt": 1,
-                "dmsisdn": "+27831112222",
-                "cmsisdn": "+27831112222",
+                "dmsisdn": "+27001",
+                "cmsisdn": "+27001",
                 "id": "12345^^^ZW^PPN",
-                "type": 1,
+                "type": 4,
                 "lang": "en",
                 "encdate": "20130819144811",
                 "faccode": null,
-                "dob": null
+                "dob": null,
+                "optoutreason": 4
+            },
+        },
+        'response': {
+            "code": 200,
+            "data": {
+                "success": "true"
+            }
+        }
+    },
+    // Opt out 3
+    // {
+    //     'request': {
+    //         'method': 'POST',
+    //         'headers': {
+    //             'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
+    //             'Content-Type': ['application/json']
+    //         },
+    //         'url': 'http://test/v2/json/optout',
+    //         'data': {
+    //             "mha": 1,
+    //             "swt": 1,
+    //             "dmsisdn": "+27831112222",
+    //             "cmsisdn": "+27831112222",
+    //             "id": "12345^^^ZW^PPN",
+    //             "type": 4,
+    //             "lang": "en",
+    //             "encdate": "20130819144811",
+    //             "faccode": null,
+    //             "dob": null,
+    //             "optoutreason": "miscarriage"
+    //         },
+    //     },
+    //     'response': {
+    //         "code": 200,
+    //         "data": {
+    //             "success": "true"
+    //         }
+    //     }
+    // },
+    // Opt out 4 (for smsinbound)
+    {
+        'request': {
+            'method': 'POST',
+            'headers': {
+                'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
+                'Content-Type': ['application/json']
+            },
+            'url': 'http://test/v2/json/optout',
+            'data': {
+                "mha": 1,
+                "swt": 2,
+                "dmsisdn": "+27001",
+                "cmsisdn": "+27001",
+                "id": null,
+                "type": 4,
+                "lang": "en",
+                "encdate": "20130819144811",
+                "faccode": null,
+                "dob": null,
+                "optoutreason": 6
             },
         },
         'response': {

@@ -160,7 +160,8 @@ describe("app", function() {
                 });
             });
 
-            describe("when the user was NOT previously opted out", function() {
+            describe("when the user WAS previously opted out", function() {
+
                 describe("when the user signs up for messages", function() {
                     it("should increase total subscriptions metric", function() {
                         return tester
@@ -255,6 +256,14 @@ describe("app", function() {
                             'concerns please visit your nearest clinic.')
                     })
                     .check.reply.ends_session()
+                    .run();
+            });
+
+            it("should save their optout reason against their contact", function() {
+                return tester
+                    .setup.user.addr('27001')
+                    .setup.user.state('states_start')
+                    .input('4')
                     .check(function(api) {
                         var contact = api.contacts.store[0];
                         assert.equal(contact.extra.opt_out_reason, 'not_useful');
@@ -293,11 +302,37 @@ describe("app", function() {
                             'messages from us. If you have any medical ' +
                             'concerns please visit your nearest clinic.')
                     })
+                    .check.reply.ends_session()
+                    .run();
+            });
+
+            it("should save their optout reason on their contact", function() {
+                return tester
+                    .setup(function(api) {
+                        api.contacts.add({
+                            msisdn: '+27001',
+                            extra : {
+                                language_choice: 'en',
+                                suspect_pregnancy: 'yes',
+                                id_type: 'passport',
+                                passport_origin: 'zw',
+                                passport_no: '12345',
+                                ussd_sessions: '5'
+                            },
+                            key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
+                        });
+                    })
+                    .setup.user.answers({
+                        'states_start': 'miscarriage'
+                    })
+                    .setup.user.addr('27001')
+                    .setup.user.state('states_subscribe_option')
+                    .input('2')
                     .check(function(api) {
                         var contact = api.contacts.store[0];
                         assert.equal(contact.extra.opt_out_reason, 'miscarriage');
                     })
-                    .check.reply.ends_session()
                     .run();
             });
         });
@@ -328,6 +363,24 @@ describe("app", function() {
                         .check.reply.ends_session()
                         .run();
                 });
+
+                it("should set their optout reason as '' since they opted in to babyloss " +
+                   "messages", function() {
+                    return tester
+                        .setup.user.answers({
+                            'states_start': 'miscarriage'
+                        })
+                        .setup.user.state('states_subscribe_option')
+                        .setup.user.addr('27001')
+                        .input('1')
+                        .check(function(api) {
+                            var contact = _.find(api.contacts.store, {
+                              msisdn: '+27001'
+                            });
+                            assert.equal(contact.extra.opt_out_reason, "");
+                        })
+                        .run();
+                });
             });
 
             describe("when the user has no existing subscriptions", function() {
@@ -352,6 +405,22 @@ describe("app", function() {
                             assert.equal(contact.extra.subscription_rate, '3');
                         })
                         .check.reply.ends_session()
+                        .run();
+                });
+
+                it("should set their optout reason as '' since they opted in to babyloss " +
+                   "messages", function() {
+                    return tester
+                        .setup.user.answers({
+                            'states_start': 'miscarriage'
+                        })
+                        .setup.user.state('states_subscribe_option')
+                        .setup.user.addr('27831112222')
+                        .input('1')
+                        .check(function(api) {
+                            var contact = _.find(api.contacts.store, { msisdn: '+27831112222' });
+                            assert.equal(contact.extra.opt_out_reason, '');
+                        })
                         .run();
                 });
             });

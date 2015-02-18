@@ -46,7 +46,7 @@ describe("app", function() {
                         username: 'foo',
                         password: 'bar',
                         url: 'http://test/v2/',
-                        url_json: 'http://test/v2/json/'
+                        url_json: 'http://test/v2/json/optout'
                     },
                     control: {
                         username: 'test_user',
@@ -186,8 +186,8 @@ describe("app", function() {
 
         });
 
-
         describe("when the user sends a non standard keyword message", function() {
+
             describe("when the message is received between 08:00 and 17:00", function() {
                 it("should log a support ticket", function() {
                     return tester
@@ -279,7 +279,8 @@ describe("app", function() {
                         api.contacts.add({
                             msisdn: '+27001',
                             extra : {
-                                language_choice: 'en'
+                                language_choice: 'en',
+                                id_type: 'none'
                             },
                             key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                             user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
@@ -293,6 +294,10 @@ describe("app", function() {
                             'Thank you. You will no longer receive messages from us. ' +
                             'If you have any medical concerns please visit your nearest clinic'
                     })
+                    .check(function(api) {
+                        var contact = _.find(api.contacts.store, { msisdn: '+27001' });
+                        assert.equal(contact.extra.opt_out_reason, 'unknown');
+                    })
                     .run();
             });
         });
@@ -304,7 +309,8 @@ describe("app", function() {
                         api.contacts.add({
                             msisdn: '+27001',
                             extra : {
-                                language_choice: 'en'
+                                language_choice: 'en',
+                                id_type: 'none'
                             },
                             key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                             user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
@@ -318,6 +324,10 @@ describe("app", function() {
                             'Thank you. You will no longer receive messages from us. ' +
                             'If you have any medical concerns please visit your nearest clinic'
                     })
+                    .check(function(api) {
+                        var contact = _.find(api.contacts.store, { msisdn: '+27001' });
+                        assert.equal(contact.extra.opt_out_reason, 'unknown');
+                    })
                     .run();
             });
         });
@@ -329,7 +339,8 @@ describe("app", function() {
                         api.contacts.add({
                             msisdn: '+27001',
                             extra : {
-                                language_choice: 'en'
+                                language_choice: 'en',
+                                opt_out_reason: 'unknown'
                             },
                             key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                             user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
@@ -342,6 +353,10 @@ describe("app", function() {
                         reply:
                             'Thank you. You will now receive messages from us again. ' +
                             'If you have any medical concerns please visit your nearest clinic'
+                    })
+                    .check(function(api) {
+                        var contact = _.find(api.contacts.store, { msisdn: '+27001' });
+                        assert.equal(contact.extra.opt_out_reason, '');
                     })
                     .run();
             });
@@ -374,6 +389,8 @@ describe("app", function() {
                         });
                         assert.equal(contact.extra.subscription_type, '4');
                         assert.equal(contact.extra.subscription_rate, '3');
+                        // check baby switch is not counted as an optout
+                        assert.equal(contact.extra.opt_out_reason, undefined);
                     })
                     .run();
             });

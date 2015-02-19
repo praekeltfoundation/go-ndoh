@@ -1080,7 +1080,8 @@ go.utils = {
             && im.user.state.name !== 'states_start';
     },
 
-    opt_out: function(im, contact, optout_reason, api_optout, unsub_all, jembi_optout, metric_prefix) {
+    opt_out: function(im, contact, optout_reason, api_optout, unsub_all, jembi_optout,
+                      metric_prefix, env) {
         var queue1 = [];
 
         // Start Queue 1
@@ -1101,6 +1102,7 @@ go.utils = {
 
                             // Start Queue 2
                             if (api_optout === true) {
+                                // vumi optout
                                 queue2.push(
                                     im.api_request('optout.optout', {
                                         address_type: "msisdn",
@@ -1111,12 +1113,28 @@ go.utils = {
                             }
 
                             if (unsub_all === true) {
+                                // deactivate all subscriptions
                                 queue2.push(go.utils.subscription_unsubscribe_all(contact, im));
                             }
 
                             if (jembi_optout === true) {
+                                // send optout to jembi
                                 queue2.push(go.utils.jembi_send_json(contact, contact, 'optout', im,
                                     metric_prefix));
+
+                                // determine registration source with default 'unknown'
+                                var reg_source;
+                                var reg_options = ['clinic', 'chw', 'personal'];
+                                if (!_.contains(reg_options, contact.extra.is_registered_by)) {
+                                    reg_source = 'unknown';
+                                } else {
+                                    reg_source = contact.extra.is_registered_by;
+                                }
+
+                                // fire opt-out registration source metric
+                                queue2.push(im.metrics.fire.inc([env, 'sum', 'optout_on',
+                                    reg_source].join('.'), 1));
+
                             }
                             // End Queue 2
 
@@ -1419,7 +1437,7 @@ go.app = function() {
                             // deactivate current subscriptions, save reason for opting out
                             .opt_out(self.im, self.contact, self.im.user.answers.states_start,
                                 api_optout=false, unsub_all=true, jembi_optout=true,
-                                self.metric_prefix)
+                                self.metric_prefix, self.env)
                             .then(function() {
                                 return Q.all([
                                     // ensure user is not opted out
@@ -1440,7 +1458,7 @@ go.app = function() {
         self.states.add('states_end_no_enter', function(name) {
             return go.utils
                 .opt_out(self.im, self.contact, self.im.user.answers.states_start, api_optout=true,
-                    unsub_all=true, jembi_optout=true, self.metric_prefix)
+                    unsub_all=true, jembi_optout=true, self.metric_prefix, self.env)
                 .then(function() {
                     return self.states.create('states_end_no');
                 });

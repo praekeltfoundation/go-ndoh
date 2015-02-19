@@ -184,6 +184,34 @@ describe("app", function() {
                 });
             });
 
+            describe("when the user sends a STOP message", function() {
+                it("should fire multiple metrics", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27001',
+                                extra : {
+                                    language_choice: 'en',
+                                    id_type: 'none',
+                                    is_registered_by: 'chw'
+                                },
+                                key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                                user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
+                            });
+                        })
+                        .setup.user.addr('27001')
+                        .input('STOP')
+                        .check(function(api) {
+                            var metrics = api.metrics.stores.test_metric_store;
+                            // should NOT inc total subscriptions metric
+                            assert.equal(metrics['test.sum.subscriptions'], undefined);
+                            // should inc optouts on registration source
+                            assert.deepEqual(metrics['test.sum.optout_on.chw'].values, [1]);
+                        })
+                        .run();
+                });
+            });
+
         });
 
         describe("when the user sends a non standard keyword message", function() {

@@ -85,7 +85,7 @@ go.app = function() {
                             // deactivate current subscriptions, save reason for opting out
                             .opt_out(self.im, self.contact, self.im.user.answers.states_start,
                                 api_optout=false, unsub_all=true, jembi_optout=true,
-                                self.metric_prefix)
+                                self.metric_prefix, self.env)
                             .then(function() {
                                 return Q.all([
                                     // ensure user is not opted out
@@ -106,7 +106,7 @@ go.app = function() {
         self.states.add('states_end_no_enter', function(name) {
             return go.utils
                 .opt_out(self.im, self.contact, self.im.user.answers.states_start, api_optout=true,
-                    unsub_all=true, jembi_optout=true, self.metric_prefix)
+                    unsub_all=true, jembi_optout=true, self.metric_prefix, self.env)
                 .then(function() {
                     return self.states.create('states_end_no');
                 });

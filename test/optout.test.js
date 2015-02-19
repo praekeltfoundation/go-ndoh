@@ -73,7 +73,8 @@ describe("app", function() {
                             id_type: 'passport',
                             passport_origin: 'zw',
                             passport_no: '12345',
-                            ussd_sessions: '5'
+                            ussd_sessions: '5',
+                            is_registered_by: 'clinic'
                         },
                         key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                         user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
@@ -86,7 +87,8 @@ describe("app", function() {
                             id_type: 'passport',
                             passport_origin: 'zw',
                             passport_no: '12345',
-                            ussd_sessions: '5'
+                            ussd_sessions: '5',
+                            is_registered_by: 'personal'
                         },
                         key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                         user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
@@ -147,17 +149,54 @@ describe("app", function() {
             describe("when the user was NOT previously opted out", function() {
 
                 describe("when the user signs up for messages", function() {
-                    it("should increase total subscriptions metric", function() {
+                    it("should fire multiple metrics", function() {
                         return tester
                             .setup.user.addr('27001')
-                            .inputs('start', '1', '1')
+                            .inputs({session_event: "new"}, '1', '1')
                             .check(function(api) {
                                 var metrics = api.metrics.stores.test_metric_store;
+                                // should inc total subscriptions metric
                                 assert.deepEqual(metrics['test.sum.subscriptions'].values, [1]);
+                                // should inc optouts on registration source
+                                assert.deepEqual(metrics['test.sum.optout_on.clinic'].values, [1]);
                             })
                             .run();
                     });
                 });
+
+                describe("when the user gives reason for optout 1-3, but does not sign up for " +
+                         "messages", function() {
+                    it("should fire multiple metrics", function() {
+                        return tester
+                            .setup.user.addr('27001')
+                            .inputs({session_event: "new"}, '1', '2')
+                            .check(function(api) {
+                                var metrics = api.metrics.stores.test_metric_store;
+                                // should NOT inc total subscriptions metric
+                                assert.equal(metrics['test.sum.subscriptions'], undefined);
+                                // should inc optouts on registration source
+                                assert.deepEqual(metrics['test.sum.optout_on.clinic'].values, [1]);
+                            })
+                            .run();
+                    });
+                });
+
+                describe("when the user gives reason for optout 4-5", function() {
+                    it("should fire multiple metrics", function() {
+                        return tester
+                            .setup.user.addr('27001')
+                            .inputs({session_event: "new"}, '4')
+                            .check(function(api) {
+                                var metrics = api.metrics.stores.test_metric_store;
+                                // should NOT inc total subscriptions metric
+                                assert.equal(metrics['test.sum.subscriptions'], undefined);
+                                // should inc optouts on registration source
+                                assert.deepEqual(metrics['test.sum.optout_on.clinic'].values, [1]);
+                            })
+                            .run();
+                    });
+                });
+
             });
 
             describe("when the user WAS previously opted out", function() {
@@ -169,11 +208,48 @@ describe("app", function() {
                             .inputs('start', '1', '1')
                             .check(function(api) {
                                 var metrics = api.metrics.stores.test_metric_store;
+                                // inc total subscriptions metric
                                 assert.deepEqual(metrics['test.sum.subscriptions'].values, [1]);
+                                // should not inc optouts on registration source
+                                assert.equal(metrics['test.sum.optout_on'], undefined);
                             })
                             .run();
                     });
                 });
+
+                describe("when the user gives reason for optout 1-3, but does not sign up for " +
+                         "messages", function() {
+                    it("should fire multiple metrics", function() {
+                        return tester
+                            .setup.user.addr('27001')
+                            .inputs({session_event: "new"}, '1', '2')
+                            .check(function(api) {
+                                var metrics = api.metrics.stores.test_metric_store;
+                                // should NOT inc total subscriptions metric
+                                assert.equal(metrics['test.sum.subscriptions'], undefined);
+                                // should NOT inc optouts on registration source
+                                assert.equal(metrics['test.sum.optout_on'], undefined);
+                            })
+                            .run();
+                    });
+                });
+
+                describe("when the user gives reason for optout 4-5", function() {
+                    it("should fire multiple metrics", function() {
+                        return tester
+                            .setup.user.addr('27001')
+                            .inputs({session_event: "new"}, '4')
+                            .check(function(api) {
+                                var metrics = api.metrics.stores.test_metric_store;
+                                // should NOT inc total subscriptions metric
+                                assert.equal(metrics['test.sum.subscriptions'], undefined);
+                                // should NOT inc optouts on registration source
+                                assert.equal(metrics['test.sum.optout_on'], undefined);
+                            })
+                            .run();
+                    });
+                });
+
             });
         });
 

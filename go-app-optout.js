@@ -1091,6 +1091,24 @@ go.utils = {
         return reg_source;
     },
 
+    adjust_percentage_optouts: function(im, env) {
+        return Q.all([
+            go.utils.get_kv(im, [im.config.metric_store, env, 'sum', 'subscriptions'].join('.'), 0),
+            go.utils.get_kv(im, [im.config.metric_store, env, 'sum', 'optouts'].join('.'), 0),
+            go.utils.get_kv(im, [im.config.metric_store, env, 'sum', 'optout_cause', 'non_loss'].join('.'), 0)
+        ]).spread(function(total_subscriptions, total_optouts, non_loss_optouts) {
+            // console.log(total_subscriptions);
+            // console.log(total_optouts);
+            // console.log(non_loss_optouts);
+            var percentage_optouts = parseFloat( ((total_optouts/total_subscriptions)*100).toFixed(2) );
+            var percentage_non_loss_optouts = parseFloat(((non_loss_optouts / total_subscriptions) * 100).toFixed(2));
+            return Q.all([
+                im.metrics.fire.last([env, 'percent', 'optout', 'all'].join('.'), percentage_optouts),
+                im.metrics.fire.last([env, 'percent', 'optout', 'non_loss'].join('.'), percentage_non_loss_optouts)
+            ]);
+        });
+    },
+
     opt_out: function(im, contact, optout_reason, api_optout, unsub_all, jembi_optout,
                       metric_prefix, env) {
         var queue1 = [];
@@ -1159,7 +1177,11 @@ go.utils = {
                             }
                             // End Queue 2
 
-                            return Q.all(queue2);
+                            return Q
+                                .all(queue2)
+                                .then(function() {
+                                    return go.utils.adjust_percentage_optouts(im, env);
+                                });
                         } else {
                             return Q();
                         }

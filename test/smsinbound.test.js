@@ -222,6 +222,10 @@ describe("app", function() {
                             assert.deepEqual(metrics['test.sum.optout_cause.non_loss'].values, [1]);
                             // should inc cause optouts metric
                             assert.deepEqual(metrics['test.sum.optout_cause.unknown'].values, [1]);
+                            // should adjust percentage all optouts metric
+                            assert.deepEqual(metrics['test.percent.optout.all'].values, [25]);
+                            // should adjust percentage non-loss metric
+                            assert.deepEqual(metrics['test.percent.optout.non_loss'].values, [25]);
 
                             var kv_store = api.kv.store;
                             // should NOT inc kv store for total subscriptions

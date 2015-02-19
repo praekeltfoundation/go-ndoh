@@ -1136,9 +1136,25 @@ go.utils = {
                                 // fire opt-out registration source metric
                                 var reg_source = go.utils.get_reg_source(contact);
                                 queue2.push(im.metrics.fire.inc([env, 'sum', 'optout_on',
-                                    reg_source].join('.'), 1));
+                                    reg_source].join('.'), {amount: 1}));
 
-                                //
+                                // fire sum of all opt-outs metric
+                                queue2.push(im.metrics.fire.inc([env, 'sum', 'optouts'].join('.'),
+                                    {amount: 1}));
+
+                                // fire loss / non-loss metric
+                                var loss_causes = ['miscarriage', 'babyloss', 'stillbirth'];
+                                if (_.contains(loss_causes, contact.extra.opt_out_reason)) {
+                                    queue2.push(im.metrics.fire.inc([env, 'sum', 'optout_cause',
+                                        'loss'].join('.'), {amount: 1}));
+                                } else {
+                                    queue2.push(im.metrics.fire.inc([env, 'sum', 'optout_cause',
+                                        'non_loss'].join('.'), {amount: 1}));
+                                }
+
+                                // fire cause metric
+                                queue2.push(im.metrics.fire.inc([env, 'sum', 'optout_cause',
+                                    optout_reason].join('.'), {amount: 1}));
 
                             }
                             // End Queue 2

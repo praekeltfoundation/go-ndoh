@@ -162,10 +162,32 @@ describe("app", function() {
                                 assert.deepEqual(metrics['test.sum.subscriptions'].values, [5]);
                                 // should inc optouts on registration source
                                 assert.deepEqual(metrics['test.sum.optout_on.clinic'].values, [1]);
+                                // should inc all opt-outs metric
+                                assert.deepEqual(metrics['test.sum.optouts'].values, [1]);
+                                // should inc loss optouts metric
+                                assert.deepEqual(metrics['test.sum.optout_cause.loss'].values, [1]);
+                                // should NOT inc non-loss optouts metric
+                                assert.deepEqual(metrics['test.sum.optout_cause.non_loss'], undefined);
+                                // should inc cause optouts metric
+                                assert.deepEqual(metrics['test.sum.optout_cause.miscarriage'].values, [1]);
 
                                 var kv_store = api.kv.store;
                                 // should inc kv store for total subscriptions
                                 assert.equal(kv_store['test_metric_store.test.sum.subscriptions'], 5);
+                                // should inc kv store for all optouts
+                                assert.equal(kv_store['test_metric_store.test.sum.optouts'], 1);
+                                // should inc kv store for loss optouts
+                                assert.equal(kv_store['test_metric_store.test.sum.optout_cause.loss'], 1);
+                                // should NOT inc kv store for non-loss optouts
+                                assert.equal(kv_store['test_metric_store.test.sum.optout_cause.non_loss'], undefined);
+                                // should inc kv store cause optouts
+                                assert.equal(kv_store['test_metric_store.test.sum.optout_cause.miscarriage'], 1);
+                                // should NOT inc kv store for other causes
+                                assert.equal(kv_store['test_metric_store.test.sum.optout_cause.babyloss'], undefined);
+                                assert.equal(kv_store['test_metric_store.test.sum.optout_cause.stillbirth'], undefined);
+                                assert.equal(kv_store['test_metric_store.test.sum.optout_cause.not_useful'], undefined);
+                                assert.equal(kv_store['test_metric_store.test.sum.optout_cause.other'], undefined);
+                                assert.equal(kv_store['test_metric_store.test.sum.optout_cause.unknown'], undefined);
                             })
                             .run();
                     });
@@ -183,6 +205,14 @@ describe("app", function() {
                                 assert.equal(metrics['test.sum.subscriptions'], undefined);
                                 // should inc optouts on registration source
                                 assert.deepEqual(metrics['test.sum.optout_on.clinic'].values, [1]);
+                                // should inc all opt-outs metric
+                                assert.deepEqual(metrics['test.sum.optouts'].values, [1]);
+                                // should inc loss optouts metric
+                                assert.deepEqual(metrics['test.sum.optout_cause.loss'].values, [1]);
+                                // should NOT inc non-loss optouts metric
+                                assert.deepEqual(metrics['test.sum.optout_cause.non_loss'], undefined);
+                                // should inc cause optouts metric
+                                assert.deepEqual(metrics['test.sum.optout_cause.miscarriage'].values, [1]);
 
                                 var kv_store = api.kv.store;
                                 // should NOT inc kv store for total subscriptions
@@ -203,6 +233,14 @@ describe("app", function() {
                                 assert.equal(metrics['test.sum.subscriptions'], undefined);
                                 // should inc optouts on registration source
                                 assert.deepEqual(metrics['test.sum.optout_on.clinic'].values, [1]);
+                                // should inc all opt-outs metric
+                                assert.deepEqual(metrics['test.sum.optouts'].values, [1]);
+                                // should NOT inc loss optouts metric
+                                assert.deepEqual(metrics['test.sum.optout_cause.loss'], undefined);
+                                // should inc non-loss optouts metric
+                                assert.deepEqual(metrics['test.sum.optout_cause.non_loss'].values, [1]);
+                                // should inc cause optouts metric
+                                assert.deepEqual(metrics['test.sum.optout_cause.not_useful'].values, [1]);
 
                                 var kv_store = api.kv.store;
                                 // should NOT inc kv store for total subscriptions
@@ -227,6 +265,14 @@ describe("app", function() {
                                 assert.deepEqual(metrics['test.sum.subscriptions'].values, [5]);
                                 // should not inc optouts on registration source
                                 assert.equal(metrics['test.sum.optout_on'], undefined);
+                                // should NOT inc all opt-outs metric
+                                assert.deepEqual(metrics['test.sum.optouts'], undefined);
+                                // should NOT inc loss optouts metric
+                                assert.deepEqual(metrics['test.sum.optout_cause.loss'], undefined);
+                                // should NOT inc non-loss optouts metric
+                                assert.deepEqual(metrics['test.sum.optout_cause.non_loss'], undefined);
+                                // should NOT inc cause optouts metric
+                                assert.deepEqual(metrics['test.sum.optout_cause.not_useful'], undefined);
 
                                 var kv_store = api.kv.store;
                                 // should inc kv store for total subscriptions
@@ -238,16 +284,14 @@ describe("app", function() {
 
                 describe("when the user gives reason for optout 1-3, but does not sign up for " +
                          "messages", function() {
-                    it("should fire multiple metrics", function() {
+                    it("should not fire any metrics", function() {
                         return tester
-                            .setup.user.addr('27001')
+                            .setup.user.addr('27831112222')
                             .inputs({session_event: "new"}, '1', '2')
                             .check(function(api) {
                                 var metrics = api.metrics.stores.test_metric_store;
-                                // should NOT inc total subscriptions metric
-                                assert.equal(metrics['test.sum.subscriptions'], undefined);
-                                // should NOT inc optouts on registration source
-                                assert.equal(metrics['test.sum.optout_on'], undefined);
+                                // should NOT inc any metrics
+                                assert.equal(metrics, undefined);
 
                                 var kv_store = api.kv.store;
                                 // should NOT inc kv store for total subscriptions
@@ -258,16 +302,14 @@ describe("app", function() {
                 });
 
                 describe("when the user gives reason for optout 4-5", function() {
-                    it("should fire multiple metrics", function() {
+                    it("should not fire any metrics", function() {
                         return tester
-                            .setup.user.addr('27001')
+                            .setup.user.addr('27831112222')
                             .inputs({session_event: "new"}, '4')
                             .check(function(api) {
                                 var metrics = api.metrics.stores.test_metric_store;
-                                // should NOT inc total subscriptions metric
-                                assert.equal(metrics['test.sum.subscriptions'], undefined);
-                                // should NOT inc optouts on registration source
-                                assert.equal(metrics['test.sum.optout_on'], undefined);
+                                // should NOT inc any metrics
+                                assert.equal(metrics, undefined);
 
                                 var kv_store = api.kv.store;
                                 // should NOT inc kv store for total subscriptions

@@ -214,10 +214,26 @@ describe("app", function() {
                             assert.equal(metrics['test.sum.subscriptions'], undefined);
                             // should inc optouts on registration source
                             assert.deepEqual(metrics['test.sum.optout_on.chw'].values, [1]);
+                            // should inc all opt-outs metric
+                            assert.deepEqual(metrics['test.sum.optouts'].values, [1]);
+                            // should NOT inc loss optouts metric
+                            assert.equal(metrics['test.sum.optout_cause.loss'], undefined);
+                            // should inc non-loss optouts metric
+                            assert.deepEqual(metrics['test.sum.optout_cause.non_loss'].values, [1]);
+                            // should inc cause optouts metric
+                            assert.deepEqual(metrics['test.sum.optout_cause.unknown'].values, [1]);
 
                             var kv_store = api.kv.store;
                             // should NOT inc kv store for total subscriptions
                             assert.equal(kv_store['test_metric_store.test.sum.subscriptions'], 4);
+                            // should inc kv store for all optouts
+                            assert.equal(kv_store['test_metric_store.test.sum.optouts'], 1);
+                            // should NOT inc kv store for loss optouts
+                            assert.equal(kv_store['test_metric_store.test.sum.optout_cause.loss'], undefined);
+                            // should inc kv store for non-loss optouts
+                            assert.equal(kv_store['test_metric_store.test.sum.optout_cause.non_loss'], 1);
+                            // should inc kv store cause optouts
+                            assert.equal(kv_store['test_metric_store.test.sum.optout_cause.unknown'], 1);
                         })
                         .run();
                 });

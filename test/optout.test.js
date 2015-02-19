@@ -98,6 +98,9 @@ describe("app", function() {
                     fixtures().forEach(api.http.fixtures.add);
                 })
                 .setup(function(api) {
+                    api.kv.store['test_metric_store.test.sum.subscriptions'] = 4;
+                })
+                .setup(function(api) {
                     api.resources.add(new DummyOptoutResource());
                     api.resources.attach(api);
                 });
@@ -144,7 +147,7 @@ describe("app", function() {
             });
         });
 
-        describe("test metrics...", function() {
+        describe("test Metrics and KVs", function() {
 
             describe("when the user was NOT previously opted out", function() {
 
@@ -156,9 +159,13 @@ describe("app", function() {
                             .check(function(api) {
                                 var metrics = api.metrics.stores.test_metric_store;
                                 // should inc total subscriptions metric
-                                assert.deepEqual(metrics['test.sum.subscriptions'].values, [1]);
+                                assert.deepEqual(metrics['test.sum.subscriptions'].values, [5]);
                                 // should inc optouts on registration source
                                 assert.deepEqual(metrics['test.sum.optout_on.clinic'].values, [1]);
+
+                                var kv_store = api.kv.store;
+                                // should inc kv store for total subscriptions
+                                assert.equal(kv_store['test_metric_store.test.sum.subscriptions'], 5);
                             })
                             .run();
                     });
@@ -176,6 +183,10 @@ describe("app", function() {
                                 assert.equal(metrics['test.sum.subscriptions'], undefined);
                                 // should inc optouts on registration source
                                 assert.deepEqual(metrics['test.sum.optout_on.clinic'].values, [1]);
+
+                                var kv_store = api.kv.store;
+                                // should NOT inc kv store for total subscriptions
+                                assert.equal(kv_store['test_metric_store.test.sum.subscriptions'], 4);
                             })
                             .run();
                     });
@@ -192,6 +203,10 @@ describe("app", function() {
                                 assert.equal(metrics['test.sum.subscriptions'], undefined);
                                 // should inc optouts on registration source
                                 assert.deepEqual(metrics['test.sum.optout_on.clinic'].values, [1]);
+
+                                var kv_store = api.kv.store;
+                                // should NOT inc kv store for total subscriptions
+                                assert.equal(kv_store['test_metric_store.test.sum.subscriptions'], 4);
                             })
                             .run();
                     });
@@ -209,9 +224,13 @@ describe("app", function() {
                             .check(function(api) {
                                 var metrics = api.metrics.stores.test_metric_store;
                                 // inc total subscriptions metric
-                                assert.deepEqual(metrics['test.sum.subscriptions'].values, [1]);
+                                assert.deepEqual(metrics['test.sum.subscriptions'].values, [5]);
                                 // should not inc optouts on registration source
                                 assert.equal(metrics['test.sum.optout_on'], undefined);
+
+                                var kv_store = api.kv.store;
+                                // should inc kv store for total subscriptions
+                                assert.equal(kv_store['test_metric_store.test.sum.subscriptions'], 5);
                             })
                             .run();
                     });
@@ -229,6 +248,10 @@ describe("app", function() {
                                 assert.equal(metrics['test.sum.subscriptions'], undefined);
                                 // should NOT inc optouts on registration source
                                 assert.equal(metrics['test.sum.optout_on'], undefined);
+
+                                var kv_store = api.kv.store;
+                                // should NOT inc kv store for total subscriptions
+                                assert.equal(kv_store['test_metric_store.test.sum.subscriptions'], 4);
                             })
                             .run();
                     });
@@ -245,6 +268,10 @@ describe("app", function() {
                                 assert.equal(metrics['test.sum.subscriptions'], undefined);
                                 // should NOT inc optouts on registration source
                                 assert.equal(metrics['test.sum.optout_on'], undefined);
+
+                                var kv_store = api.kv.store;
+                                // should NOT inc kv store for total subscriptions
+                                assert.equal(kv_store['test_metric_store.test.sum.subscriptions'], 4);
                             })
                             .run();
                     });

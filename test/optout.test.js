@@ -99,6 +99,7 @@ describe("app", function() {
                 })
                 .setup(function(api) {
                     api.kv.store['test_metric_store.test.sum.subscriptions'] = 4;
+                    api.kv.store['test_metric_store.test.sum.optout_cause.loss'] = 2;
                 })
                 .setup(function(api) {
                     api.resources.add(new DummyOptoutResource());
@@ -165,15 +166,19 @@ describe("app", function() {
                                 // should inc all opt-outs metric
                                 assert.deepEqual(metrics['test.sum.optouts'].values, [1]);
                                 // should inc loss optouts metric
-                                assert.deepEqual(metrics['test.sum.optout_cause.loss'].values, [1]);
+                                assert.deepEqual(metrics['test.sum.optout_cause.loss'].values, [3]);
                                 // should NOT inc non-loss optouts metric
                                 assert.deepEqual(metrics['test.sum.optout_cause.non_loss'], undefined);
                                 // should inc cause optouts metric
                                 assert.deepEqual(metrics['test.sum.optout_cause.miscarriage'].values, [1]);
                                 // should adjust percentage all optouts metric
-                                assert.deepEqual(metrics['test.percent.optout.all'].values, [25]);
+                                assert.deepEqual(metrics['test.percent.optout.all'].values, [25, 20]);
                                 // should NOT adjust percentage non-loss metric
-                                assert.deepEqual(metrics['test.percent.optout.non_loss'].values, [0]);
+                                assert.deepEqual(metrics['test.percent.optout.non_loss'].values, [0, 0]);
+                                // should record subscription to optout protocol success
+                                assert.deepEqual(metrics['test.optout.sum.subscription_to_protocol_success'].values, [1]);
+                                // should adjust percentage optouts that signed up for loss messages
+                                assert.deepEqual(metrics['test.percent.optout.loss.msgs'].values, [0, 33.33]);
 
                                 var kv_store = api.kv.store;
                                 // should inc kv store for total subscriptions
@@ -181,7 +186,7 @@ describe("app", function() {
                                 // should inc kv store for all optouts
                                 assert.equal(kv_store['test_metric_store.test.sum.optouts'], 1);
                                 // should inc kv store for loss optouts
-                                assert.equal(kv_store['test_metric_store.test.sum.optout_cause.loss'], 1);
+                                assert.equal(kv_store['test_metric_store.test.sum.optout_cause.loss'], 3);
                                 // should NOT inc kv store for non-loss optouts
                                 assert.equal(kv_store['test_metric_store.test.sum.optout_cause.non_loss'], undefined);
                                 // should inc kv store cause optouts
@@ -212,7 +217,7 @@ describe("app", function() {
                                 // should inc all opt-outs metric
                                 assert.deepEqual(metrics['test.sum.optouts'].values, [1]);
                                 // should inc loss optouts metric
-                                assert.deepEqual(metrics['test.sum.optout_cause.loss'].values, [1]);
+                                assert.deepEqual(metrics['test.sum.optout_cause.loss'].values, [3]);
                                 // should NOT inc non-loss optouts metric
                                 assert.deepEqual(metrics['test.sum.optout_cause.non_loss'], undefined);
                                 // should inc cause optouts metric
@@ -221,6 +226,10 @@ describe("app", function() {
                                 assert.deepEqual(metrics['test.percent.optout.all'].values, [25]);
                                 // should NOT adjust percentage non-loss metric
                                 assert.deepEqual(metrics['test.percent.optout.non_loss'].values, [0]);
+                                // should NOT record subscription to optout protocol success
+                                assert.deepEqual(metrics['test.optout.sum.subscription_to_protocol_success'], undefined);
+                                // should NOT adjust percentage optouts that signed up for loss messages
+                                assert.deepEqual(metrics['test.percent.optout.loss.msgs'].values, [0]);
 
                                 var kv_store = api.kv.store;
                                 // should NOT inc kv store for total subscriptions
@@ -253,6 +262,8 @@ describe("app", function() {
                                 assert.deepEqual(metrics['test.percent.optout.all'].values, [25]);
                                 // should adjust percentage non-loss metric
                                 assert.deepEqual(metrics['test.percent.optout.non_loss'].values, [25]);
+                                // should NOT adjust percentage optouts that signed up for loss messages
+                                assert.deepEqual(metrics['test.percent.optout.loss.msgs'].values, [0]);
 
                                 var kv_store = api.kv.store;
                                 // should NOT inc kv store for total subscriptions
@@ -286,9 +297,11 @@ describe("app", function() {
                                 // should NOT inc cause optouts metric
                                 assert.deepEqual(metrics['test.sum.optout_cause.not_useful'], undefined);
                                 // should NOT adjust percentage all optouts metric
-                                assert.deepEqual(metrics['test.percent.optout.all'], undefined);
+                                assert.deepEqual(metrics['test.percent.optout.all'].values, [0]);
                                 // should NOT adjust percentage non-loss metric
-                                assert.deepEqual(metrics['test.percent.optout.non_loss'], undefined);
+                                assert.deepEqual(metrics['test.percent.optout.non_loss'].values, [0]);
+                                // should adjust percentage optouts that signed up for loss messages
+                                assert.deepEqual(metrics['test.percent.optout.loss.msgs'].values, [50]);
 
                                 var kv_store = api.kv.store;
                                 // should inc kv store for total subscriptions

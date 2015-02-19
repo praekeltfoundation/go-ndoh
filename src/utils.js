@@ -1089,19 +1089,21 @@ go.utils = {
     },
 
     adjust_percentage_optouts: function(im, env) {
+        var m_store = im.config.metric_store;
         return Q.all([
-            go.utils.get_kv(im, [im.config.metric_store, env, 'sum', 'subscriptions'].join('.'), 0),
-            go.utils.get_kv(im, [im.config.metric_store, env, 'sum', 'optouts'].join('.'), 0),
-            go.utils.get_kv(im, [im.config.metric_store, env, 'sum', 'optout_cause', 'non_loss'].join('.'), 0)
-        ]).spread(function(total_subscriptions, total_optouts, non_loss_optouts) {
-            // console.log(total_subscriptions);
-            // console.log(total_optouts);
-            // console.log(non_loss_optouts);
+            go.utils.get_kv(im, [m_store, env, 'sum', 'subscriptions'].join('.'), 0),
+            go.utils.get_kv(im, [m_store, env, 'sum', 'optouts'].join('.'), 0),
+            go.utils.get_kv(im, [m_store, env, 'sum', 'optout_cause', 'non_loss'].join('.'), 0),
+            go.utils.get_kv(im, [m_store, env, 'sum', 'optout_cause', 'loss'].join('.'), 0),
+            go.utils.get_kv(im, [m_store, env, 'optout', 'sum', 'subscription_to_protocol_success'].join('.'), 0)
+        ]).spread(function(total_subscriptions, total_optouts, non_loss_optouts, loss_optouts, loss_msg_signups) {
             var percentage_optouts = parseFloat( ((total_optouts/total_subscriptions)*100).toFixed(2) );
             var percentage_non_loss_optouts = parseFloat(((non_loss_optouts / total_subscriptions) * 100).toFixed(2));
+            var percentage_loss_msg_signups = parseFloat(((loss_msg_signups / loss_optouts) * 100).toFixed(2));
             return Q.all([
                 im.metrics.fire.last([env, 'percent', 'optout', 'all'].join('.'), percentage_optouts),
-                im.metrics.fire.last([env, 'percent', 'optout', 'non_loss'].join('.'), percentage_non_loss_optouts)
+                im.metrics.fire.last([env, 'percent', 'optout', 'non_loss'].join('.'), percentage_non_loss_optouts),
+                im.metrics.fire.last([env, 'percent', 'optout', 'loss', 'msgs'].join('.'), percentage_loss_msg_signups)
             ]);
         });
     },

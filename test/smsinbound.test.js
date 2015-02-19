@@ -80,6 +80,7 @@ describe("app", function() {
                 .setup(function(api) {
                     api.kv.store['test.smsinbound.unique_users'] = 0;
                     api.kv.store['test_metric_store.test.sum.subscriptions'] = 4;
+                    api.kv.store['test_metric_store.test.sum.optout_cause.loss'] = 2;
                 })
                 .setup(function(api) {
                     api.metrics.stores = {'test_metric_store': {}};
@@ -226,6 +227,8 @@ describe("app", function() {
                             assert.deepEqual(metrics['test.percent.optout.all'].values, [25]);
                             // should adjust percentage non-loss metric
                             assert.deepEqual(metrics['test.percent.optout.non_loss'].values, [25]);
+                            // should NOT adjust percentage optouts that signed up for loss messages
+                            assert.deepEqual(metrics['test.percent.optout.loss.msgs'].values, [0]);
 
                             var kv_store = api.kv.store;
                             // should NOT inc kv store for total subscriptions
@@ -233,7 +236,7 @@ describe("app", function() {
                             // should inc kv store for all optouts
                             assert.equal(kv_store['test_metric_store.test.sum.optouts'], 1);
                             // should NOT inc kv store for loss optouts
-                            assert.equal(kv_store['test_metric_store.test.sum.optout_cause.loss'], undefined);
+                            assert.equal(kv_store['test_metric_store.test.sum.optout_cause.loss'], 2);
                             // should inc kv store for non-loss optouts
                             assert.equal(kv_store['test_metric_store.test.sum.optout_cause.non_loss'], 1);
                             // should inc kv store cause optouts

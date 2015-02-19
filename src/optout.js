@@ -93,7 +93,11 @@ go.app = function() {
                                     // activate new subscription
                                     go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix, self.env, opts)
                                 ]).then(function() {
-                                    return choice.value;
+                                    return go.utils
+                                        .adjust_percentage_optouts(self.im, self.env)
+                                        .then(function() {
+                                            return choice.value;
+                                        });
                                 });
                             });
                     } else {

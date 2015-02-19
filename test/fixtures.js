@@ -793,7 +793,9 @@ module.exports = function() {
                 "id": "5101015009088^^^ZAF^NI",
                 "type": 1,
                 "lang": "en",
-                "encdate": "20130819144811"
+                "encdate": "20130819144811",
+                "faccode": null,
+                "dob": "19510101"
             },
         },
         'response': {
@@ -819,7 +821,9 @@ module.exports = function() {
                 "id": "5101025009086^^^ZAF^NI",
                 "type": 1,
                 "lang": "en",
-                "encdate": "20130819144811"
+                "encdate": "20130819144811",
+                "faccode": null,
+                "dob": "19510102"
             },
         },
         'response': {
@@ -845,7 +849,9 @@ module.exports = function() {
                 "id": "12345^^^ZW^PPN",
                 "type": 1,
                 "lang": "en",
-                "encdate": "20130819144811"
+                "encdate": "20130819144811",
+                "faccode": null,
+                "dob": null
             },
         },
         'response': {
@@ -868,10 +874,41 @@ module.exports = function() {
                 "swt": 1,
                 "dmsisdn": "+27001",
                 "cmsisdn": "+27001",
+                "id": "12345^^^ZW^PPN",
+                "type": 1,
+                "lang": "en",
+                "encdate": "20130819144811",
+                "faccode": null,
+                "dob": "19810101"
+            },
+        },
+        'response': {
+            "code": 200,
+            "data": {
+                "success": "true"
+            }
+        }
+    },
+    // CLINIC SUBSCRIPTION - no id
+    {
+        'request': {
+            'method': 'POST',
+            'headers': {
+                'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
+                'Content-Type': ['application/json']
+            },
+            'url': 'http://test/v2/json/',
+            'data': {
+                "mha": 1,
+                "swt": 1,
+                "dmsisdn": "+27001",
+                "cmsisdn": "+27001",
                 "id": null,
                 "type": 3,
                 "lang": "en",
-                "encdate": "20130819144811"
+                "encdate": "20130819144811",
+                "faccode": "12345",
+                "dob": null
             },
         },
         'response': {
@@ -897,7 +934,9 @@ module.exports = function() {
                 "id": "2012315678097^^^ZAF^NI",
                 "type": 1,
                 "lang": "en",
-                "encdate": "20130819144811"
+                "encdate": "20130819144811",
+                "faccode": null,
+                "dob": "20201231"
             },
         },
         'response': {
@@ -923,7 +962,9 @@ module.exports = function() {
                 "id": "5002285000007^^^ZAF^NI",
                 "type": 1,
                 "lang": "en",
-                "encdate": "20130819144811"
+                "encdate": "20130819144811",
+                "faccode": null,
+                "dob": "19500228"
             },
         },
         'response': {
@@ -949,7 +990,9 @@ module.exports = function() {
                 "id": "5101025009086^^^ZAF^NI",
                 "type": 3,
                 "lang": "en",
-                "encdate": "20130819144811"
+                "encdate": "20130819144811",
+                "faccode": "12345",
+                "dob": "19510102"
             },
         },
         'response': {
@@ -975,33 +1018,9 @@ module.exports = function() {
                 "id": "5101025009086^^^ZAF^NI",
                 "type": 3,
                 "lang": "en",
-                "encdate": "20130819144811"
-            },
-        },
-        'response': {
-            "code": 200,
-            "data": {
-                "success": "true"
-            }
-        }
-    },
-    {
-        'request': {
-            'method': 'POST',
-            'headers': {
-                'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
-                'Content-Type': ['application/json']
-            },
-            'url': 'http://test/v2/json/',
-            'data': {
-                "mha": 1,
-                "swt": 1,
-                "dmsisdn": "+27001",
-                "cmsisdn": "+27001",
-                "id": "12345^^^ZW^PPN",
-                "type": 2,
-                "lang": "en",
-                "encdate": "20130819144811"
+                "encdate": "20130819144811",
+                "faccode": "12345",
+                "dob": "19510102"
             },
         },
         'response': {
@@ -1027,7 +1046,9 @@ module.exports = function() {
                 "id": "12345^^^ZW^PPN",
                 "type": 2,
                 "lang": "en",
-                "encdate": "20130819144811"
+                "encdate": "20130819144811",
+                "faccode": null,
+                "dob": null
             },
         },
         'response': {
@@ -1173,7 +1194,9 @@ module.exports = function() {
                 "id": null,
                 "type": 1,
                 "lang": "en",
-                "encdate": "20130819144811"
+                "encdate": "20130819144811",
+                "faccode": null,
+                "dob": null
             },
         },
         'response': {
@@ -1200,7 +1223,9 @@ module.exports = function() {
                 "id": "5101025009086^^^ZAF^NI",
                 "type": 2,
                 "lang": "en",
-                "encdate": "20130819144811"
+                "encdate": "20130819144811",
+                "faccode": null,
+                "dob": "19510102"
             },
         },
         'response': {
@@ -1226,7 +1251,9 @@ module.exports = function() {
                 "id": "5101025009086^^^ZW^PPN",
                 "type": 2,
                 "lang": "en",
-                "encdate": "20130819144811"
+                "encdate": "20130819144811",
+                "faccode": null,
+                "dob": null
             },
         },
         'response': {
@@ -1397,7 +1424,9 @@ module.exports = function() {
                 "id": "12345^^^ZW^PPN",
                 "type": 1,
                 "lang": "en",
-                "encdate": "20130819144811"
+                "encdate": "20130819144811",
+                "faccode": null,
+                "dob": null
             },
         },
         'response': {
@@ -1423,7 +1452,9 @@ module.exports = function() {
                 "id": "12345^^^ZW^PPN",
                 "type": 1,
                 "lang": "en",
-                "encdate": "20130819144811"
+                "encdate": "20130819144811",
+                "faccode": null,
+                "dob": null
             },
         },
         'response': {
@@ -1840,7 +1871,9 @@ module.exports = function() {
           "data": {}
         }
       }
-    },// TOPIC RESPONSE
+    },
+
+    // TOPIC RESPONSE
         {
             'request': {
                 'method': 'GET',

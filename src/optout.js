@@ -31,8 +31,8 @@ go.app = function() {
             return go.utils.set_language(self.im.user, self.contact)
                 .then(function() {
                     return go.utils.opted_out(self.im, self.contact)
-                        .then(function(json_result) {
-                            if (json_result.opted_out === false) {
+                        .then(function(opted_out) {
+                            if (opted_out === false) {
                                 question = $('Please let us know why you do not want MomConnect messages');
                             } else {
                                 question = $('Please tell us why you previously opted out of messages');
@@ -50,18 +50,11 @@ go.app = function() {
                                 ],
 
                                 next: function(choice) {
-                                    self.contact.extra.opt_out_reason = choice.value;
-
-                                    return self.im.contacts
-                                        .save(self.contact)
-                                        .then(function() {
-                                            if (_.contains(['not_useful', 'other'], choice.value)){
-                                                return 'states_end_no';
-                                            } else {
-                                                return 'states_subscribe_option';
-                                            }
-
-                                        });
+                                    if (_.contains(['not_useful', 'other'], choice.value)){
+                                        return 'states_end_no_enter';
+                                    } else {
+                                        return 'states_subscribe_option';
+                                    }
                                 }
 
                             });
@@ -77,7 +70,7 @@ go.app = function() {
 
                 choices: [
                     new Choice('states_end_yes', $('Yes')),
-                    new Choice('states_end_no', $('No'))
+                    new Choice('states_end_no_enter', $('No'))
                 ],
 
                 next: function(choice) {
@@ -89,33 +82,34 @@ go.app = function() {
                         self.contact.extra.subscription_seq_start = opts.sub_seq_start.toString();
 
                         return go.utils
-                            // deactivate current subscriptions
-                            .subscription_unsubscribe_all(self.contact, self.im)
+                            // deactivate current subscriptions, save reason for opting out
+                            .opt_out(self.im, self.contact, self.im.user.answers.states_start,
+                                api_optout=false, unsub_all=true, jembi_optout=true,
+                                self.metric_prefix)
                             .then(function() {
                                 return Q.all([
-                                    // Registration is sent to optout endpoint at Jembi to indicate removal
-                                    go.utils.jembi_send_json(self.contact, self.contact, 'subscription', self.im, self.metric_prefix),
                                     // ensure user is not opted out
                                     go.utils.opt_in(self.im, self.contact),
                                     // activate new subscription
-                                    go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix, self.env, opts),
-                                    self.im.contacts.save(self.contact)
+                                    go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix, self.env, opts)
                                 ]).then(function() {
                                     return choice.value;
                                 });
                             });
                     } else {
-                        return go.utils
-                            .jembi_send_json(self.contact, self.contact, 'subscription', self.im, self.metric_prefix)
-                            .then(function() {
-                                return choice.value;
-                            });
+                        return choice.value;
                     }
-
-
                 }
-
             });
+        });
+
+        self.states.add('states_end_no_enter', function(name) {
+            return go.utils
+                .opt_out(self.im, self.contact, self.im.user.answers.states_start, api_optout=true,
+                    unsub_all=true, jembi_optout=true, self.metric_prefix)
+                .then(function() {
+                    return self.states.create('states_end_no');
+                });
         });
 
         self.states.add('states_end_no', function(name) {
@@ -124,17 +118,8 @@ go.app = function() {
                         'messages from us. If you have any medical ' +
                         'concerns please visit your nearest clinic.'),
 
-                next: 'states_start',
+                next: 'states_start'
 
-                events: {
-                    'state:enter': function() {
-                        return go.utils
-                            .opt_out(self.im, self.contact)
-                            .then(function() {
-                                return go.utils.subscription_unsubscribe_all(self.contact, self.im);
-                            });
-                    }
-                },
             });
         });
 

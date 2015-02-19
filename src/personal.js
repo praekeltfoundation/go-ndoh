@@ -418,8 +418,8 @@ go.app = function() {
                             if (choice.value === 'yes') {
                                 return go.utils
                                     .opted_out(self.im, self.contact)
-                                    .then(function(json_result) {
-                                        if (json_result.opted_out) {
+                                    .then(function(opted_out) {
+                                        if (opted_out) {
                                             return 'states_opt_in';
                                         } else {
                                             if (self.im.config.detailed_data_collection){

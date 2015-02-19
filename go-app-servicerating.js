@@ -460,17 +460,49 @@ go.utils = {
         ]);
     },
 
-    build_json_doc: function(contact, user, type) {
+    get_swt: function(im) {
+        if (im.config.name.substring(0,10) === "smsinbound") {
+            return 2;  // swt = 2 for sms optout
+        } else {
+            return 1;  // swt = 1 for ussd optout
+        }
+    },
+
+    get_optoutreason: function(contact) {
+        return contact.extra.opt_out_reason || 'unknown';
+        // TODO This should return an integer #154
+    },
+
+    get_faccode: function(contact) {
+        return contact.extra.clinic_code || null;
+    },
+
+    get_dob: function(contact) {
+        if (!_.isUndefined(contact.extra.dob)) {
+            return moment(contact.extra.dob).format('YYYYMMDD');
+        } else {
+            return null;
+        }
+    },
+
+    build_json_doc: function(im, contact, user, type) {
         var JSON_template = {
           "mha": 1,
-          "swt": 1,
+          "swt": go.utils.get_swt(im),
           "dmsisdn": user.msisdn,
           "cmsisdn": contact.msisdn,
           "id": go.utils.get_patient_id(contact),
           "type": go.utils.get_subscription_type(type),
           "lang": contact.extra.language_choice,
-          "encdate": go.utils.get_timestamp()
+          "encdate": go.utils.get_timestamp(),
+          "faccode": go.utils.get_faccode(contact),
+          "dob": go.utils.get_dob(contact)
         };
+
+        if (type === 'optout') {
+            JSON_template.optoutreason = go.utils.get_optoutreason(contact);
+        }
+
         return JSON_template;
     },
 
@@ -715,7 +747,7 @@ go.utils = {
     },
 
     jembi_send_json: function(contact, user, type, im, metric_prefix) {
-        var built_json = go.utils.build_json_doc(contact, user, type);
+        var built_json = go.utils.build_json_doc(im, contact, user, type);
         return go.utils
             .jembi_json_api_call(built_json, im)
             .then(function(json_result) {
@@ -1038,26 +1070,83 @@ go.utils = {
             && im.user.state.name !== 'states_start';
     },
 
-    opt_out: function(im, contact) {
-        return im.api_request('optout.optout', {
-            address_type: "msisdn",
-            address_value: contact.msisdn,
-            message_id: im.msg.message_id
-        });
+    opt_out: function(im, contact, optout_reason, api_optout, unsub_all, jembi_optout, metric_prefix) {
+        var queue1 = [];
+
+        // Start Queue 1
+        if (optout_reason !== undefined) {
+            contact.extra.opt_out_reason = optout_reason;
+            queue1.push(im.contacts.save(contact));
+        }
+        // End Queue 1
+
+        return Q
+            .all(queue1)
+            .then(function() {
+                return go.utils
+                    .opted_out(im, contact)
+                    .then(function(opted_out) {
+                        if (opted_out === false) {
+                            var queue2 = [];
+
+                            // Start Queue 2
+                            if (api_optout === true) {
+                                queue2.push(
+                                    im.api_request('optout.optout', {
+                                        address_type: "msisdn",
+                                        address_value: contact.msisdn,
+                                        message_id: im.msg.message_id
+                                    })
+                                );
+                            }
+
+                            if (unsub_all === true) {
+                                queue2.push(go.utils.subscription_unsubscribe_all(contact, im));
+                            }
+
+                            if (jembi_optout === true) {
+                                queue2.push(go.utils.jembi_send_json(contact, contact, 'subscription', im,
+                                    metric_prefix));
+                            }
+                            // End Queue 2
+
+                            return Q.all(queue2);
+                        } else {
+                            return Q();
+                        }
+                    });
+            });
     },
 
     opted_out: function(im, contact) {
-        return im.api_request('optout.status', {
-            address_type: "msisdn",
-            address_value: contact.msisdn
-        });
+        return im
+          .api_request('optout.status', {
+              address_type: "msisdn",
+              address_value: contact.msisdn
+          })
+          .then(function(result) {
+              return result.opted_out;
+          });
+    },
+
+    opted_out_by_msisdn: function(im, msisdn) {
+        return im.contacts
+          .get(msisdn, {create: true})
+          .then(function(contact) {
+              return go.utils.opted_out(im, contact);
+          });
     },
 
     opt_in: function(im, contact) {
-        return im.api_request('optout.cancel_optout', {
-            address_type: "msisdn",
-            address_value: contact.msisdn
-        });
+        contact.extra.opt_out_reason = '';
+
+        return Q.all([
+            im.api_request('optout.cancel_optout', {
+                address_type: "msisdn",
+                address_value: contact.msisdn
+            }),
+            im.contacts.save(contact)
+        ]);
     },
 
     attach_session_length_helper: function (im) {

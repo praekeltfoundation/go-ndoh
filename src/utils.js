@@ -1077,6 +1077,17 @@ go.utils = {
             && im.user.state.name !== 'states_start';
     },
 
+    get_reg_source: function(contact) {
+        var reg_source;
+        var reg_options = ['clinic', 'chw', 'personal'];
+        if (!_.contains(reg_options, contact.extra.is_registered_by)) {
+            reg_source = 'unknown';
+        } else {
+            reg_source = contact.extra.is_registered_by;
+        }
+        return reg_source;
+    },
+
     opt_out: function(im, contact, optout_reason, api_optout, unsub_all, jembi_optout,
                       metric_prefix, env) {
         var queue1 = [];
@@ -1119,18 +1130,12 @@ go.utils = {
                                 queue2.push(go.utils.jembi_send_json(contact, contact, 'optout', im,
                                     metric_prefix));
 
-                                // determine registration source with default 'unknown'
-                                var reg_source;
-                                var reg_options = ['clinic', 'chw', 'personal'];
-                                if (!_.contains(reg_options, contact.extra.is_registered_by)) {
-                                    reg_source = 'unknown';
-                                } else {
-                                    reg_source = contact.extra.is_registered_by;
-                                }
-
                                 // fire opt-out registration source metric
+                                var reg_source = go.utils.get_reg_source(contact);
                                 queue2.push(im.metrics.fire.inc([env, 'sum', 'optout_on',
                                     reg_source].join('.'), 1));
+
+                                //
 
                             }
                             // End Queue 2

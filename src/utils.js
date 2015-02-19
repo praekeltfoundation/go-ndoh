@@ -219,7 +219,9 @@ go.utils = {
       var types = {
         "subscription": 1,
         "pre-registration": 2,
-        "registration": 3
+        "registration": 3,
+        "optout": 4,
+        "babyloss": 5
       };
       return types[type];
     },
@@ -466,8 +468,16 @@ go.utils = {
     },
 
     get_optoutreason: function(contact) {
-        return contact.extra.opt_out_reason || 'unknown';
-        // TODO This should return an integer #154
+        var optoutreason_map = {
+            "miscarriage": 1,
+            "stillbirth": 2,
+            "babyloss": 3,
+            "not_useful": 4,
+            "other": 5,
+            "unknown": 6
+        };
+
+        return optoutreason_map[contact.extra.opt_out_reason] || 6;
     },
 
     get_faccode: function(contact) {
@@ -1102,7 +1112,7 @@ go.utils = {
                             }
 
                             if (jembi_optout === true) {
-                                queue2.push(go.utils.jembi_send_json(contact, contact, 'subscription', im,
+                                queue2.push(go.utils.jembi_send_json(contact, contact, 'optout', im,
                                     metric_prefix));
                             }
                             // End Queue 2

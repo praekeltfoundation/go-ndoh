@@ -66,7 +66,7 @@ go.app = function() {
         self.states.add('states_opt_out_enter', function(name) {
             return go.utils
                 .opt_out(self.im, self.contact, optout_reason='unknown', api_optout=true,
-                    unsub_all=true, jembi_optout=false, self.metric_prefix)
+                    unsub_all=true, jembi_optout=true, self.metric_prefix)
                 .then(function() {
                     return self.states.create('states_opt_out');
                 });

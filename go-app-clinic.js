@@ -1432,7 +1432,7 @@ go.app = function() {
         };
 
         self.fire_incomplete = function(name, val) {
-            var ignore_states = ['states_end_success', 'states_register'];
+            var ignore_states = ['states_end_success'];
             if (!_.contains(ignore_states, name)) {
                 return self.im.metrics.fire.inc(([self.metric_prefix, name, "no_incomplete"].join('.')), {amount: val});
             }
@@ -1968,14 +1968,14 @@ go.app = function() {
                                     ]);
                                 })
                                 .then(function() {
-                                    return 'states_register';
+                                    return 'states_save_subscription';
                                 });
                         });
                 }
             });
         });
 
-        self.add('states_register', function(name) {
+        self.add('states_save_subscription', function(name) {
             var opts = go.utils.subscription_type_and_rate(self.contact, self.im);
             self.contact.extra.subscription_type = opts.sub_type.toString();
             self.contact.extra.subscription_rate = opts.sub_rate.toString();

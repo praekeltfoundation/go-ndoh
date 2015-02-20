@@ -1432,7 +1432,7 @@ go.app = function() {
         };
 
         self.fire_incomplete = function(name, val) {
-            var ignore_states = ['states_end_success'];
+            var ignore_states = ['states_end_success', 'states_register'];
             if (!_.contains(ignore_states, name)) {
                 return self.im.metrics.fire.inc(([self.metric_prefix, name, "no_incomplete"].join('.')), {amount: val});
             }
@@ -1968,11 +1968,42 @@ go.app = function() {
                                     ]);
                                 })
                                 .then(function() {
-                                    return 'states_end_success';
+                                    return 'states_register';
                                 });
                         });
                 }
             });
+        });
+
+        self.add('states_register', function(name) {
+            var opts = go.utils.subscription_type_and_rate(self.contact, self.im);
+            self.contact.extra.subscription_type = opts.sub_type.toString();
+            self.contact.extra.subscription_rate = opts.sub_rate.toString();
+            self.contact.extra.subscription_seq_start = opts.sub_seq_start.toString();
+            if (self.contact.extra.id_type !== undefined){
+                if (self.contact.extra.id_type === 'none') {
+                    return Q.all([
+                        go.utils.jembi_send_json(self.contact, self.user, 'registration', self.im, self.metric_prefix),
+                        go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix, self.env, opts),
+                        self.send_registration_thanks(),
+                        self.im.contacts.save(self.contact)
+                    ])
+                    .then(function() {
+                        return self.states.create('states_end_success');
+                    });
+                } else {
+                    return Q.all([
+                        go.utils.jembi_send_doc(self.contact, self.user, self.im, self.metric_prefix),
+                        go.utils.jembi_send_json(self.contact, self.user, 'registration', self.im, self.metric_prefix),
+                        go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix, self.env, opts),
+                        self.send_registration_thanks(),
+                        self.im.contacts.save(self.contact)
+                    ])
+                    .then(function() {
+                        return self.states.create('states_end_success');
+                    });
+                }
+            }
         });
 
         self.add('states_end_success', function(name) {
@@ -1983,33 +2014,6 @@ go.app = function() {
                         'from MomConnect.'),
 
                 next: 'states_start',
-
-                events: {
-                    'state:enter': function() {
-                        opts = go.utils.subscription_type_and_rate(self.contact, self.im);
-                        self.contact.extra.subscription_type = opts.sub_type.toString();
-                        self.contact.extra.subscription_rate = opts.sub_rate.toString();
-                        self.contact.extra.subscription_seq_start = opts.sub_seq_start.toString();
-                        if (self.contact.extra.id_type !== undefined){
-                            if (self.contact.extra.id_type === 'none') {
-                                return Q.all([
-                                    go.utils.jembi_send_json(self.contact, self.user, 'registration', self.im, self.metric_prefix),
-                                    go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix, self.env, opts),
-                                    self.send_registration_thanks(),
-                                    self.im.contacts.save(self.contact)
-                                ]);
-                            } else {
-                                return Q.all([
-                                    go.utils.jembi_send_doc(self.contact, self.user, self.im, self.metric_prefix),
-                                    go.utils.jembi_send_json(self.contact, self.user, 'registration', self.im, self.metric_prefix),
-                                    go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix, self.env, opts),
-                                    self.send_registration_thanks(),
-                                    self.im.contacts.save(self.contact)
-                                ]);
-                            }
-                        }
-                    }
-                }
             });
         });
 

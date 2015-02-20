@@ -212,7 +212,7 @@ go.utils = {
             return contact.extra.passport_no + '^^^' + contact.extra.passport_origin.toUpperCase() + '^PPN';
           },
           'none': function () {
-            return null;
+            return contact.msisdn.replace('+', '') + '^^^ZAF^TEL';
           }
         }[contact.extra.id_type];
         return formatter();

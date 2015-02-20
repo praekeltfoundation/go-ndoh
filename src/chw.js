@@ -586,13 +586,7 @@ go.app = function() {
                         'woman will now receive messages to encourage her ' +
                         'to register at her nearest clinic.'),
 
-                next: 'states_start',
-
-                events: {
-                    'state:enter': function() {
-
-                    }
-                }
+                next: 'states_start'
             });
         });
 

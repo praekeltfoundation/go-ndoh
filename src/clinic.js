@@ -646,29 +646,18 @@ go.app = function() {
             self.contact.extra.subscription_type = opts.sub_type.toString();
             self.contact.extra.subscription_rate = opts.sub_rate.toString();
             self.contact.extra.subscription_seq_start = opts.sub_seq_start.toString();
-            if (self.contact.extra.id_type !== undefined){
-                if (self.contact.extra.id_type === 'none') {
-                    return Q.all([
-                        go.utils.jembi_send_json(self.contact, self.user, 'registration', self.im, self.metric_prefix),
-                        go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix, self.env, opts),
-                        self.send_registration_thanks(),
-                        self.im.contacts.save(self.contact)
-                    ])
-                    .then(function() {
-                        return self.states.create('states_end_success');
-                    });
-                } else {
-                    return Q.all([
-                        go.utils.jembi_send_doc(self.contact, self.user, self.im, self.metric_prefix),
-                        go.utils.jembi_send_json(self.contact, self.user, 'registration', self.im, self.metric_prefix),
-                        go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix, self.env, opts),
-                        self.send_registration_thanks(),
-                        self.im.contacts.save(self.contact)
-                    ])
-                    .then(function() {
-                        return self.states.create('states_end_success');
-                    });
-                }
+
+            if (self.contact.extra.id_type !== undefined) {
+                return Q.all([
+                    go.utils.jembi_send_doc(self.contact, self.user, self.im, self.metric_prefix),
+                    go.utils.jembi_send_json(self.contact, self.user, 'registration', self.im, self.metric_prefix),
+                    go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix, self.env, opts),
+                    self.send_registration_thanks(),
+                    self.im.contacts.save(self.contact)
+                ])
+                .then(function() {
+                    return self.states.create('states_end_success');
+                });
             }
         });
 

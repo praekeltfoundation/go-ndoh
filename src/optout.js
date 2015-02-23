@@ -1,7 +1,6 @@
 go.app = function() {
     var vumigo = require('vumigo_v02');
     var _ = require('lodash');
-    var Q = require('q');
     var App = vumigo.App;
     var Choice = vumigo.states.Choice;
     var ChoiceState = vumigo.states.ChoiceState;
@@ -87,17 +86,14 @@ go.app = function() {
                                 api_optout=false, unsub_all=true, jembi_optout=true,
                                 self.metric_prefix, self.env)
                             .then(function() {
-                                return Q.all([
-                                    // ensure user is not opted out
-                                    go.utils.opt_in(self.im, self.contact),
-                                    // activate new subscription
-                                    go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix, self.env, opts)
-                                ]).then(function() {
-                                    return go.utils
-                                        .adjust_percentage_optouts(self.im, self.env)
-                                        .then(function() {
-                                            return choice.value;
-                                        });
+                                return go.utils
+                                    .loss_message_opt_in(self.im, self.contact, self.metric_prefix, self.env, opts)
+                                    .then(function() {
+                                        return go.utils
+                                            .adjust_percentage_optouts(self.im, self.env)
+                                            .then(function() {
+                                                return choice.value;
+                                            });
                                 });
                             });
                     } else {

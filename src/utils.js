@@ -1108,6 +1108,17 @@ go.utils = {
         });
     },
 
+    loss_message_opt_in: function(im, contact, metric_prefix, env, opts) {
+        return Q.all([
+            // ensure user is not opted out
+            go.utils.opt_in(im, contact),
+            // activate new subscription
+            go.utils.subscription_send_doc(contact, im, metric_prefix, env, opts),
+            // send new subscription info to jembi
+            go.utils.jembi_send_json(contact, contact, 'babyloss', im, metric_prefix)
+        ]);
+    },
+
     opt_out: function(im, contact, optout_reason, api_optout, unsub_all, jembi_optout,
                       metric_prefix, env) {
         var queue1 = [];

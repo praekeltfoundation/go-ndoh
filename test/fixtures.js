@@ -1433,7 +1433,7 @@ module.exports = function() {
             }
         }
     },
-    // Opt out call for: 27001 reason: miscarriage
+    // Jembi Opt out call for: 27001 reason: miscarriage
     {
         'request': {
             'method': 'POST',
@@ -1463,7 +1463,7 @@ module.exports = function() {
             }
         }
     },
-    // Opt out - for: 27831113333 reason: miscarriage
+    // Jembi Opt out - for: 27831113333 reason: miscarriage
     {
         'request': {
             'method': 'POST',
@@ -1583,7 +1583,7 @@ module.exports = function() {
             }
         }
     },
-    // Subscription to Loss Messages for: 27001
+    // Vumi Subscription to Loss Messages for: 27001
     {
         "request": {
           "method": "POST",
@@ -1621,7 +1621,7 @@ module.exports = function() {
           }
         }
     },
-    // Subscription to Loss Messages for: 27831112222
+    // Vumi Subscription to Loss Messages for: 27831112222
     {
         "request": {
           "method": "POST",
@@ -1659,7 +1659,7 @@ module.exports = function() {
           }
         }
     },
-    // Subscription to Loss Messages for: 27831113333
+    // Vumi Subscription to Loss Messages for: 27831113333
     {
         "request": {
           "method": "POST",
@@ -1695,6 +1695,93 @@ module.exports = function() {
             "updated_at": "2014-07-05T11:01:54.498122",
             "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
           }
+        }
+    },
+    // Jembi Subscription to Loss Messages for: 27001
+    {
+        'request': {
+            'method': 'POST',
+            'headers': {
+                'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
+                'Content-Type': ['application/json']
+            },
+            'url': 'http://test/v2/json/optout',
+            'data': {
+                "mha": 1,
+                "swt": 1,
+                "dmsisdn": "+27001",
+                "cmsisdn": "+27001",
+                "id": "12345^^^ZW^PPN",
+                "type": 5,
+                "lang": "en",
+                "encdate": "20130819144811",
+                "faccode": null,
+                "dob": null
+            },
+        },
+        'response': {
+            "code": 200,
+            "data": {
+                "success": "true"
+            }
+        }
+    },
+    // Jembi Subscription to Loss Messages for: 27831112222
+    {
+        'request': {
+            'method': 'POST',
+            'headers': {
+                'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
+                'Content-Type': ['application/json']
+            },
+            'url': 'http://test/v2/json/optout',
+            'data': {
+                "mha": 1,
+                "swt": 1,
+                "dmsisdn": "+27831112222",
+                "cmsisdn": "+27831112222",
+                "id": "12345^^^ZW^PPN",
+                "type": 5,
+                "lang": "en",
+                "encdate": "20130819144811",
+                "faccode": null,
+                "dob": null
+            },
+        },
+        'response': {
+            "code": 200,
+            "data": {
+                "success": "true"
+            }
+        }
+    },
+    // Jembi Subscription to Loss Messages for: 27831113333
+    {
+        'request': {
+            'method': 'POST',
+            'headers': {
+                'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
+                'Content-Type': ['application/json']
+            },
+            'url': 'http://test/v2/json/optout',
+            'data': {
+                "mha": 1,
+                "swt": 1,
+                "dmsisdn": "+27831113333",
+                "cmsisdn": "+27831113333",
+                "id": "12345^^^ZW^PPN",
+                "type": 5,
+                "lang": "en",
+                "encdate": "20130819144811",
+                "faccode": null,
+                "dob": null
+            },
+        },
+        'response': {
+            "code": 200,
+            "data": {
+                "success": "true"
+            }
         }
     },
 

@@ -1114,9 +1114,12 @@ go.utils = {
     opt_out: function(im, contact, optout_reason, api_optout, unsub_all, jembi_optout,
                       metric_prefix, env) {
         var queue1 = [];
+        var prior_opt_out_reason;
 
         // Start Queue 1
         if (optout_reason !== undefined) {
+            prior_opt_out_reason = contact.extra.opt_out_reason || 'unknown';
+              // if reason was not previously saved it should be 'unknown' (from smsinbound)
             contact.extra.opt_out_reason = optout_reason;
             queue1.push(im.contacts.save(contact));
         }
@@ -1128,7 +1131,12 @@ go.utils = {
                 return go.utils
                     .opted_out(im, contact)
                     .then(function(opted_out) {
-                        if (opted_out === false) {
+                        // if the contact is not opted out, opt them out OR
+                        // if the contact has opted out, but has an opted-out reason 'unknown'
+                        // (through SMSing STOP) but is now dialing in to opt-out line and
+                        // supplying a reason for their optout, opt them out again
+                        if (opted_out === false || (prior_opt_out_reason === 'unknown'
+                          && im.config.name.substring(0,6) === "optout")) {
                             var queue2 = [];
 
                             // Start Queue 2

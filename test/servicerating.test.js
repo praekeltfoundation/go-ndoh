@@ -49,6 +49,8 @@ describe("app", function() {
                     channel: "*120*550*4#",
                     public_channel: "*120*550#",
                     jembi: {
+                        username: 'foo',
+                        password: 'bar',
                         url_json: 'http://test/v2/json/serviceRating'
                     },
                     control: {

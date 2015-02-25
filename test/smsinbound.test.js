@@ -79,11 +79,12 @@ describe("app", function() {
                 })
                 .setup(function(api) {
                     api.kv.store['test.smsinbound.unique_users'] = 0;
+                    api.kv.store['test_metric_store.test.sum.subscriptions'] = 4;
+                    api.kv.store['test_metric_store.test.sum.optout_cause.loss'] = 2;
                 })
                 .setup(function(api) {
                     api.metrics.stores = {'test_metric_store': {}};
                 })
-
                 .setup(function(api) {
                     fixtures().forEach(api.http.fixtures.add);
                 });
@@ -139,7 +140,7 @@ describe("app", function() {
             });
         });
 
-        describe("Testing metrics...", function() {
+        describe("test Metrics and KVs", function() {
 
             describe("when a new unique user sends message in", function() {
                 it("should increment the no. of unique users metric by 1", function() {
@@ -163,7 +164,7 @@ describe("app", function() {
             });
 
             describe("when user SMSs baby", function() {
-                it("should increment the number of baby SMSs metric", function() {
+                it("should fire multiple metrics", function() {
                     return tester
                         .setup(function(api) {
                             api.contacts.add({
@@ -179,8 +180,69 @@ describe("app", function() {
                         .inputs('baby')
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
+                            // should increment the number of baby SMSs metric
                             assert.deepEqual(metrics['test.sum.baby_sms'].values, [1]);
+                            // should add to the total subscriptions metric
+                            assert.deepEqual(metrics['test.sum.subscriptions'].values, [5]);
+
+                            var kv_store = api.kv.store;
+                            // should inc kv store for total subscriptions
+                            assert.equal(kv_store['test_metric_store.test.sum.subscriptions'], 5);
                         }).run();
+                });
+            });
+
+            describe("when the user sends a STOP message", function() {
+                it("should fire multiple metrics", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27001',
+                                extra : {
+                                    language_choice: 'en',
+                                    id_type: 'none',
+                                    is_registered_by: 'chw'
+                                },
+                                key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                                user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
+                            });
+                        })
+                        .setup.user.addr('27001')
+                        .input('STOP')
+                        .check(function(api) {
+                            var metrics = api.metrics.stores.test_metric_store;
+                            // should NOT inc total subscriptions metric
+                            assert.equal(metrics['test.sum.subscriptions'], undefined);
+                            // should inc optouts on registration source
+                            assert.deepEqual(metrics['test.sum.optout_on.chw'].values, [1]);
+                            // should inc all opt-outs metric
+                            assert.deepEqual(metrics['test.sum.optouts'].values, [1]);
+                            // should NOT inc loss optouts metric
+                            assert.equal(metrics['test.sum.optout_cause.loss'], undefined);
+                            // should inc non-loss optouts metric
+                            assert.deepEqual(metrics['test.sum.optout_cause.non_loss'].values, [1]);
+                            // should inc cause optouts metric
+                            assert.deepEqual(metrics['test.sum.optout_cause.unknown'].values, [1]);
+                            // should adjust percentage all optouts metric
+                            assert.deepEqual(metrics['test.percent.optout.all'].values, [25]);
+                            // should adjust percentage non-loss metric
+                            assert.deepEqual(metrics['test.percent.optout.non_loss'].values, [25]);
+                            // should NOT adjust percentage optouts that signed up for loss messages
+                            assert.deepEqual(metrics['test.percent.optout.loss.msgs'].values, [0]);
+
+                            var kv_store = api.kv.store;
+                            // should NOT inc kv store for total subscriptions
+                            assert.equal(kv_store['test_metric_store.test.sum.subscriptions'], 4);
+                            // should inc kv store for all optouts
+                            assert.equal(kv_store['test_metric_store.test.sum.optouts'], 1);
+                            // should NOT inc kv store for loss optouts
+                            assert.equal(kv_store['test_metric_store.test.sum.optout_cause.loss'], 2);
+                            // should inc kv store for non-loss optouts
+                            assert.equal(kv_store['test_metric_store.test.sum.optout_cause.non_loss'], 1);
+                            // should inc kv store cause optouts
+                            assert.equal(kv_store['test_metric_store.test.sum.optout_cause.unknown'], 1);
+                        })
+                        .run();
                 });
             });
 
@@ -391,27 +453,6 @@ describe("app", function() {
                         assert.equal(contact.extra.subscription_rate, '3');
                         // check baby switch is not counted as an optout
                         assert.equal(contact.extra.opt_out_reason, undefined);
-                    })
-                    .run();
-            });
-
-            it("should add to the total subscriptions metric", function() {
-                return tester
-                    .setup(function(api) {
-                        api.contacts.add({
-                            msisdn: '+27001',
-                            extra : {
-                                language_choice: 'en'
-                            },
-                            key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
-                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
-                        });
-                    })
-                    .setup.user.addr('27001')
-                    .input('baby')
-                    .check(function(api) {
-                        var metrics = api.metrics.stores.test_metric_store;
-                        assert.deepEqual(metrics['test.sum.subscriptions'].values, [1]);
                     })
                     .run();
             });

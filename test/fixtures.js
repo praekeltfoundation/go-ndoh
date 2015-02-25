@@ -1447,6 +1447,7 @@ module.exports = function() {
         }
     },
     // Subscription
+    // Opt out line subscription for 27001
     {
         'request': {
             'method': 'GET',
@@ -1506,7 +1507,7 @@ module.exports = function() {
             }
         }
     },
-
+    // Opt out line subscription for 27831112222
     {
         'request': {
             'method': 'GET',
@@ -1533,7 +1534,34 @@ module.exports = function() {
             }
         }
     },
-
+    // Opt out line subscription for 27831113333
+    {
+        'request': {
+            'method': 'GET',
+            'params': {
+                'to_addr': '+27831113333'
+            },
+            'headers': {
+                'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
+                'Content-Type': ['application/json']
+            },
+            'url': 'http://ndoh-control/api/v1/subscription/',
+        },
+        'response': {
+            "code": 200,
+            "meta": {
+                "limit": 20,
+                "next": null,
+                "offset": 0,
+                "previous": null,
+                "total_count": 0
+            },
+            "data": {
+                "objects": []
+            }
+        }
+    },
+    // Opt out line 27001 unsubscribe from active message sets
     {
         'request': {
             'method': 'PUT',
@@ -1589,8 +1617,7 @@ module.exports = function() {
             }
         }
     },
-
-    // Opt out 1
+    // Jembi Opt out call for: 27001 reason: miscarriage
     {
         'request': {
             'method': 'POST',
@@ -1620,7 +1647,67 @@ module.exports = function() {
             }
         }
     },
-    // Opt out 2
+    // Jembi Opt out - for: 27831113333 reason: miscarriage
+    {
+        'request': {
+            'method': 'POST',
+            'headers': {
+                'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
+                'Content-Type': ['application/json']
+            },
+            'url': 'http://test/v2/json/optout',
+            'data': {
+                "mha": 1,
+                "swt": 1,
+                "dmsisdn": "+27831113333",
+                "cmsisdn": "+27831113333",
+                "id": "12345^^^ZW^PPN",
+                "type": 4,
+                "lang": "en",
+                "encdate": "20130819144811",
+                "faccode": null,
+                "dob": null,
+                "optoutreason": 1
+            },
+        },
+        'response': {
+            "code": 200,
+            "data": {
+                "success": "true"
+            }
+        }
+    },
+    // Opt out - for: 27831113333 reason: not_useful
+    {
+        'request': {
+            'method': 'POST',
+            'headers': {
+                'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
+                'Content-Type': ['application/json']
+            },
+            'url': 'http://test/v2/json/optout',
+            'data': {
+                "mha": 1,
+                "swt": 1,
+                "dmsisdn": "+27831113333",
+                "cmsisdn": "+27831113333",
+                "id": "12345^^^ZW^PPN",
+                "type": 4,
+                "lang": "en",
+                "encdate": "20130819144811",
+                "faccode": null,
+                "dob": null,
+                "optoutreason": 4
+            },
+        },
+        'response': {
+            "code": 200,
+            "data": {
+                "success": "true"
+            }
+        }
+    },
+    // Opt out - for: 27001 reason: not_useful
     {
         'request': {
             'method': 'POST',
@@ -1650,7 +1737,7 @@ module.exports = function() {
             }
         }
     },
-    // Opt out 3 (for smsinbound)
+    // Opt out for: 27001 reason: unknown (for smsinbound)
     {
         'request': {
             'method': 'POST',
@@ -1680,6 +1767,208 @@ module.exports = function() {
             }
         }
     },
+    // Vumi Subscription to Loss Messages for: 27001
+    {
+        "request": {
+          "method": "POST",
+          'headers': {
+                'Authorization': ['ApiKey test_user:test_key'],
+                'Content-Type': ['application/json']
+            },
+          "url": "http://ndoh-control/api/v1/subscription/",
+          "data": {
+            "contact_key": "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+            "lang": "en",
+            "message_set": "/api/v1/message_set/6/",
+            "next_sequence_number": 1,
+            "schedule": "/api/v1/periodic_task/3/",
+            "to_addr": "+27001",
+            "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
+          }
+        },
+        "response": {
+          "code": 201,
+          "data": {
+            "active": true,
+            "completed": false,
+            "contact_key": "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+            "created_at": "2014-07-05T11:01:54.497870",
+            "id": 8,
+            "lang": "en",
+            "message_set": "/api/v1/message_set/6/",
+            "next_sequence_number": 1,
+            "resource_uri": "/api/v1/subscription/8/",
+            "schedule": "/api/v1/periodic_task/3/",
+            "to_addr": "+27001",
+            "updated_at": "2014-07-05T11:01:54.498122",
+            "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
+          }
+        }
+    },
+    // Vumi Subscription to Loss Messages for: 27831112222
+    {
+        "request": {
+          "method": "POST",
+          'headers': {
+                'Authorization': ['ApiKey test_user:test_key'],
+                'Content-Type': ['application/json']
+            },
+          "url": "http://ndoh-control/api/v1/subscription/",
+          "data": {
+            "contact_key": "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+            "lang": "en",
+            "message_set": "/api/v1/message_set/6/",
+            "next_sequence_number": 1,
+            "schedule": "/api/v1/periodic_task/3/",
+            "to_addr": "+27831112222",
+            "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
+          }
+        },
+        "response": {
+          "code": 201,
+          "data": {
+            "active": true,
+            "completed": false,
+            "contact_key": "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+            "created_at": "2014-07-05T11:01:54.497870",
+            "id": 8,
+            "lang": "en",
+            "message_set": "/api/v1/message_set/6/",
+            "next_sequence_number": 1,
+            "resource_uri": "/api/v1/subscription/8/",
+            "schedule": "/api/v1/periodic_task/3/",
+            "to_addr": "+27831112222",
+            "updated_at": "2014-07-05T11:01:54.498122",
+            "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
+          }
+        }
+    },
+    // Vumi Subscription to Loss Messages for: 27831113333
+    {
+        "request": {
+          "method": "POST",
+          'headers': {
+                'Authorization': ['ApiKey test_user:test_key'],
+                'Content-Type': ['application/json']
+            },
+          "url": "http://ndoh-control/api/v1/subscription/",
+          "data": {
+            "contact_key": "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+            "lang": "en",
+            "message_set": "/api/v1/message_set/6/",
+            "next_sequence_number": 1,
+            "schedule": "/api/v1/periodic_task/3/",
+            "to_addr": "+27831113333",
+            "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
+          }
+        },
+        "response": {
+          "code": 201,
+          "data": {
+            "active": true,
+            "completed": false,
+            "contact_key": "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+            "created_at": "2014-07-05T11:01:54.497870",
+            "id": 8,
+            "lang": "en",
+            "message_set": "/api/v1/message_set/6/",
+            "next_sequence_number": 1,
+            "resource_uri": "/api/v1/subscription/8/",
+            "schedule": "/api/v1/periodic_task/3/",
+            "to_addr": "+27831113333",
+            "updated_at": "2014-07-05T11:01:54.498122",
+            "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
+          }
+        }
+    },
+    // Jembi Subscription to Loss Messages for: 27001
+    {
+        'request': {
+            'method': 'POST',
+            'headers': {
+                'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
+                'Content-Type': ['application/json']
+            },
+            'url': 'http://test/v2/json/optout',
+            'data': {
+                "mha": 1,
+                "swt": 1,
+                "dmsisdn": "+27001",
+                "cmsisdn": "+27001",
+                "id": "12345^^^ZW^PPN",
+                "type": 5,
+                "lang": "en",
+                "encdate": "20130819144811",
+                "faccode": null,
+                "dob": null
+            },
+        },
+        'response': {
+            "code": 200,
+            "data": {
+                "success": "true"
+            }
+        }
+    },
+    // Jembi Subscription to Loss Messages for: 27831112222
+    {
+        'request': {
+            'method': 'POST',
+            'headers': {
+                'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
+                'Content-Type': ['application/json']
+            },
+            'url': 'http://test/v2/json/optout',
+            'data': {
+                "mha": 1,
+                "swt": 1,
+                "dmsisdn": "+27831112222",
+                "cmsisdn": "+27831112222",
+                "id": "12345^^^ZW^PPN",
+                "type": 5,
+                "lang": "en",
+                "encdate": "20130819144811",
+                "faccode": null,
+                "dob": null
+            },
+        },
+        'response': {
+            "code": 200,
+            "data": {
+                "success": "true"
+            }
+        }
+    },
+    // Jembi Subscription to Loss Messages for: 27831113333
+    {
+        'request': {
+            'method': 'POST',
+            'headers': {
+                'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
+                'Content-Type': ['application/json']
+            },
+            'url': 'http://test/v2/json/optout',
+            'data': {
+                "mha": 1,
+                "swt": 1,
+                "dmsisdn": "+27831113333",
+                "cmsisdn": "+27831113333",
+                "id": "12345^^^ZW^PPN",
+                "type": 5,
+                "lang": "en",
+                "encdate": "20130819144811",
+                "faccode": null,
+                "dob": null
+            },
+        },
+        'response': {
+            "code": 200,
+            "data": {
+                "success": "true"
+            }
+        }
+    },
+
     {
         "request": {
           "method": "POST",
@@ -1753,8 +2042,8 @@ module.exports = function() {
             "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
           }
         }
-      },
-      {
+    },
+    {
         "request": {
           "method": "POST",
           'headers': {
@@ -1790,8 +2079,8 @@ module.exports = function() {
             "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
           }
         }
-      },
-      {
+    },
+    {
         "request": {
           "method": "POST",
           'headers': {
@@ -1827,8 +2116,8 @@ module.exports = function() {
             "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
           }
         }
-      },
-      {
+    },
+    {
         "request": {
           "method": "POST",
           'headers': {
@@ -1864,8 +2153,8 @@ module.exports = function() {
             "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
           }
         }
-      },
-      {
+    },
+    {
         "request": {
           "method": "POST",
           'headers': {
@@ -1901,82 +2190,8 @@ module.exports = function() {
             "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
           }
         }
-      },
-      {
-        "request": {
-          "method": "POST",
-          'headers': {
-                'Authorization': ['ApiKey test_user:test_key'],
-                'Content-Type': ['application/json']
-            },
-          "url": "http://ndoh-control/api/v1/subscription/",
-          "data": {
-            "contact_key": "63ee4fa9-6888-4f0c-065a-939dc2473a99",
-            "lang": "en",
-            "message_set": "/api/v1/message_set/6/",
-            "next_sequence_number": 1,
-            "schedule": "/api/v1/periodic_task/3/",
-            "to_addr": "+27001",
-            "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
-          }
-        },
-        "response": {
-          "code": 201,
-          "data": {
-            "active": true,
-            "completed": false,
-            "contact_key": "63ee4fa9-6888-4f0c-065a-939dc2473a99",
-            "created_at": "2014-07-05T11:01:54.497870",
-            "id": 8,
-            "lang": "en",
-            "message_set": "/api/v1/message_set/6/",
-            "next_sequence_number": 1,
-            "resource_uri": "/api/v1/subscription/8/",
-            "schedule": "/api/v1/periodic_task/3/",
-            "to_addr": "+27001",
-            "updated_at": "2014-07-05T11:01:54.498122",
-            "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
-          }
-        }
-      },
-      {
-        "request": {
-          "method": "POST",
-          'headers': {
-                'Authorization': ['ApiKey test_user:test_key'],
-                'Content-Type': ['application/json']
-            },
-          "url": "http://ndoh-control/api/v1/subscription/",
-          "data": {
-            "contact_key": "63ee4fa9-6888-4f0c-065a-939dc2473a99",
-            "lang": "en",
-            "message_set": "/api/v1/message_set/6/",
-            "next_sequence_number": 1,
-            "schedule": "/api/v1/periodic_task/3/",
-            "to_addr": "+27831112222",
-            "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
-          }
-        },
-        "response": {
-          "code": 201,
-          "data": {
-            "active": true,
-            "completed": false,
-            "contact_key": "63ee4fa9-6888-4f0c-065a-939dc2473a99",
-            "created_at": "2014-07-05T11:01:54.497870",
-            "id": 8,
-            "lang": "en",
-            "message_set": "/api/v1/message_set/6/",
-            "next_sequence_number": 1,
-            "resource_uri": "/api/v1/subscription/8/",
-            "schedule": "/api/v1/periodic_task/3/",
-            "to_addr": "+27831112222",
-            "updated_at": "2014-07-05T11:01:54.498122",
-            "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
-          }
-        }
-      },
-      {
+    },
+    {
         "request": {
           "method": "POST",
           'headers': {
@@ -2012,8 +2227,8 @@ module.exports = function() {
             "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
           }
         }
-      },
-      {
+    },
+    {
         "request": {
           "method": "POST",
           'headers': {
@@ -2082,52 +2297,92 @@ module.exports = function() {
             "updated_at": "2014-07-27T21:59:56.489255"
           }
         },
-      },
-      {
+    },
+    // Vumi Servicerating Post
+    {
         "request": {
-          "method": "POST",
-          'headers': {
+            "method": "POST",
+            'headers': {
                 'Authorization': ['ApiKey test_user:test_key'],
                 'Content-Type': ['application/json']
             },
-          "url": "http://ndoh-control/api/v1/servicerating/rate/",
-          "data": {
-            "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4",
-            "conversation_key": "dummyconversationkey",
-            "contact": {
-                "extra": {},
-                "groups": [],
-                "subscription": {},
-                "msisdn": "+27001",
-                "created_at": "2014-07-28 09:35:26.732",
-                "key": "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+            "url": "http://ndoh-control/api/v1/servicerating/rate/",
+            "data": {
                 "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4",
-                "name": null,
-                "surname": null,
-                "email_address": null,
-                "dob": null,
-                "twitter_handle": null,
-                "facebook_id": null,
-                "bbm_pin": null,
-                "gtalk_id": null
+                "conversation_key": "dummyconversationkey",
+                "contact": {
+                    "extra": {
+                        "is_registered_by": "clinic",
+                        "clinic_code": "12345"
+                    },
+                    "groups": [],
+                    "subscription": {},
+                    "msisdn": "+27001",
+                    "created_at": "2014-07-28 09:35:26.732",
+                    "key": "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                    "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4",
+                    "name": null,
+                    "surname": null,
+                    "email_address": null,
+                    "dob": null,
+                    "twitter_handle": null,
+                    "facebook_id": null,
+                    "bbm_pin": null,
+                    "gtalk_id": null
+                },
+                "answers": {
+                    "question_1_friendliness": "very-satisfied",
+                    "question_2_waiting_times_feel": "very-satisfied",
+                    "question_3_waiting_times_length": "less-than-an-hour",
+                    "question_4_cleanliness": "very-satisfied",
+                    "question_5_privacy": "very-satisfied"
+                }
             },
-            "answers": {
-                "question_1_friendliness": "very-satisfied",
-                "question_2_waiting_times_feel": "very-satisfied",
-                "question_3_waiting_times_length": "less-than-an-hour",
-                "question_4_cleanliness": "very-satisfied",
-                "question_5_privacy": "very-satisfied"
+            "response": {
+                "code": 201,
+                "data": {}
             }
-        },
-        "response": {
-          "code": 201,
-          "data": {}
         }
-      }
+    },
+    // Jembi Servicerating Post
+    {
+        "request": {
+            "method": "POST",
+            "headers": {
+                "Authorization": ["Basic " + new Buffer("test:test").toString("base64")],
+                "Content-Type": ["application/json"]
+            },
+            "url": "http://test/v2/json/serviceRating",
+            "data": {
+                "mha": 1,
+                "swt": 1,
+                "msisdn": "+27001",
+                "facility_code": "12345",
+                "event_date": "20130819144811",
+                "data": [
+                    {
+                        "question": "question_1_friendliness",
+                        "answer": "very-satisfied"
+                    }, {
+                        "question": "question_2_waiting_times_feel",
+                        "answer": "very-satisfied"
+                    }, {
+                        "question": "question_3_waiting_times_length",
+                        "answer": "less-than-an-hour"
+                    }, {
+                        "question": "question_4_cleanliness",
+                        "answer": "very-satisfied"
+                    }, {
+                        "question": "question_5_privacy",
+                        "answer": "very-satisfied"
+                    }
+                ]
+            }
+        }
     },
 
     // TOPIC RESPONSE
-        {
+    {
             'request': {
                 'method': 'GET',
                 'headers': {
@@ -2195,9 +2450,9 @@ module.exports = function() {
                     }
                 ]
             }
-        },
-        // QA RESPONSE
-        {
+    },
+    // QA RESPONSE
+    {
             'request': {
                 'method': 'GET',
                 'headers': {
@@ -2607,6 +2862,6 @@ module.exports = function() {
                     }
                 }]
             }]
-        }
+    }
     ];
 };

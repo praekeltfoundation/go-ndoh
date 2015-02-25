@@ -803,9 +803,9 @@ go.utils = {
             .then(function(json_result) {
                 var metrics_to_fire;
                 if (json_result.code >= 200 && json_result.code < 300){
-                    metrics_to_fire = (([metric_prefix, "sum", "servicrating_to_jembi_success"].join('.')));
+                    metrics_to_fire = (([metric_prefix, "sum", "servicerating_to_jembi_success"].join('.')));
                 } else {
-                    metrics_to_fire = (([metric_prefix, "sum", "servicrating_to_jembi_fail"].join('.')));
+                    metrics_to_fire = (([metric_prefix, "sum", "servicerating_to_jembi_fail"].join('.')));
                 }
                 return im.metrics.fire.inc(metrics_to_fire, {amount: 1});
         });

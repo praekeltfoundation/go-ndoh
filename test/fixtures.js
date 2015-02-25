@@ -2160,7 +2160,7 @@ module.exports = function() {
     },
 
     // TOPIC RESPONSE
-        {
+    {
             'request': {
                 'method': 'GET',
                 'headers': {
@@ -2228,9 +2228,9 @@ module.exports = function() {
                     }
                 ]
             }
-        },
-        // QA RESPONSE
-        {
+    },
+    // QA RESPONSE
+    {
             'request': {
                 'method': 'GET',
                 'headers': {
@@ -2640,6 +2640,6 @@ module.exports = function() {
                     }
                 }]
             }]
-        }
+    }
     ];
 };

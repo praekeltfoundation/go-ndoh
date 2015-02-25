@@ -1742,7 +1742,7 @@ describe("app", function() {
             });
 
             describe("if user did not provide an sa_id number", function() {
-                it("should send jembi doc and json", function() {
+                it.only("should send jembi doc and json", function() {
                     return tester
                         .setup.user.addr('27001')
                         .setup(function(api) {

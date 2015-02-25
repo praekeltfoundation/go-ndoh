@@ -48,6 +48,11 @@ describe("app", function() {
                     },
                     channel: "*120*550*4#",
                     public_channel: "*120*550#",
+                    jembi: {
+                        username: 'foo',
+                        password: 'bar',
+                        url_json: 'http://test/v2/json/serviceRating'
+                    },
                     control: {
                         username: 'test_user',
                         api_key: 'test_key',
@@ -57,6 +62,40 @@ describe("app", function() {
                 .setup(function(api) {
                     fixtures().forEach(api.http.fixtures.add);
                 });
+        });
+
+        describe("Testing Metrics...", function() {
+            describe("when the user completes a servicerating", function() {
+                it("should fire multiple metrics", function() {
+                    return tester
+                        .setup.user.addr('27001')
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27001',
+                                created_at: "2014-07-28 09:35:26.732",
+                                key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                                user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4",
+                                extra: {
+                                    is_registered_by: 'clinic',
+                                    clinic_code: "12345"
+                                }
+                            });
+                        })
+                        .inputs({session_event: "new"}, "1", "1", "1", "1", "1")
+                        .check.interaction({
+                            state: 'end_thanks',
+                            reply: [
+                                'Thank you for rating our service.'
+                            ].join('\n')
+                        })
+                        .check(function(api) {
+                            var metrics = api.metrics.stores.test_metric_store;
+                            assert.deepEqual(metrics['test.servicerating.sum.servicerating_success'].values, [1]);
+                            assert.deepEqual(metrics['test.servicerating.sum.servicerating_to_jembi_success'].values, [1]);
+                        })
+                        .run();
+                });
+            });
         });
 
         describe("when the user starts a session", function() {
@@ -196,7 +235,11 @@ describe("app", function() {
                             msisdn: '+27001',
                             created_at: "2014-07-28 09:35:26.732",
                             key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
-                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
+                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4",
+                            extra: {
+                                is_registered_by: "clinic",
+                                clinic_code: "12345"
+                            }
                         });
                     })
                     .setup.user.addr('27001')
@@ -289,8 +332,6 @@ describe("app", function() {
             });
         });
 
-        // gsvr: I notice we never test the logging of the servicerating
-
         describe("when the user answers their privacy rating", function() {
             it("should send them an sms thanking them for their rating", function() {
                 return tester
@@ -299,7 +340,11 @@ describe("app", function() {
                             msisdn: '+27001',
                             created_at: "2014-07-28 09:35:26.732",
                             key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
-                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
+                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4",
+                            extra: {
+                                is_registered_by: "clinic",
+                                clinic_code: "12345"
+                            }
                         });
                     })
                     .setup.user.addr('27001')
@@ -339,7 +384,11 @@ describe("app", function() {
                             msisdn: '+27001',
                             created_at: "2014-07-28 09:35:26.732",
                             key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
-                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
+                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4",
+                            extra: {
+                                is_registered_by: "clinic",
+                                clinic_code: "12345"
+                            }
                         });
                     })
                     .setup.user.addr('27001')

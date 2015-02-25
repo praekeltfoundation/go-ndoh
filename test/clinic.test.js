@@ -1742,7 +1742,7 @@ describe("app", function() {
             });
 
             describe("if user did not provide an sa_id number", function() {
-                it("should not try to send jembi doc - send json only", function() {
+                it("should send jembi doc and json", function() {
                     return tester
                         .setup.user.addr('27001')
                         .setup(function(api) {
@@ -1754,7 +1754,11 @@ describe("app", function() {
                                     id_type: 'none',
                                     ussd_sessions: '5',
                                     due_date_month: '05',
-                                    due_date_day: ''
+                                    due_date_day: '30',
+                                    birth_year: '1951',
+                                    birth_month: '01',
+                                    birth_day: '02',
+                                    dob: '1951-01-02',
                                 },
                                 key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                                 user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
@@ -1786,7 +1790,7 @@ describe("app", function() {
                             assert.deepEqual(metrics['test.clinic.percent_incomplete_registrations'].values, [25]);
                             assert.deepEqual(metrics['test.clinic.percent_complete_registrations'].values, [75]);
                             assert.deepEqual(metrics['test.clinic.states_end_success.no_incomplete'], undefined);
-                            assert.deepEqual(metrics['test.clinic.sum.doc_to_jembi_success'], undefined);
+                            assert.deepEqual(metrics['test.clinic.sum.doc_to_jembi_success'].values, [1]);
                             assert.deepEqual(metrics['test.clinic.sum.json_to_jembi_success'].values, [1]);
                             assert.deepEqual(metrics['test.sum.subscriptions'].values, [1]);
                         })

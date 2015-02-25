@@ -212,7 +212,7 @@ go.utils = {
             return contact.extra.passport_no + '^^^' + contact.extra.passport_origin.toUpperCase() + '^PPN';
           },
           'none': function () {
-            return null;
+            return contact.msisdn.replace('+', '') + '^^^ZAF^TEL';
           }
         }[contact.extra.id_type];
         return formatter();
@@ -793,6 +793,46 @@ go.utils = {
                     json_to_fire = (([metric_prefix, "sum", "json_to_jembi_fail"].join('.')));
                 }
                 return im.metrics.fire.inc(json_to_fire, {amount: 1});
+        });
+    },
+
+    get_servicerating_data: function(im) {
+        var servicerating_data = [];
+        for (var question in im.user.answers) {
+            servicerating_data.push({
+                "question": question,
+                "answer": im.user.answers[question]
+            });
+        }
+        return servicerating_data;
+    },
+
+    build_servicerating_json: function(im, contact) {
+        var JSON_template = {
+          "mha": 1,
+          "swt": go.utils.get_swt(im),
+          // "supplier_unique_id": servicerating_id,  // Marked as Optional in mini-scope and custom
+                                                      // api doesn't provide an id so not submitting
+          "msisdn": contact.msisdn,
+          "facility_code": go.utils.get_faccode(contact),
+          "event_date": go.utils.get_timestamp(),
+          "data": go.utils.get_servicerating_data(im)
+        };
+        return JSON_template;
+    },
+
+    jembi_send_servicerating: function(im, contact, metric_prefix) {
+        var built_json = go.utils.build_servicerating_json(im, contact);
+        return go.utils
+            .jembi_json_api_call(built_json, im)
+            .then(function(json_result) {
+                var metrics_to_fire;
+                if (json_result.code >= 200 && json_result.code < 300){
+                    metrics_to_fire = (([metric_prefix, "sum", "servicerating_to_jembi_success"].join('.')));
+                } else {
+                    metrics_to_fire = (([metric_prefix, "sum", "servicerating_to_jembi_fail"].join('.')));
+                }
+                return im.metrics.fire.inc(metrics_to_fire, {amount: 1});
         });
     },
 
@@ -2081,11 +2121,31 @@ go.app = function() {
                                     ]);
                                 })
                                 .then(function() {
-                                    return 'states_end_success';
+                                    return 'states_save_subscription';
                                 });
                         });
                 }
             });
+        });
+
+        self.add('states_save_subscription', function(name) {
+            var opts = go.utils.subscription_type_and_rate(self.contact, self.im);
+            self.contact.extra.subscription_type = opts.sub_type.toString();
+            self.contact.extra.subscription_rate = opts.sub_rate.toString();
+            self.contact.extra.subscription_seq_start = opts.sub_seq_start.toString();
+
+            if (self.contact.extra.id_type !== undefined) {
+                return Q.all([
+                    go.utils.jembi_send_doc(self.contact, self.user, self.im, self.metric_prefix),
+                    go.utils.jembi_send_json(self.contact, self.user, 'registration', self.im, self.metric_prefix),
+                    go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix, self.env, opts),
+                    self.send_registration_thanks(),
+                    self.im.contacts.save(self.contact)
+                ])
+                .then(function() {
+                    return self.states.create('states_end_success');
+                });
+            }
         });
 
         self.add('states_end_success', function(name) {
@@ -2096,33 +2156,6 @@ go.app = function() {
                         'from MomConnect.'),
 
                 next: 'states_start',
-
-                events: {
-                    'state:enter': function() {
-                        opts = go.utils.subscription_type_and_rate(self.contact, self.im);
-                        self.contact.extra.subscription_type = opts.sub_type.toString();
-                        self.contact.extra.subscription_rate = opts.sub_rate.toString();
-                        self.contact.extra.subscription_seq_start = opts.sub_seq_start.toString();
-                        if (self.contact.extra.id_type !== undefined){
-                            if (self.contact.extra.id_type === 'none') {
-                                return Q.all([
-                                    go.utils.jembi_send_json(self.contact, self.user, 'registration', self.im, self.metric_prefix),
-                                    go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix, self.env, opts),
-                                    self.send_registration_thanks(),
-                                    self.im.contacts.save(self.contact)
-                                ]);
-                            } else {
-                                return Q.all([
-                                    go.utils.jembi_send_doc(self.contact, self.user, self.im, self.metric_prefix),
-                                    go.utils.jembi_send_json(self.contact, self.user, 'registration', self.im, self.metric_prefix),
-                                    go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix, self.env, opts),
-                                    self.send_registration_thanks(),
-                                    self.im.contacts.save(self.contact)
-                                ]);
-                            }
-                        }
-                    }
-                }
             });
         });
 

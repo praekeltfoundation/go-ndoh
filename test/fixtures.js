@@ -1,6 +1,6 @@
 module.exports = function() {
     return [
-    // CLINIC
+    // CLINIC - USER'S PHONE, SA ID
     {
         'request': {
             'method': 'POST',
@@ -154,7 +154,7 @@ module.exports = function() {
             'body': ''
         },
     },
-    // CLINIC - MOTHERS PHONE
+    // CLINIC - MOTHERS PHONE, SA ID
     {
         'request': {
             'method': 'POST',
@@ -307,6 +307,160 @@ module.exports = function() {
         'response': {
             'body': ''
         }
+    },
+    // CLINIC - USER'S PHONE, TEL NO ID
+    {
+        'request': {
+            'method': 'POST',
+            'headers': {
+                'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
+                'Content-Type': ['multipart/formdata; boundary=yolo']
+            },
+            'url': 'http://test/v2/',
+            'body': [
+                '--yolo',
+                'Content-Disposition: form-data; name="ihe-mhd-metadata"; filename="MHDMetadata.json"',
+                'Content-Type: application/json',
+                '',
+                '{"documentEntry":{"patientId":"27001^^^ZAF^TEL","uniqueId":"2.25.169380846032024","entryUUID":"urn:uuid:b18c62b4-828e-4b52-25c9-725a1f43fb37","classCode":{"code":"51855-5","codingScheme":"2.16.840.1.113883.6.1","codeName":"Patient Note"},"typeCode":{"code":"51855-5","codingScheme":"2.16.840.1.113883.6.1","codeName":"Patient Note"},"formatCode":{"code":"npr-pn-cda","codingScheme":"4308822c-d4de-49db-9bb8-275394ee971d","codeName":"NPR Patient Note CDA"},"mimeType":"text/xml","hash":"ff3638df62b82b56770c89aac2eb68e147105712","size":5522}}',
+                '',
+                '--yolo',
+                'Content-Disposition: form-data; name="content"; filename="CDARequest.xml"',
+                'Content-Type: text/xml',
+                '',
+                '<?xml version="1.0" encoding="UTF-8"?>',
+                '<ClinicalDocument xmlns="urn:hl7-org:v3" xmlns:cda="urn:hl7-org:v3" xmlns:voc="urn:hl7-org:v3/voc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:pcc="urn:ihe:pcc:hl7v3" xmlns:lab="urn:oid:1.3.6.1.4.1.19376.1.3.2" xmlns:sdtc="urn:hl7-org:sdtc" xsi:schemaLocation="urn:hl7-org:v3 CDA.xsd">',
+                '<typeId root="2.16.840.1.113883.1.3" extension="POCD_HD000040"/>',
+                '<templateId root="2.16.840.1.113883.10" extension="IMPL_CDAR2_LEVEL1"/>',
+                '<id root="b18c62b4-828e-4b52-25c9-725a1f43fb37"/>',
+                '<code code="51855-5" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>',
+                '<title>SA National Pregnancy Register - Patient Note</title>',
+                '<!-- Creation time of document, e.g. 20140217121212 -->',
+                '<effectiveTime value="20130819144811"/>',
+                '<confidentialityCode code="N" displayName="Normal" codeSystem="2.16.840.1.113883.5.25" codeSystemName="Confidentiality"/>',
+                '<languageCode code="en-UK"/>',
+                '<!-- Client details -->',
+                '<recordTarget>',
+                '  <patientRole>',
+                '    <!-- Patient Identifier -->',
+                '    <!-- The value for extension must be specified in HL7 CX format: -->',
+                '    <!-- id^^^assigningAuthority^typeCode -->',
+                '    <!-- The typeCode specified the type of identifier, e.g. NI for National Identifier or PPN for Passport Number -->',
+                '    <!-- The assigningAuthority specifies the issuer of the id, e.g. ZAF for South Africa -->',
+                '    <!-- An example for a South African National ID is: -->',
+                '    <!-- <id extension="7612241234567^^^ZAF^NI" root="526ef9c3-6f18-420a-bc53-9b733920bc67" /> -->',
+                '    <id extension="27001^^^ZAF^TEL" root="526ef9c3-6f18-420a-bc53-9b733920bc67"/>',
+                '    <!-- Telephone number in RFC3966 format, e.g. tel:+27731234567 -->',
+                '    <telecom value="tel:+27001"/>',
+                '    <patient>',
+                '      <name>',
+                '        <given nullFlavor="NI"/>',
+                '        <family nullFlavor="NI"/>',
+                '      </name>',
+                '      <administrativeGenderCode code="F" codeSystem="2.16.840.1.113883.5.1"/>',
+                '      <!-- If available, else set nullFlavor -->',
+                '      <!-- Format yyyy[MM[dd]] e.g. 19700123 or 197001 for an estimated date -->',
+                '      <birthTime value="19510102"/>',
+                '      <languageCommunication>',
+                '        <languageCode code="en"/>',
+                '        <preferenceInd value="true"/>',
+                '      </languageCommunication>',
+                '    </patient>',
+                '  </patientRole>',
+                '</recordTarget>',
+                '<author>',
+                '  <time value="20130819144811"/>',
+                '  <assignedAuthor>',
+                '    <id root="833f2856-b9e1-4f54-8694-c74c4283755f"/>',
+                '    ',
+                '    <assignedPerson/>',
+                '    <!-- if facility code available, else leave out representedOrganization -->',
+                '    <representedOrganization>',
+                '      <id extension="12345" root="9a560d61-85f1-4d7b-8ee2-090d2900f836"/>',
+                '    </representedOrganization>',
+                '  <telecom nullFlavor="NI"/></assignedAuthor>',
+                '</author>',
+                '<author>',
+                '  <time value="20130819144811"/>',
+                '  <assignedAuthor>',
+                '    <id root="9a560d61-85f1-4d7b-8ee2-090d2900f836"/>',
+                '    <assignedAuthoringDevice>',
+                '      <code code="PF" codeSystem="56877fb7-e3a9-4ad5-bfb5-64d48a045e83"/>',
+                '      ',
+                '    <softwareName>Vumi</softwareName></assignedAuthoringDevice>',
+                '  </assignedAuthor>',
+                '</author>',
+                '<custodian>',
+                '  <assignedCustodian>',
+                '    <representedCustodianOrganization>',
+                '      <id root="a5881e6c-b42e-4559-a1fd-d1dc52379658"/>',
+                '      <name>SA National Department of Health</name>',
+                '    </representedCustodianOrganization>',
+                '  </assignedCustodian>',
+                '</custodian>',
+                '<documentationOf>',
+                '  <serviceEvent classCode="PCPR">',
+                '    <effectiveTime value="20130819144811"/>',
+                '  </serviceEvent>',
+                '</documentationOf>',
+                '<component>',
+                '  <structuredBody>',
+                '    <component>',
+                '      <section>',
+                '        <code code="57060-6" displayName="Estimated date of delivery Narrative" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>',
+                '        <text>',
+                '          <table>',
+                '            <thead>',
+                '              <tr>',
+                '                <td>Pregnancy status</td>',
+                '                <td>Note Date</td>',
+                '                <td>Delivery Date (Estimated)</td>',
+                '              </tr>',
+                '            </thead>',
+                '            <tbody>',
+                '              <!-- e.g. -->',
+                '              <tr>',
+                '                <td>Pregnancy confirmed</td>',
+                '                <td>2014-02-17</td>',
+                '                <td>2014-10-17</td>',
+                '              </tr>',
+                '            </tbody>',
+                '          </table>',
+                '        </text>',
+                '        <entry>',
+                '          <!-- Pregnancy Status -->',
+                '          <observation classCode="OBS" moodCode="EVN">',
+                '            <code code="11449-6" displayName="Pregnancy status" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>',
+                '            <text/>',
+                '            <statusCode code="completed"/>',
+                '            <!-- e.g. 20140217 -->',
+                '            <effectiveTime value="20130819144811"/>',
+                '            <!-- For CHW identification use case, use: code="102874004" displayName="Unconfirmed pregnancy" -->',
+                '            <!-- For Clinic identification use case, use: code="77386006" displayName="Pregnancy confirmed" -->',
+                '            <value xsi:type="CE" code="77386006" displayName="Pregnancy confirmed" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT"/>',
+                '            <entryRelationship typeCode="SPRT" inversionInd="true">',
+                '              <!-- Delivery Date -->',
+                '              <observation classCode="OBS" moodCode="EVN">',
+                '                <code code="11778-8" displayName="Delivery date Estimated" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>',
+                '                <text/>',
+                '                <statusCode code="completed"/>',
+                '                <!-- e.g. 20141017 -->',
+                '                <!-- use yyyyMM if only estimated up to month level -->',
+                '                <value xsi:type="TS" value="20140530"/>',
+                '              </observation>',
+                '            </entryRelationship>',
+                '          </observation>',
+                '        </entry>',
+                '      </section>',
+                '    </component>',
+                '  </structuredBody>',
+                '</component>',
+                '</ClinicalDocument>'
+            ].join('\n')
+        },
+        'response': {
+            'body': ''
+        },
     },
     // CHW SELF - ZW Passport
     {
@@ -1191,7 +1345,7 @@ module.exports = function() {
                 "swt": 1,
                 "dmsisdn": "+27001",
                 "cmsisdn": "+27001",
-                "id": null,
+                "id": "27001^^^ZAF^TEL",
                 "type": 1,
                 "lang": "en",
                 "encdate": "20130819144811",
@@ -1263,7 +1417,37 @@ module.exports = function() {
             }
         }
     },
+    // CLINIC - NO ID
+    {
+        'request': {
+            'method': 'POST',
+            'headers': {
+                'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
+                'Content-Type': ['application/json']
+            },
+            'url': 'http://test/v2/json/',
+            'data': {
+                "mha": 1,
+                "swt": 1,
+                "dmsisdn": "+27001",
+                "cmsisdn": "+27001",
+                "id": "27001^^^ZAF^TEL",
+                "type": 3,
+                "lang": "en",
+                "encdate": "20130819144811",
+                "faccode": "12345",
+                "dob": "19510102"
+            },
+        },
+        'response': {
+            "code": 200,
+            "data": {
+                "success": "true"
+            }
+        }
+    },
     // Subscription
+    // Opt out line subscription for 27001
     {
         'request': {
             'method': 'GET',
@@ -1323,7 +1507,7 @@ module.exports = function() {
             }
         }
     },
-
+    // Opt out line subscription for 27831112222
     {
         'request': {
             'method': 'GET',
@@ -1350,7 +1534,34 @@ module.exports = function() {
             }
         }
     },
-
+    // Opt out line subscription for 27831113333
+    {
+        'request': {
+            'method': 'GET',
+            'params': {
+                'to_addr': '+27831113333'
+            },
+            'headers': {
+                'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
+                'Content-Type': ['application/json']
+            },
+            'url': 'http://ndoh-control/api/v1/subscription/',
+        },
+        'response': {
+            "code": 200,
+            "meta": {
+                "limit": 20,
+                "next": null,
+                "offset": 0,
+                "previous": null,
+                "total_count": 0
+            },
+            "data": {
+                "objects": []
+            }
+        }
+    },
+    // Opt out line 27001 unsubscribe from active message sets
     {
         'request': {
             'method': 'PUT',
@@ -1406,8 +1617,7 @@ module.exports = function() {
             }
         }
     },
-
-    // Opt out 1
+    // Jembi Opt out call for: 27001 reason: miscarriage
     {
         'request': {
             'method': 'POST',
@@ -1437,7 +1647,67 @@ module.exports = function() {
             }
         }
     },
-    // Opt out 2
+    // Jembi Opt out - for: 27831113333 reason: miscarriage
+    {
+        'request': {
+            'method': 'POST',
+            'headers': {
+                'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
+                'Content-Type': ['application/json']
+            },
+            'url': 'http://test/v2/json/optout',
+            'data': {
+                "mha": 1,
+                "swt": 1,
+                "dmsisdn": "+27831113333",
+                "cmsisdn": "+27831113333",
+                "id": "12345^^^ZW^PPN",
+                "type": 4,
+                "lang": "en",
+                "encdate": "20130819144811",
+                "faccode": null,
+                "dob": null,
+                "optoutreason": 1
+            },
+        },
+        'response': {
+            "code": 200,
+            "data": {
+                "success": "true"
+            }
+        }
+    },
+    // Opt out - for: 27831113333 reason: not_useful
+    {
+        'request': {
+            'method': 'POST',
+            'headers': {
+                'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
+                'Content-Type': ['application/json']
+            },
+            'url': 'http://test/v2/json/optout',
+            'data': {
+                "mha": 1,
+                "swt": 1,
+                "dmsisdn": "+27831113333",
+                "cmsisdn": "+27831113333",
+                "id": "12345^^^ZW^PPN",
+                "type": 4,
+                "lang": "en",
+                "encdate": "20130819144811",
+                "faccode": null,
+                "dob": null,
+                "optoutreason": 4
+            },
+        },
+        'response': {
+            "code": 200,
+            "data": {
+                "success": "true"
+            }
+        }
+    },
+    // Opt out - for: 27001 reason: not_useful
     {
         'request': {
             'method': 'POST',
@@ -1467,7 +1737,7 @@ module.exports = function() {
             }
         }
     },
-    // Opt out 3 (for smsinbound)
+    // Opt out for: 27001 reason: unknown (for smsinbound)
     {
         'request': {
             'method': 'POST',
@@ -1481,7 +1751,7 @@ module.exports = function() {
                 "swt": 2,
                 "dmsisdn": "+27001",
                 "cmsisdn": "+27001",
-                "id": null,
+                "id": "27001^^^ZAF^TEL",
                 "type": 4,
                 "lang": "en",
                 "encdate": "20130819144811",
@@ -1497,6 +1767,208 @@ module.exports = function() {
             }
         }
     },
+    // Vumi Subscription to Loss Messages for: 27001
+    {
+        "request": {
+          "method": "POST",
+          'headers': {
+                'Authorization': ['ApiKey test_user:test_key'],
+                'Content-Type': ['application/json']
+            },
+          "url": "http://ndoh-control/api/v1/subscription/",
+          "data": {
+            "contact_key": "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+            "lang": "en",
+            "message_set": "/api/v1/message_set/6/",
+            "next_sequence_number": 1,
+            "schedule": "/api/v1/periodic_task/3/",
+            "to_addr": "+27001",
+            "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
+          }
+        },
+        "response": {
+          "code": 201,
+          "data": {
+            "active": true,
+            "completed": false,
+            "contact_key": "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+            "created_at": "2014-07-05T11:01:54.497870",
+            "id": 8,
+            "lang": "en",
+            "message_set": "/api/v1/message_set/6/",
+            "next_sequence_number": 1,
+            "resource_uri": "/api/v1/subscription/8/",
+            "schedule": "/api/v1/periodic_task/3/",
+            "to_addr": "+27001",
+            "updated_at": "2014-07-05T11:01:54.498122",
+            "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
+          }
+        }
+    },
+    // Vumi Subscription to Loss Messages for: 27831112222
+    {
+        "request": {
+          "method": "POST",
+          'headers': {
+                'Authorization': ['ApiKey test_user:test_key'],
+                'Content-Type': ['application/json']
+            },
+          "url": "http://ndoh-control/api/v1/subscription/",
+          "data": {
+            "contact_key": "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+            "lang": "en",
+            "message_set": "/api/v1/message_set/6/",
+            "next_sequence_number": 1,
+            "schedule": "/api/v1/periodic_task/3/",
+            "to_addr": "+27831112222",
+            "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
+          }
+        },
+        "response": {
+          "code": 201,
+          "data": {
+            "active": true,
+            "completed": false,
+            "contact_key": "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+            "created_at": "2014-07-05T11:01:54.497870",
+            "id": 8,
+            "lang": "en",
+            "message_set": "/api/v1/message_set/6/",
+            "next_sequence_number": 1,
+            "resource_uri": "/api/v1/subscription/8/",
+            "schedule": "/api/v1/periodic_task/3/",
+            "to_addr": "+27831112222",
+            "updated_at": "2014-07-05T11:01:54.498122",
+            "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
+          }
+        }
+    },
+    // Vumi Subscription to Loss Messages for: 27831113333
+    {
+        "request": {
+          "method": "POST",
+          'headers': {
+                'Authorization': ['ApiKey test_user:test_key'],
+                'Content-Type': ['application/json']
+            },
+          "url": "http://ndoh-control/api/v1/subscription/",
+          "data": {
+            "contact_key": "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+            "lang": "en",
+            "message_set": "/api/v1/message_set/6/",
+            "next_sequence_number": 1,
+            "schedule": "/api/v1/periodic_task/3/",
+            "to_addr": "+27831113333",
+            "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
+          }
+        },
+        "response": {
+          "code": 201,
+          "data": {
+            "active": true,
+            "completed": false,
+            "contact_key": "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+            "created_at": "2014-07-05T11:01:54.497870",
+            "id": 8,
+            "lang": "en",
+            "message_set": "/api/v1/message_set/6/",
+            "next_sequence_number": 1,
+            "resource_uri": "/api/v1/subscription/8/",
+            "schedule": "/api/v1/periodic_task/3/",
+            "to_addr": "+27831113333",
+            "updated_at": "2014-07-05T11:01:54.498122",
+            "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
+          }
+        }
+    },
+    // Jembi Subscription to Loss Messages for: 27001
+    {
+        'request': {
+            'method': 'POST',
+            'headers': {
+                'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
+                'Content-Type': ['application/json']
+            },
+            'url': 'http://test/v2/json/optout',
+            'data': {
+                "mha": 1,
+                "swt": 1,
+                "dmsisdn": "+27001",
+                "cmsisdn": "+27001",
+                "id": "12345^^^ZW^PPN",
+                "type": 5,
+                "lang": "en",
+                "encdate": "20130819144811",
+                "faccode": null,
+                "dob": null
+            },
+        },
+        'response': {
+            "code": 200,
+            "data": {
+                "success": "true"
+            }
+        }
+    },
+    // Jembi Subscription to Loss Messages for: 27831112222
+    {
+        'request': {
+            'method': 'POST',
+            'headers': {
+                'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
+                'Content-Type': ['application/json']
+            },
+            'url': 'http://test/v2/json/optout',
+            'data': {
+                "mha": 1,
+                "swt": 1,
+                "dmsisdn": "+27831112222",
+                "cmsisdn": "+27831112222",
+                "id": "12345^^^ZW^PPN",
+                "type": 5,
+                "lang": "en",
+                "encdate": "20130819144811",
+                "faccode": null,
+                "dob": null
+            },
+        },
+        'response': {
+            "code": 200,
+            "data": {
+                "success": "true"
+            }
+        }
+    },
+    // Jembi Subscription to Loss Messages for: 27831113333
+    {
+        'request': {
+            'method': 'POST',
+            'headers': {
+                'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
+                'Content-Type': ['application/json']
+            },
+            'url': 'http://test/v2/json/optout',
+            'data': {
+                "mha": 1,
+                "swt": 1,
+                "dmsisdn": "+27831113333",
+                "cmsisdn": "+27831113333",
+                "id": "12345^^^ZW^PPN",
+                "type": 5,
+                "lang": "en",
+                "encdate": "20130819144811",
+                "faccode": null,
+                "dob": null
+            },
+        },
+        'response': {
+            "code": 200,
+            "data": {
+                "success": "true"
+            }
+        }
+    },
+
     {
         "request": {
           "method": "POST",
@@ -1570,8 +2042,8 @@ module.exports = function() {
             "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
           }
         }
-      },
-      {
+    },
+    {
         "request": {
           "method": "POST",
           'headers': {
@@ -1607,8 +2079,8 @@ module.exports = function() {
             "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
           }
         }
-      },
-      {
+    },
+    {
         "request": {
           "method": "POST",
           'headers': {
@@ -1644,8 +2116,8 @@ module.exports = function() {
             "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
           }
         }
-      },
-      {
+    },
+    {
         "request": {
           "method": "POST",
           'headers': {
@@ -1681,8 +2153,8 @@ module.exports = function() {
             "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
           }
         }
-      },
-      {
+    },
+    {
         "request": {
           "method": "POST",
           'headers': {
@@ -1718,82 +2190,8 @@ module.exports = function() {
             "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
           }
         }
-      },
-      {
-        "request": {
-          "method": "POST",
-          'headers': {
-                'Authorization': ['ApiKey test_user:test_key'],
-                'Content-Type': ['application/json']
-            },
-          "url": "http://ndoh-control/api/v1/subscription/",
-          "data": {
-            "contact_key": "63ee4fa9-6888-4f0c-065a-939dc2473a99",
-            "lang": "en",
-            "message_set": "/api/v1/message_set/6/",
-            "next_sequence_number": 1,
-            "schedule": "/api/v1/periodic_task/3/",
-            "to_addr": "+27001",
-            "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
-          }
-        },
-        "response": {
-          "code": 201,
-          "data": {
-            "active": true,
-            "completed": false,
-            "contact_key": "63ee4fa9-6888-4f0c-065a-939dc2473a99",
-            "created_at": "2014-07-05T11:01:54.497870",
-            "id": 8,
-            "lang": "en",
-            "message_set": "/api/v1/message_set/6/",
-            "next_sequence_number": 1,
-            "resource_uri": "/api/v1/subscription/8/",
-            "schedule": "/api/v1/periodic_task/3/",
-            "to_addr": "+27001",
-            "updated_at": "2014-07-05T11:01:54.498122",
-            "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
-          }
-        }
-      },
-      {
-        "request": {
-          "method": "POST",
-          'headers': {
-                'Authorization': ['ApiKey test_user:test_key'],
-                'Content-Type': ['application/json']
-            },
-          "url": "http://ndoh-control/api/v1/subscription/",
-          "data": {
-            "contact_key": "63ee4fa9-6888-4f0c-065a-939dc2473a99",
-            "lang": "en",
-            "message_set": "/api/v1/message_set/6/",
-            "next_sequence_number": 1,
-            "schedule": "/api/v1/periodic_task/3/",
-            "to_addr": "+27831112222",
-            "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
-          }
-        },
-        "response": {
-          "code": 201,
-          "data": {
-            "active": true,
-            "completed": false,
-            "contact_key": "63ee4fa9-6888-4f0c-065a-939dc2473a99",
-            "created_at": "2014-07-05T11:01:54.497870",
-            "id": 8,
-            "lang": "en",
-            "message_set": "/api/v1/message_set/6/",
-            "next_sequence_number": 1,
-            "resource_uri": "/api/v1/subscription/8/",
-            "schedule": "/api/v1/periodic_task/3/",
-            "to_addr": "+27831112222",
-            "updated_at": "2014-07-05T11:01:54.498122",
-            "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
-          }
-        }
-      },
-      {
+    },
+    {
         "request": {
           "method": "POST",
           'headers': {
@@ -1825,6 +2223,43 @@ module.exports = function() {
             "resource_uri": "/api/v1/subscription/8/",
             "schedule": "/api/v1/periodic_task/4/",
             "to_addr": "+27821234567",
+            "updated_at": "2014-07-05T11:01:54.498122",
+            "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
+          }
+        }
+    },
+    {
+        "request": {
+          "method": "POST",
+          'headers': {
+                'Authorization': ['ApiKey test_user:test_key'],
+                'Content-Type': ['application/json']
+            },
+          "url": "http://ndoh-control/api/v1/subscription/",
+          "data": {
+            "contact_key": "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+            "lang": "en",
+            "message_set": "/api/v1/message_set/2/",
+            "next_sequence_number": 7,
+            "schedule": "/api/v1/periodic_task/4/",
+            "to_addr": "+27001",
+            "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
+          }
+        },
+        "response": {
+          "code": 201,
+          "data": {
+            "active": true,
+            "completed": false,
+            "contact_key": "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+            "created_at": "2014-07-05T11:01:54.497870",
+            "id": 8,
+            "lang": "en",
+            "message_set": "/api/v1/message_set/2/",
+            "next_sequence_number": 7,
+            "resource_uri": "/api/v1/subscription/8/",
+            "schedule": "/api/v1/periodic_task/4/",
+            "to_addr": "+27001",
             "updated_at": "2014-07-05T11:01:54.498122",
             "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
           }
@@ -1862,52 +2297,92 @@ module.exports = function() {
             "updated_at": "2014-07-27T21:59:56.489255"
           }
         },
-      },
-      {
+    },
+    // Vumi Servicerating Post
+    {
         "request": {
-          "method": "POST",
-          'headers': {
+            "method": "POST",
+            'headers': {
                 'Authorization': ['ApiKey test_user:test_key'],
                 'Content-Type': ['application/json']
             },
-          "url": "http://ndoh-control/api/v1/servicerating/rate/",
-          "data": {
-            "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4",
-            "conversation_key": "dummyconversationkey",
-            "contact": {
-                "extra": {},
-                "groups": [],
-                "subscription": {},
-                "msisdn": "+27001",
-                "created_at": "2014-07-28 09:35:26.732",
-                "key": "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+            "url": "http://ndoh-control/api/v1/servicerating/rate/",
+            "data": {
                 "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4",
-                "name": null,
-                "surname": null,
-                "email_address": null,
-                "dob": null,
-                "twitter_handle": null,
-                "facebook_id": null,
-                "bbm_pin": null,
-                "gtalk_id": null
+                "conversation_key": "dummyconversationkey",
+                "contact": {
+                    "extra": {
+                        "is_registered_by": "clinic",
+                        "clinic_code": "12345"
+                    },
+                    "groups": [],
+                    "subscription": {},
+                    "msisdn": "+27001",
+                    "created_at": "2014-07-28 09:35:26.732",
+                    "key": "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                    "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4",
+                    "name": null,
+                    "surname": null,
+                    "email_address": null,
+                    "dob": null,
+                    "twitter_handle": null,
+                    "facebook_id": null,
+                    "bbm_pin": null,
+                    "gtalk_id": null
+                },
+                "answers": {
+                    "question_1_friendliness": "very-satisfied",
+                    "question_2_waiting_times_feel": "very-satisfied",
+                    "question_3_waiting_times_length": "less-than-an-hour",
+                    "question_4_cleanliness": "very-satisfied",
+                    "question_5_privacy": "very-satisfied"
+                }
             },
-            "answers": {
-                "question_1_friendliness": "very-satisfied",
-                "question_2_waiting_times_feel": "very-satisfied",
-                "question_3_waiting_times_length": "less-than-an-hour",
-                "question_4_cleanliness": "very-satisfied",
-                "question_5_privacy": "very-satisfied"
+            "response": {
+                "code": 201,
+                "data": {}
             }
-        },
-        "response": {
-          "code": 201,
-          "data": {}
         }
-      }
+    },
+    // Jembi Servicerating Post
+    {
+        "request": {
+            "method": "POST",
+            "headers": {
+                "Authorization": ["Basic " + new Buffer("test:test").toString("base64")],
+                "Content-Type": ["application/json"]
+            },
+            "url": "http://test/v2/json/serviceRating",
+            "data": {
+                "mha": 1,
+                "swt": 1,
+                "msisdn": "+27001",
+                "facility_code": "12345",
+                "event_date": "20130819144811",
+                "data": [
+                    {
+                        "question": "question_1_friendliness",
+                        "answer": "very-satisfied"
+                    }, {
+                        "question": "question_2_waiting_times_feel",
+                        "answer": "very-satisfied"
+                    }, {
+                        "question": "question_3_waiting_times_length",
+                        "answer": "less-than-an-hour"
+                    }, {
+                        "question": "question_4_cleanliness",
+                        "answer": "very-satisfied"
+                    }, {
+                        "question": "question_5_privacy",
+                        "answer": "very-satisfied"
+                    }
+                ]
+            }
+        }
     },
 
     // TOPIC RESPONSE
-        {
+    {
             'request': {
                 'method': 'GET',
                 'headers': {
@@ -1975,9 +2450,9 @@ module.exports = function() {
                     }
                 ]
             }
-        },
-        // QA RESPONSE
-        {
+    },
+    // QA RESPONSE
+    {
             'request': {
                 'method': 'GET',
                 'headers': {
@@ -2387,6 +2862,6 @@ module.exports = function() {
                     }
                 }]
             }]
-        }
+    }
     ];
 };

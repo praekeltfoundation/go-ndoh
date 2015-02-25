@@ -1876,7 +1876,9 @@ module.exports = function() {
                 "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4",
                 "conversation_key": "dummyconversationkey",
                 "contact": {
-                    "extra": {},
+                    "extra": {
+                        "clinic_code": "12345"
+                    },
                     "groups": [],
                     "subscription": {},
                     "msisdn": "+27001",
@@ -1919,7 +1921,7 @@ module.exports = function() {
                 "mha": 1,
                 "swt": 1,
                 "msisdn": "+27001",
-                "facility_code": null,
+                "facility_code": "12345",
                 "event_date": "20130819144811",
                 "data": [
                     {

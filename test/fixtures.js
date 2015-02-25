@@ -2091,6 +2091,7 @@ module.exports = function() {
                 "conversation_key": "dummyconversationkey",
                 "contact": {
                     "extra": {
+                        "is_registered_by": "clinic",
                         "clinic_code": "12345"
                     },
                     "groups": [],

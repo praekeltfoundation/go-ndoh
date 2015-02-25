@@ -750,6 +750,31 @@ go.utils = {
             });
     },
 
+    jembi_clinic_validate: function (im, clinic_code) {
+        var http = new HttpApi(im, {
+            auth: {
+                username: im.config.jembi.username,
+                password: im.config.jembi.password
+            },
+            headers: {
+                'Content-Type': ['application/json']
+            }
+        });
+        return http.get(im.config.jembi.url_json + 'facilityCheck', {
+            ssl_method: "SSLv3",
+            params: {
+                'criteria': 'code:' + clinic_code
+            }
+        });
+    },
+
+    validate_clinic_code: function(im, clinic_code) {
+        return go.utils
+            .jembi_clinic_validate(im, clinic_code)
+            .then(function(json_result) {
+                return JSON.parse(json_result.data).rows.length > 0;
+            });
+    },
 
     is_alpha_numeric_only: function(input) {
         alpha_numeric = new RegExp('^[A-Za-z0-9]+$');
@@ -1669,9 +1694,15 @@ go.app = function() {
                 question: question,
 
                 check: function(content) {
-                    if (!_.contains(self.im.config.clinic_codes, content.trim())) {
-                        return error;
-                    }
+                    return go.utils
+                        .validate_clinic_code(self.im, content.trim())
+                        .then(function(valid_clinic_code) {
+                            if (!valid_clinic_code) {
+                                return error;
+                            } else {
+                                return null;  // vumi expects null or undefined if check passes
+                            }
+                        });
                 },
 
                 next: function(content) {

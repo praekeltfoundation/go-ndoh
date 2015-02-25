@@ -771,6 +771,46 @@ go.utils = {
         });
     },
 
+    get_servicerating_data: function(im) {
+        var servicerating_data = [];
+        for (var question in im.user.answers) {
+            servicerating_data.push({
+                "question": question,
+                "answer": im.user.answers[question]
+            });
+        }
+        return servicerating_data;
+    },
+
+    build_servicerating_json: function(im, contact) {
+        var JSON_template = {
+          "mha": 1,
+          "swt": go.utils.get_swt(im),
+          // "supplier_unique_id": servicerating_id,  // Marked as Optional in mini-scope and custom
+                                                      // api doesn't provide an id so not submitting
+          "msisdn": contact.msisdn,
+          "facility_code": go.utils.get_faccode(contact),
+          "event_date": go.utils.get_timestamp(),
+          "data": go.utils.get_servicerating_data(im)
+        };
+        return JSON_template;
+    },
+
+    jembi_send_servicerating: function(im, contact, metric_prefix) {
+        var built_json = go.utils.build_servicerating_json(im, contact);
+        return go.utils
+            .jembi_json_api_call(built_json, im)
+            .then(function(json_result) {
+                var metrics_to_fire;
+                if (json_result.code >= 200 && json_result.code < 300){
+                    metrics_to_fire = (([metric_prefix, "sum", "servicerating_to_jembi_success"].join('.')));
+                } else {
+                    metrics_to_fire = (([metric_prefix, "sum", "servicerating_to_jembi_fail"].join('.')));
+                }
+                return im.metrics.fire.inc(metrics_to_fire, {amount: 1});
+        });
+    },
+
     jembi_send_doc: function(contact, user, im, metric_prefix) {
         var built_doc = go.utils.build_cda_doc(contact, user, im);
         return go.utils
@@ -1529,10 +1569,11 @@ go.app = function() {
         self.states.add('log_servicerating_send_sms', function(name) {
             return Q.all([
                 go.utils.servicerating_log(self.contact, self.im, self.metric_prefix),
+                go.utils.jembi_send_servicerating(self.im, self.contact, self.metric_prefix),
                 self.im.outbound.send_to_user({
                         endpoint: 'sms',
                         content: $("Thank you for rating our service.")
-                }),
+                })
             ])
             .then(function() {
                 self.contact.extra.last_service_rating = go.utils.get_timestamp();

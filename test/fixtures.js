@@ -1858,8 +1858,8 @@ module.exports = function() {
             "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
           }
         }
-      },
-      {
+    },
+    {
         "request": {
           "method": "POST",
           'headers': {
@@ -1895,8 +1895,8 @@ module.exports = function() {
             "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
           }
         }
-      },
-      {
+    },
+    {
         "request": {
           "method": "POST",
           'headers': {
@@ -1932,8 +1932,8 @@ module.exports = function() {
             "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
           }
         }
-      },
-      {
+    },
+    {
         "request": {
           "method": "POST",
           'headers': {
@@ -1969,8 +1969,8 @@ module.exports = function() {
             "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
           }
         }
-      },
-      {
+    },
+    {
         "request": {
           "method": "POST",
           'headers': {
@@ -2006,8 +2006,8 @@ module.exports = function() {
             "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
           }
         }
-      },
-      {
+    },
+    {
         "request": {
           "method": "POST",
           'headers': {
@@ -2043,8 +2043,8 @@ module.exports = function() {
             "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
           }
         }
-      },
-      {
+    },
+    {
         "request": {
           "method": "POST",
           'headers': {
@@ -2076,52 +2076,92 @@ module.exports = function() {
             "updated_at": "2014-07-27T21:59:56.489255"
           }
         },
-      },
-      {
+    },
+    // Vumi Servicerating Post
+    {
         "request": {
-          "method": "POST",
-          'headers': {
+            "method": "POST",
+            'headers': {
                 'Authorization': ['ApiKey test_user:test_key'],
                 'Content-Type': ['application/json']
             },
-          "url": "http://ndoh-control/api/v1/servicerating/rate/",
-          "data": {
-            "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4",
-            "conversation_key": "dummyconversationkey",
-            "contact": {
-                "extra": {},
-                "groups": [],
-                "subscription": {},
-                "msisdn": "+27001",
-                "created_at": "2014-07-28 09:35:26.732",
-                "key": "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+            "url": "http://ndoh-control/api/v1/servicerating/rate/",
+            "data": {
                 "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4",
-                "name": null,
-                "surname": null,
-                "email_address": null,
-                "dob": null,
-                "twitter_handle": null,
-                "facebook_id": null,
-                "bbm_pin": null,
-                "gtalk_id": null
+                "conversation_key": "dummyconversationkey",
+                "contact": {
+                    "extra": {
+                        "is_registered_by": "clinic",
+                        "clinic_code": "12345"
+                    },
+                    "groups": [],
+                    "subscription": {},
+                    "msisdn": "+27001",
+                    "created_at": "2014-07-28 09:35:26.732",
+                    "key": "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                    "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4",
+                    "name": null,
+                    "surname": null,
+                    "email_address": null,
+                    "dob": null,
+                    "twitter_handle": null,
+                    "facebook_id": null,
+                    "bbm_pin": null,
+                    "gtalk_id": null
+                },
+                "answers": {
+                    "question_1_friendliness": "very-satisfied",
+                    "question_2_waiting_times_feel": "very-satisfied",
+                    "question_3_waiting_times_length": "less-than-an-hour",
+                    "question_4_cleanliness": "very-satisfied",
+                    "question_5_privacy": "very-satisfied"
+                }
             },
-            "answers": {
-                "question_1_friendliness": "very-satisfied",
-                "question_2_waiting_times_feel": "very-satisfied",
-                "question_3_waiting_times_length": "less-than-an-hour",
-                "question_4_cleanliness": "very-satisfied",
-                "question_5_privacy": "very-satisfied"
+            "response": {
+                "code": 201,
+                "data": {}
             }
-        },
-        "response": {
-          "code": 201,
-          "data": {}
         }
-      }
+    },
+    // Jembi Servicerating Post
+    {
+        "request": {
+            "method": "POST",
+            "headers": {
+                "Authorization": ["Basic " + new Buffer("test:test").toString("base64")],
+                "Content-Type": ["application/json"]
+            },
+            "url": "http://test/v2/json/serviceRating",
+            "data": {
+                "mha": 1,
+                "swt": 1,
+                "msisdn": "+27001",
+                "facility_code": "12345",
+                "event_date": "20130819144811",
+                "data": [
+                    {
+                        "question": "question_1_friendliness",
+                        "answer": "very-satisfied"
+                    }, {
+                        "question": "question_2_waiting_times_feel",
+                        "answer": "very-satisfied"
+                    }, {
+                        "question": "question_3_waiting_times_length",
+                        "answer": "less-than-an-hour"
+                    }, {
+                        "question": "question_4_cleanliness",
+                        "answer": "very-satisfied"
+                    }, {
+                        "question": "question_5_privacy",
+                        "answer": "very-satisfied"
+                    }
+                ]
+            }
+        }
     },
 
     // TOPIC RESPONSE
-        {
+    {
             'request': {
                 'method': 'GET',
                 'headers': {
@@ -2189,9 +2229,9 @@ module.exports = function() {
                     }
                 ]
             }
-        },
-        // QA RESPONSE
-        {
+    },
+    // QA RESPONSE
+    {
             'request': {
                 'method': 'GET',
                 'headers': {
@@ -2601,6 +2641,6 @@ module.exports = function() {
                     }
                 }]
             }]
-        }
+    }
     ];
 };

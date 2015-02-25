@@ -1,7 +1,6 @@
 go.app = function() {
     var vumigo = require('vumigo_v02');
     var _ = require('lodash');
-    var Q = require('q');
     var App = vumigo.App;
     var Choice = vumigo.states.Choice;
     var ChoiceState = vumigo.states.ChoiceState;
@@ -85,15 +84,16 @@ go.app = function() {
                             // deactivate current subscriptions, save reason for opting out
                             .opt_out(self.im, self.contact, self.im.user.answers.states_start,
                                 api_optout=false, unsub_all=true, jembi_optout=true,
-                                self.metric_prefix)
+                                self.metric_prefix, self.env)
                             .then(function() {
-                                return Q.all([
-                                    // ensure user is not opted out
-                                    go.utils.opt_in(self.im, self.contact),
-                                    // activate new subscription
-                                    go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix, self.env, opts)
-                                ]).then(function() {
-                                    return choice.value;
+                                return go.utils
+                                    .loss_message_opt_in(self.im, self.contact, self.metric_prefix, self.env, opts)
+                                    .then(function() {
+                                        return go.utils
+                                            .adjust_percentage_optouts(self.im, self.env)
+                                            .then(function() {
+                                                return choice.value;
+                                            });
                                 });
                             });
                     } else {
@@ -106,7 +106,7 @@ go.app = function() {
         self.states.add('states_end_no_enter', function(name) {
             return go.utils
                 .opt_out(self.im, self.contact, self.im.user.answers.states_start, api_optout=true,
-                    unsub_all=true, jembi_optout=true, self.metric_prefix)
+                    unsub_all=true, jembi_optout=true, self.metric_prefix, self.env)
                 .then(function() {
                     return self.states.create('states_end_no');
                 });

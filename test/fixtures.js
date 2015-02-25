@@ -1968,6 +1968,100 @@ module.exports = function() {
             }
         }
     },
+    // Jembi Clinic Code validation - code 12345
+    {
+        "request": {
+            "method": "GET",
+            "headers": {
+                "Authorization": ["Basic " + new Buffer("test:test").toString("base64")],
+                "Content-Type": ["application/json"]
+            },
+            "url": "http://test/v2/json/facilityCheck",
+            "params": {
+                "criteria": "code:12345"
+            }
+        },
+        "response": {
+            "code": 200,
+            "data": {
+                "title": "FacilityCheck",
+                "headers": [{
+                    "name": "code",
+                    "column": "code",
+                    "type": "java.lang.String",
+                    "hidden": false,
+                    "meta": false
+                }],
+                "rows": [
+                    ["12345"]
+                ],
+                "width": 1,
+                "height": 1
+            }
+        }
+    },
+    // Jembi Clinic Code validation - code 234567
+    {
+        "request": {
+            "method": "GET",
+            "headers": {
+                "Authorization": ["Basic " + new Buffer("test:test").toString("base64")],
+                "Content-Type": ["application/json"]
+            },
+            "url": "http://test/v2/json/facilityCheck",
+            "params": {
+                "criteria": "code:234567"
+            }
+        },
+        "response": {
+            "code": 200,
+            "data": {
+                "title": "FacilityCheck",
+                "headers": [{
+                    "name": "code",
+                    "column": "code",
+                    "type": "java.lang.String",
+                    "hidden": false,
+                    "meta": false
+                }],
+                "rows": [
+                    ["234567"]
+                ],
+                "width": 1,
+                "height": 1
+            }
+        }
+    },
+    // Jembi Clinic Code validation - code 888888 (non-valid clinic code)
+    {
+        "request": {
+            "method": "GET",
+            "headers": {
+                "Authorization": ["Basic " + new Buffer("test:test").toString("base64")],
+                "Content-Type": ["application/json"]
+            },
+            "url": "http://test/v2/json/facilityCheck",
+            "params": {
+                "criteria": "code:888888"
+            }
+        },
+        "response": {
+            "code": 200,
+            "data": {
+                "title": "FacilityCheck",
+                "headers": [{
+                    "name": "code",
+                    "column": "code",
+                    "type": "java.lang.String",
+                    "hidden": false,
+                    "meta": false
+                }],
+                "rows": [],
+                "width": 1,
+                "height": 1
+            }
+        }
+    },
 
     {
         "request": {

@@ -51,7 +51,7 @@ describe("app", function() {
                     jembi: {
                         username: 'foo',
                         password: 'bar',
-                        url_json: 'http://test/v2/json/serviceRating'
+                        url_json: 'http://test/v2/json/'
                     },
                     control: {
                         username: 'test_user',

@@ -40,7 +40,7 @@ describe("app", function() {
                         username: 'foo',
                         password: 'bar',
                         url: 'http://test/v2/',
-                        url_json: 'http://test/v2/json/optout'
+                        url_json: 'http://test/v2/json/'
                     },
                     subscription: {
                         standard: 1,

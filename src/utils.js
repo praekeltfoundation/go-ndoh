@@ -539,7 +539,7 @@ go.utils = {
             'Content-Type': ['application/json']
           }
         });
-        return http.post(im.config.jembi.url_json, {
+        return http.post(im.config.jembi.url_json + 'subscription', {
           ssl_method: "SSLv3",
           data: JSON.stringify(json_doc)
         });
@@ -793,6 +793,37 @@ go.utils = {
         });
     },
 
+    jembi_optout_send_json: function(contact, user, type, im, metric_prefix) {
+        var built_json = go.utils.build_json_doc(im, contact, user, type);
+        return go.utils
+            .jembi_optout_api_call(built_json, im)
+            .then(function(json_result) {
+                var json_to_fire;
+                if (json_result.code >= 200 && json_result.code < 300){
+                    json_to_fire = (([metric_prefix, "sum", "json_to_jembi_success"].join('.')));
+                } else {
+                    json_to_fire = (([metric_prefix, "sum", "json_to_jembi_fail"].join('.')));
+                }
+                return im.metrics.fire.inc(json_to_fire, {amount: 1});
+        });
+    },
+
+    jembi_optout_api_call: function (json_doc, im) {
+        var http = new HttpApi(im, {
+          auth: {
+            username: im.config.jembi.username,
+            password: im.config.jembi.password
+          },
+          headers: {
+            'Content-Type': ['application/json']
+          }
+        });
+        return http.post(im.config.jembi.url_json + 'optout', {
+          ssl_method: "SSLv3",
+          data: JSON.stringify(json_doc)
+        });
+    },
+
     get_servicerating_data: function(im) {
         var servicerating_data = [];
         for (var question in im.user.answers) {
@@ -820,16 +851,27 @@ go.utils = {
 
     jembi_send_servicerating: function(im, contact, metric_prefix) {
         var built_json = go.utils.build_servicerating_json(im, contact);
-        return go.utils
-            .jembi_json_api_call(built_json, im)
-            .then(function(json_result) {
-                var metrics_to_fire;
-                if (json_result.code >= 200 && json_result.code < 300){
-                    metrics_to_fire = (([metric_prefix, "sum", "servicerating_to_jembi_success"].join('.')));
-                } else {
-                    metrics_to_fire = (([metric_prefix, "sum", "servicerating_to_jembi_fail"].join('.')));
-                }
-                return im.metrics.fire.inc(metrics_to_fire, {amount: 1});
+        var http = new HttpApi(im, {
+          auth: {
+            username: im.config.jembi.username,
+            password: im.config.jembi.password
+          },
+          headers: {
+            'Content-Type': ['application/json']
+          }
+        });
+        return http.post(im.config.jembi.url_json + 'serviceRating', {
+          ssl_method: "SSLv3",
+          data: JSON.stringify(built_json)
+        })
+        .then(function(json_result) {
+            var metrics_to_fire;
+            if (json_result.code >= 200 && json_result.code < 300){
+                metrics_to_fire = (([metric_prefix, "sum", "servicerating_to_jembi_success"].join('.')));
+            } else {
+                metrics_to_fire = (([metric_prefix, "sum", "servicerating_to_jembi_fail"].join('.')));
+            }
+            return im.metrics.fire.inc(metrics_to_fire, {amount: 1});
         });
     },
 
@@ -1231,7 +1273,7 @@ go.utils = {
 
                             if (jembi_optout === true) {
                                 // send optout to jembi
-                                queue2.push(go.utils.jembi_send_json(contact, contact, 'optout', im,
+                                queue2.push(go.utils.jembi_optout_send_json(contact, contact, 'optout', im,
                                     metric_prefix));
 
                                 // fire opt-out registration source metric

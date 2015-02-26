@@ -335,6 +335,17 @@ go.utils = {
         }
     },
 
+    get_duedate_string: function(contact, config){
+        if (!_.isUndefined(contact.extra.due_date_month) && !_.isUndefined(contact.extra.due_date_day)){
+          var day = contact.extra.due_date_day;
+          var month = contact.extra.due_date_month;
+          var year = go.utils.get_due_year_from_month(month, go.utils.get_today(config));
+            return [year, month, day].join('');
+        } else {
+            return null;
+        }
+    },
+
     build_cda_doc: function(contact, user, im) {
         /**
 
@@ -512,6 +523,10 @@ go.utils = {
 
         if (type === 'optout') {
             JSON_template.optoutreason = go.utils.get_optoutreason(contact);
+        }
+
+        if (type === 'registration') {
+            JSON_template.edd = go.utils.get_duedate_string(contact, im.config);
         }
 
         return JSON_template;

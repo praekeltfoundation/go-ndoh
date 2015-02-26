@@ -1062,7 +1062,8 @@ module.exports = function() {
                 "lang": "en",
                 "encdate": "20130819144811",
                 "faccode": "12345",
-                "dob": null
+                "dob": null,
+                "edd":"20140530"
             },
         },
         'response': {
@@ -1146,7 +1147,8 @@ module.exports = function() {
                 "lang": "en",
                 "encdate": "20130819144811",
                 "faccode": "12345",
-                "dob": "19510102"
+                "dob": "19510102",
+                "edd":"20140530"
             },
         },
         'response': {
@@ -1174,7 +1176,8 @@ module.exports = function() {
                 "lang": "en",
                 "encdate": "20130819144811",
                 "faccode": "12345",
-                "dob": "19510102"
+                "dob": "19510102",
+                "edd":"20140530"
             },
         },
         'response': {
@@ -1436,7 +1439,8 @@ module.exports = function() {
                 "lang": "en",
                 "encdate": "20130819144811",
                 "faccode": "12345",
-                "dob": "19510102"
+                "dob": "19510102",
+                "edd":"20140530"
             },
         },
         'response': {

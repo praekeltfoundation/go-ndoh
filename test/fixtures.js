@@ -2453,8 +2453,8 @@ module.exports = function() {
                 "dmsisdn": "+27001",
                 "cmsisdn": "+27001",
                 "type": 6,
-                "facility_code": "12345",
-                "event_date": "20130819144811",
+                "faccode": "12345",
+                "encdate": "20130819144811",
                 "data": [
                     {
                         "question": "question_1_friendliness",

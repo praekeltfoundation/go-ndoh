@@ -848,8 +848,8 @@ go.utils = {
           "dmsisdn": contact.msisdn,
           "cmsisdn": contact.msisdn,
           "type": go.utils.get_subscription_type(type),
-          "facility_code": go.utils.get_faccode(contact),
-          "event_date": go.utils.get_timestamp(),
+          "faccode": go.utils.get_faccode(contact),
+          "encdate": go.utils.get_timestamp(),
           "data": go.utils.get_servicerating_data(im)
         };
         return JSON_template;

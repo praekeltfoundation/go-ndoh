@@ -224,7 +224,8 @@ go.utils = {
         "pre-registration": 2,
         "registration": 3,
         "optout": 4,
-        "babyloss": 5
+        "babyloss": 5,
+        "servicerating": 6
       };
       return types[type];
     },
@@ -838,13 +839,15 @@ go.utils = {
         return servicerating_data;
     },
 
-    build_servicerating_json: function(im, contact) {
+    build_servicerating_json: function(im, contact, type) {
         var JSON_template = {
           "mha": 1,
           "swt": go.utils.get_swt(im),
           // "supplier_unique_id": servicerating_id,  // Marked as Optional in mini-scope and custom
                                                       // api doesn't provide an id so not submitting
-          "msisdn": contact.msisdn,
+          "dmsisdn": contact.msisdn,
+          "cmsisdn": contact.msisdn,
+          "type": go.utils.get_subscription_type(type),
           "facility_code": go.utils.get_faccode(contact),
           "event_date": go.utils.get_timestamp(),
           "data": go.utils.get_servicerating_data(im)
@@ -852,8 +855,8 @@ go.utils = {
         return JSON_template;
     },
 
-    jembi_send_servicerating: function(im, contact, metric_prefix) {
-        var built_json = go.utils.build_servicerating_json(im, contact);
+    jembi_send_servicerating: function(im, contact, metric_prefix, type) {
+        var built_json = go.utils.build_servicerating_json(im, contact, type);
         var http = new HttpApi(im, {
           auth: {
             username: im.config.jembi.username,
@@ -1636,7 +1639,8 @@ go.app = function() {
         self.states.add('log_servicerating_send_sms', function(name) {
             return Q.all([
                 go.utils.servicerating_log(self.contact, self.im, self.metric_prefix),
-                go.utils.jembi_send_servicerating(self.im, self.contact, self.metric_prefix),
+                go.utils.jembi_send_servicerating(self.im, self.contact, self.metric_prefix,
+                                                  "servicerating"),
                 self.im.outbound.send_to_user({
                         endpoint: 'sms',
                         content: $("Thank you for rating our service.")

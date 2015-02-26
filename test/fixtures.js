@@ -2450,7 +2450,9 @@ module.exports = function() {
             "data": {
                 "mha": 1,
                 "swt": 1,
-                "msisdn": "+27001",
+                "dmsisdn": "+27001",
+                "cmsisdn": "+27001",
+                "type": 6,
                 "facility_code": "12345",
                 "event_date": "20130819144811",
                 "data": [

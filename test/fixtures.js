@@ -938,7 +938,7 @@ module.exports = function() {
                 'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
                 'Content-Type': ['application/json']
             },
-            'url': 'http://test/v2/json/',
+            'url': 'http://test/v2/json/subscription',
             'data': {
                 "mha": 1,
                 "swt": 1,
@@ -966,7 +966,7 @@ module.exports = function() {
                 'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
                 'Content-Type': ['application/json']
             },
-            'url': 'http://test/v2/json/',
+            'url': 'http://test/v2/json/subscription',
             'data': {
                 "mha": 1,
                 "swt": 1,
@@ -994,7 +994,7 @@ module.exports = function() {
                 'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
                 'Content-Type': ['application/json']
             },
-            'url': 'http://test/v2/json/',
+            'url': 'http://test/v2/json/subscription',
             'data': {
                 "mha": 1,
                 "swt": 1,
@@ -1022,7 +1022,7 @@ module.exports = function() {
                 'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
                 'Content-Type': ['application/json']
             },
-            'url': 'http://test/v2/json/',
+            'url': 'http://test/v2/json/subscription',
             'data': {
                 "mha": 1,
                 "swt": 1,
@@ -1051,7 +1051,7 @@ module.exports = function() {
                 'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
                 'Content-Type': ['application/json']
             },
-            'url': 'http://test/v2/json/',
+            'url': 'http://test/v2/json/subscription',
             'data': {
                 "mha": 1,
                 "swt": 1,
@@ -1079,7 +1079,7 @@ module.exports = function() {
                 'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
                 'Content-Type': ['application/json']
             },
-            'url': 'http://test/v2/json/',
+            'url': 'http://test/v2/json/subscription',
             'data': {
                 "mha": 1,
                 "swt": 1,
@@ -1107,7 +1107,7 @@ module.exports = function() {
                 'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
                 'Content-Type': ['application/json']
             },
-            'url': 'http://test/v2/json/',
+            'url': 'http://test/v2/json/subscription',
             'data': {
                 "mha": 1,
                 "swt": 1,
@@ -1135,7 +1135,7 @@ module.exports = function() {
                 'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
                 'Content-Type': ['application/json']
             },
-            'url': 'http://test/v2/json/',
+            'url': 'http://test/v2/json/subscription',
             'data': {
                 "mha": 1,
                 "swt": 1,
@@ -1163,7 +1163,7 @@ module.exports = function() {
                 'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
                 'Content-Type': ['application/json']
             },
-            'url': 'http://test/v2/json/',
+            'url': 'http://test/v2/json/subscription',
             'data': {
                 "mha": 1,
                 "swt": 1,
@@ -1191,7 +1191,7 @@ module.exports = function() {
                 'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
                 'Content-Type': ['application/json']
             },
-            'url': 'http://test/v2/json/',
+            'url': 'http://test/v2/json/subscription',
             'data': {
                 "mha": 1,
                 "swt": 1,
@@ -1339,7 +1339,7 @@ module.exports = function() {
                 'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
                 'Content-Type': ['application/json']
             },
-            'url': 'http://test/v2/json/',
+            'url': 'http://test/v2/json/subscription',
             'data': {
                 "mha": 1,
                 "swt": 1,
@@ -1368,7 +1368,7 @@ module.exports = function() {
                 'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
                 'Content-Type': ['application/json']
             },
-            'url': 'http://test/v2/json/',
+            'url': 'http://test/v2/json/subscription',
             'data': {
                 "mha": 1,
                 "swt": 1,
@@ -1396,7 +1396,7 @@ module.exports = function() {
                 'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
                 'Content-Type': ['application/json']
             },
-            'url': 'http://test/v2/json/',
+            'url': 'http://test/v2/json/subscription',
             'data': {
                 "mha": 1,
                 "swt": 1,
@@ -1425,7 +1425,7 @@ module.exports = function() {
                 'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
                 'Content-Type': ['application/json']
             },
-            'url': 'http://test/v2/json/',
+            'url': 'http://test/v2/json/subscription',
             'data': {
                 "mha": 1,
                 "swt": 1,
@@ -1889,7 +1889,7 @@ module.exports = function() {
                 'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
                 'Content-Type': ['application/json']
             },
-            'url': 'http://test/v2/json/optout',
+            'url': 'http://test/v2/json/subscription',
             'data': {
                 "mha": 1,
                 "swt": 1,
@@ -1918,7 +1918,7 @@ module.exports = function() {
                 'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
                 'Content-Type': ['application/json']
             },
-            'url': 'http://test/v2/json/optout',
+            'url': 'http://test/v2/json/subscription',
             'data': {
                 "mha": 1,
                 "swt": 1,
@@ -1947,7 +1947,7 @@ module.exports = function() {
                 'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
                 'Content-Type': ['application/json']
             },
-            'url': 'http://test/v2/json/optout',
+            'url': 'http://test/v2/json/subscription',
             'data': {
                 "mha": 1,
                 "swt": 1,

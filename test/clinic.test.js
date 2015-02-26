@@ -169,6 +169,10 @@ describe("app", function() {
                     api.kv.store['test.personal.unique_users'] = 0;
                     api.kv.store['test.clinic.no_complete_registrations'] = 2;
                     api.kv.store['test.clinic.no_incomplete_registrations'] = 2;
+                    api.kv.store['test.chw.conversion_registrations'] = 3;
+                    api.kv.store['test.personal.conversion_registrations'] = 3;
+                    api.kv.store['test.chw.conversions_to_clinic'] = 1;
+                    api.kv.store['test.personal.conversions_to_clinic'] = 2;
                 })
                 .setup(function(api) {
                     api.metrics.stores = {'test_metric_store': {}};
@@ -1573,7 +1577,8 @@ describe("app", function() {
                                     dob: '1951-01-02',
                                     ussd_sessions: '5',
                                     due_date_month: '05',
-                                    due_date_day: '30'
+                                    due_date_day: '30',
+                                    is_registered_by: 'personal'
                                 },
                                 key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                                 user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
@@ -1612,6 +1617,13 @@ describe("app", function() {
                             assert.deepEqual(metrics['test.clinic.sum.doc_to_jembi_success'].values, [1]);
                             assert.deepEqual(metrics['test.clinic.sum.json_to_jembi_success'].values, [1]);
                             assert.deepEqual(metrics['test.sum.subscriptions'].values, [1]);
+                            assert.deepEqual(metrics['test.personal.conversion_rate'].values, [100]);
+                            assert.deepEqual(metrics['test.chw.conversion_rate'].values, [33.33]);
+                        })
+                        .check(function(api) {
+                            var kv_store = api.kv.store;
+                            assert.equal(kv_store['test.chw.conversions_to_clinic'], 1);
+                            assert.equal(kv_store['test.personal.conversions_to_clinic'], 3);
                         })
                         .check.reply.ends_session()
                         .run();

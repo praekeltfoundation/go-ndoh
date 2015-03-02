@@ -60,10 +60,6 @@ describe("app", function() {
                     }
                 })
                 .setup(function(api) {
-                    // api.kv.store['test_metric_store.test.sum.subscriptions'] = 4;
-                    // api.kv.store['test_metric_store.test.sum.optout_cause.loss'] = 2;
-                })
-                .setup(function(api) {
                     fixtures().forEach(api.http.fixtures.add);
                 });
         });

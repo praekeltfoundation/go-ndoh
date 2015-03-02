@@ -31,7 +31,7 @@ go.app = function() {
 
                 // Average sessions to complete service rating
                 // Ideally would have used 'enter:question_1_friendliness' here, but double on-enter
-                // bug is creating problems, it seems
+                // bug is creating problems
                 .add.tracker({
                     action: 'exit',
                     state: 'states_start'

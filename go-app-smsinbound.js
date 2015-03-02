@@ -743,6 +743,20 @@ go.utils = {
         });
     },
 
+    adjust_percentage_serviceratings: function(im, metric_prefix) {
+        return Q.all([
+            go.utils.get_kv(im, [im.config.metric_store, metric_prefix, 'sum', 'servicerating_start'].join('.'), 0),
+            go.utils.get_kv(im, [im.config.metric_store, metric_prefix, 'sum', 'servicerating_success'].join('.'), 0)
+        ]).spread(function(no_started, no_finished) {
+            var percentage_complete = parseFloat(((no_finished / no_started) * 100).toFixed(2));
+            var percentage_incomplete = 100 - percentage_complete;
+            return Q.all([
+                im.metrics.fire.last([metric_prefix, 'percent_incomplete_serviceratings'].join('.'), percentage_incomplete),
+                im.metrics.fire.last([metric_prefix, 'percent_complete_serviceratings'].join('.'), percentage_complete)
+            ]);
+        });
+    },
+
     fire_users_metrics: function(im, store_name, env, metric_prefix) {
         return go.utils.incr_kv(im, [store_name, 'unique_users'].join('.'))
             .then(function() {

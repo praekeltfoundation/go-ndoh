@@ -1549,6 +1549,7 @@ describe("app", function() {
                             assert.equal(metrics['test.clinic.states_end_success.no_incomplete'], undefined);
                             assert.deepEqual(metrics['test.clinic.sum.doc_to_jembi_success'].values, [1]);
                             assert.deepEqual(metrics['test.clinic.sum.json_to_jembi_success'].values, [1]);
+                            assert.deepEqual(metrics['test.sum.subscribers.en'].values, [1]);
                         })
                         .check.reply.ends_session()
                         .run();
@@ -1612,6 +1613,7 @@ describe("app", function() {
                             assert.deepEqual(metrics['test.clinic.sum.doc_to_jembi_success'].values, [1]);
                             assert.deepEqual(metrics['test.clinic.sum.json_to_jembi_success'].values, [1]);
                             assert.deepEqual(metrics['test.sum.subscriptions'].values, [1]);
+                            assert.deepEqual(metrics['test.sum.subscribers.en'].values, [1]);
                         })
                         .check.reply.ends_session()
                         .run();
@@ -1793,6 +1795,7 @@ describe("app", function() {
                             assert.deepEqual(metrics['test.clinic.sum.doc_to_jembi_success'].values, [1]);
                             assert.deepEqual(metrics['test.clinic.sum.json_to_jembi_success'].values, [1]);
                             assert.deepEqual(metrics['test.sum.subscriptions'].values, [1]);
+                            assert.deepEqual(metrics['test.sum.subscribers.en'].values, [1]);
                         })
                         .check.reply.ends_session()
                         .run();

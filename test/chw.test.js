@@ -1470,6 +1470,7 @@ describe("app", function() {
                             assert.deepEqual(metrics['test.chw.percent_complete_registrations'].values, [75]);
                             assert.deepEqual(metrics['test.chw.sum.json_to_jembi_success'].values, [1]);
                             assert.deepEqual(metrics['test.sum.subscriptions'].values, [1]);
+                            assert.deepEqual(metrics['test.sum.subscribers.en'].values, [1]);
                         })
                         .check.reply.ends_session()
                         .run();
@@ -1589,6 +1590,7 @@ describe("app", function() {
                             assert.deepEqual(metrics['test.chw.percent_complete_registrations'].values, [75]);
                             assert.deepEqual(metrics['test.chw.sum.json_to_jembi_success'].values, [1]);
                             assert.deepEqual(metrics['test.sum.subscriptions'].values, [1]);
+                            assert.deepEqual(metrics['test.sum.subscribers.en'].values, [1]);
                         })
                         .check.reply.ends_session()
                         .run();

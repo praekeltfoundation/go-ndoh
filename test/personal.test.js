@@ -1343,7 +1343,7 @@ describe("app", function() {
         });
 
         describe("after the user enters their birth day", function() {
-            it("should save birth day, thank them and exit", function() {
+            it.only("should save birth day, thank them and exit", function() {
                 return tester
                     .setup(function(api) {
                         api.contacts.add({
@@ -1363,7 +1363,8 @@ describe("app", function() {
                     .setup.user.addr('27001')
                     .setup.user.answers({
                         'states_birth_year': '1981',
-                        'states_birth_month': '01'
+                        'states_birth_month': '01',
+                        'states_language': 'xh'
                     })
                     .setup.user.state('states_birth_day')
                     .input('1')
@@ -1390,6 +1391,7 @@ describe("app", function() {
                         assert.deepEqual(metrics['test.personal.percent_complete_registrations'].values, [75]);
                         assert.deepEqual(metrics['test.personal.sum.json_to_jembi_success'].values, [1]);
                         assert.deepEqual(metrics['test.sum.subscriptions'].values, [1]);
+                        assert.deepEqual(metrics['test.sum.subscribers.xh'].values, [1]);
                     })
                     .check(function(api) {
                         var smses = _.where(api.outbound.store, {

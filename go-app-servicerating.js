@@ -1611,7 +1611,9 @@ go.app = function() {
         };
 
         self.states.add('states_start', function(name) {
-            if (self.contact.extra.is_registered_by === 'clinic') {
+            if (self.contact.extra.last_service_rating !== undefined) {
+                return self.states.create('end_thanks_revisit');
+            } else if (self.contact.extra.is_registered_by === 'clinic') {
                 return go.utils
                     .incr_kv(self.im, [self.store_name, 'sum', 'servicerating_start'].join('.'))
                     .then(function() {

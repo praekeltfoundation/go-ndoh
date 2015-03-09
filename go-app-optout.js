@@ -501,7 +501,7 @@ go.utils = {
 
     get_dob: function(contact) {
         if (!_.isUndefined(contact.extra.dob)) {
-            return moment(contact.extra.dob).format('YYYYMMDD');
+            return moment(contact.extra.dob, 'YYYY-MM-DD').format('YYYYMMDD');
         } else {
             return null;
         }

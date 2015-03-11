@@ -25,6 +25,7 @@
     "q": "~0.9",
     "lodash": "~2.4.1",
     "moment": "~2.6.0",
+    "go-jsbox-metrics-helper": "~0.1.1",
     "libxmljs": "0.8.x"
   },
   "devDependencies": {

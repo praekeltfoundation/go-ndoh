@@ -1062,7 +1062,8 @@ module.exports = function() {
                 "lang": "en",
                 "encdate": "20130819144811",
                 "faccode": "12345",
-                "dob": null
+                "dob": null,
+                "edd":"20140530"
             },
         },
         'response': {
@@ -1146,7 +1147,8 @@ module.exports = function() {
                 "lang": "en",
                 "encdate": "20130819144811",
                 "faccode": "12345",
-                "dob": "19510102"
+                "dob": "19510102",
+                "edd":"20140530"
             },
         },
         'response': {
@@ -1174,7 +1176,8 @@ module.exports = function() {
                 "lang": "en",
                 "encdate": "20130819144811",
                 "faccode": "12345",
-                "dob": "19510102"
+                "dob": "19510102",
+                "edd":"20140530"
             },
         },
         'response': {
@@ -1436,7 +1439,8 @@ module.exports = function() {
                 "lang": "en",
                 "encdate": "20130819144811",
                 "faccode": "12345",
-                "dob": "19510102"
+                "dob": "19510102",
+                "edd":"20140530"
             },
         },
         'response': {
@@ -2450,9 +2454,11 @@ module.exports = function() {
             "data": {
                 "mha": 1,
                 "swt": 1,
-                "msisdn": "+27001",
-                "facility_code": "12345",
-                "event_date": "20130819144811",
+                "dmsisdn": "+27001",
+                "cmsisdn": "+27001",
+                "type": 6,
+                "faccode": "12345",
+                "encdate": "20130819144811",
                 "data": [
                     {
                         "question": "question_1_friendliness",

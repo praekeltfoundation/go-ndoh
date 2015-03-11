@@ -81,17 +81,87 @@ describe("app", function() {
                                 }
                             });
                         })
-                        .inputs({session_event: "new"}, "1", "1", "1", "1", "1")
-                        .check.interaction({
-                            state: 'end_thanks',
-                            reply: [
-                                'Thank you for rating our service.'
-                            ].join('\n')
-                        })
+                        .inputs(
+                            {session_event: "new"}, "1", "1", "1",
+                            {session_event: "new"}, "1", "1")
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
+                            assert.deepEqual(metrics['test.servicerating.sum.unique_users'].values, [1]);
+                            assert.deepEqual(metrics['test.servicerating.sum.unique_users.transient'].values, [1]);
+                            assert.deepEqual(metrics['test.servicerating.sum.sessions'].values, [1, 2]);
+                            assert.deepEqual(metrics['test.servicerating.sum.sessions.transient'].values, [1, 1]);
+                            assert.deepEqual(metrics['test.servicerating.avg.sessions_rate_service'].values, [2]);
+                            assert.deepEqual(metrics['test.servicerating.sum.question_1_friendliness.exits'].values, [1]);
+                            assert.deepEqual(metrics['test.servicerating.sum.question_2_waiting_times_feel.exits'].values, [1]);
+                            assert.deepEqual(metrics['test.servicerating.sum.question_3_waiting_times_length.exits'].values, [1]);
+                            assert.deepEqual(metrics['test.servicerating.sum.question_4_cleanliness.exits'].values, [1]);
+                            assert.deepEqual(metrics['test.servicerating.sum.question_5_privacy.exits'].values, [1]);
                             assert.deepEqual(metrics['test.servicerating.sum.servicerating_success'].values, [1]);
                             assert.deepEqual(metrics['test.servicerating.sum.servicerating_to_jembi_success'].values, [1]);
+                            assert.deepEqual(metrics['test.servicerating.percent_incomplete_serviceratings'].values, [100, 0]);
+                            assert.deepEqual(metrics['test.servicerating.percent_complete_serviceratings'].values, [0, 100]);
+
+                            var kv_store = api.kv.store;
+                            assert.equal(kv_store['test_metric_store.test.servicerating.sum.unique_users'], 1);
+                            assert.equal(kv_store['test_metric_store.test.servicerating.sum.servicerating_start'], 1);
+                            assert.equal(kv_store['test_metric_store.test.servicerating.sum.sessions'], 2);
+                            assert.equal(kv_store['test_metric_store.test.servicerating.sum.question_1_friendliness.exits'], 1);
+                            assert.equal(kv_store['test_metric_store.test.servicerating.sum.question_2_waiting_times_feel.exits'], 1);
+                            assert.equal(kv_store['test_metric_store.test.servicerating.sum.question_3_waiting_times_length.exits'], 1);
+                            assert.equal(kv_store['test_metric_store.test.servicerating.sum.question_4_cleanliness.exits'], 1);
+                            assert.equal(kv_store['test_metric_store.test.servicerating.sum.question_5_privacy.exits'], 1);
+                            assert.equal(kv_store['test_metric_store.test.servicerating.sum.servicerating_success'], 1);
+                            assert.equal(kv_store['test_metric_store.test.servicerating.sum.servicerating_to_jembi_success'], 1);
+                        })
+                        .run();
+                });
+            });
+
+            describe("when the user drops off whilst completing a servicerating", function() {
+                it("should fire multiple metrics", function() {
+                    return tester
+                        .setup.user.addr('27001')
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27001',
+                                created_at: "2014-07-28 09:35:26.732",
+                                key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                                user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4",
+                                extra: {
+                                    is_registered_by: 'clinic',
+                                    clinic_code: "12345"
+                                }
+                            });
+                        })
+                        .inputs({session_event: "new"}, "1", "1", "1")
+                        .check(function(api) {
+                            var metrics = api.metrics.stores.test_metric_store;
+                            assert.deepEqual(metrics['test.servicerating.sum.unique_users'].values, [1]);
+                            assert.deepEqual(metrics['test.servicerating.sum.unique_users.transient'].values, [1]);
+                            assert.deepEqual(metrics['test.servicerating.sum.sessions'].values, [1]);
+                            assert.deepEqual(metrics['test.servicerating.sum.sessions.transient'].values, [1]);
+                            assert.deepEqual(metrics['test.servicerating.avg.sessions_rate_service'], undefined);
+                            assert.deepEqual(metrics['test.servicerating.sum.question_1_friendliness.exits'].values, [1]);
+                            assert.deepEqual(metrics['test.servicerating.sum.question_2_waiting_times_feel.exits'].values, [1]);
+                            assert.deepEqual(metrics['test.servicerating.sum.question_3_waiting_times_length.exits'].values, [1]);
+                            assert.deepEqual(metrics['test.servicerating.sum.question_4_cleanliness.exits'], undefined);
+                            assert.deepEqual(metrics['test.servicerating.sum.question_5_privacy.exits'], undefined);
+                            assert.deepEqual(metrics['test.servicerating.sum.servicerating_success'], undefined);
+                            assert.deepEqual(metrics['test.servicerating.sum.servicerating_to_jembi_success'], undefined);
+                            assert.deepEqual(metrics['test.servicerating.percent_incomplete_serviceratings'].values, [100]);
+                            assert.deepEqual(metrics['test.servicerating.percent_complete_serviceratings'].values, [0]);
+
+                            var kv_store = api.kv.store;
+                            assert.equal(kv_store['test_metric_store.test.servicerating.sum.unique_users'], 1);
+                            assert.equal(kv_store['test_metric_store.test.servicerating.sum.servicerating_start'], 1);
+                            assert.equal(kv_store['test_metric_store.test.servicerating.sum.sessions'], 1);
+                            assert.equal(kv_store['test_metric_store.test.servicerating.sum.question_1_friendliness.exits'], 1);
+                            assert.equal(kv_store['test_metric_store.test.servicerating.sum.question_2_waiting_times_feel.exits'], 1);
+                            assert.equal(kv_store['test_metric_store.test.servicerating.sum.question_3_waiting_times_length.exits'], 1);
+                            assert.equal(kv_store['test_metric_store.test.servicerating.sum.question_4_cleanliness.exits'], undefined);
+                            assert.equal(kv_store['test_metric_store.test.servicerating.sum.question_5_privacy.exits'], undefined);
+                            assert.equal(kv_store['test_metric_store.test.servicerating.sum.servicerating_success'], undefined);
+                            assert.equal(kv_store['test_metric_store.test.servicerating.sum.servicerating_to_jembi_success'], undefined);
                         })
                         .run();
                 });
@@ -142,6 +212,34 @@ describe("app", function() {
                             ].join('\n')
                         })
                         .check.user.properties({lang: 'zu'})
+                        .run();
+                });
+            });
+
+            describe("when the user has already logged a servicerating", function() {
+                it("should tell them they can't do it again", function() {
+                    return tester
+                        .setup.user.addr('27001')
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27001',
+                                extra : {
+                                    language_choice: 'zu',
+                                    is_registered_by: 'clinic',
+                                    last_service_rating: '20130819144811'
+                                }
+                            });
+                        })
+                        .start()
+                        .check.interaction({
+                            state: 'end_thanks_revisit',
+                            reply: [
+                                'Sorry, you\'ve already rated service. For baby and pregnancy ' +
+                                'help or if you have compliments or complaints ' +
+                                'dial *120*550# or reply to any of the SMSs you receive'
+                            ].join('\n')
+                        })
+                        .check.reply.ends_session()
                         .run();
                 });
             });

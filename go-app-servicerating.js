@@ -224,7 +224,8 @@ go.utils = {
         "pre-registration": 2,
         "registration": 3,
         "optout": 4,
-        "babyloss": 5
+        "babyloss": 5,
+        "servicerating": 6
       };
       return types[type];
     },
@@ -331,6 +332,17 @@ go.utils = {
             // Jembi can't handle null duedates
             return go.utils.update_attr(
               element, 'value', '17000101');
+        }
+    },
+
+    get_duedate_string: function(contact, config){
+        if (!_.isUndefined(contact.extra.due_date_month) && !_.isUndefined(contact.extra.due_date_day)){
+          var day = contact.extra.due_date_day;
+          var month = contact.extra.due_date_month;
+          var year = go.utils.get_due_year_from_month(month, go.utils.get_today(config));
+            return [year, month, day].join('');
+        } else {
+            return null;
         }
     },
 
@@ -511,6 +523,10 @@ go.utils = {
 
         if (type === 'optout') {
             JSON_template.optoutreason = go.utils.get_optoutreason(contact);
+        }
+
+        if (type === 'registration') {
+            JSON_template.edd = go.utils.get_duedate_string(contact, im.config);
         }
 
         return JSON_template;
@@ -750,6 +766,20 @@ go.utils = {
         });
     },
 
+    adjust_percentage_serviceratings: function(im, metric_prefix) {
+        return Q.all([
+            go.utils.get_kv(im, [im.config.metric_store, metric_prefix, 'sum', 'servicerating_start'].join('.'), 0),
+            go.utils.get_kv(im, [im.config.metric_store, metric_prefix, 'sum', 'servicerating_success'].join('.'), 0)
+        ]).spread(function(no_started, no_finished) {
+            var percentage_complete = parseFloat(((no_finished / no_started) * 100).toFixed(2));
+            var percentage_incomplete = 100 - percentage_complete;
+            return Q.all([
+                im.metrics.fire.last([metric_prefix, 'percent_incomplete_serviceratings'].join('.'), percentage_incomplete),
+                im.metrics.fire.last([metric_prefix, 'percent_complete_serviceratings'].join('.'), percentage_complete)
+            ]);
+        });
+    },
+
     fire_users_metrics: function(im, store_name, env, metric_prefix) {
         return go.utils.incr_kv(im, [store_name, 'unique_users'].join('.'))
             .then(function() {
@@ -861,22 +891,24 @@ go.utils = {
         return servicerating_data;
     },
 
-    build_servicerating_json: function(im, contact) {
+    build_servicerating_json: function(im, contact, type) {
         var JSON_template = {
           "mha": 1,
           "swt": go.utils.get_swt(im),
           // "supplier_unique_id": servicerating_id,  // Marked as Optional in mini-scope and custom
                                                       // api doesn't provide an id so not submitting
-          "msisdn": contact.msisdn,
-          "facility_code": go.utils.get_faccode(contact),
-          "event_date": go.utils.get_timestamp(),
+          "dmsisdn": contact.msisdn,
+          "cmsisdn": contact.msisdn,
+          "type": go.utils.get_subscription_type(type),
+          "faccode": go.utils.get_faccode(contact),
+          "encdate": go.utils.get_timestamp(),
           "data": go.utils.get_servicerating_data(im)
         };
         return JSON_template;
     },
 
-    jembi_send_servicerating: function(im, contact, metric_prefix) {
-        var built_json = go.utils.build_servicerating_json(im, contact);
+    jembi_send_servicerating: function(im, contact, metric_prefix, type) {
+        var built_json = go.utils.build_servicerating_json(im, contact, type);
         var http = new HttpApi(im, {
           auth: {
             username: im.config.jembi.username,
@@ -1547,6 +1579,7 @@ go.SessionLengthHelper = function () {
 go.app = function() {
     var vumigo = require('vumigo_v02');
     var Q = require('q');
+    var MetricsHelper = require('go-jsbox-metrics-helper');
     var App = vumigo.App;
     var Choice = vumigo.states.Choice;
     var ChoiceState = vumigo.states.ChoiceState;
@@ -1557,9 +1590,41 @@ go.app = function() {
         var $ = self.$;
 
         self.init = function() {
+
             self.env = self.im.config.env;
             self.metric_prefix = [self.env, self.im.config.name].join('.');
-            self.store_name = [self.env, self.im.config.name].join('.');
+            self.store_name = [self.im.config.metric_store, self.env, self.im.config.name].join('.');
+
+            mh = new MetricsHelper(self.im);
+            mh
+                // Total unique users
+                // This adds <env>.servicerating.sum.unique_users 'last' metric
+                // As well as <env>.servicerating.sum.unique_users.transient 'sum' metric
+                .add.total_unique_users([self.metric_prefix, 'sum', 'unique_users'].join('.'))
+
+                // Total sessions
+                // This adds <env>.servicerating.sum.sessions 'last' metric
+                // As well as <env>.servicerating.sum.sessions.transient 'sum' metric
+                .add.total_sessions([self.metric_prefix, 'sum', 'sessions'].join('.'))
+
+                // Average sessions to complete service rating
+                // Ideally would have used 'enter:question_1_friendliness' here, but double on-enter
+                // bug is creating problems
+                .add.tracker({
+                    action: 'exit',
+                    state: 'states_start'
+                }, {
+                    action: 'exit',
+                    state: 'question_5_privacy'
+                }, {
+                    sessions_between_states: [self.metric_prefix, 'avg.sessions_rate_service'].join('.')
+                })
+            ;
+
+            // Navigation tracking to measure drop-offs
+            self.im.on('state:exit', function(e) {
+                return self.im.metrics.fire.inc([self.metric_prefix, 'sum', e.state.name, 'exits'].join('.'), 1);
+            });
 
             return self.im.contacts
                 .for_user()
@@ -1569,8 +1634,17 @@ go.app = function() {
         };
 
         self.states.add('states_start', function(name) {
-            if (self.contact.extra.is_registered_by === 'clinic') {
-                return self.states.create('question_1_friendliness');
+            if (self.contact.extra.last_service_rating !== undefined) {
+                return self.states.create('end_thanks_revisit');
+            } else if (self.contact.extra.is_registered_by === 'clinic') {
+                return go.utils
+                    .incr_kv(self.im, [self.store_name, 'sum', 'servicerating_start'].join('.'))
+                    .then(function() {
+                        return go.utils.adjust_percentage_serviceratings(self.im, self.metric_prefix);
+                    })
+                    .then(function() {
+                        return self.states.create('question_1_friendliness');
+                    });
             } else {
                 return self.states.create('end_reg_clinic');
             }
@@ -1659,7 +1733,8 @@ go.app = function() {
         self.states.add('log_servicerating_send_sms', function(name) {
             return Q.all([
                 go.utils.servicerating_log(self.contact, self.im, self.metric_prefix),
-                go.utils.jembi_send_servicerating(self.im, self.contact, self.metric_prefix),
+                go.utils.jembi_send_servicerating(self.im, self.contact, self.metric_prefix,
+                                                  "servicerating"),
                 self.im.outbound.send_to_user({
                         endpoint: 'sms',
                         content: $("Thank you for rating our service.")
@@ -1667,7 +1742,10 @@ go.app = function() {
             ])
             .then(function() {
                 self.contact.extra.last_service_rating = go.utils.get_timestamp();
-                return self.im.contacts.save(self.contact);
+                return Q.all([
+                    self.im.contacts.save(self.contact),
+                    go.utils.adjust_percentage_serviceratings(self.im, self.metric_prefix)
+                ]);
             })
             .then(function() {
                 return self.states.create('end_thanks');

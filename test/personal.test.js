@@ -711,6 +711,11 @@ describe("app", function() {
                         assert.deepEqual(metrics['test.personal.percent_incomplete_registrations'].values, [60]);
                         assert.deepEqual(metrics['test.personal.percent_complete_registrations'].values, [40]);
                     })
+                    .check(function(api) {
+                        var kv_store = api.kv.store;
+                        assert.equal(kv_store['test.personal.no_complete_registrations'], 2);
+                        assert.equal(kv_store['test.personal.conversion_registrations'], undefined);
+                    })
                     .run();
             });
         });
@@ -1363,7 +1368,8 @@ describe("app", function() {
                     .setup.user.addr('27001')
                     .setup.user.answers({
                         'states_birth_year': '1981',
-                        'states_birth_month': '01'
+                        'states_birth_month': '01',
+                        'states_language': 'xh'
                     })
                     .setup.user.state('states_birth_day')
                     .input('1')
@@ -1390,6 +1396,12 @@ describe("app", function() {
                         assert.deepEqual(metrics['test.personal.percent_complete_registrations'].values, [75]);
                         assert.deepEqual(metrics['test.personal.sum.json_to_jembi_success'].values, [1]);
                         assert.deepEqual(metrics['test.sum.subscriptions'].values, [1]);
+                        assert.deepEqual(metrics['test.sum.subscribers.xh'].values, [1]);
+                    })
+                    .check(function(api) {
+                        var kv_store = api.kv.store;
+                        assert.equal(kv_store['test.personal.no_complete_registrations'], 3);
+                        assert.equal(kv_store['test.personal.conversion_registrations'], 1);
                     })
                     .check(function(api) {
                         var smses = _.where(api.outbound.store, {

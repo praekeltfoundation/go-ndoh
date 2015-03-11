@@ -734,11 +734,34 @@ go.utils = {
             go.utils.get_kv(im, [metric_prefix, 'no_complete_registrations'].join('.'), 0)
         ]).spread(function(no_incomplete, no_complete) {
             var total_attempted = no_incomplete + no_complete;
-            var percentage_incomplete = (no_incomplete / total_attempted) * 100;
-            var percentage_complete = (no_complete / total_attempted) * 100;
+            var percentage_incomplete = parseFloat(((no_incomplete / total_attempted) * 100).toFixed(2));
+            var percentage_complete = parseFloat(((no_complete / total_attempted) * 100).toFixed(2));
             return Q.all([
                 im.metrics.fire.last([metric_prefix, 'percent_incomplete_registrations'].join('.'), percentage_incomplete),
                 im.metrics.fire.last([metric_prefix, 'percent_complete_registrations'].join('.'), percentage_complete)
+            ]);
+        });
+    },
+
+    incr_kv_conversions: function(im, contact, env) {
+        var is_reg_by = contact.extra.is_registered_by;
+        if (is_reg_by === 'personal' || is_reg_by === 'chw') {
+            return go.utils.incr_kv(im, [env, is_reg_by, 'conversions_to_clinic'].join('.'));
+        }
+    },
+
+    adjust_conversion_rates: function(im, env) {
+        return Q.all([
+            go.utils.get_kv(im, [env, 'personal', 'conversion_registrations'].join('.'), 0),
+            go.utils.get_kv(im, [env, 'chw', 'conversion_registrations'].join('.'), 0),
+            go.utils.get_kv(im, [env, 'personal', 'conversions_to_clinic'].join('.'), 0),
+            go.utils.get_kv(im, [env, 'chw', 'conversions_to_clinic'].join('.'), 0)
+        ]).spread(function(personal_regs, chw_regs, personal_convs, chw_convs) {
+            var personal_conv_rate = parseFloat(((personal_convs / personal_regs) * 100).toFixed(2));
+            var chw_conv_rate = parseFloat(((chw_convs / chw_regs) * 100).toFixed(2));
+            return Q.all([
+                im.metrics.fire.last([env, 'personal', 'conversion_rate'].join('.'), personal_conv_rate),
+                im.metrics.fire.last([env, 'chw', 'conversion_rate'].join('.'), chw_conv_rate)
             ]);
         });
     },
@@ -1239,7 +1262,7 @@ go.utils = {
             go.utils.get_kv(im, [m_store, env, 'sum', 'optout_cause', 'loss'].join('.'), 0),
             go.utils.get_kv(im, [m_store, env, 'optout', 'sum', 'subscription_to_protocol_success'].join('.'), 0)
         ]).spread(function(total_subscriptions, total_optouts, non_loss_optouts, loss_optouts, loss_msg_signups) {
-            var percentage_optouts = parseFloat( ((total_optouts/total_subscriptions)*100).toFixed(2) );
+            var percentage_optouts = parseFloat(((total_optouts/total_subscriptions)*100).toFixed(2));
             var percentage_non_loss_optouts = parseFloat(((non_loss_optouts / total_subscriptions) * 100).toFixed(2));
             var percentage_loss_msg_signups = parseFloat(((loss_msg_signups / loss_optouts) * 100).toFixed(2));
             return Q.all([
@@ -2158,28 +2181,28 @@ go.app = function() {
                 next: function(choice) {
                     self.contact.extra.language_choice = choice.value;
                     self.contact.extra.is_registered = 'true';
-                    self.contact.extra.is_registered_by = 'clinic';
                     self.contact.extra.metric_sessions_to_register = self.user.extra.ussd_sessions;
                     self.contact.extra.service_rating_reminder = '0';
 
                     return self.im.groups.get(choice.value)
                         .then(function(group) {
                             self.contact.groups.push(group.key);
-                            return self.im.user
-                                .set_lang(choice.value)
-                                // we may not have to run this for this flow
-                                .then(function() {
-                                    return self.im.contacts.save(self.contact);
-                                })
+                            return self.im
+                                .contacts.save(self.contact)
                                 .then(function() {
                                     return Q.all([
                                         self.im.metrics.fire.avg((self.metric_prefix + ".avg.sessions_to_register"),
                                             parseInt(self.user.extra.ussd_sessions, 10)),
+                                        self.im.metrics.fire.inc([self.env, 'sum', 'subscribers', choice.value].join('.')),
                                         go.utils.incr_kv(self.im, [self.store_name, 'no_complete_registrations'].join('.')),
-                                        go.utils.decr_kv(self.im, [self.store_name, 'no_incomplete_registrations'].join('.'))
+                                        go.utils.decr_kv(self.im, [self.store_name, 'no_incomplete_registrations'].join('.')),
+                                        go.utils.incr_kv_conversions(self.im, self.contact, self.env)
                                     ])
                                         .then(function() {
-                                            return go.utils.adjust_percentage_registrations(self.im, self.metric_prefix);
+                                            return Q.all([
+                                                go.utils.adjust_percentage_registrations(self.im, self.metric_prefix),
+                                                go.utils.adjust_conversion_rates(self.im, self.env)
+                                            ]);
                                         });
                                 })
                                 .then(function() {
@@ -2189,6 +2212,7 @@ go.app = function() {
                                         self.contact.extra.registered_by = self.user.msisdn;
                                     }
                                     self.user.extra.ussd_sessions = '0';
+                                    self.contact.extra.is_registered_by = 'clinic';
                                     return Q.all([
                                         self.im.contacts.save(self.user),
                                         self.im.contacts.save(self.contact)

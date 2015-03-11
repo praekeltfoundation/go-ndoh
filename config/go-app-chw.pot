@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2014-08-20 10:49:+0000\n"
+"POT-Creation-Date: 2015-03-11 12:55:+0000\n"
 "Project-Id-Version: PACKAGE VERSION\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -57,189 +57,189 @@ msgstr ""
 msgid "Dec"
 msgstr ""
 
-#: go-app-chw.js:1091
+#: go-app-chw.js:1673
 msgid ""
 "Please dial back in to {{ USSD_number }} to complete the pregnancy "
 "registration."
 msgstr ""
 
-#: go-app-chw.js:1120
+#: go-app-chw.js:1702
 msgid "Would you like to complete pregnancy registration for {{ num }}?"
 msgstr ""
 
-#: go-app-chw.js:1125 go-app-chw.js:1156 go-app-chw.js:1184
+#: go-app-chw.js:1707 go-app-chw.js:1738 go-app-chw.js:1766
 msgid "Yes"
 msgstr ""
 
-#: go-app-chw.js:1126
+#: go-app-chw.js:1708
 msgid "Start new registration"
 msgstr ""
 
-#: go-app-chw.js:1150
+#: go-app-chw.js:1732
 msgid ""
 "Welcome to The Department of Health's MomConnect. Tell us if this is the "
 "no. that the mother would like to get SMSs on: {{ num }}"
 msgstr ""
 
-#: go-app-chw.js:1157 go-app-chw.js:1185
+#: go-app-chw.js:1739 go-app-chw.js:1767
 msgid "No"
 msgstr ""
 
-#: go-app-chw.js:1179
+#: go-app-chw.js:1761
 msgid ""
 "This number has previously opted out of MomConnect SMSs. Please confirm "
 "that the mom would like to opt in to receive messages again?"
 msgstr ""
 
-#: go-app-chw.js:1213
+#: go-app-chw.js:1795
 msgid ""
 "You have chosen not to receive MomConnect SMSs and so cannot complete "
 "registration."
 msgstr ""
 
-#: go-app-chw.js:1217
+#: go-app-chw.js:1799
 msgid "Main Menu"
 msgstr ""
 
-#: go-app-chw.js:1227
+#: go-app-chw.js:1809
 msgid "Sorry, the mobile number did not validate. Please reenter the mobile number:"
 msgstr ""
 
-#: go-app-chw.js:1230
+#: go-app-chw.js:1812
 msgid "Please input the mobile number of the pregnant woman to be registered:"
 msgstr ""
 
-#: go-app-chw.js:1267
+#: go-app-chw.js:1846
 msgid "What kind of identification does the pregnant mother have?"
 msgstr ""
 
-#: go-app-chw.js:1271
+#: go-app-chw.js:1850
 msgid "SA ID"
 msgstr ""
 
-#: go-app-chw.js:1272
+#: go-app-chw.js:1851
 msgid "Passport"
 msgstr ""
 
-#: go-app-chw.js:1273
+#: go-app-chw.js:1852
 msgid "None"
 msgstr ""
 
-#: go-app-chw.js:1305
+#: go-app-chw.js:1884
 msgid ""
 "Sorry, the mother's ID number did not validate. Please reenter the SA ID "
 "number:"
 msgstr ""
 
-#: go-app-chw.js:1308
+#: go-app-chw.js:1887
 msgid "Please enter the pregnant mother's SA ID number:"
 msgstr ""
 
-#: go-app-chw.js:1342
+#: go-app-chw.js:1921
 msgid "What is the country of origin of the passport?"
 msgstr ""
 
-#: go-app-chw.js:1345
+#: go-app-chw.js:1924
 msgid "Zimbabwe"
 msgstr ""
 
-#: go-app-chw.js:1346
+#: go-app-chw.js:1925
 msgid "Mozambique"
 msgstr ""
 
-#: go-app-chw.js:1347
+#: go-app-chw.js:1926
 msgid "Malawi"
 msgstr ""
 
-#: go-app-chw.js:1348
+#: go-app-chw.js:1927
 msgid "Nigeria"
 msgstr ""
 
-#: go-app-chw.js:1349
+#: go-app-chw.js:1928
 msgid "DRC"
 msgstr ""
 
-#: go-app-chw.js:1350
+#: go-app-chw.js:1929
 msgid "Somalia"
 msgstr ""
 
-#: go-app-chw.js:1351
+#: go-app-chw.js:1930
 msgid "Other"
 msgstr ""
 
-#: go-app-chw.js:1369
+#: go-app-chw.js:1948
 msgid ""
 "There was an error in your entry. Please carefully enter the passport "
 "number again."
 msgstr ""
 
-#: go-app-chw.js:1371
+#: go-app-chw.js:1950
 msgid "Please enter the pregnant mother's Passport number:"
 msgstr ""
 
-#: go-app-chw.js:1397
+#: go-app-chw.js:1976
 msgid ""
 "There was an error in your entry. Please carefully enter the mother's year "
 "of birth again (for example: 2001)"
 msgstr ""
 
-#: go-app-chw.js:1401
+#: go-app-chw.js:1980
 msgid "Please enter the year that the pregnant mother was born (for example: 1981)"
 msgstr ""
 
-#: go-app-chw.js:1429
+#: go-app-chw.js:2008
 msgid "Please enter the month that you were born."
 msgstr ""
 
-#: go-app-chw.js:1448
+#: go-app-chw.js:2027
 msgid ""
 "There was an error in your entry. Please carefully enter the mother's day "
 "of birth again (for example: 8)"
 msgstr ""
 
-#: go-app-chw.js:1452
+#: go-app-chw.js:2031
 msgid "Please enter the day that the mother was born (for example: 14)."
 msgstr ""
 
-#: go-app-chw.js:1486
+#: go-app-chw.js:2062
 msgid ""
 "Please select the language that the pregnant mother would like to get "
 "messages in:"
 msgstr ""
 
-#: go-app-chw.js:1490
+#: go-app-chw.js:2066
 msgid "English"
 msgstr ""
 
-#: go-app-chw.js:1491
+#: go-app-chw.js:2067
 msgid "Afrikaans"
 msgstr ""
 
-#: go-app-chw.js:1492
+#: go-app-chw.js:2068
 msgid "Zulu"
 msgstr ""
 
-#: go-app-chw.js:1493
+#: go-app-chw.js:2069
 msgid "Xhosa"
 msgstr ""
 
-#: go-app-chw.js:1494
+#: go-app-chw.js:2070
 msgid "Sotho"
 msgstr ""
 
-#: go-app-chw.js:1495
+#: go-app-chw.js:2071
 msgid "Setswana"
 msgstr ""
 
-#: go-app-chw.js:1546
-msgid ""
-"Thank you, registration is complete. The pregnant woman will now receive "
-"messages to encourage her to register at her nearest clinic."
-msgstr ""
-
-#: go-app-chw.js:1565 go-app-chw.js:1578
+#: go-app-chw.js:2132
 msgid ""
 "Congratulations on your pregnancy. You will now get free SMSs about "
 "MomConnect. You can register for the full set of FREE helpful messages at a "
 "clinic."
+msgstr ""
+
+#: go-app-chw.js:2145
+msgid ""
+"Thank you, registration is complete. The pregnant woman will now receive "
+"messages to encourage her to register at her nearest clinic."
 msgstr ""

@@ -1343,7 +1343,7 @@ describe("app", function() {
         });
 
         describe("after the user enters their birth day", function() {
-            it.only("should save birth day, thank them and exit", function() {
+            it("should save birth day, thank them and exit", function() {
                 return tester
                     .setup(function(api) {
                         api.contacts.add({

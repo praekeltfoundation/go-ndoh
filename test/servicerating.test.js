@@ -215,6 +215,34 @@ describe("app", function() {
                         .run();
                 });
             });
+
+            describe("when the user has already logged a servicerating", function() {
+                it("should tell them they can't do it again", function() {
+                    return tester
+                        .setup.user.addr('27001')
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27001',
+                                extra : {
+                                    language_choice: 'zu',
+                                    is_registered_by: 'clinic',
+                                    last_service_rating: '20130819144811'
+                                }
+                            });
+                        })
+                        .start()
+                        .check.interaction({
+                            state: 'end_thanks_revisit',
+                            reply: [
+                                'Sorry, you\'ve already rated service. For baby and pregnancy ' +
+                                'help or if you have compliments or complaints ' +
+                                'dial *120*550# or reply to any of the SMSs you receive'
+                            ].join('\n')
+                        })
+                        .check.reply.ends_session()
+                        .run();
+                });
+            });
         });
 
         describe("when the user answers their friendliness rating", function() {

@@ -1294,12 +1294,14 @@ go.utils = {
             prior_opt_out_reason = contact.extra.opt_out_reason || 'unknown';
               // if reason was not previously saved it should be 'unknown' (from smsinbound)
             contact.extra.opt_out_reason = optout_reason;
-            queue1.push(im.contacts.save(contact));
+            queue1.push(function() {
+                return im.contacts.save(contact);
+            });
         }
         // End Queue 1
 
         return Q
-            .all(queue1)
+            .all(queue1.map(Q.try))
             .then(function() {
                 return go.utils
                     .opted_out(im, contact)
@@ -1315,53 +1317,67 @@ go.utils = {
                             // Start Queue 2
                             if (api_optout === true) {
                                 // vumi optout
-                                queue2.push(
-                                    im.api_request('optout.optout', {
+                                queue2.push(function() {
+                                    return im.api_request('optout.optout', {
                                         address_type: "msisdn",
                                         address_value: contact.msisdn,
                                         message_id: im.msg.message_id
-                                    })
-                                );
+                                    });
+                                });
                             }
 
                             if (unsub_all === true) {
                                 // deactivate all subscriptions
-                                queue2.push(go.utils.subscription_unsubscribe_all(contact, im));
+                                queue2.push(function() {
+                                    return go.utils.subscription_unsubscribe_all(contact, im);
+                                });
                             }
 
                             if (jembi_optout === true) {
                                 // send optout to jembi
-                                queue2.push(go.utils.jembi_optout_send_json(contact, contact, 'optout', im,
-                                    metric_prefix));
+                                queue2.push(function() {
+                                    return go.utils.jembi_optout_send_json(contact, contact,
+                                      'optout', im, metric_prefix);
+                                });
 
                                 // fire opt-out registration source metric
                                 var reg_source = go.utils.get_reg_source(contact);
-                                queue2.push(im.metrics.fire.inc([env, 'sum', 'optout_on',
-                                    reg_source].join('.'), {amount: 1}));
+                                queue2.push(function() {
+                                    return im.metrics.fire.inc([env, 'sum', 'optout_on',
+                                      reg_source].join('.'), {amount: 1});
+                                });
 
                                 // fire sum of all opt-outs metric
-                                queue2.push(im.metrics.fire.inc([env, 'sum', 'optouts'].join('.'),
-                                    {amount: 1}));
+                                queue2.push(function() {
+                                    return im.metrics.fire.inc([env, 'sum', 'optouts'].join('.'),
+                                      {amount: 1});
+                                });
 
                                 // fire loss / non-loss metric
                                 var loss_causes = ['miscarriage', 'babyloss', 'stillbirth'];
                                 if (_.contains(loss_causes, contact.extra.opt_out_reason)) {
-                                    queue2.push(im.metrics.fire.inc([env, 'sum', 'optout_cause',
-                                        'loss'].join('.'), {amount: 1}));
+                                    queue2.push(function() {
+                                        return im.metrics.fire.inc([env, 'sum', 'optout_cause',
+                                          'loss'].join('.'), {amount: 1});
+                                    });
                                 } else {
-                                    queue2.push(im.metrics.fire.inc([env, 'sum', 'optout_cause',
-                                        'non_loss'].join('.'), {amount: 1}));
+                                    queue2.push(function() {
+                                        return im.metrics.fire.inc([env, 'sum', 'optout_cause',
+                                          'non_loss'].join('.'), {amount: 1});
+                                    });
                                 }
 
                                 // fire cause metric
-                                queue2.push(im.metrics.fire.inc([env, 'sum', 'optout_cause',
-                                    optout_reason].join('.'), {amount: 1}));
+                                queue2.push(function() {
+                                    return im.metrics.fire.inc([env, 'sum', 'optout_cause',
+                                      optout_reason].join('.'), {amount: 1});
+                                });
 
                             }
                             // End Queue 2
 
                             return Q
-                                .all(queue2)
+                                .all(queue2.map(Q.try))
                                 .then(function() {
                                     return go.utils.adjust_percentage_optouts(im, env);
                                 });

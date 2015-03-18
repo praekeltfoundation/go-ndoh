@@ -1368,8 +1368,7 @@ describe("app", function() {
                     .setup.user.addr('27001')
                     .setup.user.answers({
                         'states_birth_year': '1981',
-                        'states_birth_month': '01',
-                        'states_language': 'xh'
+                        'states_birth_month': '01'
                     })
                     .setup.user.state('states_birth_day')
                     .input('1')
@@ -1396,7 +1395,6 @@ describe("app", function() {
                         assert.deepEqual(metrics['test.personal.percent_complete_registrations'].values, [75]);
                         assert.deepEqual(metrics['test.personal.sum.json_to_jembi_success'].values, [1]);
                         assert.deepEqual(metrics['test.sum.subscriptions'].values, [1]);
-                        assert.deepEqual(metrics['test.sum.subscribers.xh'].values, [1]);
                     })
                     .check(function(api) {
                         var kv_store = api.kv.store;

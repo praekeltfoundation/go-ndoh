@@ -710,7 +710,6 @@ go.app = function() {
                 }),
                 self.im.metrics.fire.avg((self.metric_prefix + ".avg.sessions_to_register"),
                     parseInt(self.contact.extra.metric_sessions_to_register, 10)),
-                self.im.metrics.fire.inc([self.env, 'sum', 'subscribers', self.im.user.answers.states_language].join('.')),
                 go.utils.incr_kv(self.im, [self.store_name, 'no_complete_registrations'].join('.')),
                 go.utils.decr_kv(self.im, [self.store_name, 'no_incomplete_registrations'].join('.')),
                 go.utils.incr_kv(self.im, [self.store_name, 'conversion_registrations'].join('.')),

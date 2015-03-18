@@ -757,12 +757,16 @@ go.utils = {
             go.utils.get_kv(im, [env, 'personal', 'conversions_to_clinic'].join('.'), 0),
             go.utils.get_kv(im, [env, 'chw', 'conversions_to_clinic'].join('.'), 0)
         ]).spread(function(personal_regs, chw_regs, personal_convs, chw_convs) {
-            var personal_conv_rate = parseFloat(((personal_convs / personal_regs) * 100).toFixed(2));
-            var chw_conv_rate = parseFloat(((chw_convs / chw_regs) * 100).toFixed(2));
-            return Q.all([
-                im.metrics.fire.last([env, 'personal', 'conversion_rate'].join('.'), personal_conv_rate),
-                im.metrics.fire.last([env, 'chw', 'conversion_rate'].join('.'), chw_conv_rate)
-            ]);
+            if (personal_regs > 0 && chw_regs > 0) {
+                var personal_conv_rate = parseFloat(((personal_convs / personal_regs) * 100).toFixed(2));
+                var chw_conv_rate = parseFloat(((chw_convs / chw_regs) * 100).toFixed(2));
+                return Q.all([
+                    im.metrics.fire.last([env, 'personal', 'conversion_rate'].join('.'), personal_conv_rate),
+                    im.metrics.fire.last([env, 'chw', 'conversion_rate'].join('.'), chw_conv_rate)
+                ]);
+            } else {
+                return Q();
+            }
         });
     },
 

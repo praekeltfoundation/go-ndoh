@@ -1629,6 +1629,65 @@ describe("app", function() {
                         .run();
                 });
 
+                it("should not fire conversion metrics if starting on 0", function() {
+                    return tester
+                        .setup.user.addr('27821234567')
+                        .setup(function(api) {
+                            api.contacts.add( {
+                                msisdn: '+27821234567',
+                                extra : {
+                                    clinic_code: '12345',
+                                    suspect_pregnancy: 'yes',
+                                    id_type: 'sa_id',
+                                    sa_id: '5101025009086',
+                                    birth_year: '1951',
+                                    birth_month: '01',
+                                    birth_day: '02',
+                                    dob: '1951-01-02',
+                                    ussd_sessions: '5',
+                                    due_date_month: '05',
+                                    due_date_day: '30',
+                                    is_registered_by: 'personal'
+                                },
+                                key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                                user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
+                            });
+                        })
+                        .setup.user.state('states_language')
+                        .setup(function(api) {
+                            api.kv.store['test.chw.conversion_registrations'] = 0;
+                            api.kv.store['test.personal.conversion_registrations'] = 0;
+                            api.kv.store['test.chw.conversions_to_clinic'] = 0;
+                            api.kv.store['test.personal.conversions_to_clinic'] = 0;
+                        })
+                        .input('1')
+                        .check.interaction({
+                            state: 'states_end_success',
+                            reply: ('Thank you. The pregnant woman will now ' +
+                                'receive weekly messages about her pregnancy ' +
+                                'from MomConnect.')
+                        })
+                        .check(function(api) {
+                            var metrics = api.metrics.stores.test_metric_store;
+                            assert.deepEqual(metrics['test.clinic.avg.sessions_to_register'].values, [5]);
+                            assert.deepEqual(metrics['test.clinic.percent_incomplete_registrations'].values, [25]);
+                            assert.deepEqual(metrics['test.clinic.percent_complete_registrations'].values, [75]);
+                            assert.deepEqual(metrics['test.clinic.states_end_success.no_incomplete'], undefined);
+                            assert.deepEqual(metrics['test.clinic.sum.doc_to_jembi_success'].values, [1]);
+                            assert.deepEqual(metrics['test.clinic.sum.json_to_jembi_success'].values, [1]);
+                            assert.deepEqual(metrics['test.sum.subscriptions'].values, [1]);
+                            assert.deepEqual(metrics['test.personal.conversion_rate'], undefined);
+                            assert.deepEqual(metrics['test.chw.conversion_rate'], undefined);
+                        })
+                        .check(function(api) {
+                            var kv_store = api.kv.store;
+                            assert.equal(kv_store['test.chw.conversions_to_clinic'], 0);
+                            assert.equal(kv_store['test.personal.conversions_to_clinic'], 1);
+                        })
+                        .check.reply.ends_session()
+                        .run();
+                });
+
                 it("should put them in language group", function() {
                     return tester
                         .setup.user.addr('27821234567')

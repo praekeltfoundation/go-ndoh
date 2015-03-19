@@ -117,6 +117,9 @@ go.utils = {
         if (id.length != 13 || id.match(/\D/)) {
             return false;
         }
+        if (!moment(id.slice(0,6), 'YYMMDD', true).isValid()) {
+            return false;
+        }
         id = id.substr(0, id.length - 1);
         for (i = 0; id.charAt(i); i += 2) {
             c = id.charAt(i);

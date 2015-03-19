@@ -1214,6 +1214,27 @@ describe("app", function() {
             });
         });
 
+        describe("after the user enters an invalid ID", function() {
+            it("should not save ID, ask them to try again", function() {
+                return tester
+                    .setup.user.addr('270001')
+                    .setup.user.state('states_sa_id')
+                    .input('9926040547082')
+                    .check.interaction({
+                        state: 'states_sa_id',
+                        reply: 'Sorry, the mother\'s ID number did not validate. ' +
+                          'Please reenter the SA ID number:'
+                    })
+                    .check(function(api) {
+                        var contact = _.find(api.contacts.store, {
+                          msisdn: '+270001'
+                        });
+                        assert.equal(contact.extra.sa_id, undefined);
+                    })
+                    .run();
+            });
+        });
+
         describe("if the user selects Passport (id type)", function() {
             it("should set id type, ask for their country of origin", function() {
                 return tester

@@ -2174,13 +2174,8 @@ go.app = function() {
                         self.im.user.answers.states_birth_month, content);
 
                     if (go.utils.is_valid_date(dob, 'YYYY-MM-DD')) {
-                        self.contact.extra.due_date_day = go.utils.double_digit_day(content);
-
                         self.contact.extra.birth_day = go.utils.double_digit_day(content);
-                        self.contact.extra.dob = moment({
-                            year: self.im.user.answers.states_birth_year,
-                            month: (self.im.user.answers.states_birth_month - 1), // -1 for 0-bound month
-                            day: content}).format('YYYY-MM-DD');
+                        self.contact.extra.dob = dob;
 
                         return self.im.contacts
                             .save(self.contact)

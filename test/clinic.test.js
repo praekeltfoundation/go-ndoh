@@ -1566,7 +1566,7 @@ describe("app", function() {
                                 '(for example: 8)'
                         })
                         .run();
-                    });
+                });
             });
 
             describe("if the date is not a real date", function() {

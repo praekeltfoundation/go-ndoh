@@ -1273,29 +1273,6 @@ describe("app", function() {
             });
         });
 
-        describe("after the user enters their birth day incorrectly", function() {
-            it("should not save birth day, ask them their birth day again", function() {
-                return tester
-                    .setup.user.addr('270001')
-                    .setup.user.state('states_birth_day')
-                    .input('fourteen')
-                    .check.interaction({
-                        state: 'states_birth_day',
-                        reply: ('There was an error in your entry. Please ' +
-                        'carefully enter the mother\'s day of birth again ' +
-                        '(for example: 8)')
-                    })
-                    .check(function(api) {
-                        var contact = _.find(api.contacts.store, {
-                          msisdn: '+270001'
-                        });
-                        assert.equal(contact.extra.birth_day, undefined);
-                        assert.equal(contact.extra.dob, undefined);
-                    })
-                    .run();
-            });
-        });
-
         describe("after the user enters the birth day", function() {
             describe("if the date validates", function() {
                 it("should save birth day and dob, ask for pregnant woman's msg language", function() {

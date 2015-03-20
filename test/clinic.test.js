@@ -1076,32 +1076,94 @@ describe("app", function() {
                         .run();
                 });
             });
-
         });
 
         describe("after the birth day is selected", function() {
-            it("should ask for the pregnant woman's id type", function() {
-                return tester
-                    .setup.user.addr('270001')
-                    .setup.user.state('states_due_date_day')
-                    .input('10')
-                    .check.interaction({
-                        state: 'states_id_type',
-                        reply: [
-                            'What kind of identification does the pregnant ' +
-                            'mother have?',
-                            '1. SA ID',
-                            '2. Passport',
-                            '3. None'
-                        ].join('\n')
-                    })
-                    .check(function(api) {
-                        var contact = _.find(api.contacts.store, {
-                          msisdn: '+270001'
-                        });
-                        assert.equal(contact.extra.due_date_day, '10');
-                    })
-                    .run();
+
+            describe("if the day choice is not a valid number 1-31", function() {
+                it("should ask for the day again", function() {
+                    return tester
+                        .setup.user.addr('270001')
+                        .setup.user.state('states_due_date_day')
+                        .input('32')
+                        .check.interaction({
+                            state: 'states_due_date_day',
+                            reply: [
+                                'Sorry, the number did not validate. ' +
+                                'Please enter the estimated day that the baby ' +
+                                'is due (For example 12):'
+                            ].join('\n')
+                        })
+                        .run();
+                });
+            });
+
+            describe("if the day choice is valid but the date is not", function() {
+                it("should display an error message, ask to continue", function() {
+                    return tester
+                        .setup.user.addr('270001')
+                        .setup.user.state('states_due_date_month')
+                        .inputs('8', '31')
+                        .check.interaction({
+                            state: 'states_invalid_edd',
+                            reply: [
+                                'The date you entered (2014-11-31) is not a ' +
+                                'real date. Please try again.',
+                                '1. Continue'
+                            ].join('\n')
+                        })
+                        .run();
+                });
+
+                it("should go back to due date month if user hits continue", function() {
+                    return tester
+                        .setup.user.addr('270001')
+                        .setup.user.state('states_due_date_month')
+                        .inputs('8', '31', '1')
+                        .check.interaction({
+                            state: 'states_due_date_month',
+                            reply: [
+                                'Please select the month when the baby is due:',
+                                '1. Apr',
+                                '2. May',
+                                '3. Jun',
+                                '4. Jul',
+                                '5. Aug',
+                                '6. Sep',
+                                '7. Oct',
+                                '8. Nov',
+                                '9. Dec',
+                                '10. Jan'
+                            ].join('\n')
+                        })
+                        .run();
+                });
+            });
+
+            describe("if the day choice is valid", function() {
+                it("should ask for the pregnant woman's id type", function() {
+                    return tester
+                        .setup.user.addr('270001')
+                        .setup.user.state('states_due_date_month')
+                        .inputs('8', '10')
+                        .check.interaction({
+                            state: 'states_id_type',
+                            reply: [
+                                'What kind of identification does the pregnant ' +
+                                'mother have?',
+                                '1. SA ID',
+                                '2. Passport',
+                                '3. None'
+                            ].join('\n')
+                        })
+                        .check(function(api) {
+                            var contact = _.find(api.contacts.store, {
+                              msisdn: '+270001'
+                            });
+                            assert.equal(contact.extra.due_date_day, '10');
+                        })
+                        .run();
+                });
             });
         });
 
@@ -1392,6 +1454,20 @@ describe("app", function() {
                     })
                     .run();
             });
+
+            it("should ask for their birth year again", function() {
+                return tester
+                    .setup.user.addr('270001')
+                    .setup.user.state('states_birth_year')
+                    .input('2013')
+                    .check.interaction({
+                        state: 'states_birth_year',
+                        reply: ('There was an error in your entry. Please ' +
+                        'carefully enter the mother\'s year of birth again ' +
+                        '(for example: 2001)')
+                    })
+                    .run();
+            });
         });
 
         describe("after the user enters their birth year", function() {
@@ -1472,35 +1548,97 @@ describe("app", function() {
         });
 
         describe("after the user enters the birth day", function() {
-            it("should save birth day and dob, ask for pregnant woman's msg language", function() {
-                return tester
-                    .setup.user.addr('270001')
-                    .setup.user.answers({
-                        'states_birth_year': '1981',
-                        'states_birth_month': '01'
-                    })
-                    .setup.user.state('states_birth_day')
-                    .input('14')
-                    .check.interaction({
-                        state: 'states_language',
-                        reply: ['Please select the language that the ' +
-                            'pregnant mother would like to get messages in:',
-                            '1. English',
-                            '2. Afrikaans',
-                            '3. Zulu',
-                            '4. Xhosa',
-                            '5. Sotho',
-                            '6. Setswana'
+
+            describe("if the day entry is obviously wrong", function() {
+                it("should reprompt for the day", function() {
+                    return tester
+                        .setup.user.addr('270001')
+                        .setup.user.answers({
+                            'states_birth_year': '1981',
+                            'states_birth_month': '02'
+                        })
+                        .setup.user.state('states_birth_day')
+                        .input('32')
+                        .check.interaction({
+                            state: 'states_birth_day',
+                            reply: 'There was an error in your entry. Please ' +
+                                'carefully enter the mother\'s day of birth again ' +
+                                '(for example: 8)'
+                        })
+                        .run();
+                    });
+            });
+
+            describe("if the date is not a real date", function() {
+                it("should go to error state, ask them to continue", function() {
+                    return tester
+                        .setup.user.addr('270001')
+                        .setup.user.answers({
+                            'states_birth_year': '1981',
+                            'states_birth_month': '02'
+                        })
+                        .setup.user.state('states_birth_day')
+                        .input('29')
+                        .check.interaction({
+                            state: 'states_invalid_dob',
+                            reply: [
+                                'The date you entered (1981-02-29) is not a ' +
+                                'real date. Please try again.',
+                                '1. Continue'
                             ].join('\n')
-                    })
-                    .check(function(api) {
-                        var contact = _.find(api.contacts.store, {
-                          msisdn: '+270001'
-                        });
-                        assert.equal(contact.extra.birth_day, '14');
-                        assert.equal(contact.extra.dob, '1981-01-14');
-                    })
-                    .run();
+                        })
+                        .run();
+                });
+
+                it("should take them back to birth year if they continue", function() {
+                    return tester
+                        .setup.user.addr('270001')
+                        .setup.user.answers({
+                            'states_birth_year': '1981',
+                            'states_birth_month': '02'
+                        })
+                        .setup.user.state('states_birth_day')
+                        .inputs('29', '1')
+                        .check.interaction({
+                            state: 'states_birth_year',
+                            reply: 'Please enter the year that the pregnant ' +
+                                    'mother was born (for example: 1981)'
+                        })
+                        .run();
+                });
+            });
+
+            describe("if the date validates", function() {
+                it("should save birth day and dob, ask for pregnant woman's msg language", function() {
+                    return tester
+                        .setup.user.addr('270001')
+                        .setup.user.answers({
+                            'states_birth_year': '1981',
+                            'states_birth_month': '01'
+                        })
+                        .setup.user.state('states_birth_day')
+                        .input('14')
+                        .check.interaction({
+                            state: 'states_language',
+                            reply: ['Please select the language that the ' +
+                                'pregnant mother would like to get messages in:',
+                                '1. English',
+                                '2. Afrikaans',
+                                '3. Zulu',
+                                '4. Xhosa',
+                                '5. Sotho',
+                                '6. Setswana'
+                                ].join('\n')
+                        })
+                        .check(function(api) {
+                            var contact = _.find(api.contacts.store, {
+                              msisdn: '+270001'
+                            });
+                            assert.equal(contact.extra.birth_day, '14');
+                            assert.equal(contact.extra.dob, '1981-01-14');
+                        })
+                        .run();
+                });
             });
         });
 

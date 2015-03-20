@@ -138,6 +138,20 @@ go.utils = {
         return ('' + sum).slice(-1) == check;
     },
 
+    is_valid_date: function(date, format) {
+        // implements strict validation with 'true' below
+        return moment(date, format, true).isValid();
+    },
+
+    get_entered_due_date: function(month, day, config) {
+        var year = go.utils.get_due_year_from_month(month, go.utils.get_today(config));
+        return (year +'-'+ month +'-'+ go.utils.double_digit_day(day));
+    },
+
+    get_entered_birth_date: function(year, month, day) {
+      return year +'-'+ month +'-'+ go.utils.double_digit_day(day);
+    },
+
     extract_id_dob: function(id) {
         return moment(id.slice(0,6), 'YYMMDD').format('YYYY-MM-DD');
     },
@@ -1927,16 +1941,41 @@ go.app = function() {
                 },
 
                 next: function(content) {
-                    self.contact.extra.due_date_day = go.utils.double_digit_day(content);
+                    var edd = go.utils.get_entered_due_date(self.contact.extra.due_date_month,
+                                                            content, self.im.config);
 
-                    return self.im.contacts
-                        .save(self.contact)
-                        .then(function() {
-                            return {
-                                name: 'states_id_type'
-                            };
-                        });
+                    if (go.utils.is_valid_date(edd, 'YYYY-MM-DD')) {
+                        self.contact.extra.due_date_day = go.utils.double_digit_day(content);
+
+                        return self.im.contacts
+                            .save(self.contact)
+                            .then(function() {
+                                return {
+                                    name: 'states_id_type'
+                                };
+                            });
+                    } else {
+                        return {
+                            name: 'states_invalid_edd',
+                            creator_opts: {edd: edd}
+                        };
+                    }
                 }
+            });
+        });
+
+        self.add('states_invalid_edd', function(name, opts) {
+            return new ChoiceState(name, {
+                question:
+                    $('The date you entered ({{ edd }}) is not a ' +
+                        'real date. Please try again.'
+                     ).context({ edd: opts.edd }),
+
+                choices: [
+                    new Choice('continue', $('Continue'))
+                ],
+
+                next: 'states_due_date_month'
             });
         });
 
@@ -2071,7 +2110,9 @@ go.app = function() {
                 question: question,
 
                 check: function(content) {
-                    if (!go.utils.check_number_in_range(content, 1900, go.utils.get_today(self.im.config).getFullYear())) {
+                    if (!go.utils.check_number_in_range(content, 1900,
+                      go.utils.get_today(self.im.config).getFullYear() - 5)) {
+                        // assumes youngest possible birth age is 5 years old
                         return error;
                     }
                 },
@@ -2129,18 +2170,47 @@ go.app = function() {
                 },
 
                 next: function(content) {
-                    self.contact.extra.birth_day = go.utils.double_digit_day(content);
-                    self.contact.extra.dob = moment({year: self.im.user.answers.states_birth_year, month: (self.im.user.answers.states_birth_month - 1), day: content}).format('YYYY-MM-DD');
-                    // -1 for 0-bound month
+                    var dob = go.utils.get_entered_birth_date(self.im.user.answers.states_birth_year,
+                        self.im.user.answers.states_birth_month, content);
 
-                    return self.im.contacts
-                        .save(self.contact)
-                        .then(function() {
-                            return {
-                                name: 'states_language'
-                            };
-                        });
+                    if (go.utils.is_valid_date(dob, 'YYYY-MM-DD')) {
+                        self.contact.extra.due_date_day = go.utils.double_digit_day(content);
+
+                        self.contact.extra.birth_day = go.utils.double_digit_day(content);
+                        self.contact.extra.dob = moment({
+                            year: self.im.user.answers.states_birth_year,
+                            month: (self.im.user.answers.states_birth_month - 1), // -1 for 0-bound month
+                            day: content}).format('YYYY-MM-DD');
+
+                        return self.im.contacts
+                            .save(self.contact)
+                            .then(function() {
+                                return {
+                                    name: 'states_language'
+                                };
+                            });
+                    } else {
+                        return {
+                            name: 'states_invalid_dob',
+                            creator_opts: {dob: dob}
+                        };
+                    }
                 }
+            });
+        });
+
+        self.add('states_invalid_dob', function(name, opts) {
+            return new ChoiceState(name, {
+                question:
+                    $('The date you entered ({{ dob }}) is not a ' +
+                        'real date. Please try again.'
+                     ).context({ dob: opts.dob }),
+
+                choices: [
+                    new Choice('continue', $('Continue'))
+                ],
+
+                next: 'states_birth_year'
             });
         });
 

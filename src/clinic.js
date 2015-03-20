@@ -654,7 +654,6 @@ go.app = function() {
                 next: function(choice) {
                     self.contact.extra.language_choice = choice.value;
                     self.contact.extra.is_registered = 'true';
-                    self.contact.extra.is_registered_by = 'clinic';
                     self.contact.extra.metric_sessions_to_register = self.user.extra.ussd_sessions;
                     self.contact.extra.service_rating_reminder = '0';
 
@@ -672,10 +671,14 @@ go.app = function() {
                                         self.im.metrics.fire.avg((self.metric_prefix + ".avg.sessions_to_register"),
                                             parseInt(self.user.extra.ussd_sessions, 10)),
                                         go.utils.incr_kv(self.im, [self.store_name, 'no_complete_registrations'].join('.')),
-                                        go.utils.decr_kv(self.im, [self.store_name, 'no_incomplete_registrations'].join('.'))
+                                        go.utils.decr_kv(self.im, [self.store_name, 'no_incomplete_registrations'].join('.')),
+                                        go.utils.incr_kv_conversions(self.im, self.contact, self.env)
                                     ])
                                         .then(function() {
-                                            return go.utils.adjust_percentage_registrations(self.im, self.metric_prefix);
+                                            return Q.all([
+                                                go.utils.adjust_percentage_registrations(self.im, self.metric_prefix),
+                                                go.utils.adjust_conversion_rates(self.im, self.env)
+                                            ]);
                                         });
                                 })
                                 .then(function() {
@@ -685,6 +688,7 @@ go.app = function() {
                                         self.contact.extra.registered_by = self.user.msisdn;
                                     }
                                     self.user.extra.ussd_sessions = '0';
+                                    self.contact.extra.is_registered_by = 'clinic';
                                     return Q.all([
                                         self.im.contacts.save(self.user),
                                         self.im.contacts.save(self.contact)

@@ -518,7 +518,7 @@ go.utils = {
 
     get_dob: function(contact) {
         if (!_.isUndefined(contact.extra.dob)) {
-            return moment(contact.extra.dob).format('YYYYMMDD');
+            return moment(contact.extra.dob, 'YYYY-MM-DD').format('YYYYMMDD');
         } else {
             return null;
         }
@@ -751,12 +751,39 @@ go.utils = {
             go.utils.get_kv(im, [metric_prefix, 'no_complete_registrations'].join('.'), 0)
         ]).spread(function(no_incomplete, no_complete) {
             var total_attempted = no_incomplete + no_complete;
-            var percentage_incomplete = (no_incomplete / total_attempted) * 100;
-            var percentage_complete = (no_complete / total_attempted) * 100;
+            var percentage_incomplete = parseFloat(((no_incomplete / total_attempted) * 100).toFixed(2));
+            var percentage_complete = parseFloat(((no_complete / total_attempted) * 100).toFixed(2));
             return Q.all([
                 im.metrics.fire.last([metric_prefix, 'percent_incomplete_registrations'].join('.'), percentage_incomplete),
                 im.metrics.fire.last([metric_prefix, 'percent_complete_registrations'].join('.'), percentage_complete)
             ]);
+        });
+    },
+
+    incr_kv_conversions: function(im, contact, env) {
+        var is_reg_by = contact.extra.is_registered_by;
+        if (is_reg_by === 'personal' || is_reg_by === 'chw') {
+            return go.utils.incr_kv(im, [env, is_reg_by, 'conversions_to_clinic'].join('.'));
+        }
+    },
+
+    adjust_conversion_rates: function(im, env) {
+        return Q.all([
+            go.utils.get_kv(im, [env, 'personal', 'conversion_registrations'].join('.'), 0),
+            go.utils.get_kv(im, [env, 'chw', 'conversion_registrations'].join('.'), 0),
+            go.utils.get_kv(im, [env, 'personal', 'conversions_to_clinic'].join('.'), 0),
+            go.utils.get_kv(im, [env, 'chw', 'conversions_to_clinic'].join('.'), 0)
+        ]).spread(function(personal_regs, chw_regs, personal_convs, chw_convs) {
+            if (personal_regs > 0 && chw_regs > 0) {
+                var personal_conv_rate = parseFloat(((personal_convs / personal_regs) * 100).toFixed(2));
+                var chw_conv_rate = parseFloat(((chw_convs / chw_regs) * 100).toFixed(2));
+                return Q.all([
+                    im.metrics.fire.last([env, 'personal', 'conversion_rate'].join('.'), personal_conv_rate),
+                    im.metrics.fire.last([env, 'chw', 'conversion_rate'].join('.'), chw_conv_rate)
+                ]);
+            } else {
+                return Q();
+            }
         });
     },
 
@@ -1256,7 +1283,7 @@ go.utils = {
             go.utils.get_kv(im, [m_store, env, 'sum', 'optout_cause', 'loss'].join('.'), 0),
             go.utils.get_kv(im, [m_store, env, 'optout', 'sum', 'subscription_to_protocol_success'].join('.'), 0)
         ]).spread(function(total_subscriptions, total_optouts, non_loss_optouts, loss_optouts, loss_msg_signups) {
-            var percentage_optouts = parseFloat( ((total_optouts/total_subscriptions)*100).toFixed(2) );
+            var percentage_optouts = parseFloat(((total_optouts/total_subscriptions)*100).toFixed(2));
             var percentage_non_loss_optouts = parseFloat(((non_loss_optouts / total_subscriptions) * 100).toFixed(2));
             var percentage_loss_msg_signups = parseFloat(((loss_msg_signups / loss_optouts) * 100).toFixed(2));
             return Q.all([
@@ -1288,12 +1315,14 @@ go.utils = {
             prior_opt_out_reason = contact.extra.opt_out_reason || 'unknown';
               // if reason was not previously saved it should be 'unknown' (from smsinbound)
             contact.extra.opt_out_reason = optout_reason;
-            queue1.push(im.contacts.save(contact));
+            queue1.push(function() {
+                return im.contacts.save(contact);
+            });
         }
         // End Queue 1
 
         return Q
-            .all(queue1)
+            .all(queue1.map(Q.try))
             .then(function() {
                 return go.utils
                     .opted_out(im, contact)
@@ -1309,53 +1338,67 @@ go.utils = {
                             // Start Queue 2
                             if (api_optout === true) {
                                 // vumi optout
-                                queue2.push(
-                                    im.api_request('optout.optout', {
+                                queue2.push(function() {
+                                    return im.api_request('optout.optout', {
                                         address_type: "msisdn",
                                         address_value: contact.msisdn,
                                         message_id: im.msg.message_id
-                                    })
-                                );
+                                    });
+                                });
                             }
 
                             if (unsub_all === true) {
                                 // deactivate all subscriptions
-                                queue2.push(go.utils.subscription_unsubscribe_all(contact, im));
+                                queue2.push(function() {
+                                    return go.utils.subscription_unsubscribe_all(contact, im);
+                                });
                             }
 
                             if (jembi_optout === true) {
                                 // send optout to jembi
-                                queue2.push(go.utils.jembi_optout_send_json(contact, contact, 'optout', im,
-                                    metric_prefix));
+                                queue2.push(function() {
+                                    return go.utils.jembi_optout_send_json(contact, contact,
+                                      'optout', im, metric_prefix);
+                                });
 
                                 // fire opt-out registration source metric
                                 var reg_source = go.utils.get_reg_source(contact);
-                                queue2.push(im.metrics.fire.inc([env, 'sum', 'optout_on',
-                                    reg_source].join('.'), {amount: 1}));
+                                queue2.push(function() {
+                                    return im.metrics.fire.inc([env, 'sum', 'optout_on',
+                                      reg_source].join('.'), {amount: 1});
+                                });
 
                                 // fire sum of all opt-outs metric
-                                queue2.push(im.metrics.fire.inc([env, 'sum', 'optouts'].join('.'),
-                                    {amount: 1}));
+                                queue2.push(function() {
+                                    return im.metrics.fire.inc([env, 'sum', 'optouts'].join('.'),
+                                      {amount: 1});
+                                });
 
                                 // fire loss / non-loss metric
                                 var loss_causes = ['miscarriage', 'babyloss', 'stillbirth'];
                                 if (_.contains(loss_causes, contact.extra.opt_out_reason)) {
-                                    queue2.push(im.metrics.fire.inc([env, 'sum', 'optout_cause',
-                                        'loss'].join('.'), {amount: 1}));
+                                    queue2.push(function() {
+                                        return im.metrics.fire.inc([env, 'sum', 'optout_cause',
+                                          'loss'].join('.'), {amount: 1});
+                                    });
                                 } else {
-                                    queue2.push(im.metrics.fire.inc([env, 'sum', 'optout_cause',
-                                        'non_loss'].join('.'), {amount: 1}));
+                                    queue2.push(function() {
+                                        return im.metrics.fire.inc([env, 'sum', 'optout_cause',
+                                          'non_loss'].join('.'), {amount: 1});
+                                    });
                                 }
 
                                 // fire cause metric
-                                queue2.push(im.metrics.fire.inc([env, 'sum', 'optout_cause',
-                                    optout_reason].join('.'), {amount: 1}));
+                                queue2.push(function() {
+                                    return im.metrics.fire.inc([env, 'sum', 'optout_cause',
+                                      optout_reason].join('.'), {amount: 1});
+                                });
 
                             }
                             // End Queue 2
 
                             return Q
-                                .all(queue2)
+                                .all(queue2.map(Q.try))
                                 .then(function() {
                                     return go.utils.adjust_percentage_optouts(im, env);
                                 });

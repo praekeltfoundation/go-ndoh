@@ -538,7 +538,9 @@ go.app = function() {
                                         self.im.metrics.fire.avg((self.metric_prefix + ".avg.sessions_to_register"),
                                             parseInt(self.user.extra.ussd_sessions, 10)),
                                         go.utils.incr_kv(self.im, [self.store_name, 'no_complete_registrations'].join('.')),
-                                        go.utils.decr_kv(self.im, [self.store_name, 'no_incomplete_registrations'].join('.'))
+                                        go.utils.decr_kv(self.im, [self.store_name, 'no_incomplete_registrations'].join('.')),
+                                        // new duplicate kv_store entry below to start tracking conversion rates
+                                        go.utils.incr_kv(self.im, [self.store_name, 'conversion_registrations'].join('.'))
                                     ])
                                         .then(function() {
                                             return go.utils.adjust_percentage_registrations(self.im, self.metric_prefix);

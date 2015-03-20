@@ -711,6 +711,11 @@ describe("app", function() {
                         assert.deepEqual(metrics['test.personal.percent_incomplete_registrations'].values, [60]);
                         assert.deepEqual(metrics['test.personal.percent_complete_registrations'].values, [40]);
                     })
+                    .check(function(api) {
+                        var kv_store = api.kv.store;
+                        assert.equal(kv_store['test.personal.no_complete_registrations'], 2);
+                        assert.equal(kv_store['test.personal.conversion_registrations'], undefined);
+                    })
                     .run();
             });
         });
@@ -1448,6 +1453,11 @@ describe("app", function() {
                             assert.deepEqual(metrics['test.personal.percent_complete_registrations'].values, [75]);
                             assert.deepEqual(metrics['test.personal.sum.json_to_jembi_success'].values, [1]);
                             assert.deepEqual(metrics['test.sum.subscriptions'].values, [1]);
+                        })
+                        .check(function(api) {
+                            var kv_store = api.kv.store;
+                            assert.equal(kv_store['test.personal.no_complete_registrations'], 3);
+                            assert.equal(kv_store['test.personal.conversion_registrations'], 1);
                         })
                         .check(function(api) {
                             var smses = _.where(api.outbound.store, {

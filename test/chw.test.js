@@ -1283,35 +1283,96 @@ describe("app", function() {
         });
 
         describe("after the user enters the birth day", function() {
-            it("should save birth day and dob, ask for pregnant woman's msg language", function() {
-                return tester
-                    .setup.user.addr('270001')
-                    .setup.user.answers({
-                        'states_birth_year': '1981',
-                        'states_birth_month': '01'
-                    })
-                    .setup.user.state('states_birth_day')
-                    .input('14')
-                    .check.interaction({
-                        state: 'states_language',
-                        reply: ['Please select the language that the ' +
-                            'pregnant mother would like to get messages in:',
-                            '1. English',
-                            '2. Afrikaans',
-                            '3. Zulu',
-                            '4. Xhosa',
-                            '5. Sotho',
-                            '6. Setswana'
+            describe("if the date validates", function() {
+                it("should save birth day and dob, ask for pregnant woman's msg language", function() {
+                    return tester
+                        .setup.user.addr('270001')
+                        .setup.user.answers({
+                            'states_birth_year': '1981',
+                            'states_birth_month': '01'
+                        })
+                        .setup.user.state('states_birth_day')
+                        .input('14')
+                        .check.interaction({
+                            state: 'states_language',
+                            reply: ['Please select the language that the ' +
+                                'pregnant mother would like to get messages in:',
+                                '1. English',
+                                '2. Afrikaans',
+                                '3. Zulu',
+                                '4. Xhosa',
+                                '5. Sotho',
+                                '6. Setswana'
+                                ].join('\n')
+                        })
+                        .check(function(api) {
+                            var contact = _.find(api.contacts.store, {
+                              msisdn: '+270001'
+                            });
+                            assert.equal(contact.extra.birth_day, '14');
+                            assert.equal(contact.extra.dob, '1981-01-14');
+                        })
+                        .run();
+                });
+            });
+
+            describe("if the day entry is obviously wrong", function() {
+                it("should reprompt for the day", function() {
+                    return tester
+                        .setup.user.addr('270001')
+                        .setup.user.answers({
+                            'states_birth_year': '1981',
+                            'states_birth_month': '02'
+                        })
+                        .setup.user.state('states_birth_day')
+                        .input('32')
+                        .check.interaction({
+                            state: 'states_birth_day',
+                            reply: 'There was an error in your entry. Please ' +
+                                'carefully enter the mother\'s day of birth again ' +
+                                '(for example: 8)'
+                        })
+                        .run();
+                    });
+            });
+
+            describe("if the date is not a real date", function() {
+                it("should go to error state, ask them to continue", function() {
+                    return tester
+                        .setup.user.addr('270001')
+                        .setup.user.answers({
+                            'states_birth_year': '1981',
+                            'states_birth_month': '02'
+                        })
+                        .setup.user.state('states_birth_day')
+                        .input('29')
+                        .check.interaction({
+                            state: 'states_invalid_dob',
+                            reply: [
+                                'The date you entered (1981-02-29) is not a ' +
+                                'real date. Please try again.',
+                                '1. Continue'
                             ].join('\n')
-                    })
-                    .check(function(api) {
-                        var contact = _.find(api.contacts.store, {
-                          msisdn: '+270001'
-                        });
-                        assert.equal(contact.extra.birth_day, '14');
-                        assert.equal(contact.extra.dob, '1981-01-14');
-                    })
-                    .run();
+                        })
+                        .run();
+                });
+
+                it("should take them back to birth year if they continue", function() {
+                    return tester
+                        .setup.user.addr('270001')
+                        .setup.user.answers({
+                            'states_birth_year': '1981',
+                            'states_birth_month': '02'
+                        })
+                        .setup.user.state('states_birth_day')
+                        .inputs('29', '1')
+                        .check.interaction({
+                            state: 'states_birth_year',
+                            reply: 'Please enter the year that the pregnant ' +
+                                    'mother was born (for example: 1981)'
+                        })
+                        .run();
+                });
             });
         });
 

@@ -1978,7 +1978,9 @@ go.app = function() {
                 question: question,
 
                 check: function(content) {
-                    if (!go.utils.check_number_in_range(content, 1900, go.utils.get_today(self.im.config).getFullYear())) {
+                    if (!go.utils.check_number_in_range(content, 1900,
+                      go.utils.get_today(self.im.config).getFullYear() - 5)) {
+                        // assumes youngest possible birth age is 5 years old
                         return error;
                     }
                 },

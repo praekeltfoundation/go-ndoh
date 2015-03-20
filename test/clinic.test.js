@@ -1441,7 +1441,7 @@ describe("app", function() {
         });
 
         describe("after the user enters their birth year incorrectly", function() {
-            it("should ask for their birth year again", function() {
+            it("text error - should ask for their birth year again", function() {
                 return tester
                     .setup.user.addr('270001')
                     .setup.user.state('states_birth_year')
@@ -1455,7 +1455,7 @@ describe("app", function() {
                     .run();
             });
 
-            it("should ask for their birth year again", function() {
+            it("too young - should ask for their birth year again", function() {
                 return tester
                     .setup.user.addr('270001')
                     .setup.user.state('states_birth_year')

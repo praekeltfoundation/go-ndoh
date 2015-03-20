@@ -1301,6 +1301,20 @@ describe("app", function() {
                     })
                     .run();
             });
+
+            it("too young - should ask for their birth year again", function() {
+                return tester
+                    .setup.user.addr('27001')
+                    .setup.user.state('states_birth_year')
+                    .input('2013')
+                    .check.interaction({
+                        state: 'states_birth_year',
+                        reply: 'There was an error in your entry. Please ' +
+                        'carefully enter your year of birth again (for ' +
+                        'example: 2001)'
+                    })
+                    .run();
+            });
         });
 
         describe("after the user enters their birth month", function() {

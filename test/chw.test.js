@@ -1190,11 +1190,25 @@ describe("app", function() {
         });
 
         describe("after the user enters their birth year incorrectly", function() {
-            it("should ask for their birth year again", function() {
+            it("text error - should ask for their birth year again", function() {
                 return tester
                     .setup.user.addr('270001')
                     .setup.user.state('states_birth_year')
                     .input('Nineteen Eighty One')
+                    .check.interaction({
+                        state: 'states_birth_year',
+                        reply: ('There was an error in your entry. Please ' +
+                        'carefully enter the mother\'s year of birth again ' +
+                        '(for example: 2001)')
+                    })
+                    .run();
+            });
+
+            it("too young - should ask for their birth year again", function() {
+                return tester
+                    .setup.user.addr('270001')
+                    .setup.user.state('states_birth_year')
+                    .input('2013')
                     .check.interaction({
                         state: 'states_birth_year',
                         reply: ('There was an error in your entry. Please ' +

@@ -62,27 +62,27 @@ go.utils = {
         return today;
     },
 
-    helpdesk_is_closed: function(config) {
+    is_weekend: function(config) {
         var today = go.utils.get_today(config);
         var moment_today = moment.utc(today);
-        return go.utils.is_out_of_hours(moment_today, config) || go.utils.is_weekend(moment_today)
-          || go.utils.is_public_holiday(moment_today, config);
+        return moment_today.format('dddd') === 'Saturday' ||
+          moment_today.format('dddd') === 'Sunday';
     },
 
-    is_weekend: function(moment_date) {
-        return moment_date.format('dddd') === 'Saturday' || moment_date.format('dddd') === 'Sunday';
-    },
-
-    is_public_holiday: function(moment_date, config) {
-        var date_as_string = moment_date.format('YYYY-MM-DD');
+    is_public_holiday: function(config) {
+        var today = go.utils.get_today(config);
+        var moment_today = moment.utc(today);
+        var date_as_string = moment_today.format('YYYY-MM-DD');
         return _.contains(config.public_holidays, date_as_string);
     },
 
-    is_out_of_hours: function(moment_date, config) {
+    is_out_of_hours: function(config) {
+        var today = go.utils.get_today(config);
+        var moment_today = moment.utc(today);
         // get business hours from config, -2 for utc to local time conversion
         var opening_time = Math.min.apply(null, config.helpdesk_hours) - 2;
         var closing_time = Math.max.apply(null, config.helpdesk_hours) - 2;
-        return (moment_date.hour() < opening_time || moment_date.hour() >= closing_time);
+        return (moment_today.hour() < opening_time || moment_today.hour() >= closing_time);
     },
 
     get_due_year_from_month: function(month, today) {
@@ -1759,12 +1759,20 @@ go.app = function() {
                   "Responses will be delayed outside of these hrs. In an " +
                   "emergency please go to your health provider immediately.");
 
+            var weekend_public_holiday_text =
+                $("The helpdesk is not currently available during weekends " +
+                  "and public holidays. In an emergency please go to your " +
+                  "health provider immediately.");
+
             var business_hours_text =
                 $("Thank you for your message, it has been captured and you will receive a " +
                 "response soon. Kind regards. MomConnect.");
 
-            if (go.utils.helpdesk_is_closed(self.im.config)) {
+            if (go.utils.is_out_of_hours(self.im.config)) {
                 text = out_of_hours_text;
+            } else if (go.utils.is_weekend(self.im.config) ||
+              go.utils.is_public_holiday(self.im.config)) {
+                text = weekend_public_holiday_text;
             } else {
                 text = business_hours_text;
             }

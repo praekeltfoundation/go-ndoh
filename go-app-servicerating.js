@@ -62,11 +62,27 @@ go.utils = {
         return today;
     },
 
-    is_out_of_hours: function(config) {
+    helpdesk_is_closed: function(config) {
         var today = go.utils.get_today(config);
-        var motoday = moment.utc(today);
-        // hours are between 8 and 16 local SA time
-        return (motoday.hour() < 6 || motoday.hour() >= 14);
+        var moment_today = moment.utc(today);
+        return go.utils.is_out_of_hours(moment_today, config) || go.utils.is_weekend(moment_today)
+          || go.utils.is_public_holiday(moment_today, config);
+    },
+
+    is_weekend: function(moment_date) {
+        return moment_date.format('dddd') === 'Saturday' || moment_date.format('dddd') === 'Sunday';
+    },
+
+    is_public_holiday: function(moment_date, config) {
+        var date_as_string = moment_date.format('YYYY-MM-DD');
+        return _.contains(config.public_holidays, date_as_string);
+    },
+
+    is_out_of_hours: function(moment_date, config) {
+        // get business hours from config, -2 for utc to local time conversion
+        var opening_time = Math.min.apply(null, config.helpdesk_hours) - 2;
+        var closing_time = Math.max.apply(null, config.helpdesk_hours) - 2;
+        return (moment_date.hour() < opening_time || moment_date.hour() >= closing_time);
     },
 
     get_due_year_from_month: function(month, today) {

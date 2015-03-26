@@ -59,27 +59,27 @@ go.utils = {
         return today;
     },
 
-    helpdesk_is_closed: function(config) {
+    is_weekend: function(config) {
         var today = go.utils.get_today(config);
         var moment_today = moment.utc(today);
-        return go.utils.is_out_of_hours(moment_today, config) || go.utils.is_weekend(moment_today)
-          || go.utils.is_public_holiday(moment_today, config);
+        return moment_today.format('dddd') === 'Saturday' ||
+          moment_today.format('dddd') === 'Sunday';
     },
 
-    is_weekend: function(moment_date) {
-        return moment_date.format('dddd') === 'Saturday' || moment_date.format('dddd') === 'Sunday';
-    },
-
-    is_public_holiday: function(moment_date, config) {
-        var date_as_string = moment_date.format('YYYY-MM-DD');
+    is_public_holiday: function(config) {
+        var today = go.utils.get_today(config);
+        var moment_today = moment.utc(today);
+        var date_as_string = moment_today.format('YYYY-MM-DD');
         return _.contains(config.public_holidays, date_as_string);
     },
 
-    is_out_of_hours: function(moment_date, config) {
+    is_out_of_hours: function(config) {
+        var today = go.utils.get_today(config);
+        var moment_today = moment.utc(today);
         // get business hours from config, -2 for utc to local time conversion
         var opening_time = Math.min.apply(null, config.helpdesk_hours) - 2;
         var closing_time = Math.max.apply(null, config.helpdesk_hours) - 2;
-        return (moment_date.hour() < opening_time || moment_date.hour() >= closing_time);
+        return (moment_today.hour() < opening_time || moment_today.hour() >= closing_time);
     },
 
     get_due_year_from_month: function(month, today) {

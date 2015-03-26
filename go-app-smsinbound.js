@@ -62,11 +62,27 @@ go.utils = {
         return today;
     },
 
+    is_weekend: function(config) {
+        var today = go.utils.get_today(config);
+        var moment_today = moment.utc(today);
+        return moment_today.format('dddd') === 'Saturday' ||
+          moment_today.format('dddd') === 'Sunday';
+    },
+
+    is_public_holiday: function(config) {
+        var today = go.utils.get_today(config);
+        var moment_today = moment.utc(today);
+        var date_as_string = moment_today.format('YYYY-MM-DD');
+        return _.contains(config.public_holidays, date_as_string);
+    },
+
     is_out_of_hours: function(config) {
         var today = go.utils.get_today(config);
-        var motoday = moment.utc(today);
-        // hours are between 8 and 16 local SA time
-        return (motoday.hour() < 6 || motoday.hour() >= 14);
+        var moment_today = moment.utc(today);
+        // get business hours from config, -2 for utc to local time conversion
+        var opening_time = Math.min.apply(null, config.helpdesk_hours) - 2;
+        var closing_time = Math.max.apply(null, config.helpdesk_hours) - 2;
+        return (moment_today.hour() < opening_time || moment_today.hour() >= closing_time);
     },
 
     get_due_year_from_month: function(month, today) {
@@ -1756,12 +1772,20 @@ go.app = function() {
                   "Responses will be delayed outside of these hrs. In an " +
                   "emergency please go to your health provider immediately.");
 
+            var weekend_public_holiday_text =
+                $("The helpdesk is not currently available during weekends " +
+                  "and public holidays. In an emergency please go to your " +
+                  "health provider immediately.");
+
             var business_hours_text =
                 $("Thank you for your message, it has been captured and you will receive a " +
                 "response soon. Kind regards. MomConnect.");
 
             if (go.utils.is_out_of_hours(self.im.config)) {
                 text = out_of_hours_text;
+            } else if (go.utils.is_weekend(self.im.config) ||
+              go.utils.is_public_holiday(self.im.config)) {
+                text = weekend_public_holiday_text;
             } else {
                 text = business_hours_text;
             }

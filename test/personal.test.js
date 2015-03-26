@@ -1306,6 +1306,20 @@ describe("app", function() {
                     })
                     .run();
             });
+
+            it("too young - should ask for their birth year again", function() {
+                return tester
+                    .setup.user.addr('27001')
+                    .setup.user.state('states_birth_year')
+                    .input('2013')
+                    .check.interaction({
+                        state: 'states_birth_year',
+                        reply: 'There was an error in your entry. Please ' +
+                        'carefully enter your year of birth again (for ' +
+                        'example: 2001)'
+                    })
+                    .run();
+            });
         });
 
         describe("after the user enters their birth month", function() {
@@ -1327,94 +1341,139 @@ describe("app", function() {
             });
         });
 
-        describe("after the user enters their birth day incorrectly", function() {
-            it("should not save birth day, ask them their birth day again", function() {
-                return tester
-                    .setup.user.addr('27001')
-                    .setup.user.state('states_birth_day')
-                    .input('fourteen')
-                    .check.interaction({
-                        state: 'states_birth_day',
-                        reply: ('There was an error in your entry. Please ' +
-                        'carefully enter your day of birth again (for ' +
-                        'example: 8)')
-                    })
-                    .check(function(api) {
-                        var contact = api.contacts.store[0];
-                        assert.equal(contact.extra.birth_day, undefined);
-                    })
-                    .run();
-            });
-        });
+
 
         describe("after the user enters their birth day", function() {
-            it("should save birth day, thank them and exit", function() {
-                return tester
-                    .setup(function(api) {
-                        api.contacts.add({
-                            msisdn: '+27001',
-                            extra : {
-                                language_choice: 'en',
-                                suspect_pregnancy: 'yes',
-                                id_type: 'passport',
-                                passport_origin: 'zw',
-                                passport_no: '12345',
-                                ussd_sessions: '5'
-                            },
-                            key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
-                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
-                        });
-                    })
-                    .setup.user.addr('27001')
-                    .setup.user.answers({
-                        'states_birth_year': '1981',
-                        'states_birth_month': '01'
-                    })
-                    .setup.user.state('states_birth_day')
-                    .input('1')
-                    .check.interaction({
-                        state: 'states_end_success',
-                        reply: ('Congratulations on your pregnancy. You will now get free SMSs about MomConnect. You can register for the full set of FREE helpful messages at a clinic.')
-                    })
-                    .check(function(api) {
-                        var contact = api.contacts.store[0];
-                        assert.equal(contact.extra.birth_day, '01');
-                        assert.equal(contact.extra.dob, '1981-01-01');
-                        assert.equal(contact.extra.ussd_sessions, '0');
-                        assert.equal(contact.extra.last_stage, 'states_end_success');
-                        assert.equal(contact.extra.metric_sessions_to_register, '5');
-                        assert.equal(contact.extra.subscription_type, '9');
-                        assert.equal(contact.extra.subscription_rate, '3');
-                        assert.equal(contact.extra.is_registered, 'true');
-                        assert.equal(contact.extra.is_registered_by, 'personal');
-                    })
-                    .check(function(api) {
-                        var metrics = api.metrics.stores.test_metric_store;
-                        assert.deepEqual(metrics['test.personal.avg.sessions_to_register'].values, [5]);
-                        assert.deepEqual(metrics['test.personal.percent_incomplete_registrations'].values, [25]);
-                        assert.deepEqual(metrics['test.personal.percent_complete_registrations'].values, [75]);
-                        assert.deepEqual(metrics['test.personal.sum.json_to_jembi_success'].values, [1]);
-                        assert.deepEqual(metrics['test.sum.subscriptions'].values, [1]);
-                    })
-                    .check(function(api) {
-                        var kv_store = api.kv.store;
-                        assert.equal(kv_store['test.personal.no_complete_registrations'], 3);
-                        assert.equal(kv_store['test.personal.conversion_registrations'], 1);
-                    })
-                    .check(function(api) {
-                        var smses = _.where(api.outbound.store, {
-                            endpoint: 'sms'
-                        });
-                        var sms = smses[0];
-                        assert.equal(smses.length,1);
-                        assert.equal(sms.content,
-                            "Congratulations on your pregnancy. You will now get free SMSs about MomConnect. " +
-                            "You can register for the full set of FREE helpful messages at a clinic."
-                        );
-                        assert.equal(sms.to_addr,'27001');
-                    })
-                    .check.reply.ends_session()
-                    .run();
+
+            describe("if the date is not a real date", function() {
+                it("should go to error state, ask them to continue", function() {
+                    return tester
+                        .setup.user.addr('270001')
+                        .setup.user.answers({
+                            'states_birth_year': '1981',
+                            'states_birth_month': '02'
+                        })
+                        .setup.user.state('states_birth_day')
+                        .input('29')
+                        .check.interaction({
+                            state: 'states_invalid_dob',
+                            reply: [
+                                'The date you entered (1981-02-29) is not a ' +
+                                'real date. Please try again.',
+                                '1. Continue'
+                            ].join('\n')
+                        })
+                        .run();
+                });
+
+                it("should take them back to birth year if they continue", function() {
+                    return tester
+                        .setup.user.addr('270001')
+                        .setup.user.answers({
+                            'states_birth_year': '1981',
+                            'states_birth_month': '02'
+                        })
+                        .setup.user.state('states_birth_day')
+                        .inputs('29', '1')
+                        .check.interaction({
+                            state: 'states_birth_year',
+                            reply: 'Since you don\'t have an ID or passport, ' +
+                                    'please enter the year that you were born (for ' +
+                                    'example: 1981)'
+                        })
+                        .run();
+                });
+            });
+
+            describe("after the user enters their birth day incorrectly", function() {
+                it("should not save birth day, ask them their birth day again", function() {
+                    return tester
+                        .setup.user.addr('27001')
+                        .setup.user.state('states_birth_day')
+                        .input('fourteen')
+                        .check.interaction({
+                            state: 'states_birth_day',
+                            reply: ('There was an error in your entry. Please ' +
+                            'carefully enter your day of birth again (for ' +
+                            'example: 8)')
+                        })
+                        .check(function(api) {
+                            var contact = api.contacts.store[0];
+                            assert.equal(contact.extra.birth_day, undefined);
+                        })
+                        .run();
+                });
+            });
+
+            describe("if the date validates", function() {
+                it("should save birth day, thank them and exit", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27001',
+                                extra : {
+                                    language_choice: 'en',
+                                    suspect_pregnancy: 'yes',
+                                    id_type: 'passport',
+                                    passport_origin: 'zw',
+                                    passport_no: '12345',
+                                    ussd_sessions: '5'
+                                },
+                                key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                                user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
+                            });
+                        })
+                        .setup.user.addr('27001')
+                        .setup.user.answers({
+                            'states_birth_year': '1981',
+                            'states_birth_month': '01'
+                        })
+                        .setup.user.state('states_birth_day')
+                        .input('1')
+                        .check.interaction({
+                            state: 'states_end_success',
+                            reply: ('Congratulations on your pregnancy. You will now get free SMSs about MomConnect. You can register for the full set of FREE helpful messages at a clinic.')
+                        })
+                        .check(function(api) {
+                            var contact = api.contacts.store[0];
+                            assert.equal(contact.extra.birth_day, '01');
+                            assert.equal(contact.extra.dob, '1981-01-01');
+                            assert.equal(contact.extra.ussd_sessions, '0');
+                            assert.equal(contact.extra.last_stage, 'states_end_success');
+                            assert.equal(contact.extra.metric_sessions_to_register, '5');
+                            assert.equal(contact.extra.subscription_type, '9');
+                            assert.equal(contact.extra.subscription_rate, '3');
+                            assert.equal(contact.extra.is_registered, 'true');
+                            assert.equal(contact.extra.is_registered_by, 'personal');
+                        })
+                        .check(function(api) {
+                            var metrics = api.metrics.stores.test_metric_store;
+                            assert.deepEqual(metrics['test.personal.avg.sessions_to_register'].values, [5]);
+                            assert.deepEqual(metrics['test.personal.percent_incomplete_registrations'].values, [25]);
+                            assert.deepEqual(metrics['test.personal.percent_complete_registrations'].values, [75]);
+                            assert.deepEqual(metrics['test.personal.sum.json_to_jembi_success'].values, [1]);
+                            assert.deepEqual(metrics['test.sum.subscriptions'].values, [1]);
+                        })
+                        .check(function(api) {
+                            var kv_store = api.kv.store;
+                            assert.equal(kv_store['test.personal.no_complete_registrations'], 3);
+                            assert.equal(kv_store['test.personal.conversion_registrations'], 1);
+                        })
+                        .check(function(api) {
+                            var smses = _.where(api.outbound.store, {
+                                endpoint: 'sms'
+                            });
+                            var sms = smses[0];
+                            assert.equal(smses.length,1);
+                            assert.equal(sms.content,
+                                "Congratulations on your pregnancy. You will now get free SMSs about MomConnect. " +
+                                "You can register for the full set of FREE helpful messages at a clinic."
+                            );
+                            assert.equal(sms.to_addr,'27001');
+                        })
+                        .check.reply.ends_session()
+                        .run();
+                });
             });
         });
 

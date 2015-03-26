@@ -62,11 +62,27 @@ go.utils = {
         return today;
     },
 
+    is_weekend: function(config) {
+        var today = go.utils.get_today(config);
+        var moment_today = moment.utc(today);
+        return moment_today.format('dddd') === 'Saturday' ||
+          moment_today.format('dddd') === 'Sunday';
+    },
+
+    is_public_holiday: function(config) {
+        var today = go.utils.get_today(config);
+        var moment_today = moment.utc(today);
+        var date_as_string = moment_today.format('YYYY-MM-DD');
+        return _.contains(config.public_holidays, date_as_string);
+    },
+
     is_out_of_hours: function(config) {
         var today = go.utils.get_today(config);
-        var motoday = moment.utc(today);
-        // hours are between 8 and 16 local SA time
-        return (motoday.hour() < 6 || motoday.hour() >= 14);
+        var moment_today = moment.utc(today);
+        // get business hours from config, -2 for utc to local time conversion
+        var opening_time = Math.min.apply(null, config.helpdesk_hours) - 2;
+        var closing_time = Math.max.apply(null, config.helpdesk_hours) - 2;
+        return (moment_today.hour() < opening_time || moment_today.hour() >= closing_time);
     },
 
     get_due_year_from_month: function(month, today) {
@@ -2230,7 +2246,9 @@ go.app = function() {
                 question: question,
 
                 check: function(content) {
-                    if (!go.utils.check_number_in_range(content, 1900, go.utils.get_today(self.im.config).getFullYear())) {
+                    if (!go.utils.check_number_in_range(content, 1900,
+                      go.utils.get_today(self.im.config).getFullYear() - 5)) {
+                        // assumes youngest possible birth age is 5 years old
                         return error;
                     }
                 },
@@ -2257,8 +2275,8 @@ go.app = function() {
 
                 next: function(choice) {
                     self.contact.extra.birth_month = choice.value;
-
                     return self.im.contacts
+
                         .save(self.contact)
                         .then(function() {
                             return {
@@ -2287,18 +2305,41 @@ go.app = function() {
                 },
 
                 next: function(content) {
-                    self.contact.extra.birth_day = go.utils.double_digit_day(content);
-                    self.contact.extra.dob = (self.im.user.answers.states_birth_year +
-                        '-' + self.im.user.answers.states_birth_month +
-                        '-' + go.utils.double_digit_day(content));
+                    var dob = go.utils.get_entered_birth_date(self.im.user.answers.states_birth_year,
+                        self.im.user.answers.states_birth_month, content);
 
-                    return self.im.contacts.save(self.contact)
-                        .then(function() {
-                            return {
-                                name: 'save_subscription_data'
-                            };
-                        });
+                    if (go.utils.is_valid_date(dob, 'YYYY-MM-DD')) {
+                        self.contact.extra.birth_day = go.utils.double_digit_day(content);
+                        self.contact.extra.dob = dob;
+
+                        return self.im.contacts.save(self.contact)
+                            .then(function() {
+                                return {
+                                    name: 'save_subscription_data'
+                                };
+                            });
+                    } else {
+                        return {
+                            name: 'states_invalid_dob',
+                            creator_opts: {dob: dob}
+                        };
+                    }
                 }
+            });
+        });
+
+        self.add('states_invalid_dob', function(name, opts) {
+            return new ChoiceState(name, {
+                question:
+                    $('The date you entered ({{ dob }}) is not a ' +
+                        'real date. Please try again.'
+                     ).context({ dob: opts.dob }),
+
+                choices: [
+                    new Choice('continue', $('Continue'))
+                ],
+
+                next: 'states_birth_year'
             });
         });
 

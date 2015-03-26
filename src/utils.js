@@ -133,6 +133,9 @@ go.utils = {
         if (id.length != 13 || id.match(/\D/)) {
             return false;
         }
+        if (!moment(id.slice(0,6), 'YYMMDD', true).isValid()) {
+            return false;
+        }
         id = id.substr(0, id.length - 1);
         for (i = 0; id.charAt(i); i += 2) {
             c = id.charAt(i);
@@ -146,6 +149,20 @@ go.utils = {
         }
         sum = 10 - ('' + sum).charAt(1);
         return ('' + sum).slice(-1) == check;
+    },
+
+    is_valid_date: function(date, format) {
+        // implements strict validation with 'true' below
+        return moment(date, format, true).isValid();
+    },
+
+    get_entered_due_date: function(month, day, config) {
+        var year = go.utils.get_due_year_from_month(month, go.utils.get_today(config));
+        return (year +'-'+ month +'-'+ go.utils.double_digit_day(day));
+    },
+
+    get_entered_birth_date: function(year, month, day) {
+      return year +'-'+ month +'-'+ go.utils.double_digit_day(day);
     },
 
     extract_id_dob: function(id) {

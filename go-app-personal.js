@@ -136,6 +136,9 @@ go.utils = {
         if (id.length != 13 || id.match(/\D/)) {
             return false;
         }
+        if (!moment(id.slice(0,6), 'YYMMDD', true).isValid()) {
+            return false;
+        }
         id = id.substr(0, id.length - 1);
         for (i = 0; id.charAt(i); i += 2) {
             c = id.charAt(i);
@@ -149,6 +152,20 @@ go.utils = {
         }
         sum = 10 - ('' + sum).charAt(1);
         return ('' + sum).slice(-1) == check;
+    },
+
+    is_valid_date: function(date, format) {
+        // implements strict validation with 'true' below
+        return moment(date, format, true).isValid();
+    },
+
+    get_entered_due_date: function(month, day, config) {
+        var year = go.utils.get_due_year_from_month(month, go.utils.get_today(config));
+        return (year +'-'+ month +'-'+ go.utils.double_digit_day(day));
+    },
+
+    get_entered_birth_date: function(year, month, day) {
+      return year +'-'+ month +'-'+ go.utils.double_digit_day(day);
     },
 
     extract_id_dob: function(id) {
@@ -2233,7 +2250,9 @@ go.app = function() {
                 question: question,
 
                 check: function(content) {
-                    if (!go.utils.check_number_in_range(content, 1900, go.utils.get_today(self.im.config).getFullYear())) {
+                    if (!go.utils.check_number_in_range(content, 1900,
+                      go.utils.get_today(self.im.config).getFullYear() - 5)) {
+                        // assumes youngest possible birth age is 5 years old
                         return error;
                     }
                 },
@@ -2260,8 +2279,8 @@ go.app = function() {
 
                 next: function(choice) {
                     self.contact.extra.birth_month = choice.value;
-
                     return self.im.contacts
+
                         .save(self.contact)
                         .then(function() {
                             return {
@@ -2290,18 +2309,41 @@ go.app = function() {
                 },
 
                 next: function(content) {
-                    self.contact.extra.birth_day = go.utils.double_digit_day(content);
-                    self.contact.extra.dob = (self.im.user.answers.states_birth_year +
-                        '-' + self.im.user.answers.states_birth_month +
-                        '-' + go.utils.double_digit_day(content));
+                    var dob = go.utils.get_entered_birth_date(self.im.user.answers.states_birth_year,
+                        self.im.user.answers.states_birth_month, content);
 
-                    return self.im.contacts.save(self.contact)
-                        .then(function() {
-                            return {
-                                name: 'save_subscription_data'
-                            };
-                        });
+                    if (go.utils.is_valid_date(dob, 'YYYY-MM-DD')) {
+                        self.contact.extra.birth_day = go.utils.double_digit_day(content);
+                        self.contact.extra.dob = dob;
+
+                        return self.im.contacts.save(self.contact)
+                            .then(function() {
+                                return {
+                                    name: 'save_subscription_data'
+                                };
+                            });
+                    } else {
+                        return {
+                            name: 'states_invalid_dob',
+                            creator_opts: {dob: dob}
+                        };
+                    }
                 }
+            });
+        });
+
+        self.add('states_invalid_dob', function(name, opts) {
+            return new ChoiceState(name, {
+                question:
+                    $('The date you entered ({{ dob }}) is not a ' +
+                        'real date. Please try again.'
+                     ).context({ dob: opts.dob }),
+
+                choices: [
+                    new Choice('continue', $('Continue'))
+                ],
+
+                next: 'states_birth_year'
             });
         });
 

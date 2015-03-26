@@ -1056,19 +1056,15 @@ go.utils = {
         return go.utils
             .control_api_call("post", null, payload, 'subscription/', im)
             .then(function(doc_result) {
-                var metrics_to_fire;
                 if (doc_result.code >= 200 && doc_result.code < 300){
-                    metrics_to_fire = [
+                    return Q.all([
                         im.metrics.fire.inc([metric_prefix, "sum", "subscription_to_protocol_success"].join('.'), {amount:1}),
                         im.metrics.fire.inc([env, "sum", "subscriptions"].join('.'), {amount:1})
-                    ];
+                    ]);
                 } else {
                     //TODO - implement proper fail issue #36
-                    metrics_to_fire = [
-                        im.metrics.fire.inc([metric_prefix, "sum", "subscription_to_protocol_fail"].join('.'), {amount:1})
-                    ];
+                    return im.metrics.fire.inc([metric_prefix, "sum", "subscription_to_protocol_fail"].join('.'), {amount:1});
                 }
-                return Q.all(metrics_to_fire);
         });
     },
 

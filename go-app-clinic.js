@@ -1722,9 +1722,9 @@ go.app = function() {
             return self.im.outbound.send({
                 to: self.contact,
                 endpoint: 'sms',
-                content: $("Welcome to MomConnect. For more info or to log a complaint or compliment, " +
-                        "please dial {{public_channel}}. If you ever want to stop getting SMSs dial " +
-                        "{{optout_channel}}")
+                content: $("Welcome. To stop getting SMSs dial {{optout_channel}} or for more " +
+                           "services dial {{public_channel}} (No Cost). Standard rates apply " +
+                           "when replying to any SMS from MomConnect.")
                     .context({
                         public_channel: self.im.config.public_channel,
                         optout_channel: self.im.config.optout_channel

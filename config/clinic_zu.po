@@ -1,13 +1,16 @@
 msgid ""
 msgstr ""
 "POT-Creation-Date: 2015-03-26 11:30:+0200\n"
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: \n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2015-03-26 15:49+0200\n"
+"Last-Translator: \n"
+"X-Generator: Poedit 1.6.4\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: zu\n"
 
 #: go-app-clinic.js:27
 msgid "Jan"
@@ -66,9 +69,12 @@ msgstr ""
 #: go-app-clinic.js:1725
 msgid ""
 "Welcome. To stop getting SMSs dial {{optout_channel}} or for more services "
-"dial {{public_channel}} (No Cost). Standard rates apply when replying to "
-"any SMS from MomConnect."
+"dial {{public_channel}} (No Cost). Standard rates apply when replying to any "
+"SMS from MomConnect."
 msgstr ""
+"UmomConnect uyakwemukela. Ukunqamula lamaSMS shayela u-{{optout_channel}} "
+"(Mahhala). Qaphela ukuthi Uzokhokha imali ejwayelekile yeSMS mawuphendula "
+"iSMS evela kithi."
 
 #: go-app-clinic.js:1751
 msgid "Would you like to complete pregnancy registration for {{ num }}?"
@@ -84,8 +90,8 @@ msgstr ""
 
 #: go-app-clinic.js:1782
 msgid ""
-"Welcome to The Department of Health's MomConnect. Tell us if this is the "
-"no. that the mother would like to get SMSs on: {{ num }}"
+"Welcome to The Department of Health's MomConnect. Tell us if this is the no. "
+"that the mother would like to get SMSs on: {{ num }}"
 msgstr ""
 
 #: go-app-clinic.js:1789 go-app-clinic.js:1818
@@ -94,8 +100,8 @@ msgstr ""
 
 #: go-app-clinic.js:1812
 msgid ""
-"This number has previously opted out of MomConnect SMSs. Please confirm "
-"that the mom would like to opt in to receive messages again?"
+"This number has previously opted out of MomConnect SMSs. Please confirm that "
+"the mom would like to opt in to receive messages again?"
 msgstr ""
 
 #: go-app-clinic.js:1846
@@ -109,7 +115,8 @@ msgid "Main Menu"
 msgstr ""
 
 #: go-app-clinic.js:1860
-msgid "Sorry, the clinic number did not validate. Please reenter the clinic number:"
+msgid ""
+"Sorry, the clinic number did not validate. Please reenter the clinic number:"
 msgstr ""
 
 #: go-app-clinic.js:1862
@@ -119,7 +126,8 @@ msgid ""
 msgstr ""
 
 #: go-app-clinic.js:1908
-msgid "Sorry, the mobile number did not validate. Please reenter the mobile number:"
+msgid ""
+"Sorry, the mobile number did not validate. Please reenter the mobile number:"
 msgstr ""
 
 #: go-app-clinic.js:1911
@@ -200,8 +208,8 @@ msgstr ""
 
 #: go-app-clinic.js:2091
 msgid ""
-"There was an error in your entry. Please carefully enter the passport "
-"number again."
+"There was an error in your entry. Please carefully enter the passport number "
+"again."
 msgstr ""
 
 #: go-app-clinic.js:2093
@@ -215,7 +223,8 @@ msgid ""
 msgstr ""
 
 #: go-app-clinic.js:2123
-msgid "Please enter the year that the pregnant mother was born (for example: 1981)"
+msgid ""
+"Please enter the year that the pregnant mother was born (for example: 1981)"
 msgstr ""
 
 #: go-app-clinic.js:2151
@@ -224,8 +233,8 @@ msgstr ""
 
 #: go-app-clinic.js:2171
 msgid ""
-"There was an error in your entry. Please carefully enter the mother's day "
-"of birth again (for example: 8)"
+"There was an error in your entry. Please carefully enter the mother's day of "
+"birth again (for example: 8)"
 msgstr ""
 
 #: go-app-clinic.js:2175

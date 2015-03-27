@@ -59,6 +59,12 @@ go.utils = {
         return today;
     },
 
+    get_tomorrow: function(config) {
+        var today = go.utils.get_today(config);
+        var moment_tomorrow = moment(today).add(1, 'days');
+        return moment_tomorrow.format('YYYY-MM-DD');
+    },
+
     is_weekend: function(config) {
         var today = go.utils.get_today(config);
         var moment_today = moment.utc(today);

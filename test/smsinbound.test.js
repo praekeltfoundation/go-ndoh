@@ -326,7 +326,7 @@ describe("app", function() {
             });
 
             describe("when the message is received on a weekend", function() {
-                it("should give out of hours warning", function() {
+                it("should give weekend warning", function() {
                     return tester
                         .setup(function(api) {
                             api.contacts.add({
@@ -347,16 +347,16 @@ describe("app", function() {
                         .check.interaction({
                             state: 'states_default',
                             reply:
-                                "The helpdesk operates from 8am to 4pm Mon to Fri. " +
-                                "Responses will be delayed outside of these hrs. In an " +
-                                "emergency please go to your health provider immediately."
+                                "The helpdesk is not currently available during weekends " +
+                                "and public holidays. In an emergency please go to your " +
+                                "health provider immediately."
                         })
                         .run();
                 });
             });
 
             describe("when the message is received on a public holiday", function() {
-                it("should give out of hours warning", function() {
+                it("should give public holiday warning", function() {
                     return tester
                         .setup(function(api) {
                             api.contacts.add({
@@ -377,9 +377,9 @@ describe("app", function() {
                         .check.interaction({
                             state: 'states_default',
                             reply:
-                                "The helpdesk operates from 8am to 4pm Mon to Fri. " +
-                                "Responses will be delayed outside of these hrs. In an " +
-                                "emergency please go to your health provider immediately."
+                                "The helpdesk is not currently available during weekends " +
+                                "and public holidays. In an emergency please go to your " +
+                                "health provider immediately."
                         })
                         .run();
                 });

@@ -145,12 +145,20 @@ go.app = function() {
                   "Responses will be delayed outside of these hrs. In an " +
                   "emergency please go to your health provider immediately.");
 
+            var weekend_public_holiday_text =
+                $("The helpdesk is not currently available during weekends " +
+                  "and public holidays. In an emergency please go to your " +
+                  "health provider immediately.");
+
             var business_hours_text =
                 $("Thank you for your message, it has been captured and you will receive a " +
                 "response soon. Kind regards. MomConnect.");
 
-            if (go.utils.helpdesk_is_closed(self.im.config)) {
+            if (go.utils.is_out_of_hours(self.im.config)) {
                 text = out_of_hours_text;
+            } else if (go.utils.is_weekend(self.im.config) ||
+              go.utils.is_public_holiday(self.im.config)) {
+                text = weekend_public_holiday_text;
             } else {
                 text = business_hours_text;
             }

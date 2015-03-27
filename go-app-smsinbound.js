@@ -62,27 +62,27 @@ go.utils = {
         return today;
     },
 
-    helpdesk_is_closed: function(config) {
+    is_weekend: function(config) {
         var today = go.utils.get_today(config);
         var moment_today = moment.utc(today);
-        return go.utils.is_out_of_hours(moment_today, config) || go.utils.is_weekend(moment_today)
-          || go.utils.is_public_holiday(moment_today, config);
+        return moment_today.format('dddd') === 'Saturday' ||
+          moment_today.format('dddd') === 'Sunday';
     },
 
-    is_weekend: function(moment_date) {
-        return moment_date.format('dddd') === 'Saturday' || moment_date.format('dddd') === 'Sunday';
-    },
-
-    is_public_holiday: function(moment_date, config) {
-        var date_as_string = moment_date.format('YYYY-MM-DD');
+    is_public_holiday: function(config) {
+        var today = go.utils.get_today(config);
+        var moment_today = moment.utc(today);
+        var date_as_string = moment_today.format('YYYY-MM-DD');
         return _.contains(config.public_holidays, date_as_string);
     },
 
-    is_out_of_hours: function(moment_date, config) {
+    is_out_of_hours: function(config) {
+        var today = go.utils.get_today(config);
+        var moment_today = moment.utc(today);
         // get business hours from config, -2 for utc to local time conversion
         var opening_time = Math.min.apply(null, config.helpdesk_hours) - 2;
         var closing_time = Math.max.apply(null, config.helpdesk_hours) - 2;
-        return (moment_date.hour() < opening_time || moment_date.hour() >= closing_time);
+        return (moment_today.hour() < opening_time || moment_today.hour() >= closing_time);
     },
 
     get_due_year_from_month: function(month, today) {
@@ -136,6 +136,9 @@ go.utils = {
         if (id.length != 13 || id.match(/\D/)) {
             return false;
         }
+        if (!moment(id.slice(0,6), 'YYMMDD', true).isValid()) {
+            return false;
+        }
         id = id.substr(0, id.length - 1);
         for (i = 0; id.charAt(i); i += 2) {
             c = id.charAt(i);
@@ -149,6 +152,20 @@ go.utils = {
         }
         sum = 10 - ('' + sum).charAt(1);
         return ('' + sum).slice(-1) == check;
+    },
+
+    is_valid_date: function(date, format) {
+        // implements strict validation with 'true' below
+        return moment(date, format, true).isValid();
+    },
+
+    get_entered_due_date: function(month, day, config) {
+        var year = go.utils.get_due_year_from_month(month, go.utils.get_today(config));
+        return (year +'-'+ month +'-'+ go.utils.double_digit_day(day));
+    },
+
+    get_entered_birth_date: function(year, month, day) {
+      return year +'-'+ month +'-'+ go.utils.double_digit_day(day);
     },
 
     extract_id_dob: function(id) {
@@ -1039,19 +1056,15 @@ go.utils = {
         return go.utils
             .control_api_call("post", null, payload, 'subscription/', im)
             .then(function(doc_result) {
-                var metrics_to_fire;
                 if (doc_result.code >= 200 && doc_result.code < 300){
-                    metrics_to_fire = [
+                    return Q.all([
                         im.metrics.fire.inc([metric_prefix, "sum", "subscription_to_protocol_success"].join('.'), {amount:1}),
                         im.metrics.fire.inc([env, "sum", "subscriptions"].join('.'), {amount:1})
-                    ];
+                    ]);
                 } else {
                     //TODO - implement proper fail issue #36
-                    metrics_to_fire = [
-                        im.metrics.fire.inc([metric_prefix, "sum", "subscription_to_protocol_fail"].join('.'), {amount:1})
-                    ];
+                    return im.metrics.fire.inc([metric_prefix, "sum", "subscription_to_protocol_fail"].join('.'), {amount:1});
                 }
-                return Q.all(metrics_to_fire);
         });
     },
 
@@ -1759,12 +1772,20 @@ go.app = function() {
                   "Responses will be delayed outside of these hrs. In an " +
                   "emergency please go to your health provider immediately.");
 
+            var weekend_public_holiday_text =
+                $("The helpdesk is not currently available during weekends " +
+                  "and public holidays. In an emergency please go to your " +
+                  "health provider immediately.");
+
             var business_hours_text =
                 $("Thank you for your message, it has been captured and you will receive a " +
                 "response soon. Kind regards. MomConnect.");
 
-            if (go.utils.helpdesk_is_closed(self.im.config)) {
+            if (go.utils.is_out_of_hours(self.im.config)) {
                 text = out_of_hours_text;
+            } else if (go.utils.is_weekend(self.im.config) ||
+              go.utils.is_public_holiday(self.im.config)) {
+                text = weekend_public_holiday_text;
             } else {
                 text = business_hours_text;
             }

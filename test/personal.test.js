@@ -641,7 +641,9 @@ describe("app", function() {
                             var sms = smses[0];
                             assert.equal(smses.length, 1);
                             assert.equal(sms.content,
-                                'Please reply to this message with your complaint. If your complaint relates to the service at a clinic, please tell us the name of the clinic or clinic worker.'
+                                "Please reply to this message with your complaint. If it " +
+                                "relates to the service at the clinic, include the clinic or " +
+                                "clinic worker name. Standard rates apply."
                             );
                         })
                         .check.reply.ends_session()
@@ -677,7 +679,9 @@ describe("app", function() {
                             var sms = smses[0];
                             assert.equal(smses.length, 1);
                             assert.equal(sms.content,
-                                'Please reply to this message with your compliment. If your compliment relates to the service at a clinic, tell us the name of the clinic or clinic worker.'
+                                "Please reply to this message with your compliment. If it " +
+                                "relates to the service at the clinic, include the clinic or " +
+                                "clinic worker name. Standard rates apply."
                             );
                         })
                         .check.reply.ends_session()

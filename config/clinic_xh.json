@@ -1,0 +1,247 @@
+{
+    "": {
+        "pot-creation-date": "2015-03-26 11:30:+0200",
+        "project-id-version": "",
+        "language-team": "LANGUAGE <LL@li.org>",
+        "mime-version": "1.0",
+        "content-type": "text/plain; charset=UTF-8",
+        "content-transfer-encoding": "8bit",
+        "po-revision-date": "2015-03-26 15:47+0200",
+        "last-translator": "",
+        "x-generator": "Poedit 1.6.4",
+        "plural-forms": "nplurals=2; plural=(n != 1);",
+        "language": "xh"
+    },
+    "Jan": [
+        null,
+        ""
+    ],
+    "Feb": [
+        null,
+        ""
+    ],
+    "Mar": [
+        null,
+        ""
+    ],
+    "Apr": [
+        null,
+        ""
+    ],
+    "May": [
+        null,
+        ""
+    ],
+    "Jun": [
+        null,
+        ""
+    ],
+    "Jul": [
+        null,
+        ""
+    ],
+    "Aug": [
+        null,
+        ""
+    ],
+    "Sep": [
+        null,
+        ""
+    ],
+    "Oct": [
+        null,
+        ""
+    ],
+    "Nov": [
+        null,
+        ""
+    ],
+    "Dec": [
+        null,
+        ""
+    ],
+    "Please dial back in to {{ USSD_number }} to complete the pregnancy registration.": [
+        null,
+        ""
+    ],
+    "Welcome. To stop getting SMSs dial {{optout_channel}} or for more services dial {{public_channel}} (No Cost). Standard rates apply when replying to any SMS from MomConnect.": [
+        null,
+        "Wamkelekile. Ukuyekisa ii-SMS dayala {{optout_channel}} kwezinye iisevisi {{public_channel}} (mahala). Ubhatala ngokuqhelekileyo ekuphenduleni ii-SMS zakwa-MomConnect."
+    ],
+    "Would you like to complete pregnancy registration for {{ num }}?": [
+        null,
+        ""
+    ],
+    "Yes": [
+        null,
+        ""
+    ],
+    "Start new registration": [
+        null,
+        ""
+    ],
+    "Welcome to The Department of Health's MomConnect. Tell us if this is the no. that the mother would like to get SMSs on: {{ num }}": [
+        null,
+        ""
+    ],
+    "No": [
+        null,
+        ""
+    ],
+    "This number has previously opted out of MomConnect SMSs. Please confirm that the mom would like to opt in to receive messages again?": [
+        null,
+        ""
+    ],
+    "You have chosen not to receive MomConnect SMSs and so cannot complete registration.": [
+        null,
+        ""
+    ],
+    "Main Menu": [
+        null,
+        ""
+    ],
+    "Sorry, the clinic number did not validate. Please reenter the clinic number:": [
+        null,
+        ""
+    ],
+    "Please enter the clinic code for the facility where this pregnancy is being registered:": [
+        null,
+        ""
+    ],
+    "Sorry, the mobile number did not validate. Please reenter the mobile number:": [
+        null,
+        ""
+    ],
+    "Please input the mobile number of the pregnant woman to be registered:": [
+        null,
+        ""
+    ],
+    "Please select the month when the baby is due:": [
+        null,
+        ""
+    ],
+    "Sorry, the number did not validate. Please enter the estimated day that the baby is due (For example 12):": [
+        null,
+        ""
+    ],
+    "Please enter the estimated day that the baby is due (For example 12):": [
+        null,
+        ""
+    ],
+    "What kind of identification does the pregnant mother have?": [
+        null,
+        ""
+    ],
+    "SA ID": [
+        null,
+        ""
+    ],
+    "Passport": [
+        null,
+        ""
+    ],
+    "None": [
+        null,
+        ""
+    ],
+    "Sorry, the mother's ID number did not validate. Please reenter the SA ID number:": [
+        null,
+        ""
+    ],
+    "Please enter the pregnant mother's SA ID number:": [
+        null,
+        ""
+    ],
+    "What is the country of origin of the passport?": [
+        null,
+        ""
+    ],
+    "Zimbabwe": [
+        null,
+        ""
+    ],
+    "Mozambique": [
+        null,
+        ""
+    ],
+    "Malawi": [
+        null,
+        ""
+    ],
+    "Nigeria": [
+        null,
+        ""
+    ],
+    "DRC": [
+        null,
+        ""
+    ],
+    "Somalia": [
+        null,
+        ""
+    ],
+    "Other": [
+        null,
+        ""
+    ],
+    "There was an error in your entry. Please carefully enter the passport number again.": [
+        null,
+        ""
+    ],
+    "Please enter the pregnant mother's Passport number:": [
+        null,
+        ""
+    ],
+    "There was an error in your entry. Please carefully enter the mother's year of birth again (for example: 2001)": [
+        null,
+        ""
+    ],
+    "Please enter the year that the pregnant mother was born (for example: 1981)": [
+        null,
+        ""
+    ],
+    "Please enter the month that the mom was born.": [
+        null,
+        ""
+    ],
+    "There was an error in your entry. Please carefully enter the mother's day of birth again (for example: 8)": [
+        null,
+        ""
+    ],
+    "Please enter the day that the mother was born (for example: 14).": [
+        null,
+        ""
+    ],
+    "Please select the language that the pregnant mother would like to get messages in:": [
+        null,
+        ""
+    ],
+    "English": [
+        null,
+        ""
+    ],
+    "Afrikaans": [
+        null,
+        ""
+    ],
+    "Zulu": [
+        null,
+        ""
+    ],
+    "Xhosa": [
+        null,
+        ""
+    ],
+    "Sotho": [
+        null,
+        ""
+    ],
+    "Setswana": [
+        null,
+        ""
+    ],
+    "Thank you. The pregnant woman will now receive weekly messages about her pregnancy from MomConnect.": [
+        null,
+        ""
+    ]
+}

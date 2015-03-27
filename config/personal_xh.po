@@ -109,12 +109,12 @@ msgstr ""
 
 #: go-app-personal.js:1231
 msgid ""
-"Please reply to this message with your compliment. If your compliment "
-"relates to the service at a clinic, tell us the name of the clinic or clinic "
-"worker."
+"Please reply to this message with your compliment. If it relates to the "
+"service at the clinic, include the clinic or clinic worker name. Standard "
+"rates apply."
 msgstr ""
-"Nceda uphendule lo myalezo nesincomo sakho. Ukuba isincomo simalunga "
-"nenkonzo yasekliniki, sixelele igama lekliniki okanye umsebenzi wasekliniki."
+"Phendula kulo myalezo noko ukuncomayo. Ukuba simalunga nesevisi eklinikhi, "
+"yifake okanye igama lomsebenzi waseklinikhi. Ubhatala ngokuqhelekileyo."
 
 #: go-app-personal.js:1240
 msgid ""
@@ -126,13 +126,13 @@ msgstr ""
 
 #: go-app-personal.js:1249
 msgid ""
-"Please reply to this message with your complaint. If your complaint relates "
-"to the service at a clinic, please tell us the name of the clinic or clinic "
-"worker."
+"Please reply to this message with your complaint. If it relates to the "
+"service at the clinic, include the clinic or clinic worker name. Standard "
+"rates apply."
 msgstr ""
-"Nceda uphendule lo myalezo ngesikhalazo sakho. Ukuba isikhalazo simalunga "
-"nenkonzi ekliniki, nceda usixelele igama lekliniki okanye umsebenzi "
-"wasekliniki."
+"Phendula kulo myalezo nesikhalazo sakho. Ukuba simalunga nesevisi "
+"eklinikhi, yifake okanye igama lomsebenzi waseklinikhi. Ubhatala "
+"ngokuqhelekileyo."
 
 #: go-app-personal.js:1260
 msgid "Welcome to the Department of Health's MomConnect. Choose an option:"

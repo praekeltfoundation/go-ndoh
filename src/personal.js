@@ -255,7 +255,10 @@ go.app = function() {
                     'state:enter': function() {
                         return self.im.outbound.send_to_user({
                             endpoint: 'sms',
-                            content: $('Please reply to this message with your compliment. If your compliment relates to the service at a clinic, tell us the name of the clinic or clinic worker.')
+                            content: $(
+                                "Please reply to this message with your compliment. If it " +
+                                "relates to the service at the clinic, include the clinic or " +
+                                "clinic worker name. Standard rates apply.")
                         });
                     }
                 }
@@ -273,7 +276,10 @@ go.app = function() {
                     'state:enter': function() {
                         return self.im.outbound.send_to_user({
                             endpoint: 'sms',
-                            content: $('Please reply to this message with your complaint. If your complaint relates to the service at a clinic, please tell us the name of the clinic or clinic worker.')
+                            content: $(
+                                "Please reply to this message with your complaint. If it " +
+                                "relates to the service at the clinic, include the clinic or " +
+                                "clinic worker name. Standard rates apply.")
                         });
                     }
                 }

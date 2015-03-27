@@ -1914,8 +1914,8 @@ describe("app", function() {
                             var sms = smses[0];
                             assert.equal(smses.length,1);
                             assert.equal(sms.content,
-                                "Welcome to MomConnect. For more info or to log a complaint or compliment, " +
-                                "please dial *120*550#. If you ever want to stop getting SMSs dial *120*550*1#"
+                                "Welcome. To stop getting SMSs dial *120*550*1# or for more services dial " +
+                                "*120*550# (No Cost). Standard rates apply when replying to any SMS from MomConnect."
                             );
                             assert.equal(sms.to_addr,'+27821234567');
                         })
@@ -1962,8 +1962,8 @@ describe("app", function() {
                             var sms = smses[0];
                             assert.equal(smses.length,1);
                             assert.equal(sms.content,
-                                "Welcome to MomConnect. For more info or to log a complaint or compliment, " +
-                                "please dial *120*550#. If you ever want to stop getting SMSs dial *120*550*1#"
+                                "Welcome. To stop getting SMSs dial *120*550*1# or for more services dial " +
+                                "*120*550# (No Cost). Standard rates apply when replying to any SMS from MomConnect."
                             );
                             assert.equal(sms.to_addr,'+27821234567');
                         })

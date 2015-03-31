@@ -65,7 +65,7 @@
     ],
     "Welcome. To stop getting SMSs dial {{optout_channel}} or for more services dial {{public_channel}} (No Cost). Standard rates apply when replying to any SMS from MomConnect.": [
         null,
-        "Vhotanganedzwa. Usitopa daila {{optout_channel}} kana tshumelo nnzhi daila {{public_channel}} (mahala). Hu do shuma mitengo yo tiwaho ya SMS u fhindula SMSs u bva MomConnect."
+        "Re a go amogela.Go emisa di-SMS leletsa {{optout_channel}} kgotsa go bona ditirelo tse dintsi leletsa{{public_channel}}(mahala).Go dira melawana fa o araba SMS ya MomConnect."
     ],
     "Would you like to complete pregnancy registration for {{ num }}?": [
         null,

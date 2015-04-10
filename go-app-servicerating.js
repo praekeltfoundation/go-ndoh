@@ -1689,17 +1689,19 @@ go.app = function() {
         };
 
         self.states.add('states_start', function(name) {
-            if (self.contact.extra.last_service_rating !== undefined) {
-                return self.states.create('end_thanks_revisit');
-            } else if (self.contact.extra.is_registered_by === 'clinic') {
-                return go.utils
-                    .incr_kv(self.im, [self.store_name, 'sum', 'servicerating_start'].join('.'))
-                    .then(function() {
-                        return go.utils.adjust_percentage_serviceratings(self.im, self.metric_prefix);
-                    })
-                    .then(function() {
-                        return self.states.create('question_1_friendliness');
-                    });
+            if (self.contact.extra.is_registered_by === 'clinic') {
+                if (self.contact.extra.last_service_rating === 'never') {
+                    return go.utils
+                        .incr_kv(self.im, [self.store_name, 'sum', 'servicerating_start'].join('.'))
+                        .then(function() {
+                            return go.utils.adjust_percentage_serviceratings(self.im, self.metric_prefix);
+                        })
+                        .then(function() {
+                            return self.states.create('question_1_friendliness');
+                        });
+                } else {
+                    return self.states.create('end_thanks_revisit');
+                }
             } else {
                 return self.states.create('end_reg_clinic');
             }

@@ -2411,7 +2411,8 @@ module.exports = function() {
                 "contact": {
                     "extra": {
                         "is_registered_by": "clinic",
-                        "clinic_code": "12345"
+                        "clinic_code": "12345",
+                        "last_service_rating": "never"
                     },
                     "groups": [],
                     "subscription": {},

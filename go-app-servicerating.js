@@ -1690,7 +1690,8 @@ go.app = function() {
 
         self.states.add('states_start', function(name) {
             if (self.contact.extra.is_registered_by === 'clinic') {
-                if (self.contact.extra.last_service_rating === 'never') {
+                if (self.contact.extra.last_service_rating === 'never' ||
+                    self.contact.extra.last_service_rating === undefined) { // undefined allows older registrations to rate service
                     return go.utils
                         .incr_kv(self.im, [self.store_name, 'sum', 'servicerating_start'].join('.'))
                         .then(function() {

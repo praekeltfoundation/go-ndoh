@@ -217,6 +217,35 @@ describe("app", function() {
                         .check.user.properties({lang: 'zu'})
                         .run();
                 });
+
+                it("should ask for their friendliness rating if they have no " +
+                    "last_service_rating extra", function() {
+                    // test for older registrations where last_servicerating is undefined
+                    return tester
+                        .setup.user.addr('27001')
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27001',
+                                extra : {
+                                    language_choice: 'zu',
+                                    is_registered_by: 'clinic'
+                                }
+                            });
+                        })
+                        .start()
+                        .check.interaction({
+                            state: 'question_1_friendliness',
+                            reply: [
+                                'Welcome. When you signed up, were staff at the facility friendly & helpful?',
+                                '1. Very Satisfied',
+                                '2. Satisfied',
+                                '3. Not Satisfied',
+                                '4. Very unsatisfied'
+                            ].join('\n')
+                        })
+                        .check.user.properties({lang: 'zu'})
+                        .run();
+                });
             });
 
             describe("when the user has already logged a servicerating", function() {

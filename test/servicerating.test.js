@@ -180,7 +180,7 @@ describe("app", function() {
                                 msisdn: '+27001',
                             });
                         })
-                        .start()
+                        .inputs({session_event: 'new'})
                         .check.interaction({
                             state: 'end_reg_clinic',
                             reply: 'Please register at a clinic before using this line.'
@@ -203,7 +203,7 @@ describe("app", function() {
                                 }
                             });
                         })
-                        .start()
+                        .inputs({session_event: 'new'})
                         .check.interaction({
                             state: 'question_1_friendliness',
                             reply: [
@@ -233,7 +233,7 @@ describe("app", function() {
                                 }
                             });
                         })
-                        .start()
+                        .inputs({session_event: 'new'})
                         .check.interaction({
                             state: 'end_thanks_revisit',
                             reply: [
@@ -251,9 +251,17 @@ describe("app", function() {
         describe("when the user answers their friendliness rating", function() {
             it("should ask for their waiting times feeling", function() {
                 return tester
+                    .setup(function(api) {
+                        api.contacts.add({
+                            msisdn: '+27001',
+                            extra : {
+                                is_registered_by: 'clinic',
+                                last_service_rating: 'never'
+                            }
+                        });
+                    })
                     .setup.user.addr('27001')
-                    .setup.user.state('question_1_friendliness')
-                    .input('1')
+                    .inputs({session_event: 'new'}, '1')
                     .check.interaction({
                         state: 'question_2_waiting_times_feel',
                         reply: [
@@ -271,9 +279,17 @@ describe("app", function() {
         describe("when the user answers their waiting times feeling", function() {
             it("should ask for their waiting times length feeling", function() {
                 return tester
+                    .setup(function(api) {
+                        api.contacts.add({
+                            msisdn: '+27001',
+                            extra : {
+                                is_registered_by: 'clinic',
+                                last_service_rating: 'never'
+                            }
+                        });
+                    })
                     .setup.user.addr('27001')
-                    .setup.user.state('question_2_waiting_times_feel')
-                    .input('1')
+                    .inputs({session_event: 'new'}, '1', '1')
                     .check.interaction({
                         state: 'question_3_waiting_times_length',
                         reply: [
@@ -291,9 +307,17 @@ describe("app", function() {
         describe("when the user answers their waiting times length feeling", function() {
             it("should ask for their cleanliness rating", function() {
                 return tester
+                    .setup(function(api) {
+                        api.contacts.add({
+                            msisdn: '+27001',
+                            extra : {
+                                is_registered_by: 'clinic',
+                                last_service_rating: 'never'
+                            }
+                        });
+                    })
                     .setup.user.addr('27001')
-                    .setup.user.state('question_3_waiting_times_length')
-                    .input('1')
+                    .inputs({session_event: 'new'}, '1', '1', '1')
                     .check.interaction({
                         state: 'question_4_cleanliness',
                         reply: [
@@ -311,9 +335,17 @@ describe("app", function() {
         describe("when the user answers their cleanliness rating", function() {
             it("should ask for their privacy rating", function() {
                 return tester
+                    .setup(function(api) {
+                        api.contacts.add({
+                            msisdn: '+27001',
+                            extra : {
+                                is_registered_by: 'clinic',
+                                last_service_rating: 'never'
+                            }
+                        });
+                    })
                     .setup.user.addr('27001')
-                    .setup.user.state('question_4_cleanliness')
-                    .input('1')
+                    .inputs({session_event: 'new'}, '1', '1', '1', '1')
                     .check.interaction({
                         state: 'question_5_privacy',
                         reply: [
@@ -337,22 +369,15 @@ describe("app", function() {
                             created_at: "2014-07-28 09:35:26.732",
                             key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                             user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4",
-                            extra: {
-                                is_registered_by: "clinic",
-                                clinic_code: "12345",
-                                last_service_rating: "never"
+                            extra : {
+                                is_registered_by: 'clinic',
+                                clinic_code: '12345',
+                                last_service_rating: 'never'
                             }
                         });
                     })
                     .setup.user.addr('27001')
-                    .setup.user.state('question_5_privacy')
-                    .setup.user.answers({
-                        'question_1_friendliness': 'very-satisfied',
-                        'question_2_waiting_times_feel': 'very-satisfied',
-                        'question_3_waiting_times_length': 'less-than-an-hour',
-                        'question_4_cleanliness': 'very-satisfied'
-                    })
-                    .input('1')
+                    .inputs({session_event: 'new'}, '1', '1', '1', '1', '1')
                     .check.interaction({
                         state: 'end_thanks',
                         reply: [

@@ -77,7 +77,8 @@ describe("app", function() {
                                 user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4",
                                 extra: {
                                     is_registered_by: 'clinic',
-                                    clinic_code: "12345"
+                                    clinic_code: "12345",
+                                    last_service_rating: 'never'
                                 }
                             });
                         })
@@ -129,7 +130,8 @@ describe("app", function() {
                                 user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4",
                                 extra: {
                                     is_registered_by: 'clinic',
-                                    clinic_code: "12345"
+                                    clinic_code: "12345",
+                                    last_service_rating: 'never'
                                 }
                             });
                         })
@@ -196,7 +198,8 @@ describe("app", function() {
                                 msisdn: '+27001',
                                 extra : {
                                     language_choice: 'zu',
-                                    is_registered_by: 'clinic'
+                                    is_registered_by: 'clinic',
+                                    last_service_rating: 'never'
                                 }
                             });
                         })
@@ -336,7 +339,8 @@ describe("app", function() {
                             user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4",
                             extra: {
                                 is_registered_by: "clinic",
-                                clinic_code: "12345"
+                                clinic_code: "12345",
+                                last_service_rating: "never"
                             }
                         });
                     })
@@ -441,7 +445,8 @@ describe("app", function() {
                             user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4",
                             extra: {
                                 is_registered_by: "clinic",
-                                clinic_code: "12345"
+                                clinic_code: "12345",
+                                last_service_rating: 'never'
                             }
                         });
                     })
@@ -485,7 +490,8 @@ describe("app", function() {
                             user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4",
                             extra: {
                                 is_registered_by: "clinic",
-                                clinic_code: "12345"
+                                clinic_code: "12345",
+                                last_service_rating: 'never'
                             }
                         });
                     })

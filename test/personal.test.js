@@ -161,9 +161,11 @@ describe("app", function() {
             describe("when the last state is states_start", function() {
                 it("should not fire no_incomplete", function() {
                     return tester
-                        .setup.user.lang('en')
-                        .start()
-                        .input.session_event('close')
+                        .inputs(
+                            {session_event: 'new'}  // states_start
+                            , {session_event: 'close'}  // states_start
+                        )
+                        // check metrics
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
                             assert.equal(metrics['test.personal.states_start.no_incomplete'], undefined);
@@ -176,7 +178,10 @@ describe("app", function() {
                 it("should not fire no_incomplete", function() {
                     return tester
                         .setup.user.state('states_faq_topics')
-                        .input.session_event('close')
+                        .inputs(
+                            {session_event: 'close'}
+                        )
+                        // check metrics
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
                             assert.equal(metrics['test.personal.states_faq_topics.no_incomplete'], undefined);
@@ -189,7 +194,10 @@ describe("app", function() {
                 it("should increase states_language.no_incomplete metric by 1", function() {
                     return tester
                         .setup.user.state('states_language')
-                        .input.session_event('close')
+                        .inputs(
+                            {session_event: 'close'}
+                        )
+                        // check metrics
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
                             assert.deepEqual(metrics['test.personal.states_language.no_incomplete'].values, [1]);
@@ -202,7 +210,10 @@ describe("app", function() {
                 it("should increase states_birth_day.no_incomplete metric by 1", function() {
                     return tester
                         .setup.user.state('states_birth_day')
-                        .input.session_event('close')
+                        .inputs(
+                            {session_event: 'close'}
+                        )
+                        // check metrics
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
                             assert.deepEqual(metrics['test.personal.states_birth_day.no_incomplete'].values, [1]);
@@ -217,25 +228,16 @@ describe("app", function() {
                         .setup(function(api) {
                             api.contacts.add({
                                 msisdn: '+27001',
-                                extra : {
-                                    language_choice: 'en',
-                                    suspect_pregnancy: 'yes',
-                                    id_type: 'passport',
-                                    passport_origin: 'zw',
-                                    passport_no: '12345',
-                                    ussd_sessions: '5'
-                                },
                                 key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                                 user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
                             });
                         })
                         .setup.user.addr('27001')
-                        .setup.user.answers({
-                            'states_birth_year': '1981',
-                            'states_birth_month': '01'
-                        })
                         .setup.user.state('states_end_success')
-                        .input.session_event('close')
+                        .inputs(
+                            {session_event: 'close'}
+                        )
+                        // check metrics
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
                             assert.deepEqual(metrics['test.personal.states_end_success.no_incomplete'], undefined);
@@ -251,7 +253,10 @@ describe("app", function() {
                 it("should not fire no_incomplete", function() {
                     return tester
                         .setup.user.addr('275678')
-                        .start()
+                        .inputs(
+                            {session_event: 'new'}
+                        )
+                        // check metrics
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
                             assert.equal(metrics['test.personal.states_start.no_incomplete'], undefined);
@@ -264,7 +269,10 @@ describe("app", function() {
                 it("should not fire no_incomplete", function() {
                     return tester
                         .setup.user.lang('en')  // make sure user is not seen as new
-                        .start()
+                        .inputs(
+                            {session_event: 'new'}
+                        )
+                        // check metrics
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
                             assert.equal(metrics['test.personal.states_start.no_incomplete'], undefined);
@@ -276,6 +284,7 @@ describe("app", function() {
             describe("when it is an existing starting a session at states_birth_day", function() {
                 it("should decrease the metric states_birth_day.no_incomplete by 1", function() {
                     return tester
+                        .setup.user.lang('en')  // make sure user is not seen as new
                         .setup.user.state('states_birth_day')
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;

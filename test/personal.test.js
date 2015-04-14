@@ -2149,13 +2149,16 @@ describe("app", function() {
                 });
         });
 
-        describe("when the user starts a session (no prior timeout)", function() {
+        describe("when the user has no previous registration", function() {
 
-            describe("when the user has not started registration", function() {
+            describe("when they start a new session", function() {
                 it("should ask for their preferred language", function() {
                     return tester
                         .setup.user.addr('27001')
-                        .start()
+                        .inputs(
+                            {session_event: 'new'}  // states_start
+                        )
+                        // check navigation
                         .check.interaction({
                             state: 'states_language',
                             reply: [
@@ -2168,12 +2171,14 @@ describe("app", function() {
                                 '6. Setswana'
                             ].join('\n')
                         })
+                        // check extras
                         .check(function(api) {
                             var contact = api.contacts.store[0];
                             assert.equal(contact.extra.ussd_sessions, '1');
                             assert.equal(contact.extra.metric_sum_sessions, '1');
                             assert.equal(contact.extra.last_stage, 'states_language');
                         })
+                        // check metrics
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
                             assert.deepEqual(metrics['test.sum.sessions'].values, [1]);
@@ -2182,13 +2187,15 @@ describe("app", function() {
                 });
             });
 
-
             describe("when the user selects english as language", function() {
                 it("should ask if they suspect pregnancy", function() {
                     return tester
                         .setup.user.addr('27001')
-                        .setup.user.state('states_language')
-                        .input('1')
+                        .inputs(
+                            {session_event: 'new'}  // states_start
+                            , '1'  // states_language
+                        )
+                        // check navigation
                         .check.interaction({
                             state: 'states_suspect_pregnancy',
                             reply: [
@@ -2207,74 +2214,75 @@ describe("app", function() {
                 it("should set pregnancy status, state service is for pregnant moms, exit", function() {
                     return tester
                         .setup.user.addr('27001')
-                        .setup.user.state('states_suspect_pregnancy')
-                        .input('2')
+                        .inputs(
+                            {session_event: 'new'}  // states_start
+                            , '1'  // states_language
+                            , '2'  // states_suspect_pregnancy
+                        )
+                        // check navigation
                         .check.interaction({
                             state: 'states_end_not_pregnant',
                             reply: ('We are sorry but this service is only for ' +
                                 'pregnant mothers. If you have other health ' +
                                 'concerns please visit your nearest clinic.')
                         })
-                        .check.reply.ends_session()
+                        // check extras
                         .check(function(api) {
                             var contact = api.contacts.store[0];
                             assert.equal(contact.extra.suspect_pregnancy, 'no');
                         })
+                        // check session ends
+                        .check.reply.ends_session()
                         .run();
                 });
             });
 
-            describe("after the confirms pregnant", function() {
+            describe("after the confirms pregnancy", function() {
                 it("should save their data, thank them and exit", function() {
                     return tester
                         .setup(function(api) {
                             api.contacts.add({
                                 msisdn: '+27001',
-                                extra : {
-                                    language_choice: 'en',
-                                    suspect_pregnancy: 'yes',
-                                    ussd_sessions: '1'
-                                },
                                 key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                                 user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
                             });
                         })
                         .setup.user.addr('27001')
-                        .setup.user.state('states_suspect_pregnancy')
-                        .input('1')
+                        .inputs(
+                            {session_event: 'new'}  // states_start
+                            , '1'  // states_language
+                            , '1'  // states_suspect_pregnancy
+                        )
+                        // check navigation
                         .check.interaction({
                             state: 'states_end_success',
                             reply: ('Congratulations on your pregnancy. You will now get free SMSs about MomConnect. You can register for the full set of FREE helpful messages at a clinic.')
                         })
+                        // check extras
                         .check(function(api) {
                             var contact = api.contacts.store[0];
                             assert.equal(contact.extra.language_choice, 'en');
                         })
+                        // check session ends
                         .check.reply.ends_session()
                         .run();
                 });
             });
-            describe("redialing after timeout", function() {
-                it("ask if want to continue", function() {
+
+            describe("if the user redials after timeout", function() {
+                it("should ask if they want to continue", function() {
                     return tester
                         .setup(function(api) {
                             api.contacts.add({
-                                msisdn: '+27001',
-                                extra : {},
-                                key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
-                                user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
+                                msisdn: '+27001'
                             });
                         })
                         .setup.user.addr("27001")
-                        .setup.user.lang(null)
-                        .setup.user.answers({})
-                        .setup.user.metadata({
-                            session_length_helper: {
-                                start:1415791076582
-                            }
-                        })
-                        .setup.user.state('states_language')
-                        .inputs({session_event: 'new'})
+                        .inputs(
+                            {session_event: 'new'}  // states_start
+                            , {session_event: 'new'}  // simulate timeout and redial
+                        )
+                        // check navigation
                         .check.interaction({
                             state: 'states_timed_out',
                             reply: [
@@ -2286,27 +2294,23 @@ describe("app", function() {
                         .run();
                 });
             });
-            describe("redialing after timeout on timeout", function() {
-                it("ask if want to continue", function() {
+
+            describe("if the user redials after timing out on timeout state", function() {
+                it("should ask if they want to continue", function() {
                     return tester
                         .setup(function(api) {
                             api.contacts.add({
-                                msisdn: '+27001',
-                                extra : {},
-                                key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
-                                user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
+                                msisdn: '+27001'
                             });
                         })
                         .setup.user.addr("27001")
-                        .setup.user.lang(null)
-                        .setup.user.answers({})
-                        .setup.user.metadata({
-                            session_length_helper: {
-                                start:1415791076582
-                            }
-                        })
-                        .setup.user.state("states_timed_out")
-                        .inputs({session_event: 'new'})
+                        .inputs(
+                            {session_event: 'new'}  // states_start
+                            , '1'  // states_language
+                            , {session_event: 'new'}  // simulate timeout and redial
+                            , {session_event: 'new'}  // simulate timeout and redial
+                        )
+                        // check navigation
                         .check.interaction({
                             state: 'states_timed_out',
                             reply: [
@@ -2320,13 +2324,13 @@ describe("app", function() {
             });
         });
 
-        describe("when the user has registered on clinic", function() {
+        describe("when the user has previously registered on clinic", function() {
             describe("when the user has active subscriptions", function() {
-                it("should prompt for info / compliment / complaint", function() {
+                it("should prompt for compliment / complaint in their language", function() {
                     return tester
                         .setup(function(api) {
                             api.contacts.add({
-                                msisdn: '+27001',
+                                msisdn: '+27821234444',
                                 extra : {
                                     language_choice: 'xh',
                                     is_registered: 'true',
@@ -2334,8 +2338,11 @@ describe("app", function() {
                                 },
                             });
                         })
-                        .setup.user.addr('27001')
-                        .start()
+                        .setup.user.addr('27821234444')
+                        .inputs(
+                            {session_event: 'new'}  // states_start
+                        )
+                        // check navigation
                         .check.interaction({
                             state: 'states_registered_full',
                             reply: [
@@ -2345,13 +2352,58 @@ describe("app", function() {
                                 '2. Send us a complaint'
                             ].join('\n')
                         })
+                        // check language gets set
                         .check.user.properties({lang: 'xh'})
+                        .run();
+                });
+
+                it("should send help them with complaint submission if they so choose", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27821234444',
+                                extra : {
+                                    language_choice: 'xh',
+                                    is_registered: 'true',
+                                    is_registered_by: 'clinic'
+                                },
+                            });
+                        })
+                        .setup.user.addr('27821234444')
+                        .inputs(
+                            {session_event: 'new'}  // states_start
+                            , '2'  // states_registered_full
+                        )
+                        // check navigation
+                        .check.interaction({
+                            state: 'states_end_complaint',
+                            reply: [
+                                'Thank you. We will send you a message ' +
+                                'shortly with instructions on how to send us ' +
+                                'your complaint.'
+                            ].join('\n')
+                        })
+                        // check sms is sent
+                        .check(function(api) {
+                            var smses = _.where(api.outbound.store, {
+                                endpoint: 'sms'
+                            });
+                            var sms = smses[0];
+                            assert.equal(smses.length, 1);
+                            assert.equal(sms.content,
+                                "Please reply to this message with your complaint. If it " +
+                                "relates to the service at the clinic, include the clinic or " +
+                                "clinic worker name. Standard rates apply."
+                            );
+                        })
+                        // check session ends
+                        .check.reply.ends_session()
                         .run();
                 });
             });
 
             describe("when the user has no active subscriptions", function() {
-                it("should ask if they want to register or get info", function() {
+                it("should ask in their language if they want to register or get info", function() {
                     return tester
                         .setup(function(api) {
                             api.contacts.add({
@@ -2364,7 +2416,10 @@ describe("app", function() {
                             });
                         })
                         .setup.user.addr('27821235555')
-                        .start()
+                        .inputs(
+                            {session_event: 'new'}  // states_start
+                        )
+                        // check navigation
                         .check.interaction({
                             state: 'states_suspect_pregnancy',
                             reply: [
@@ -2375,9 +2430,126 @@ describe("app", function() {
                                 '2. No'
                             ].join('\n')
                         })
+                        // check language gets set
                         .check.user.properties({lang: 'xh'})
                         .run();
                 });
+            });
+        });
+
+        describe("when the user has previously registered on chw", function() {
+            it("should provide choice for getting full messages in their language", function() {
+                return tester
+                    .setup(function(api) {
+                        api.contacts.add({
+                            msisdn: '+27001',
+                            extra : {
+                                language_choice: 'xh',
+                                is_registered: 'true',
+                                is_registered_by: 'chw'
+                            },
+                        });
+                    })
+                    .setup.user.addr('27001')
+                    .inputs(
+                        {session_event: 'new'}  // states_start
+                    )
+                    // check navigation
+                    .check.interaction({
+                        state: 'states_registered_not_full',
+                        reply: [
+                            'Welcome to the Department of Health\'s ' +
+                            'MomConnect. Choose an option:',
+                            '1. Get the full set of messages'
+                        ].join('\n')
+                    })
+                    // check language gets set
+                    .check.user.properties({lang: 'xh'})
+                    .run();
+            });
+
+            it("should tell them to go to the clinic if they want full msgs", function() {
+                return tester
+                    .setup(function(api) {
+                        api.contacts.add({
+                            msisdn: '+27001',
+                            extra : {
+                                is_registered: 'true',
+                                is_registered_by: 'chw'
+                            },
+                        });
+                    })
+                    .setup.user.addr('27001')
+                    .inputs(
+                        {session_event: 'new'}  // states_start
+                        , '1'  // states_registerd_not_full
+                    )
+                    .check.interaction({
+                        state: 'states_end_go_clinic',
+                        reply: [
+                            'To register for the full set of MomConnect ' +
+                            'messages, please visit your nearest clinic.'
+                        ].join('\n')
+                    })
+                    .run();
+            });
+        });
+
+        describe("when the user has previously registered on public", function() {
+            it("should provide choice for getting full messages in their language", function() {
+                return tester
+                    .setup(function(api) {
+                        api.contacts.add({
+                            msisdn: '+27001',
+                            extra : {
+                                language_choice: 'xh',
+                                is_registered: 'true',
+                                is_registered_by: 'personal'
+                            },
+                        });
+                    })
+                    .setup.user.addr('27001')
+                    .inputs(
+                        {session_event: 'new'}  // states_start
+                    )
+                    // check navigation
+                    .check.interaction({
+                        state: 'states_registered_not_full',
+                        reply: [
+                            'Welcome to the Department of Health\'s ' +
+                            'MomConnect. Choose an option:',
+                            '1. Get the full set of messages'
+                        ].join('\n')
+                    })
+                    // check language gets set
+                    .check.user.properties({lang: 'xh'})
+                    .run();
+            });
+
+            it("should tell them to go to the clinic if they want full msgs", function() {
+                return tester
+                    .setup(function(api) {
+                        api.contacts.add({
+                            msisdn: '+27001',
+                            extra : {
+                                is_registered: 'true',
+                                is_registered_by: 'personal'
+                            },
+                        });
+                    })
+                    .setup.user.addr('27001')
+                    .inputs(
+                        {session_event: 'new'}  // states_start
+                        , '1'  // states_registerd_not_full
+                    )
+                    .check.interaction({
+                        state: 'states_end_go_clinic',
+                        reply: [
+                            'To register for the full set of MomConnect ' +
+                            'messages, please visit your nearest clinic.'
+                        ].join('\n')
+                    })
+                    .run();
             });
         });
     });

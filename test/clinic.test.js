@@ -223,7 +223,7 @@ describe("app", function() {
             });
         });
 
-        describe("after the user runs through the whole flow", function() {
+        describe("after the user runs through the whole flow - mom's phone", function() {
             it("should have all their extras saved", function() {
                 return tester
                     .setup(function(api) {
@@ -265,7 +265,7 @@ describe("app", function() {
             });
         });
 
-        describe("when the user runs through the whole flow", function() {
+        describe("when the user runs through the whole flow - clinic worker's phone", function() {
             it("should have all their extras saved", function() {
                 return tester
                     .setup(function(api) {
@@ -311,126 +311,246 @@ describe("app", function() {
             });
         });
 
-        // describe("when the user is missing extras", function() {
-        //     it("will fail on extras missing", function() {
-        //         return tester
-        //             .setup.user.addr('27821234444')
-        //             .setup.user.lang('so')
-        //             .setup.user.answers({
-        //                 "states_start": "yes",
-        //                 "states_sa_id": "5101015009088",
-        //                 "states_birth_year": "1991",
-        //                 "states_birth_month": "10",
-        //                 "states_due_date_month": "09",
-        //                 "states_mobile_no": "0800000000",
-        //                 "states_passport_origin": "mz",
-        //                 "states_id_type": "none",
-        //                 "states_clinic_code": "12345",
-        //                 "states_birth_day": "3",
-        //                 "states_language": "so",
-        //                 "states_passport_no": "123456789"
-        //             })
-        //             .setup.user.state('states_end_success')
-        //             .input(null)
-        //             .check.interaction({
-        //                 state: 'states_start',
-        //                 reply: [
-        //                     'Welcome to The Department of Health\'s ' +
-        //                     'MomConnect. Tell us if this is the no. that ' +
-        //                     'the mother would like to get SMSs on: 0821234444',
-        //                     '1. Yes',
-        //                     '2. No'
-        //                 ].join('\n')
-        //             })
-        //             .run();
-        //     });
-        // });
-
         // no_incomplete metric tests
-        describe("when a session is terminated", function() {
+        describe("test dropoff metrics", function() {
 
-            describe("when the last state is states_start", function() {
-                it("should increase states_start.no_incomplete metric by 1", function() {
+            describe("states_start", function() {
+                it("entering once", function() {
                     return tester
-                        .setup.user.state('states_start')
-                        .input.session_event('close')
+                        .setup.user.addr('27001')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                        )
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
-                            assert.deepEqual(metrics['test.clinic.states_start.no_incomplete'].values, [1]);
+                            assert.deepEqual(metrics['test.clinic.states_start.no_incomplete_rev1'].values, [1]);
+                            assert.deepEqual(metrics['test.clinic.states_start.no_incomplete_rev1.transient'].values, [1]);
+                        })
+                        .run();
+                });
+
+                it("entering once, timing out", function() {
+                    return tester
+                        .setup.user.addr('27001')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , {session_event: 'close'}  // states_start
+                        )
+                        .check(function(api) {
+                            var metrics = api.metrics.stores.test_metric_store;
+                            assert.deepEqual(metrics['test.clinic.states_start.no_incomplete_rev1'].values, [1]);
+                            assert.deepEqual(metrics['test.clinic.states_start.no_incomplete_rev1.transient'].values, [1]);
+                        })
+                        .run();
+                });
+
+                it("entering once, timing out, redialing (session:close detected)", function() {
+                    return tester
+                        .setup.user.addr('27001')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , {session_event: 'close'}  // states_start
+                            , {session_event: 'new'}  // redial
+                        )
+                        .check(function(api) {
+                            var metrics = api.metrics.stores.test_metric_store;
+                            assert.deepEqual(metrics['test.clinic.states_start.no_incomplete_rev1'].values, [1]);
+                            assert.deepEqual(metrics['test.clinic.states_start.no_incomplete_rev1.transient'].values, [1]);
+                        })
+                        .run();
+                });
+
+                it("entering once, timing out, redialing (session:close not detected)", function() {
+                    return tester
+                        .setup.user.addr('27001')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , {session_event: 'new'}  // redial
+                        )
+                        .check(function(api) {
+                            var metrics = api.metrics.stores.test_metric_store;
+                            assert.deepEqual(metrics['test.clinic.states_start.no_incomplete_rev1'].values, [1]);
+                            assert.deepEqual(metrics['test.clinic.states_start.no_incomplete_rev1.transient'].values, [1]);
+                        })
+                        .run();
+                });
+
+                it("entering once, timing out, redialing, exiting", function() {
+                    return tester
+                        .setup.user.addr('27001')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , {session_event: 'close'}  // states_start
+                            , {session_event: 'new'}  // redial
+                            , '1'  // states_start
+                        )
+                        .check(function(api) {
+                            var metrics = api.metrics.stores.test_metric_store;
+                            assert.deepEqual(metrics['test.clinic.states_start.no_incomplete_rev1'].values, [1, 0]);
+                            assert.deepEqual(metrics['test.clinic.states_start.no_incomplete_rev1.transient'].values, [1, -1]);
                         })
                         .run();
                 });
             });
 
-            describe("when the last state is states_birth_day", function() {
-                it("should increase states_birth_day.no_incomplete metric by 1", function() {
+            describe("states_due_date_month", function() {
+                // This idea applies to all states except states_start and end states, for which measuring
+                // dropoffs is not a real thing
+                it("entering once", function() {
                     return tester
-                        .setup.user.state('states_birth_day')
-                        .input.session_event('close')
+                        .setup.user.addr('27001')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '1'  // states_start
+                            , '12345'  // states_clinic_code
+                        )
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
-                            assert.deepEqual(metrics['test.clinic.states_birth_day.no_incomplete'].values, [1]);
+                            assert.deepEqual(metrics['test.clinic.states_start.no_incomplete_rev1'].values, [1, 0]);
+                            assert.deepEqual(metrics['test.clinic.states_start.no_incomplete_rev1.transient'].values, [1, -1]);
+                            assert.deepEqual(metrics['test.clinic.states_clinic_code.no_incomplete_rev1'].values, [1, 0]);
+                            assert.deepEqual(metrics['test.clinic.states_clinic_code.no_incomplete_rev1.transient'].values, [1, -1]);
+                            assert.deepEqual(metrics['test.clinic.states_due_date_month.no_incomplete_rev1'].values, [1]);
+                            assert.deepEqual(metrics['test.clinic.states_due_date_month.no_incomplete_rev1.transient'].values, [1]);
+                        })
+                        .run();
+                });
+
+                it("entering once, timing out", function() {
+                    return tester
+                        .setup.user.addr('27001')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '1'  // states_start
+                            , '12345'  // states_clinic_code
+                            , {session_event: 'close'}  // states_due_date_month
+                        )
+                        .check(function(api) {
+                            var metrics = api.metrics.stores.test_metric_store;
+                            assert.deepEqual(metrics['test.clinic.states_start.no_incomplete_rev1'].values, [1, 0]);
+                            assert.deepEqual(metrics['test.clinic.states_start.no_incomplete_rev1.transient'].values, [1, -1]);
+                            assert.deepEqual(metrics['test.clinic.states_clinic_code.no_incomplete_rev1'].values, [1, 0]);
+                            assert.deepEqual(metrics['test.clinic.states_clinic_code.no_incomplete_rev1.transient'].values, [1, -1]);
+                            assert.deepEqual(metrics['test.clinic.states_due_date_month.no_incomplete_rev1'].values, [1]);
+                            assert.deepEqual(metrics['test.clinic.states_due_date_month.no_incomplete_rev1.transient'].values, [1]);
+                        })
+                        .run();
+                });
+
+                it("entering once, timing out, redialing (session:close detected)", function() {
+                    return tester
+                        .setup.user.addr('27001')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '1'  // states_start
+                            , '12345'  // states_clinic_code
+                            , {session_event: 'close'}  // states_due_date_month
+                            , {session_event: 'new'}  // redial
+                        )
+                        .check(function(api) {
+                            var metrics = api.metrics.stores.test_metric_store;
+                            assert.deepEqual(metrics['test.clinic.states_start.no_incomplete_rev1'].values, [1, 0]);
+                            assert.deepEqual(metrics['test.clinic.states_start.no_incomplete_rev1.transient'].values, [1, -1]);
+                            assert.deepEqual(metrics['test.clinic.states_clinic_code.no_incomplete_rev1'].values, [1, 0]);
+                            assert.deepEqual(metrics['test.clinic.states_clinic_code.no_incomplete_rev1.transient'].values, [1, -1]);
+                            assert.deepEqual(metrics['test.clinic.states_due_date_month.no_incomplete_rev1'].values, [1]);
+                            assert.deepEqual(metrics['test.clinic.states_due_date_month.no_incomplete_rev1.transient'].values, [1]);
+                        })
+                        .run();
+                });
+
+                it("entering once, timing out, redialing (session:close not detected)", function() {
+                    return tester
+                        .setup.user.addr('27001')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '1'  // states_start
+                            , '12345'  // states_clinic_code
+                            , {session_event: 'new'}  // redial
+                        )
+                        .check(function(api) {
+                            var metrics = api.metrics.stores.test_metric_store;
+                            assert.deepEqual(metrics['test.clinic.states_start.no_incomplete_rev1'].values, [1, 0]);
+                            assert.deepEqual(metrics['test.clinic.states_start.no_incomplete_rev1.transient'].values, [1, -1]);
+                            assert.deepEqual(metrics['test.clinic.states_clinic_code.no_incomplete_rev1'].values, [1, 0]);
+                            assert.deepEqual(metrics['test.clinic.states_clinic_code.no_incomplete_rev1.transient'].values, [1, -1]);
+                            assert.deepEqual(metrics['test.clinic.states_due_date_month.no_incomplete_rev1'].values, [1]);
+                            assert.deepEqual(metrics['test.clinic.states_due_date_month.no_incomplete_rev1.transient'].values, [1]);
+                        })
+                        .run();
+                });
+
+                it("entering once, timing out, redialing, abandoning registration", function() {
+                    return tester
+                        .setup.user.addr('27001')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '1'  // states_start
+                            , '12345'  // states_clinic_code
+                            , {session_event: 'close'}  // states_due_date_month
+                            , {session_event: 'new'}  // redial
+                            , '2'  // states_timed_out
+                        )
+                        .check(function(api) {
+                            var metrics = api.metrics.stores.test_metric_store;
+                            assert.deepEqual(metrics['test.clinic.states_start.no_incomplete_rev1'].values, [1, 0, 1]);
+                            assert.deepEqual(metrics['test.clinic.states_start.no_incomplete_rev1.transient'].values, [1, -1, 1]);
+                            assert.deepEqual(metrics['test.clinic.states_clinic_code.no_incomplete_rev1'].values, [1, 0]);
+                            assert.deepEqual(metrics['test.clinic.states_clinic_code.no_incomplete_rev1.transient'].values, [1, -1]);
+                            assert.deepEqual(metrics['test.clinic.states_due_date_month.no_incomplete_rev1'].values, [1]);
+                            assert.deepEqual(metrics['test.clinic.states_due_date_month.no_incomplete_rev1.transient'].values, [1]);
+                        })
+                        .run();
+                });
+
+                it("entering once, timing out, redialing, continuing registration", function() {
+                    return tester
+                        .setup.user.addr('27001')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '1'  // states_start
+                            , '12345'  // states_clinic_code
+                            , {session_event: 'close'}  // states_due_date_month
+                            , {session_event: 'new'}  // redial
+                            , '1'  // states_timed_out
+                        )
+                        .check(function(api) {
+                            var metrics = api.metrics.stores.test_metric_store;
+                            assert.deepEqual(metrics['test.clinic.states_start.no_incomplete_rev1'].values, [1, 0]);
+                            assert.deepEqual(metrics['test.clinic.states_start.no_incomplete_rev1.transient'].values, [1, -1]);
+                            assert.deepEqual(metrics['test.clinic.states_clinic_code.no_incomplete_rev1'].values, [1, 0]);
+                            assert.deepEqual(metrics['test.clinic.states_clinic_code.no_incomplete_rev1.transient'].values, [1, -1]);
+                            assert.deepEqual(metrics['test.clinic.states_due_date_month.no_incomplete_rev1'].values, [1, 0, 1]);
+                            assert.deepEqual(metrics['test.clinic.states_due_date_month.no_incomplete_rev1.transient'].values, [1, -1, 1]);
+                        })
+                        .run();
+                });
+
+                it("entering once, timing out, redialing, continuing registration, exiting", function() {
+                    return tester
+                        .setup.user.addr('27001')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '1'  // states_start
+                            , '12345'  // states_clinic_code
+                            , {session_event: 'close'}  // states_due_date_month
+                            , {session_event: 'new'}  // redial
+                            , '1'  // states_timed_out
+                            , '5'  // states_due_date_month
+                        )
+                        .check(function(api) {
+                            var metrics = api.metrics.stores.test_metric_store;
+                            assert.deepEqual(metrics['test.clinic.states_start.no_incomplete_rev1'].values, [1, 0]);
+                            assert.deepEqual(metrics['test.clinic.states_start.no_incomplete_rev1.transient'].values, [1, -1]);
+                            assert.deepEqual(metrics['test.clinic.states_clinic_code.no_incomplete_rev1'].values, [1, 0]);
+                            assert.deepEqual(metrics['test.clinic.states_clinic_code.no_incomplete_rev1.transient'].values, [1, -1]);
+                            assert.deepEqual(metrics['test.clinic.states_due_date_month.no_incomplete_rev1'].values, [1, 0, 1, 0]);
+                            assert.deepEqual(metrics['test.clinic.states_due_date_month.no_incomplete_rev1.transient'].values, [1, -1, 1, -1]);
                         })
                         .run();
                 });
             });
-
         });
-
-        describe("when a new session is started", function() {
-
-            describe("when it is a new user logging on", function() {
-                it("should set the last metric value in states_start.no_incomplete to 0", function() {
-                    return tester
-                        .setup.user.addr('275678')
-                        .start()
-                        .check(function(api) {
-                            var metrics = api.metrics.stores.test_metric_store;
-                            assert.deepEqual(metrics['test.clinic.states_start.no_incomplete'].values, [1, 0]);
-                        })
-                        .run();
-                });
-            });
-
-            describe("when it is an existing user logging on at states_start", function() {
-                it("should decrease the metric states_start.no_incomplete by 1", function() {
-                    return tester
-                        .setup.user.lang('en')  // make sure user is not seen as new
-                        .start()
-                        .check(function(api) {
-                            var metrics = api.metrics.stores.test_metric_store;
-                            assert.deepEqual(metrics['test.clinic.states_start.no_incomplete'].values, [-1]);
-                        })
-                        .run();
-                });
-            });
-
-            describe("when it is an existing starting a session at states_birth_day", function() {
-                it("should decrease the metric states_birth_day.no_incomplete by 1", function() {
-                    return tester
-                        .setup.user.state('states_birth_day')
-                        .check(function(api) {
-                            var metrics = api.metrics.stores.test_metric_store;
-                            assert.deepEqual(metrics['test.clinic.states_birth_day.no_incomplete'].values, [-1]);
-                        })
-                        .run();
-                });
-            });
-
-            describe("when it is an existing user continuing a session at states_birth_day", function() {
-                it("should not fire metric states_birth_day.no_incomplete", function() {
-                    return tester
-                        .setup.user.state('states_birth_day')
-                        .input('2') // make sure session is not new
-                        .check(function(api) {
-                            var metrics = api.metrics.stores.test_metric_store;
-                            assert.deepEqual(metrics['test.clinic.states_birth_day.no_incomplete'], undefined);
-                        })
-                        .run();
-                });
-            });
-        });
-        // end no_incomplete metrics tests
 
         describe("when the user starts a session", function() {
             it("should check if no. belongs to pregnant woman", function() {
@@ -1713,7 +1833,6 @@ describe("app", function() {
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
                             assert.deepEqual(metrics['test.clinic.avg.sessions_to_register'].values, [5]);
-                            assert.equal(metrics['test.clinic.states_end_success.no_incomplete'], undefined);
                             assert.deepEqual(metrics['test.clinic.sum.doc_to_jembi_success'].values, [1]);
                             assert.deepEqual(metrics['test.clinic.sum.json_to_jembi_success'].values, [1]);
                         })
@@ -1778,7 +1897,6 @@ describe("app", function() {
                             assert.deepEqual(metrics['test.clinic.avg.sessions_to_register'].values, [5]);
                             assert.deepEqual(metrics['test.clinic.percent_incomplete_registrations'].values, [25]);
                             assert.deepEqual(metrics['test.clinic.percent_complete_registrations'].values, [75]);
-                            assert.deepEqual(metrics['test.clinic.states_end_success.no_incomplete'], undefined);
                             assert.deepEqual(metrics['test.clinic.sum.doc_to_jembi_success'].values, [1]);
                             assert.deepEqual(metrics['test.clinic.sum.json_to_jembi_success'].values, [1]);
                             assert.deepEqual(metrics['test.sum.subscriptions'].values, [1]);
@@ -1837,7 +1955,6 @@ describe("app", function() {
                             assert.deepEqual(metrics['test.clinic.avg.sessions_to_register'].values, [5]);
                             assert.deepEqual(metrics['test.clinic.percent_incomplete_registrations'].values, [25]);
                             assert.deepEqual(metrics['test.clinic.percent_complete_registrations'].values, [75]);
-                            assert.deepEqual(metrics['test.clinic.states_end_success.no_incomplete'], undefined);
                             assert.deepEqual(metrics['test.clinic.sum.doc_to_jembi_success'].values, [1]);
                             assert.deepEqual(metrics['test.clinic.sum.json_to_jembi_success'].values, [1]);
                             assert.deepEqual(metrics['test.sum.subscriptions'].values, [1]);
@@ -2025,7 +2142,6 @@ describe("app", function() {
                             assert.deepEqual(metrics['test.clinic.avg.sessions_to_register'].values, [5]);
                             assert.deepEqual(metrics['test.clinic.percent_incomplete_registrations'].values, [25]);
                             assert.deepEqual(metrics['test.clinic.percent_complete_registrations'].values, [75]);
-                            assert.deepEqual(metrics['test.clinic.states_end_success.no_incomplete'], undefined);
                             assert.deepEqual(metrics['test.clinic.sum.doc_to_jembi_success'].values, [1]);
                             assert.deepEqual(metrics['test.clinic.sum.json_to_jembi_success'].values, [1]);
                             assert.deepEqual(metrics['test.sum.subscriptions'].values, [1]);
@@ -2099,10 +2215,6 @@ describe("app", function() {
                                     endpoint: 'sms'
                                 });
                                 assert.equal(smses.length,0);
-                            })
-                            .check(function(api) {
-                                var metrics = api.metrics.stores.test_metric_store;
-                                assert.deepEqual(metrics['test.clinic.states_start.no_incomplete'].values, [1]);
                             })
                             .run();
                     });

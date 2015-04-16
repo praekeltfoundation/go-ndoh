@@ -1664,28 +1664,28 @@ go.app = function() {
 
                 return Q.all([
                     self.im.contacts.save(self.user),
-                    self.im.metrics.fire.inc([self.env, 'sum.sessions'].join('.'), 1),
-                    self.fire_incomplete(e.im.state.name, -1)
+                    self.im.metrics.fire.inc([self.env, 'sum.sessions'].join('.'), 1)
                 ]);
             });
 
             self.im.on('session:close', function(e) {
-                return Q.all([
-                    self.fire_incomplete(e.im.state.name, 1),
-                    self.dial_back(e)
-                ]);
+                return self.dial_back(e);
             });
 
             self.im.user.on('user:new', function(e) {
-                return Q.all([
-                    self.fire_incomplete('states_start', 1),
-                    go.utils.fire_users_metrics(self.im, self.store_name, self.env, self.metric_prefix)
-                ]);
+                return go.utils.fire_users_metrics(self.im, self.store_name, self.env, self.metric_prefix);
             });
 
             self.im.on('state:enter', function(e) {
                 self.contact.extra.last_stage = e.state.name;
-                return self.im.contacts.save(self.contact);
+                return Q.all([
+                    self.im.contacts.save(self.contact),
+                    self.fire_incomplete(e.state.name, 1)
+                ]);
+            });
+
+            self.im.on('state:exit', function(e) {
+                return self.fire_incomplete(e.state.name, -1);
             });
 
             return self.im.contacts
@@ -1735,9 +1735,16 @@ go.app = function() {
         };
 
         self.fire_incomplete = function(name, val) {
-            var ignore_states = ['states_end_success'];
+            var ignore_states = [];
             if (!_.contains(ignore_states, name)) {
-                return self.im.metrics.fire.inc(([self.metric_prefix, name, "no_incomplete"].join('.')), {amount: val});
+                return Q.all([
+                    self.im.metrics.fire.inc(
+                        ([self.metric_prefix, name, "no_incomplete_rev1"].join('.')), {amount: val}),
+                    self.im.metrics.fire.sum(
+                        ([self.metric_prefix, name, "no_incomplete_rev1.transient"].join('.')), val)
+                ]);
+            } else {
+                return Q();
             }
         };
 
@@ -1783,16 +1790,21 @@ go.app = function() {
                 next: function(choice) {
                     if (choice.value === 'states_start') {
                         self.user.extra.working_on = "";
+                        return self.im.contacts
+                            .save(self.user)
+                            .then(function() {
+                                return 'states_start';
+                            });
+                    } else {
+                        return self
+                            .fire_incomplete(creator_opts.name, -1)
+                            .then(function() {
+                                return {
+                                    name: choice.value,
+                                    creator_opts: creator_opts
+                                };
+                            });
                     }
-
-                    return self.im.contacts
-                        .save(self.user)
-                        .then(function() {
-                            return {
-                                name: choice.value,
-                                creator_opts: creator_opts
-                            };
-                        });
                 }
             });
         });

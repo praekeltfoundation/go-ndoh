@@ -1568,10 +1568,7 @@ module.exports = function() {
     // Opt out line 27001 unsubscribe from active message sets
     {
         'request': {
-            'method': 'PUT',
-            'params': {
-                'to_addr': '+27001'
-            },
+            'method': 'PATCH',
             'headers': {
                 'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
                 'Content-Type': ['application/json']

@@ -238,7 +238,7 @@ go.utils = {
     },
 
     get_timestamp: function() {
-        return moment().format("YYYYMMDDhhmmss");
+        return moment().format("YYYYMMDDHHmmss");
     },
 
     // CLARIFY NEW STRATEGY

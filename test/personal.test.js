@@ -1743,7 +1743,7 @@ describe("app", function() {
                         state: 'states_faq_questions',
                         reply: [
                             'Please select one:',
-                            '1. What happens if the FAQ answer is really long?',
+                            '1. What happens if the FAQ answer is really long? (too long)',
                             '2. More',
                             '3. Back'
                         ].join('\n')
@@ -1873,7 +1873,7 @@ describe("app", function() {
                     .inputs('3', '1', '1', '1')
                     .check.interaction({
                         state: 'states_faq_answers',
-                        reply: ['to test properly. Let\'s see.',
+                        reply: ['want to test properly. Let\'s see.',
                             '1. Back',
                             '2. Send to me by SMS'
                         ].join('\n')

@@ -235,7 +235,7 @@ go.utils = {
     },
 
     get_timestamp: function() {
-        return moment().format("YYYYMMDDhhmmss");
+        return moment().format("YYYYMMDDHHmmss");
     },
 
     // CLARIFY NEW STRATEGY
@@ -579,8 +579,7 @@ go.utils = {
           data: go.utils.build_request_data(doc, 'yolo', contact),
           headers: {
             'Content-Type': ['multipart/form-data; boundary=yolo']
-          },
-          ssl_method: "SSLv3"
+          }
         });
     },
 
@@ -595,7 +594,6 @@ go.utils = {
           }
         });
         return http.post(im.config.jembi.url_json + 'subscription', {
-          ssl_method: "SSLv3",
           data: JSON.stringify(json_doc)
         });
     },
@@ -854,7 +852,6 @@ go.utils = {
             }
         });
         return http.get(im.config.jembi.url_json + 'facilityCheck', {
-            ssl_method: "SSLv3",
             params: {
                 'criteria': 'code:' + clinic_code
             }
@@ -915,7 +912,6 @@ go.utils = {
           }
         });
         return http.post(im.config.jembi.url_json + 'optout', {
-          ssl_method: "SSLv3",
           data: JSON.stringify(json_doc)
         });
     },
@@ -959,7 +955,6 @@ go.utils = {
           }
         });
         return http.post(im.config.jembi.url_json + 'serviceRating', {
-          ssl_method: "SSLv3",
           data: JSON.stringify(built_json)
         })
         .then(function(json_result) {

@@ -802,36 +802,6 @@ go.utils = {
         return alpha_numeric.test(input);
     },
 
-    jembi_optout_send_json: function(contact, user, type, im, metric_prefix) {
-        var built_json = go.utils.build_json_doc(im, contact, user, type);
-        return go.utils
-            .jembi_optout_api_call(built_json, im)
-            .then(function(json_result) {
-                var json_to_fire;
-                if (json_result.code >= 200 && json_result.code < 300){
-                    json_to_fire = (([metric_prefix, "sum", "json_to_jembi_success"].join('.')));
-                } else {
-                    json_to_fire = (([metric_prefix, "sum", "json_to_jembi_fail"].join('.')));
-                }
-                return im.metrics.fire.inc(json_to_fire, {amount: 1});
-        });
-    },
-
-    jembi_optout_api_call: function (json_doc, im) {
-        var http = new HttpApi(im, {
-          auth: {
-            username: im.config.jembi.username,
-            password: im.config.jembi.password
-          },
-          headers: {
-            'Content-Type': ['application/json']
-          }
-        });
-        return http.post(im.config.jembi.url_json + 'optout', {
-          data: JSON.stringify(json_doc)
-        });
-    },
-
     get_servicerating_data: function(im) {
         var servicerating_data = [];
         for (var question in im.user.answers) {
@@ -1229,9 +1199,8 @@ go.utils = {
             // ensure user is not opted out
             go.utils.opt_in(im, contact),
             // activate new subscription
-            go.utils.subscription_send_doc(contact, im, metric_prefix, env, opts),
+            go.utils.subscription_send_doc(contact, im, metric_prefix, env, opts)
             // send new subscription info to jembi
-            // go.utils.jembi_send_json(contact, contact, 'babyloss', im, metric_prefix)
         ]);
     },
 
@@ -1285,12 +1254,6 @@ go.utils = {
                             }
 
                             if (jembi_optout === true) {
-                                // send optout to jembi
-                                queue2.push(function() {
-                                    return go.utils.jembi_optout_send_json(contact, contact,
-                                      'optout', im, metric_prefix);
-                                });
-
                                 // fire opt-out registration source metric
                                 var reg_source = go.utils.get_reg_source(contact);
                                 queue2.push(function() {
@@ -2119,7 +2082,6 @@ go.app = function() {
             if (self.contact.extra.id_type !== undefined){
                 return Q.all([
                     go.utils.jembi_send_doc(self.contact, self.user, self.im, self.metric_prefix),
-                    // go.utils.jembi_send_json(self.contact, self.user, 'pre-registration', self.im, self.metric_prefix),
                     go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix, self.env, opts),
                     self.im.outbound.send({
                         to: self.contact,

@@ -1464,7 +1464,6 @@ describe("app", function() {
                             assert.deepEqual(metrics['test.personal.avg.sessions_to_register'].values, [5]);
                             assert.deepEqual(metrics['test.personal.percent_incomplete_registrations'].values, [25]);
                             assert.deepEqual(metrics['test.personal.percent_complete_registrations'].values, [75]);
-                            assert.deepEqual(metrics['test.personal.sum.json_to_jembi_success'].values, [1]);
                             assert.deepEqual(metrics['test.sum.subscriptions'].values, [1]);
                         })
                         .check(function(api) {

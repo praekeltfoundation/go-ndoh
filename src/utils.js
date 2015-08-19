@@ -371,17 +371,6 @@ go.utils = {
         }
     },
 
-    get_duedate_string: function(contact, config){
-        if (!_.isUndefined(contact.extra.due_date_month) && !_.isUndefined(contact.extra.due_date_day)){
-          var day = contact.extra.due_date_day;
-          var month = contact.extra.due_date_month;
-          var year = go.utils.get_due_year_from_month(month, go.utils.get_today(config));
-            return [year, month, day].join('');
-        } else {
-            return null;
-        }
-    },
-
     build_cda_doc: function(contact, user, im) {
         /**
 
@@ -518,54 +507,8 @@ go.utils = {
         }
     },
 
-    get_optoutreason: function(contact) {
-        var optoutreason_map = {
-            "miscarriage": 1,
-            "stillbirth": 2,
-            "babyloss": 3,
-            "not_useful": 4,
-            "other": 5,
-            "unknown": 6
-        };
-
-        return optoutreason_map[contact.extra.opt_out_reason] || 6;
-    },
-
     get_faccode: function(contact) {
         return contact.extra.clinic_code || null;
-    },
-
-    get_dob: function(contact) {
-        if (!_.isUndefined(contact.extra.dob)) {
-            return moment(contact.extra.dob, 'YYYY-MM-DD').format('YYYYMMDD');
-        } else {
-            return null;
-        }
-    },
-
-    build_json_doc: function(im, contact, user, type) {
-        var JSON_template = {
-          "mha": 1,
-          "swt": go.utils.get_swt(im),
-          "dmsisdn": user.msisdn,
-          "cmsisdn": contact.msisdn,
-          "id": go.utils.get_patient_id(contact),
-          "type": go.utils.get_subscription_type(type),
-          "lang": contact.extra.language_choice,
-          "encdate": go.utils.get_timestamp(),
-          "faccode": go.utils.get_faccode(contact),
-          "dob": go.utils.get_dob(contact)
-        };
-
-        if (type === 'optout') {
-            JSON_template.optoutreason = go.utils.get_optoutreason(contact);
-        }
-
-        if (type === 'registration') {
-            JSON_template.edd = go.utils.get_duedate_string(contact, im.config);
-        }
-
-        return JSON_template;
     },
 
     jembi_api_call: function (doc, contact, im) {
@@ -580,21 +523,6 @@ go.utils = {
           headers: {
             'Content-Type': ['multipart/form-data; boundary=yolo']
           }
-        });
-    },
-
-    jembi_json_api_call: function (json_doc, im) {
-        var http = new HttpApi(im, {
-          auth: {
-            username: im.config.jembi.username,
-            password: im.config.jembi.password
-          },
-          headers: {
-            'Content-Type': ['application/json']
-          }
-        });
-        return http.post(im.config.jembi.url_json + 'subscription', {
-          data: JSON.stringify(json_doc)
         });
     },
 
@@ -869,21 +797,6 @@ go.utils = {
     is_alpha_numeric_only: function(input) {
         alpha_numeric = new RegExp('^[A-Za-z0-9]+$');
         return alpha_numeric.test(input);
-    },
-
-    jembi_send_json: function(contact, user, type, im, metric_prefix) {
-        var built_json = go.utils.build_json_doc(im, contact, user, type);
-        return go.utils
-            .jembi_json_api_call(built_json, im)
-            .then(function(json_result) {
-                var json_to_fire;
-                if (json_result.code >= 200 && json_result.code < 300){
-                    json_to_fire = (([metric_prefix, "sum", "json_to_jembi_success"].join('.')));
-                } else {
-                    json_to_fire = (([metric_prefix, "sum", "json_to_jembi_fail"].join('.')));
-                }
-                return im.metrics.fire.inc(json_to_fire, {amount: 1});
-        });
     },
 
     jembi_optout_send_json: function(contact, user, type, im, metric_prefix) {
@@ -1313,9 +1226,8 @@ go.utils = {
             // ensure user is not opted out
             go.utils.opt_in(im, contact),
             // activate new subscription
-            go.utils.subscription_send_doc(contact, im, metric_prefix, env, opts),
+            go.utils.subscription_send_doc(contact, im, metric_prefix, env, opts)
             // send new subscription info to jembi
-            go.utils.jembi_send_json(contact, contact, 'babyloss', im, metric_prefix)
         ]);
     },
 

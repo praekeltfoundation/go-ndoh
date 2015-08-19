@@ -1431,7 +1431,6 @@ describe("app", function() {
                             var metrics = api.metrics.stores.test_metric_store;
                             assert.deepEqual(metrics['test.chw.avg.sessions_to_register'].values, [5]);
                             assert.equal(metrics['test.chw.states:end_success.no_incomplete'], undefined);
-                            assert.deepEqual(metrics['test.chw.sum.json_to_jembi_success'].values, [1]);
                         })
                         .check.reply.ends_session()
                         .run();
@@ -1525,7 +1524,6 @@ describe("app", function() {
                             assert.deepEqual(metrics['test.chw.avg.sessions_to_register'].values, [5]);
                             assert.deepEqual(metrics['test.chw.percent_incomplete_registrations'].values, [25]);
                             assert.deepEqual(metrics['test.chw.percent_complete_registrations'].values, [75]);
-                            assert.deepEqual(metrics['test.chw.sum.json_to_jembi_success'].values, [1]);
                             assert.deepEqual(metrics['test.sum.subscriptions'].values, [1]);
                         })
                         .check(function(api) {
@@ -1649,7 +1647,6 @@ describe("app", function() {
                             assert.deepEqual(metrics['test.chw.avg.sessions_to_register'].values, [5]);
                             assert.deepEqual(metrics['test.chw.percent_incomplete_registrations'].values, [25]);
                             assert.deepEqual(metrics['test.chw.percent_complete_registrations'].values, [75]);
-                            assert.deepEqual(metrics['test.chw.sum.json_to_jembi_success'].values, [1]);
                             assert.deepEqual(metrics['test.sum.subscriptions'].values, [1]);
                         })
                         .check.reply.ends_session()

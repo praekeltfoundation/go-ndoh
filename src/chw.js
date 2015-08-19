@@ -573,7 +573,6 @@ go.app = function() {
             self.contact.extra.subscription_seq_start = opts.sub_seq_start.toString();
             if (self.contact.extra.id_type !== undefined){
                 return Q.all([
-                    go.utils.jembi_send_doc(self.contact, self.user, self.im, self.metric_prefix),
                     go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix, self.env, opts),
                     self.im.outbound.send({
                         to: self.contact,

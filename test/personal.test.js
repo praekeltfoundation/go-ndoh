@@ -1844,7 +1844,7 @@ describe("app", function() {
                     .inputs('3', '1', '1', '1')
                     .check.interaction({
                         state: 'states_faq_answers',
-                        reply: ['want to test properly. Let\'s see.',
+                        reply: ['to test properly. Let\'s see.',
                             '1. Back',
                             '2. Send to me by SMS'
                         ].join('\n')

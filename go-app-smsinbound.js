@@ -46,7 +46,6 @@ go.utils = {
             }
 
             return choices_show;
-
     },
 
     get_today: function(config) {

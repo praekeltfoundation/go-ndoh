@@ -425,34 +425,7 @@ go.utils = {
         return optoutreason_map[contact.extra.opt_out_reason] || 6;
     },
 
-    build_optout_json: function(im, contact, user, type) {
-        var JSON_template = {
-            "mha": 1,
-            "swt": go.utils.get_swt(im),
-            "dmsisdn": user.msisdn,
-            "cmsisdn": contact.msisdn,
-            "id": go.utils.get_patient_id(contact),
-            "type": go.utils.get_subscription_type(type),
-            "lang": contact.extra.language_choice,
-            "encdate": go.utils.get_timestamp(),
-            "faccode": go.utils.get_faccode(contact),
-            "dob": go.utils.get_dob(contact),
-            "optoutreason": go.utils.get_optoutreason(contact)
-        };
-        return JSON_template;
-    },
-
-    jembi_optout_send_json: function(contact, user, type, im, metric_prefix) {
-        var built_json = go.utils.build_optout_json(im, contact, user, type);
-        return go.utils
-            .jembi_json_api_call('post', null, built_json, 'optout', im)
-            .then(function(json_result) {
-                var metric_name = [metric_prefix, "sum", "optout_to_jembi"].join('.');
-                return go.utils.json_success_fail_metric(im, metric_name, json_result);
-        });
-    },
-
-    build_babyloss_json: function(im, contact, user, type) {
+    build_jembi_json: function(im, contact, user, type) {
         var JSON_template = {
             "mha": 1,
             "swt": go.utils.get_swt(im),
@@ -465,11 +438,24 @@ go.utils = {
             "faccode": go.utils.get_faccode(contact),
             "dob": go.utils.get_dob(contact)
         };
+        if (type === 'optout') {
+            JSON_template.optoutreason = go.utils.get_optoutreason(contact);
+        }
         return JSON_template;
     },
 
+    jembi_optout_send_json: function(contact, user, type, im, metric_prefix) {
+        var built_json = go.utils.build_jembi_json(im, contact, user, type);
+        return go.utils
+            .jembi_json_api_call('post', null, built_json, 'optout', im)
+            .then(function(json_result) {
+                var metric_name = [metric_prefix, "sum", "optout_to_jembi"].join('.');
+                return go.utils.json_success_fail_metric(im, metric_name, json_result);
+        });
+    },
+
     jembi_babyloss_send_json: function(contact, user, type, im, metric_prefix) {
-        var built_json = go.utils.build_babyloss_json(im, contact, user, type);
+        var built_json = go.utils.build_jembi_json(im, contact, user, type);
         return go.utils
             .jembi_json_api_call('post', null, built_json, 'subscription', im)
             .then(function(json_result) {

@@ -619,6 +619,8 @@ go.utils = {
     },
 
     subscription_count_active: function(contact, im) {
+        // This function is used in the public line to determine routing
+        // depending on whether users have an active subscription
         var params = {
             to_addr: contact.msisdn
         };

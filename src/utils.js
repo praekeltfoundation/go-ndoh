@@ -452,6 +452,32 @@ go.utils = {
         });
     },
 
+    build_babyloss_json: function(im, contact, user, type) {
+        var JSON_template = {
+            "mha": 1,
+            "swt": go.utils.get_swt(im),
+            "dmsisdn": user.msisdn,
+            "cmsisdn": contact.msisdn,
+            "id": go.utils.get_patient_id(contact),
+            "type": go.utils.get_subscription_type(type),
+            "lang": contact.extra.language_choice,
+            "encdate": go.utils.get_timestamp(),
+            "faccode": go.utils.get_faccode(contact),
+            "dob": go.utils.get_dob(contact)
+        };
+        return JSON_template;
+    },
+
+    jembi_babyloss_send_json: function(contact, user, type, im, metric_prefix) {
+        var built_json = go.utils.build_babyloss_json(im, contact, user, type);
+        return go.utils
+            .jembi_json_api_call('post', null, built_json, 'subscription', im)
+            .then(function(json_result) {
+                var metric_name = [metric_prefix, "sum", "babyloss_to_jembi"].join('.');
+                return go.utils.json_success_fail_metric(im, metric_name, json_result);
+        });
+    },
+
     json_success_fail_metric: function(im, metric_name, json_result) {
         var metric_to_fire = json_result.code >= 200 && json_result.code < 300
             ? metric_name + '_success'
@@ -811,7 +837,9 @@ go.utils = {
             // ensure user is not opted out
             go.utils.opt_in(im, contact),
             // activate new subscription
-            go.utils.subscription_send_doc(contact, im, metric_prefix, env, opts)
+            go.utils.subscription_send_doc(contact, im, metric_prefix, env, opts),
+            // send new subscription info to jembi
+            go.utils.jembi_babyloss_send_json(contact, contact, 'babyloss', im, metric_prefix)
         ]);
     },
 

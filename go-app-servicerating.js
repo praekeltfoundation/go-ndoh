@@ -388,14 +388,16 @@ go.utils = {
         return go.utils
             .jembi_json_api_call('post', null, built_json, 'serviceRating', im)
             .then(function(json_result) {
-                var metrics_to_fire;
-                if (json_result.code >= 200 && json_result.code < 300){
-                    metrics_to_fire = (([metric_prefix, "sum", "servicerating_to_jembi_success"].join('.')));
-                } else {
-                    metrics_to_fire = (([metric_prefix, "sum", "servicerating_to_jembi_fail"].join('.')));
-                }
-                return im.metrics.fire.inc(metrics_to_fire, {amount: 1});
+                var metric_name = [metric_prefix, "sum", "servicerating_to_jembi"].join('.');
+                return go.utils.json_success_fail_metric(im, metric_name, json_result);
             });
+    },
+
+    json_success_fail_metric: function(im, metric_name, json_result) {
+        var metric_to_fire = json_result.code >= 200 && json_result.code < 300
+            ? metric_name + '_success'
+            : metric_name + '_fail';
+        return im.metrics.fire.inc(metric_to_fire, {amount: 1});
     },
 
     jembi_json_api_call: function(method, params, payload, endpoint, im) {
@@ -751,7 +753,6 @@ go.utils = {
             go.utils.opt_in(im, contact),
             // activate new subscription
             go.utils.subscription_send_doc(contact, im, metric_prefix, env, opts)
-            // send new subscription info to jembi
         ]);
     },
 

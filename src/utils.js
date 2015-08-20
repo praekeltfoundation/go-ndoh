@@ -333,20 +333,11 @@ go.utils = {
     },
 
     jembi_clinic_validate: function (im, clinic_code) {
-        var http = new HttpApi(im, {
-            auth: {
-                username: im.config.jembi.username,
-                password: im.config.jembi.password
-            },
-            headers: {
-                'Content-Type': ['application/json']
-            }
-        });
-        return http.get(im.config.jembi.url_json + 'facilityCheck', {
-            params: {
-                'criteria': 'code:' + clinic_code
-            }
-        });
+        var params = {
+            'criteria': 'code:' + clinic_code
+        };
+        return go.utils
+            .jembi_json_api_call('get', params, null, 'facilityCheck', im);
     },
 
     validate_clinic_code: function(im, clinic_code) {
@@ -391,27 +382,39 @@ go.utils = {
 
     jembi_send_servicerating: function(im, contact, metric_prefix, type) {
         var built_json = go.utils.build_servicerating_json(im, contact, type);
+        return go.utils
+            .jembi_json_api_call('post', null, built_json, 'serviceRating', im)
+            .then(function(json_result) {
+                var metrics_to_fire;
+                if (json_result.code >= 200 && json_result.code < 300){
+                    metrics_to_fire = (([metric_prefix, "sum", "servicerating_to_jembi_success"].join('.')));
+                } else {
+                    metrics_to_fire = (([metric_prefix, "sum", "servicerating_to_jembi_fail"].join('.')));
+                }
+                return im.metrics.fire.inc(metrics_to_fire, {amount: 1});
+            });
+    },
+
+    jembi_json_api_call: function(method, params, payload, endpoint, im) {
         var http = new HttpApi(im, {
-          auth: {
-            username: im.config.jembi.username,
-            password: im.config.jembi.password
-          },
-          headers: {
-            'Content-Type': ['application/json']
-          }
-        });
-        return http.post(im.config.jembi.url_json + 'serviceRating', {
-          data: JSON.stringify(built_json)
-        })
-        .then(function(json_result) {
-            var metrics_to_fire;
-            if (json_result.code >= 200 && json_result.code < 300){
-                metrics_to_fire = (([metric_prefix, "sum", "servicerating_to_jembi_success"].join('.')));
-            } else {
-                metrics_to_fire = (([metric_prefix, "sum", "servicerating_to_jembi_fail"].join('.')));
+            auth: {
+                username: im.config.jembi.username,
+                password: im.config.jembi.password
+            },
+            headers: {
+                'Content-Type': ['application/json']
             }
-            return im.metrics.fire.inc(metrics_to_fire, {amount: 1});
         });
+        switch(method) {
+            case "post":
+                return http.post(im.config.jembi.url_json + endpoint, {
+                    data: JSON.stringify(payload)
+                });
+            case "get":
+                return http.get(im.config.jembi.url_json + endpoint, {
+                    params: params
+                });
+        }
     },
 
     control_api_call: function (method, params, payload, endpoint, im) {
@@ -745,7 +748,6 @@ go.utils = {
             go.utils.opt_in(im, contact),
             // activate new subscription
             go.utils.subscription_send_doc(contact, im, metric_prefix, env, opts)
-            // send new subscription info to jembi
         ]);
     },
 

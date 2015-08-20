@@ -390,6 +390,68 @@ go.utils = {
             });
     },
 
+    get_patient_id: function(contact) {
+        var formatter = {
+            'sa_id': function () {
+                return contact.extra.sa_id + '^^^ZAF^NI';
+            },
+            'passport': function () {
+                return contact.extra.passport_no + '^^^' + contact.extra.passport_origin.toUpperCase() + '^PPN';
+            },
+            'none': function () {
+                return contact.msisdn.replace('+', '') + '^^^ZAF^TEL';
+            }
+        }[contact.extra.id_type];
+        return formatter();
+    },
+
+    get_dob: function(contact) {
+        if (!_.isUndefined(contact.extra.dob)) {
+            return moment(contact.extra.dob, 'YYYY-MM-DD').format('YYYYMMDD');
+        } else {
+            return null;
+        }
+    },
+
+    get_optoutreason: function(contact) {
+        var optoutreason_map = {
+            "miscarriage": 1,
+            "stillbirth": 2,
+            "babyloss": 3,
+            "not_useful": 4,
+            "other": 5,
+            "unknown": 6
+        };
+        return optoutreason_map[contact.extra.opt_out_reason] || 6;
+    },
+
+    build_optout_json: function(im, contact, user, type) {
+        var JSON_template = {
+            "mha": 1,
+            "swt": go.utils.get_swt(im),
+            "dmsisdn": user.msisdn,
+            "cmsisdn": contact.msisdn,
+            "id": go.utils.get_patient_id(contact),
+            "type": go.utils.get_subscription_type(type),
+            "lang": contact.extra.language_choice,
+            "encdate": go.utils.get_timestamp(),
+            "faccode": go.utils.get_faccode(contact),
+            "dob": go.utils.get_dob(contact),
+            "optoutreason": go.utils.get_optoutreason(contact)
+        };
+        return JSON_template;
+    },
+
+    jembi_optout_send_json: function(contact, user, type, im, metric_prefix) {
+        var built_json = go.utils.build_optout_json(im, contact, user, type);
+        return go.utils
+            .jembi_json_api_call('post', null, built_json, 'optout', im)
+            .then(function(json_result) {
+                var metric_name = [metric_prefix, "sum", "optout_to_jembi"].join('.');
+                return go.utils.json_success_fail_metric(im, metric_name, json_result);
+        });
+    },
+
     json_success_fail_metric: function(im, metric_name, json_result) {
         var metric_to_fire = json_result.code >= 200 && json_result.code < 300
             ? metric_name + '_success'
@@ -803,6 +865,12 @@ go.utils = {
                             }
 
                             if (jembi_optout === true) {
+                                // send optout to jembi
+                                queue2.push(function() {
+                                    return go.utils.jembi_optout_send_json(contact, contact,
+                                      'optout', im, metric_prefix);
+                                });
+
                                 // fire opt-out registration source metric
                                 var reg_source = go.utils.get_reg_source(contact);
                                 queue2.push(function() {

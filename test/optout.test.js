@@ -499,7 +499,7 @@ describe("app", function() {
                 it("should ask for the reason they are opting out", function() {
                     return tester
                         .setup.user.addr('27001')
-                        .start()
+                        .inputs({session_event: "new"})
                         .check.interaction({
                             state: 'states_start',
                             reply: [
@@ -520,7 +520,7 @@ describe("app", function() {
                 it("should ask for the reason they are opting out", function() {
                     return tester
                         .setup.user.addr('27831112222')
-                        .start()
+                        .inputs({session_event: "new"})
                         .check.interaction({
                             state: 'states_start',
                             reply: [
@@ -543,8 +543,7 @@ describe("app", function() {
             it("should ask if they want further help", function() {
                 return tester
                     .setup.user.addr('27001')
-                    .setup.user.state('states_start')
-                    .input('1')
+                    .inputs({session_event: "new"}, '1')
                     .check.interaction({
                         state: 'states_subscribe_option',
                         reply: [
@@ -563,8 +562,7 @@ describe("app", function() {
             it("should thank them and exit", function() {
                 return tester
                     .setup.user.addr('27001')
-                    .setup.user.state('states_start')
-                    .input('4')
+                    .inputs({session_event: "new"}, '4')
                     .check.interaction({
                         state: 'states_end_no',
                         reply: ('Thank you. You will no longer receive ' +
@@ -578,8 +576,7 @@ describe("app", function() {
             it("should save their optout reason against their contact", function() {
                 return tester
                     .setup.user.addr('27001')
-                    .setup.user.state('states_start')
-                    .input('4')
+                    .inputs({session_event: "new"}, '4')
                     .check(function(api) {
                         var contact = api.contacts.store[0];
                         assert.equal(contact.extra.opt_out_reason, 'not_useful');
@@ -606,12 +603,8 @@ describe("app", function() {
                             user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
                         });
                     })
-                    .setup.user.answers({
-                        'states_start': 'miscarriage'
-                    })
                     .setup.user.addr('27001')
-                    .setup.user.state('states_subscribe_option')
-                    .input('2')
+                    .inputs({session_event: "new"}, '1', '2')
                     .check.interaction({
                         state: 'states_end_no',
                         reply: ('Thank you. You will no longer receive ' +
@@ -639,12 +632,8 @@ describe("app", function() {
                             user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
                         });
                     })
-                    .setup.user.answers({
-                        'states_start': 'miscarriage'
-                    })
                     .setup.user.addr('27001')
-                    .setup.user.state('states_subscribe_option')
-                    .input('2')
+                    .inputs({session_event: "new"}, '1', '2')
                     .check(function(api) {
                         var contact = api.contacts.store[0];
                         assert.equal(contact.extra.opt_out_reason, 'miscarriage');
@@ -658,12 +647,8 @@ describe("app", function() {
             describe("when the user has existing subscriptions", function() {
                 it("should unsubscribe from other lines, subscribe them and exit", function() {
                     return tester
-                        .setup.user.answers({
-                            'states_start': 'miscarriage'
-                        })
-                        .setup.user.state('states_subscribe_option')
                         .setup.user.addr('27001')
-                        .input('1')
+                        .inputs({session_event: "new"}, '1', '1')
                         .check.interaction({
                             state: 'states_end_yes',
                             reply: ('Thank you. You will receive support messages ' +
@@ -683,12 +668,8 @@ describe("app", function() {
                 it("should set their optout reason as '' since they opted in to babyloss " +
                    "messages", function() {
                     return tester
-                        .setup.user.answers({
-                            'states_start': 'miscarriage'
-                        })
-                        .setup.user.state('states_subscribe_option')
                         .setup.user.addr('27001')
-                        .input('1')
+                        .inputs({session_event: "new"}, '1', '1')
                         .check(function(api) {
                             var contact = _.find(api.contacts.store, {
                               msisdn: '+27001'
@@ -702,12 +683,8 @@ describe("app", function() {
             describe("when the user has no existing subscriptions", function() {
                 it("should subscribe them and exit", function() {
                     return tester
-                        .setup.user.answers({
-                            'states_start': 'miscarriage'
-                        })
-                        .setup.user.state('states_subscribe_option')
                         .setup.user.addr('27831112222')
-                        .input('1')
+                        .inputs({session_event: "new"}, '1', '1')
                         .check.interaction({
                             state: 'states_end_yes',
                             reply: ('Thank you. You will receive support messages ' +
@@ -727,12 +704,8 @@ describe("app", function() {
                 it("should set their optout reason as '' since they opted in to babyloss " +
                    "messages", function() {
                     return tester
-                        .setup.user.answers({
-                            'states_start': 'miscarriage'
-                        })
-                        .setup.user.state('states_subscribe_option')
                         .setup.user.addr('27831112222')
-                        .input('1')
+                        .inputs({session_event: "new"}, '1', '1')
                         .check(function(api) {
                             var contact = _.find(api.contacts.store, { msisdn: '+27831112222' });
                             assert.equal(contact.extra.opt_out_reason, '');

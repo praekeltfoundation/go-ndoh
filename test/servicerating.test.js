@@ -180,7 +180,7 @@ describe("app", function() {
                                 msisdn: '+27001',
                             });
                         })
-                        .start()
+                        .inputs({session_event: 'new'})
                         .check.interaction({
                             state: 'end_reg_clinic',
                             reply: 'Please register at a clinic before using this line.'
@@ -203,7 +203,7 @@ describe("app", function() {
                                 }
                             });
                         })
-                        .start()
+                        .inputs({session_event: 'new'})
                         .check.interaction({
                             state: 'question_1_friendliness',
                             reply: [
@@ -262,7 +262,7 @@ describe("app", function() {
                                 }
                             });
                         })
-                        .start()
+                        .inputs({session_event: 'new'})
                         .check.interaction({
                             state: 'end_thanks_revisit',
                             reply: [
@@ -280,9 +280,17 @@ describe("app", function() {
         describe("when the user answers their friendliness rating", function() {
             it("should ask for their waiting times feeling", function() {
                 return tester
+                    .setup(function(api) {
+                        api.contacts.add({
+                            msisdn: '+27001',
+                            extra : {
+                                is_registered_by: 'clinic',
+                                last_service_rating: 'never'
+                            }
+                        });
+                    })
                     .setup.user.addr('27001')
-                    .setup.user.state('question_1_friendliness')
-                    .input('1')
+                    .inputs({session_event: 'new'}, '1')
                     .check.interaction({
                         state: 'question_2_waiting_times_feel',
                         reply: [
@@ -300,9 +308,17 @@ describe("app", function() {
         describe("when the user answers their waiting times feeling", function() {
             it("should ask for their waiting times length feeling", function() {
                 return tester
+                    .setup(function(api) {
+                        api.contacts.add({
+                            msisdn: '+27001',
+                            extra : {
+                                is_registered_by: 'clinic',
+                                last_service_rating: 'never'
+                            }
+                        });
+                    })
                     .setup.user.addr('27001')
-                    .setup.user.state('question_2_waiting_times_feel')
-                    .input('1')
+                    .inputs({session_event: 'new'}, '1', '1')
                     .check.interaction({
                         state: 'question_3_waiting_times_length',
                         reply: [
@@ -320,9 +336,17 @@ describe("app", function() {
         describe("when the user answers their waiting times length feeling", function() {
             it("should ask for their cleanliness rating", function() {
                 return tester
+                    .setup(function(api) {
+                        api.contacts.add({
+                            msisdn: '+27001',
+                            extra : {
+                                is_registered_by: 'clinic',
+                                last_service_rating: 'never'
+                            }
+                        });
+                    })
                     .setup.user.addr('27001')
-                    .setup.user.state('question_3_waiting_times_length')
-                    .input('1')
+                    .inputs({session_event: 'new'}, '1', '1', '1')
                     .check.interaction({
                         state: 'question_4_cleanliness',
                         reply: [
@@ -340,9 +364,17 @@ describe("app", function() {
         describe("when the user answers their cleanliness rating", function() {
             it("should ask for their privacy rating", function() {
                 return tester
+                    .setup(function(api) {
+                        api.contacts.add({
+                            msisdn: '+27001',
+                            extra : {
+                                is_registered_by: 'clinic',
+                                last_service_rating: 'never'
+                            }
+                        });
+                    })
                     .setup.user.addr('27001')
-                    .setup.user.state('question_4_cleanliness')
-                    .input('1')
+                    .inputs({session_event: 'new'}, '1', '1', '1', '1')
                     .check.interaction({
                         state: 'question_5_privacy',
                         reply: [
@@ -366,22 +398,15 @@ describe("app", function() {
                             created_at: "2014-07-28 09:35:26.732",
                             key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                             user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4",
-                            extra: {
-                                is_registered_by: "clinic",
-                                clinic_code: "12345",
-                                last_service_rating: "never"
+                            extra : {
+                                is_registered_by: 'clinic',
+                                clinic_code: '12345',
+                                last_service_rating: 'never'
                             }
                         });
                     })
                     .setup.user.addr('27001')
-                    .setup.user.state('question_5_privacy')
-                    .setup.user.answers({
-                        'question_1_friendliness': 'very-satisfied',
-                        'question_2_waiting_times_feel': 'very-satisfied',
-                        'question_3_waiting_times_length': 'less-than-an-hour',
-                        'question_4_cleanliness': 'very-satisfied'
-                    })
-                    .input('1')
+                    .inputs({session_event: 'new'}, '1', '1', '1', '1', '1')
                     .check.interaction({
                         state: 'end_thanks',
                         reply: [
@@ -391,79 +416,33 @@ describe("app", function() {
                     .check.reply.ends_session()
                     .run();
             });
-        });
 
-        describe("when the user revisits after rating service previously", function() {
-            it("should thank and end", function() {
+            it("save the servicerating date to their contact extras", function() {
                 return tester
                     .setup(function(api) {
                         api.contacts.add({
                             msisdn: '+27001',
                             created_at: "2014-07-28 09:35:26.732",
                             key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
-                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
+                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4",
+                            extra : {
+                                is_registered_by: 'clinic',
+                                clinic_code: '12345',
+                                last_service_rating: 'never'
+                            }
                         });
                     })
                     .setup.user.addr('27001')
-                    .setup.user.answers({
-                        'question_1_friendliness': 'very-satisfied',
-                        'question_2_waiting_times_feel': 'very-satisfied',
-                        'question_3_waiting_times_length': 'less-than-an-hour',
-                        'question_4_cleanliness': 'very-satisfied',
-                        'question_5_privacy': 'very-satisfied'
-                    })
-                    .setup.user.state('end_thanks')
-                    .check.interaction({
-                        state: 'end_thanks_revisit',
-                        reply: [
-                            'Sorry, you\'ve already rated service. For baby and pregnancy ' +
-                            'help or if you have compliments or complaints ' +
-                            'dial *120*550# or reply to any of the SMSs you receive'
-                        ].join('\n')
-                    })
-                    .check.reply.ends_session()
-                    .run();
-            });
-
-            it("should not send another sms", function() {
-                return tester
-                    .setup(function(api) {
-                        api.contacts.add({
-                            msisdn: '+27001',
-                            created_at: "2014-07-28 09:35:26.732",
-                            key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
-                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
-                        });
-                    })
-                    .setup.user.addr('27001')
-                    .setup.user.answers({
-                        'question_1_friendliness': 'very-satisfied',
-                        'question_2_waiting_times_feel': 'very-satisfied',
-                        'question_3_waiting_times_length': 'less-than-an-hour',
-                        'question_4_cleanliness': 'very-satisfied',
-                        'question_5_privacy': 'very-satisfied'
-                    })
-                    .setup.user.state('end_thanks')
-                    .check.interaction({
-                        state: 'end_thanks_revisit',
-                        reply: [
-                            'Sorry, you\'ve already rated service. For baby and pregnancy ' +
-                            'help or if you have compliments or complaints ' +
-                            'dial *120*550# or reply to any of the SMSs you receive'
-                        ].join('\n')
-                    })
+                    .inputs({session_event: 'new'}, '1', '1', '1', '1', '1')
                     .check(function(api) {
-                        var smses = _.where(api.outbound.store, {
-                            endpoint: 'sms'
+                        var contact = _.find(api.contacts.store, {
+                          msisdn: '+27001'
                         });
-                        assert.equal(smses.length, 0);
+                        assert.equal(contact.extra.last_service_rating, '20130819144811');
                     })
-                    .check.reply.ends_session()
                     .run();
             });
-        });
 
-        describe("when the user answers their privacy rating", function() {
             it("should send them an sms thanking them for their rating", function() {
                 return tester
                     .setup(function(api) {
@@ -472,22 +451,15 @@ describe("app", function() {
                             created_at: "2014-07-28 09:35:26.732",
                             key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                             user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4",
-                            extra: {
-                                is_registered_by: "clinic",
-                                clinic_code: "12345",
+                            extra : {
+                                is_registered_by: 'clinic',
+                                clinic_code: '12345',
                                 last_service_rating: 'never'
                             }
                         });
                     })
                     .setup.user.addr('27001')
-                    .setup.user.state('question_5_privacy')
-                    .setup.user.answers({
-                        'question_1_friendliness': 'very-satisfied',
-                        'question_2_waiting_times_feel': 'very-satisfied',
-                        'question_3_waiting_times_length': 'less-than-an-hour',
-                        'question_4_cleanliness': 'very-satisfied'
-                    })
-                    .input('1')
+                    .inputs({session_event: 'new'}, '1', '1', '1', '1', '1')
                     .check(function(api) {
                         var smses = _.where(api.outbound.store, {
                             endpoint: 'sms'
@@ -499,13 +471,6 @@ describe("app", function() {
                         );
                         assert.equal(sms.to_addr,'27001');
                     })
-                    .check(function(api) {
-                            var contact = _.find(api.contacts.store, {
-                              msisdn: '+27001'
-                            });
-                            assert.equal(contact.extra.last_service_rating, '20130819144811');
-                        })
-                    .check.reply.ends_session()
                     .run();
             });
 
@@ -545,6 +510,71 @@ describe("app", function() {
                     })
                     .run();
             });
+
         });
+
+        describe("when the user revisits after rating service previously", function() {
+            it("should not allow them to rate again", function() {
+                return tester
+                    .setup(function(api) {
+                        api.contacts.add({
+                            msisdn: '+27001',
+                            created_at: "2014-07-28 09:35:26.732",
+                            key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4",
+                            extra : {
+                                is_registered_by: 'clinic',
+                                clinic_code: '12345',
+                                last_service_rating: 'never'
+                            }
+                        });
+                    })
+                    .setup.user.addr('27001')
+                    .inputs({session_event: 'new'}, '1', '1', '1', '1', '1', {session_event: 'new'})
+                    .check.interaction({
+                        state: 'end_thanks_revisit',
+                        reply: [
+                            'Sorry, you\'ve already rated service. For baby and pregnancy ' +
+                            'help or if you have compliments or complaints ' +
+                            'dial *120*550# or reply to any of the SMSs you receive'
+                        ].join('\n')
+                    })
+                    .check.reply.ends_session()
+                    .run();
+            });
+
+            it("should not send another sms", function() {
+                return tester
+                    .setup(function(api) {
+                        api.contacts.add({
+                            msisdn: '+27001',
+                            extra : {
+                                is_registered_by: 'clinic',
+                                clinic_code: '12345',
+                                last_service_rating: 'any-string-except-"never"-or-undefined'
+                            }
+                        });
+                    })
+                    .setup.user.addr('27001')
+                    .inputs({session_event: 'new'})
+                    .check.interaction({
+                        state: 'end_thanks_revisit',
+                        reply: [
+                            'Sorry, you\'ve already rated service. For baby and pregnancy ' +
+                            'help or if you have compliments or complaints ' +
+                            'dial *120*550# or reply to any of the SMSs you receive'
+                        ].join('\n')
+                    })
+                    .check(function(api) {
+                        var smses = _.where(api.outbound.store, {
+                            endpoint: 'sms'
+                        });
+                        assert.equal(smses.length, 0);
+                    })
+                    .check.reply.ends_session()
+                    .run();
+            });
+        });
+
     });
 });

@@ -1275,9 +1275,9 @@ go.app = function() {
                     return creator(name, opts);
 
                 interrupt = false;
-                opts = opts || {};
-                opts.name = name;
-                return self.states.create('states_timed_out', opts);
+                timeout_opts = opts || {};
+                timeout_opts.name = name;
+                return self.states.create('states_timed_out', timeout_opts);
             });
         };
 

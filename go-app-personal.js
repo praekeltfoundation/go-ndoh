@@ -1289,14 +1289,14 @@ go.app = function() {
                     return creator(name, opts);
 
                 interrupt = false;
-                opts = opts || {};
-                opts.name = name;
+                timeout_opts = opts || {};
+                timeout_opts.name = name;
 
                 if (!_.contains(registration_states, name)) {
-                    return self.states.create('states_start', opts);
+                    return self.states.create('states_start', timeout_opts);
                 }
 
-                return self.states.create('states_timed_out', opts);
+                return self.states.create('states_timed_out', timeout_opts);
 
             });
         };

@@ -1217,8 +1217,8 @@ go.app = function() {
                 ],
 
                 next: function(choice) {
-                    if (choice.value == "states_end_yes"){
-                        opts = go.utils.subscription_type_and_rate(self.contact, self.im);
+                    if (choice.value == "states_end_yes") {
+                        var opts = go.utils.subscription_type_and_rate(self.contact, self.im);
                         // set new subscription user extras
                         self.contact.extra.subscription_type = opts.sub_type.toString();
                         self.contact.extra.subscription_rate = opts.sub_rate.toString();
@@ -1230,15 +1230,14 @@ go.app = function() {
                                 api_optout=false, unsub_all=true, jembi_optout=true,
                                 self.metric_prefix, self.env)
                             .then(function() {
-                                return go.utils
-                                    .loss_message_opt_in(self.im, self.contact, self.metric_prefix, self.env, opts)
-                                    .then(function() {
-                                        return go.utils
-                                            .adjust_percentage_optouts(self.im, self.env)
-                                            .then(function() {
-                                                return choice.value;
-                                            });
-                                });
+                                return go.utils.loss_message_opt_in(self.im, self.contact,
+                                    self.metric_prefix, self.env, opts);
+                            })
+                            .then(function() {
+                                return go.utils.adjust_percentage_optouts(self.im, self.env);
+                            })
+                            .then(function() {
+                                return choice.value;
                             });
                     } else {
                         return choice.value;

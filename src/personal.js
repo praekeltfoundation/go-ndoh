@@ -732,7 +732,6 @@ go.app = function() {
             self.contact.extra.metric_sessions_to_register = self.contact.extra.ussd_sessions;
             self.contact.extra.ussd_sessions = '0';
             return Q.all([
-                go.utils.jembi_send_json(self.contact, self.contact, 'subscription', self.im, self.metric_prefix),
                 go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix, self.env, opts),
                 self.im.outbound.send_to_user({
                     endpoint: 'sms',

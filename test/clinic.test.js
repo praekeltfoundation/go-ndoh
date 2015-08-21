@@ -1833,8 +1833,6 @@ describe("app", function() {
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
                             assert.deepEqual(metrics['test.clinic.avg.sessions_to_register'].values, [5]);
-                            assert.deepEqual(metrics['test.clinic.sum.doc_to_jembi_success'].values, [1]);
-                            assert.deepEqual(metrics['test.clinic.sum.json_to_jembi_success'].values, [1]);
                         })
                         .check.reply.ends_session()
                         .run();
@@ -1897,8 +1895,6 @@ describe("app", function() {
                             assert.deepEqual(metrics['test.clinic.avg.sessions_to_register'].values, [5]);
                             assert.deepEqual(metrics['test.clinic.percent_incomplete_registrations'].values, [25]);
                             assert.deepEqual(metrics['test.clinic.percent_complete_registrations'].values, [75]);
-                            assert.deepEqual(metrics['test.clinic.sum.doc_to_jembi_success'].values, [1]);
-                            assert.deepEqual(metrics['test.clinic.sum.json_to_jembi_success'].values, [1]);
                             assert.deepEqual(metrics['test.sum.subscriptions'].values, [1]);
                             assert.deepEqual(metrics['test.personal.conversion_rate'].values, [100]);
                             assert.deepEqual(metrics['test.chw.conversion_rate'].values, [33.33]);
@@ -1955,8 +1951,6 @@ describe("app", function() {
                             assert.deepEqual(metrics['test.clinic.avg.sessions_to_register'].values, [5]);
                             assert.deepEqual(metrics['test.clinic.percent_incomplete_registrations'].values, [25]);
                             assert.deepEqual(metrics['test.clinic.percent_complete_registrations'].values, [75]);
-                            assert.deepEqual(metrics['test.clinic.sum.doc_to_jembi_success'].values, [1]);
-                            assert.deepEqual(metrics['test.clinic.sum.json_to_jembi_success'].values, [1]);
                             assert.deepEqual(metrics['test.sum.subscriptions'].values, [1]);
                             assert.deepEqual(metrics['test.personal.conversion_rate'], undefined);
                             assert.deepEqual(metrics['test.chw.conversion_rate'], undefined);
@@ -2142,49 +2136,7 @@ describe("app", function() {
                             assert.deepEqual(metrics['test.clinic.avg.sessions_to_register'].values, [5]);
                             assert.deepEqual(metrics['test.clinic.percent_incomplete_registrations'].values, [25]);
                             assert.deepEqual(metrics['test.clinic.percent_complete_registrations'].values, [75]);
-                            assert.deepEqual(metrics['test.clinic.sum.doc_to_jembi_success'].values, [1]);
-                            assert.deepEqual(metrics['test.clinic.sum.json_to_jembi_success'].values, [1]);
                             assert.deepEqual(metrics['test.sum.subscriptions'].values, [1]);
-                        })
-                        .check.reply.ends_session()
-                        .run();
-                });
-            });
-
-            describe("if jembi sends fail", function() {
-                it.skip("should fire fail metrics", function() {
-                    return tester
-                        .setup.user.addr('27821234567')
-                        .setup(function(api) {
-                            api.contacts.add( {
-                                msisdn: '+27821234567',
-                                extra : {
-                                    clinic_code: '12345',
-                                    suspect_pregnancy: 'yes',
-                                    id_type: 'sa_id',
-                                    sa_id: '5101025009086',
-                                    birth_year: '1951',
-                                    birth_month: '01',
-                                    birth_day: '02',
-                                    dob: '1951-01-02',
-                                    ussd_sessions: '5',
-                                    due_date_month: '05',
-                                    due_date_day: '30'
-                                }
-                            });
-                        })
-                        .setup.user.state('states:language')
-                        .input('1')
-                        .check.interaction({
-                            state: 'states:end_success',
-                            reply: ('Thank you. The pregnant woman will now ' +
-                                'receive weekly messages about her pregnancy ' +
-                                'from MomConnect.')
-                        })
-                        .check(function(api) {
-                            var metrics = api.metrics.stores.test_metric_store;
-                            assert.deepEqual(metrics['test.clinic.sum.doc_to_jembi_fail'].values, [1]);
-                            assert.deepEqual(metrics['test.clinic.sum.json_to_jembi_fail'].values, [1]);
                         })
                         .check.reply.ends_session()
                         .run();

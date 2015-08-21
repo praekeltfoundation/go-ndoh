@@ -527,12 +527,8 @@ go.app = function() {
                     return self.im.groups.get(choice.value)
                         .then(function(group) {
                             self.contact.groups.push(group.key);
-                            return self.im.user
-                                .set_lang(choice.value)
-                                // we may not have to run this for this flow
-                                .then(function() {
-                                    return self.im.contacts.save(self.contact);
-                                })
+                            return self.im.contacts
+                                .save(self.contact)
                                 .then(function() {
                                     return Q.all([
                                         self.im.metrics.fire.avg((self.metric_prefix + ".avg.sessions_to_register"),

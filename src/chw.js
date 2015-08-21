@@ -537,10 +537,7 @@ go.app = function() {
                                         go.utils.decr_kv(self.im, [self.store_name, 'no_incomplete_registrations'].join('.')),
                                         // new duplicate kv_store entry below to start tracking conversion rates
                                         go.utils.incr_kv(self.im, [self.store_name, 'conversion_registrations'].join('.'))
-                                    ])
-                                        .then(function() {
-                                            return go.utils.adjust_percentage_registrations(self.im, self.metric_prefix);
-                                        });
+                                    ]);
                                 })
                                 .then(function() {
                                     if (!_.isUndefined(self.user.extra.working_on) && (self.user.extra.working_on !== "")) {
@@ -551,7 +548,8 @@ go.app = function() {
                                     self.user.extra.ussd_sessions = '0';
                                     return Q.all([
                                         self.im.contacts.save(self.user),
-                                        self.im.contacts.save(self.contact)
+                                        self.im.contacts.save(self.contact),
+                                        go.utils.adjust_percentage_registrations(self.im, self.metric_prefix)
                                     ]);
                                 })
                                 .then(function() {

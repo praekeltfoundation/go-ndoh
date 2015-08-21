@@ -683,13 +683,7 @@ go.app = function() {
                                         go.utils.incr_kv(self.im, [self.store_name, 'no_complete_registrations'].join('.')),
                                         go.utils.decr_kv(self.im, [self.store_name, 'no_incomplete_registrations'].join('.')),
                                         go.utils.incr_kv_conversions(self.im, self.contact, self.env)
-                                    ])
-                                        .then(function() {
-                                            return Q.all([
-                                                go.utils.adjust_percentage_registrations(self.im, self.metric_prefix),
-                                                go.utils.adjust_conversion_rates(self.im, self.env)
-                                            ]);
-                                        });
+                                    ]);
                                 })
                                 .then(function() {
                                     if (!_.isUndefined(self.user.extra.working_on) && (self.user.extra.working_on !== "")) {
@@ -701,7 +695,9 @@ go.app = function() {
                                     self.contact.extra.is_registered_by = 'clinic';
                                     return Q.all([
                                         self.im.contacts.save(self.user),
-                                        self.im.contacts.save(self.contact)
+                                        self.im.contacts.save(self.contact),
+                                        go.utils.adjust_percentage_registrations(self.im, self.metric_prefix),
+                                        go.utils.adjust_conversion_rates(self.im, self.env)
                                     ]);
                                 })
                                 .then(function() {

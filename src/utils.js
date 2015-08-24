@@ -555,6 +555,41 @@ go.utils = {
       return response;
     },
 
+    get_edd: function(im, contact) {
+        // Return estimated due date YYYYMMDD, default to null if unknown
+        // Django should default to 17000101 if null entry given
+        if (!_.isUndefined(contact.extra.due_date_month) &&
+            !_.isUndefined(contact.extra.due_date_day)) {
+            var day = contact.extra.due_date_day;
+            var month = contact.extra.due_date_month;
+            var year = go.utils.get_due_year_from_month(month, go.utils.get_today(config));
+            return [year, month, day].join('');
+        } else {
+            return null;
+        }
+
+    },
+
+    post_registration: function(chw_msisdn, contact, im, reg_type) {
+        var payload = {
+            chw_msisdn: chw_msisdn || null,  // +27...
+            mom_msisdn: contact.msisdn,  // +27...
+            mom_id_type: contact.extra.id_type,  // sa_id | passport | none
+            mom_lang: contact.extra.language_choice,  // en | af | xh ...
+            mom_edd: go.utils.get_edd(im, contact),  // calculate edd YYYYMMDD
+            mom_sa_id: contact.extra.sa_id || null,
+            mom_passport_no: contact.extra.passport_no || null,
+            mom_dob: contact.extra.dob || null,  // YYYYMMDD
+            clinic_code: contact.extra.clinic_code || null,
+            reg_type: reg_type  // clinic | chw | public | baby?
+        };
+        return go.utils
+            .control_api_call("post", null, payload, 'registration/', im)
+            .then(function(post_response) {
+                return go.utils.json_success_fail_metric(im, 'registration_call', post_response);
+            });
+    },
+
     subscription_send_doc: function(contact, im, metric_prefix, env, opts) {
         var payload = {
           contact_key: contact.key,

@@ -723,16 +723,12 @@ go.app = function() {
         });
 
         self.states.add('save_subscription_data', function(name) {
-
-            var opts = go.utils.subscription_type_and_rate(self.contact, self.im);
-            self.contact.extra.subscription_type = opts.sub_type.toString();
-            self.contact.extra.subscription_rate = opts.sub_rate.toString();
             self.contact.extra.is_registered = 'true';
             self.contact.extra.is_registered_by = 'personal';
             self.contact.extra.metric_sessions_to_register = self.contact.extra.ussd_sessions;
             self.contact.extra.ussd_sessions = '0';
             return Q.all([
-                go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix, self.env, opts),
+                go.utils.post_registration(self.contact.msisdn, self.contact, self.im, 'personal'),
                 self.im.outbound.send_to_user({
                     endpoint: 'sms',
                     content: $("Congratulations on your pregnancy. You will now get free SMSs about MomConnect. " +

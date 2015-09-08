@@ -109,7 +109,7 @@ go.app = function() {
                 .then(function() {
                     return Q
                         .all([
-                            go.utils.subscription_send_doc(self.contact,
+                            go.utils.post_subscription(self.contact,
                                 self.im, self.metric_prefix, self.env, opts),
                             self.im.metrics.fire.inc([self.env, 'sum',
                                 'baby_sms'].join('.'), {amount: 1}),

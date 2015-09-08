@@ -782,7 +782,7 @@ describe("app", function() {
                         })
                         .setup.user.addr('27001')
                         .setup.user.state('states_mobile_no')
-                        .input('831112222')
+                        .input('0831112222')
                         .check.interaction({
                             state: 'states_opt_in',
                             reply: [(
@@ -1514,8 +1514,6 @@ describe("app", function() {
                             assert.equal(contact.extra.metric_sessions_to_register, '5');
                             assert.equal(contact.extra.no_registrations, undefined);
                             assert.equal(contact.extra.registered_by, undefined);
-                            assert.equal(contact.extra.subscription_type, '10');
-                            assert.equal(contact.extra.subscription_rate, '3');
                             assert.equal(contact.extra.is_registered, 'true');
                             assert.equal(contact.extra.is_registered_by, 'chw');
                         })
@@ -1524,7 +1522,6 @@ describe("app", function() {
                             assert.deepEqual(metrics['test.chw.avg.sessions_to_register'].values, [5]);
                             assert.deepEqual(metrics['test.chw.percent_incomplete_registrations'].values, [25]);
                             assert.deepEqual(metrics['test.chw.percent_complete_registrations'].values, [75]);
-                            assert.deepEqual(metrics['test.sum.subscriptions'].values, [1]);
                         })
                         .check(function(api) {
                             var kv_store = api.kv.store;
@@ -1637,8 +1634,6 @@ describe("app", function() {
                             assert.equal(contact.extra.metric_sessions_to_register, '5');
                             assert.equal(contact.extra.no_registrations, undefined);
                             assert.equal(contact.extra.registered_by, undefined);
-                            assert.equal(contact.extra.subscription_type, '10');
-                            assert.equal(contact.extra.subscription_rate, '3');
                             assert.equal(contact.extra.is_registered, 'true');
                             assert.equal(contact.extra.is_registered_by, 'chw');
                         })
@@ -1647,7 +1642,6 @@ describe("app", function() {
                             assert.deepEqual(metrics['test.chw.avg.sessions_to_register'].values, [5]);
                             assert.deepEqual(metrics['test.chw.percent_incomplete_registrations'].values, [25]);
                             assert.deepEqual(metrics['test.chw.percent_complete_registrations'].values, [75]);
-                            assert.deepEqual(metrics['test.sum.subscriptions'].values, [1]);
                         })
                         .check.reply.ends_session()
                         .run();

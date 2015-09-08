@@ -145,7 +145,7 @@ go.app = function() {
                     return creator(name, opts);
 
                 interrupt = false;
-                timeout_opts = opts || {};
+                var timeout_opts = opts || {};
                 timeout_opts.name = name;
 
                 if (!_.contains(registration_states, name)) {

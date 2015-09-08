@@ -562,8 +562,7 @@ go.utils = {
     },
 
     get_edd: function(im, contact) {
-        // Return estimated due date YYYYMMDD, default to null if unknown
-        // Django should default to 17000101 if null entry given
+        // Return estimated due date YYYY-MM-DD, default to null if unknown
         if (!_.isUndefined(contact.extra.due_date_month) &&
             !_.isUndefined(contact.extra.due_date_day)) {
             var day = contact.extra.due_date_day;
@@ -1288,7 +1287,7 @@ go.app = function() {
                     return creator(name, opts);
 
                 interrupt = false;
-                timeout_opts = opts || {};
+                var timeout_opts = opts || {};
                 timeout_opts.name = name;
                 return self.states.create('states_timed_out', timeout_opts);
             });

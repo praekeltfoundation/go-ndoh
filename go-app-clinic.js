@@ -594,11 +594,21 @@ go.utils = {
         }
     },
 
+    get_passport_origin: function(id_type, passport_origin) {
+        if (id_type === 'passport') {
+            return passport_origin;
+        } else {
+            return null;
+        }
+    },
+
     post_registration: function(device_msisdn, contact, im, reg_type) {
         var payload = {
             hcw_msisdn: go.utils.get_hcw_no(device_msisdn, contact.msisdn),  // +27...
             mom_msisdn: go.utils.normalize_msisdn(contact.msisdn, '27'),  // +27...
             mom_id_type: contact.extra.id_type,  // 'sa_id' | 'passport' | 'none'
+            mom_passport_origin: go.utils.get_passport_origin(
+                contact.extra.id_type, contact.extra.passport_origin),
             mom_lang: contact.extra.language_choice,  // 'en' | 'af' | 'xh' ...
             mom_edd: go.utils.get_edd(im, contact),  // 'YYYY-MM-DD' | null
             mom_id_no: go.utils.get_identification_no(contact),

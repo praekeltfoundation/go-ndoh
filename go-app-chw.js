@@ -221,9 +221,6 @@ go.utils = {
 
     get_subscription_type: function(type){
       var types = {
-        "subscription": 1,
-        "pre-registration": 2,
-        "registration": 3,
         "optout": 4,
         "babyloss": 5,
         "servicerating": 6

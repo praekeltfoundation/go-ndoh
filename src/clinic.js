@@ -131,9 +131,9 @@ go.app = function() {
                     return creator(name, opts);
 
                 interrupt = false;
-                opts = opts || {};
-                opts.name = name;
-                return self.states.create('states_timed_out', opts);
+                var timeout_opts = opts || {};
+                timeout_opts.name = name;
+                return self.states.create('states_timed_out', timeout_opts);
             });
         };
 
@@ -319,7 +319,7 @@ go.app = function() {
                 },
 
                 next: function(content) {
-                    msisdn = go.utils.normalise_sa_msisdn(content);
+                    msisdn = go.utils.normalize_msisdn(content, '27');
                     self.user.extra.working_on = msisdn;
 
                     return self.im.contacts
@@ -683,13 +683,7 @@ go.app = function() {
                                         go.utils.incr_kv(self.im, [self.store_name, 'no_complete_registrations'].join('.')),
                                         go.utils.decr_kv(self.im, [self.store_name, 'no_incomplete_registrations'].join('.')),
                                         go.utils.incr_kv_conversions(self.im, self.contact, self.env)
-                                    ])
-                                        .then(function() {
-                                            return Q.all([
-                                                go.utils.adjust_percentage_registrations(self.im, self.metric_prefix),
-                                                go.utils.adjust_conversion_rates(self.im, self.env)
-                                            ]);
-                                        });
+                                    ]);
                                 })
                                 .then(function() {
                                     if (!_.isUndefined(self.user.extra.working_on) && (self.user.extra.working_on !== "")) {
@@ -701,7 +695,9 @@ go.app = function() {
                                     self.contact.extra.is_registered_by = 'clinic';
                                     return Q.all([
                                         self.im.contacts.save(self.user),
-                                        self.im.contacts.save(self.contact)
+                                        self.im.contacts.save(self.contact),
+                                        go.utils.adjust_percentage_registrations(self.im, self.metric_prefix),
+                                        go.utils.adjust_conversion_rates(self.im, self.env)
                                     ]);
                                 })
                                 .then(function() {
@@ -713,16 +709,10 @@ go.app = function() {
         });
 
         self.add('states_save_subscription', function(name) {
-            var opts = go.utils.subscription_type_and_rate(self.contact, self.im);
-            self.contact.extra.subscription_type = opts.sub_type.toString();
-            self.contact.extra.subscription_rate = opts.sub_rate.toString();
-            self.contact.extra.subscription_seq_start = opts.sub_seq_start.toString();
-
             if (self.contact.extra.id_type !== undefined) {
                 return Q.all([
-                    go.utils.subscription_send_doc(self.contact, self.im, self.metric_prefix, self.env, opts),
+                    go.utils.post_registration(self.user.msisdn, self.contact, self.im, 'clinic'),
                     self.send_registration_thanks(),
-                    self.im.contacts.save(self.contact)
                 ])
                 .then(function() {
                     return self.states.create('states_end_success');

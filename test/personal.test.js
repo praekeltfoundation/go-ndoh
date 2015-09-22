@@ -1454,8 +1454,6 @@ describe("app", function() {
                             assert.equal(contact.extra.ussd_sessions, '0');
                             assert.equal(contact.extra.last_stage, 'states_end_success');
                             assert.equal(contact.extra.metric_sessions_to_register, '5');
-                            assert.equal(contact.extra.subscription_type, '9');
-                            assert.equal(contact.extra.subscription_rate, '3');
                             assert.equal(contact.extra.is_registered, 'true');
                             assert.equal(contact.extra.is_registered_by, 'personal');
                         })
@@ -1464,7 +1462,6 @@ describe("app", function() {
                             assert.deepEqual(metrics['test.personal.avg.sessions_to_register'].values, [5]);
                             assert.deepEqual(metrics['test.personal.percent_incomplete_registrations'].values, [25]);
                             assert.deepEqual(metrics['test.personal.percent_complete_registrations'].values, [75]);
-                            assert.deepEqual(metrics['test.sum.subscriptions'].values, [1]);
                         })
                         .check(function(api) {
                             var kv_store = api.kv.store;

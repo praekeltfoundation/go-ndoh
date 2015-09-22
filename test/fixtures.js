@@ -1,6 +1,7 @@
 module.exports = function() {
     return [
-    // PERSONAL - COUNT ACTIVE SUBSCRIPTIONS - go.utils.subscription_count_active
+// GET Count Active Subscriptions (go.utils.subscription_count_active)
+    // +27821234444
     {
         'request': {
             'method': 'GET',
@@ -60,6 +61,7 @@ module.exports = function() {
             }
         }
     },
+    // +27821235555
     {
         'request': {
             'method': 'GET',
@@ -120,7 +122,7 @@ module.exports = function() {
         }
     },
 
-    // Subscriptions
+// GET Vumi Subscription - Optout
     // Opt out line subscription for 27001
     {
         'request': {
@@ -235,6 +237,8 @@ module.exports = function() {
             }
         }
     },
+
+// PATCH Vumi Subscription - Unsubscribe
     // Opt out line 27001 unsubscribe from active message sets
     {
         'request': {
@@ -288,6 +292,8 @@ module.exports = function() {
             }
         }
     },
+
+// POST Jembi Optout
     // Jembi Opt out call for: 27001 reason: miscarriage
     {
         'request': {
@@ -438,6 +444,8 @@ module.exports = function() {
             }
         }
     },
+
+// POST Vumi Subscriptions
     // Vumi Subscription to Loss Messages for: 27001
     {
         "request": {
@@ -552,6 +560,46 @@ module.exports = function() {
           }
         }
     },
+    // Vumi Subscription to Baby1
+    {
+        "request": {
+          "method": "POST",
+          'headers': {
+                'Authorization': ['ApiKey test_user:test_key'],
+                'Content-Type': ['application/json']
+            },
+          "url": "http://ndoh-control/api/v1/subscription/",
+          "data": {
+            "contact_key": "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+            "lang": "en",
+            "message_set": "/api/v1/message_set/4/",
+            "next_sequence_number": 1,
+            "schedule": "/api/v1/periodic_task/3/",
+            "to_addr": "+27001",
+            "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
+          }
+        },
+        "response": {
+          "code": 201,
+          "data": {
+            "active": true,
+            "completed": false,
+            "contact_key": "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+            "created_at": "2014-07-05T11:01:54.497870",
+            "id": 8,
+            "lang": "en",
+            "message_set": "/api/v1/message_set/4/",
+            "next_sequence_number": 1,
+            "resource_uri": "/api/v1/subscription/8/",
+            "schedule": "/api/v1/periodic_task/3/",
+            "to_addr": "+27001",
+            "updated_at": "2014-07-05T11:01:54.498122",
+            "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
+          }
+        }
+    },
+
+// POST Jembi Subscription - Loss
     // Jembi Subscription to Loss Messages for: 27001
     {
         'request': {
@@ -639,6 +687,8 @@ module.exports = function() {
             }
         }
     },
+
+// GET Jembi facilityCheck
     // Jembi Clinic Code validation - code 12345
     {
         "request": {
@@ -734,335 +784,538 @@ module.exports = function() {
         }
     },
 
+// POST Vumi Registrations
+    // Vumi registration post - clinic 1
     {
         "request": {
-          "method": "POST",
-          'headers': {
+            "method": "POST",
+            'headers': {
                 'Authorization': ['ApiKey test_user:test_key'],
                 'Content-Type': ['application/json']
             },
-          "url": "http://ndoh-control/api/v1/subscription/",
-          "data": {
-            "contact_key": "63ee4fa9-6888-4f0c-065a-939dc2473a99",
-            "lang": "en",
-            "message_set": "/api/v1/message_set/9/",
-            "next_sequence_number": 1,
-            "schedule": "/api/v1/periodic_task/3/",
-            "to_addr": "+27001",
-            "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
-          }
+            "url": "http://ndoh-control/api/v1/registration/",
+            "data": {
+                "hcw_msisdn": null,
+                "mom_msisdn": "+27821234567",
+                "mom_id_type": "sa_id",
+                "mom_passport_origin":null,
+                "mom_lang": "en",
+                "mom_edd": "2014-05-30",
+                "mom_id_no": "5101025009086",
+                "mom_dob": "1951-01-02",
+                "clinic_code": "12345",
+                "authority": "clinic"
+            }
         },
         "response": {
-          "code": 201,
-          "data": {
-            "active": true,
-            "completed": false,
-            "contact_key": "63ee4fa9-6888-4f0c-065a-939dc2473a99",
-            "created_at": "2014-07-05T11:01:54.497870",
-            "id": 8,
-            "lang": "en",
-            "message_set": "/api/v1/message_set/9/",
-            "next_sequence_number": 1,
-            "resource_uri": "/api/v1/subscription/8/",
-            "schedule": "/api/v1/periodic_task/3/",
-            "to_addr": "+271234",
-            "updated_at": "2014-07-05T11:01:54.498122",
-            "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
-          }
+            "code": 201,
+            "data": {
+                "hcw_msisdn": null,
+                "mom_msisdn": "+27821234567",
+                "mom_id_type": "sa_id",
+                "mom_passport_origin":null,
+                "mom_lang": "en",
+                "mom_edd": "2014-05-30",
+                "mom_id_no": "5101025009086",
+                "mom_dob": "1951-01-02",
+                "clinic_code": "12345",
+                "authority": "clinic"
+            }
         }
     },
+    // Vumi registration post - clinic 2
     {
         "request": {
-          "method": "POST",
-          'headers': {
+            "method": "POST",
+            'headers': {
                 'Authorization': ['ApiKey test_user:test_key'],
                 'Content-Type': ['application/json']
             },
-          "url": "http://ndoh-control/api/v1/subscription/",
-          "data": {
-            "contact_key": "63ee4fa9-6888-4f0c-065a-939dc2473a99",
-            "lang": "en",
-            "message_set": "/api/v1/message_set/10/",
-            "next_sequence_number": 1,
-            "schedule": "/api/v1/periodic_task/3/",
-            "to_addr": "+27821234567",
-            "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
-          }
+            "url": "http://ndoh-control/api/v1/registration/",
+            "data": {
+                "hcw_msisdn":"+270001",
+                "mom_msisdn":"+27821234567",
+                "mom_id_type":"sa_id",
+                "mom_passport_origin":null,
+                "mom_lang":"en",
+                "mom_edd":"2014-05-30",
+                "mom_id_no":"5101025009086",
+                "mom_dob":"1951-01-02",
+                "clinic_code":"12345",
+                "authority":"clinic"
+            }
         },
         "response": {
-          "code": 201,
-          "data": {
-            "active": true,
-            "completed": false,
-            "contact_key": "63ee4fa9-6888-4f0c-065a-939dc2473a99",
-            "created_at": "2014-07-05T11:01:54.497870",
-            "id": 8,
-            "lang": "en",
-            "message_set": "/api/v1/message_set/10/",
-            "next_sequence_number": 1,
-            "resource_uri": "/api/v1/subscription/8/",
-            "schedule": "/api/v1/periodic_task/3/",
-            "to_addr": "+27821234567",
-            "updated_at": "2014-07-05T11:01:54.498122",
-            "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
-          }
+            "code": 201,
+            "data": {
+                "hcw_msisdn":"+270001",
+                "mom_msisdn":"+27821234567",
+                "mom_id_type":"sa_id",
+                "mom_passport_origin":null,
+                "mom_lang":"en",
+                "mom_edd":"2014-05-30",
+                "mom_id_no":"5101025009086",
+                "mom_dob":"1951-01-02",
+                "clinic_code":"12345",
+                "authority":"clinic"
+            }
         }
     },
+    // Vumi registration post - clinic 3
     {
         "request": {
-          "method": "POST",
-          'headers': {
+            "method": "POST",
+            'headers': {
                 'Authorization': ['ApiKey test_user:test_key'],
                 'Content-Type': ['application/json']
             },
-          "url": "http://ndoh-control/api/v1/subscription/",
-          "data": {
-            "contact_key": "63ee4fa9-6888-4f0c-065a-939dc2473a99",
-            "lang": "en",
-            "message_set": "/api/v1/message_set/3/",
-            "next_sequence_number": 1,
-            "schedule": "/api/v1/periodic_task/1/",
-            "to_addr": "+27001",
-            "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
-          }
+            "url": "http://ndoh-control/api/v1/registration/",
+            "data": {
+                "hcw_msisdn":null,
+                "mom_msisdn":"+27001",
+                "mom_id_type":"none",
+                "mom_passport_origin":null,
+                "mom_lang":"en",
+                "mom_edd":"2014-05-30",
+                "mom_id_no":null,
+                "mom_dob":"1951-01-02",
+                "clinic_code":"12345",
+                "authority":"clinic"
+            }
         },
         "response": {
-          "code": 201,
-          "data": {
-            "active": true,
-            "completed": false,
-            "contact_key": "63ee4fa9-6888-4f0c-065a-939dc2473a99",
-            "created_at": "2014-07-05T11:01:54.497870",
-            "id": 8,
-            "lang": "en",
-            "message_set": "/api/v1/message_set/3/",
-            "next_sequence_number": 1,
-            "resource_uri": "/api/v1/subscription/8/",
-            "schedule": "/api/v1/periodic_task/1/",
-            "to_addr": "+27001",
-            "updated_at": "2014-07-05T11:01:54.498122",
-            "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
-          }
+            "code": 201,
+            "data": {
+                "hcw_msisdn":null,
+                "mom_msisdn":"+27001",
+                "mom_id_type":"none",
+                "mom_passport_origin":null,
+                "mom_lang":"en",
+                "mom_edd":"2014-05-30",
+                "mom_id_no":null,
+                "mom_dob":"1951-01-02",
+                "clinic_code":"12345",
+                "authority":"clinic"
+            }
         }
     },
+    // Vumi registration post - personal 1
     {
         "request": {
-          "method": "POST",
-          'headers': {
+            "method": "POST",
+            'headers': {
                 'Authorization': ['ApiKey test_user:test_key'],
                 'Content-Type': ['application/json']
             },
-          "url": "http://ndoh-control/api/v1/subscription/",
-          "data": {
-            "contact_key": "63ee4fa9-6888-4f0c-065a-939dc2473a99",
-            "lang": "en",
-            "message_set": "/api/v1/message_set/1/",
-            "next_sequence_number": 1,
-            "schedule": "/api/v1/periodic_task/3/",
-            "to_addr": "+27821234567",
-            "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
-          }
+            "url": "http://ndoh-control/api/v1/registration/",
+            "data": {
+                "hcw_msisdn":null,
+                "mom_msisdn":"+27001",
+                "mom_id_type":"sa_id",
+                "mom_passport_origin":null,
+                "mom_lang":"en",
+                "mom_edd":null,
+                "mom_id_no":"5101015009088",
+                "mom_dob":"1951-01-01",
+                "clinic_code":null,
+                "authority":"personal"
+            }
         },
         "response": {
-          "code": 201,
-          "data": {
-            "active": true,
-            "completed": false,
-            "contact_key": "63ee4fa9-6888-4f0c-065a-939dc2473a99",
-            "created_at": "2014-07-05T11:01:54.497870",
-            "id": 8,
-            "lang": "en",
-            "message_set": "/api/v1/message_set/1/",
-            "next_sequence_number": 1,
-            "resource_uri": "/api/v1/subscription/8/",
-            "schedule": "/api/v1/periodic_task/3/",
-            "to_addr": "+27821234567",
-            "updated_at": "2014-07-05T11:01:54.498122",
-            "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
-          }
+            "code": 201,
+            "data": {
+                "hcw_msisdn":null,
+                "mom_msisdn":"+27001",
+                "mom_id_type":"sa_id",
+                "mom_passport_origin":null,
+                "mom_lang":"en",
+                "mom_edd":null,
+                "mom_id_no":"5101015009088",
+                "mom_dob":"1951-01-01",
+                "clinic_code":null,
+                "authority":"personal"
+            }
         }
     },
+    // Vumi registration post - personal 2
     {
         "request": {
-          "method": "POST",
-          'headers': {
+            "method": "POST",
+            'headers': {
                 'Authorization': ['ApiKey test_user:test_key'],
                 'Content-Type': ['application/json']
             },
-          "url": "http://ndoh-control/api/v1/subscription/",
-          "data": {
-            "contact_key": "63ee4fa9-6888-4f0c-065a-939dc2473a99",
-            "lang": "en",
-            "message_set": "/api/v1/message_set/10/",
-            "next_sequence_number": 1,
-            "schedule": "/api/v1/periodic_task/3/",
-            "to_addr": "+27001",
-            "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
-          }
+            "url": "http://ndoh-control/api/v1/registration/",
+            "data": {
+                "hcw_msisdn":null,
+                "mom_msisdn":"+27001",
+                "mom_id_type":"sa_id",
+                "mom_passport_origin":null,
+                "mom_lang":"en",
+                "mom_edd":null,
+                "mom_id_no":"5002285000007",
+                "mom_dob":"1950-02-28",
+                "clinic_code":null,
+                "authority":"personal"
+            }
         },
         "response": {
-          "code": 201,
-          "data": {
-            "active": true,
-            "completed": false,
-            "contact_key": "63ee4fa9-6888-4f0c-065a-939dc2473a99",
-            "created_at": "2014-07-05T11:01:54.497870",
-            "id": 8,
-            "lang": "en",
-            "message_set": "/api/v1/message_set/10/",
-            "next_sequence_number": 1,
-            "resource_uri": "/api/v1/subscription/8/",
-            "schedule": "/api/v1/periodic_task/3/",
-            "to_addr": "+27001",
-            "updated_at": "2014-07-05T11:01:54.498122",
-            "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
-          }
+            "code": 201,
+            "data": {
+                "hcw_msisdn":null,
+                "mom_msisdn":"+27001",
+                "mom_id_type":"sa_id",
+                "mom_passport_origin":null,
+                "mom_lang":"en",
+                "mom_edd":null,
+                "mom_id_no":"5002285000007",
+                "mom_dob":"1950-02-28",
+                "clinic_code":null,
+                "authority":"personal"
+            }
         }
     },
+    // Vumi registration post - personal 3
     {
         "request": {
-          "method": "POST",
-          'headers': {
+            "method": "POST",
+            'headers': {
                 'Authorization': ['ApiKey test_user:test_key'],
                 'Content-Type': ['application/json']
             },
-          "url": "http://ndoh-control/api/v1/subscription/",
-          "data": {
-            "contact_key": "63ee4fa9-6888-4f0c-065a-939dc2473a99",
-            "lang": "en",
-            "message_set": "/api/v1/message_set/4/",
-            "next_sequence_number": 1,
-            "schedule": "/api/v1/periodic_task/3/",
-            "to_addr": "+27001",
-            "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
-          }
+            "url": "http://ndoh-control/api/v1/registration/",
+            "data": {
+                "hcw_msisdn":null,
+                "mom_msisdn":"+27001",
+                "mom_id_type":"sa_id",
+                "mom_passport_origin":null,
+                "mom_lang":"en",
+                "mom_edd":null,
+                "mom_id_no":"5101025009086",
+                "mom_dob":"1951-01-02",
+                "clinic_code":null,
+                "authority":"personal"
+            }
         },
         "response": {
-          "code": 201,
-          "data": {
-            "active": true,
-            "completed": false,
-            "contact_key": "63ee4fa9-6888-4f0c-065a-939dc2473a99",
-            "created_at": "2014-07-05T11:01:54.497870",
-            "id": 8,
-            "lang": "en",
-            "message_set": "/api/v1/message_set/4/",
-            "next_sequence_number": 1,
-            "resource_uri": "/api/v1/subscription/8/",
-            "schedule": "/api/v1/periodic_task/3/",
-            "to_addr": "+27001",
-            "updated_at": "2014-07-05T11:01:54.498122",
-            "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
-          }
+            "code": 201,
+            "data": {
+                "hcw_msisdn":null,
+                "mom_msisdn":"+27001",
+                "mom_id_type":"sa_id",
+                "mom_passport_origin":null,
+                "mom_lang":"en",
+                "mom_edd":null,
+                "mom_id_no":"5101025009086",
+                "mom_dob":"1951-01-02",
+                "clinic_code":null,
+                "authority":"personal"
+            }
         }
     },
+    // Vumi registration post - personal 4
     {
         "request": {
-          "method": "POST",
-          'headers': {
+            "method": "POST",
+            'headers': {
                 'Authorization': ['ApiKey test_user:test_key'],
                 'Content-Type': ['application/json']
             },
-          "url": "http://ndoh-control/api/v1/subscription/",
-          "data": {
-            "contact_key": "63ee4fa9-6888-4f0c-065a-939dc2473a99",
-            "lang": "en",
-            "message_set": "/api/v1/message_set/2/",
-            "next_sequence_number": 7,
-            "schedule": "/api/v1/periodic_task/4/",
-            "to_addr": "+27821234567",
-            "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
-          }
+            "url": "http://ndoh-control/api/v1/registration/",
+            "data": {
+                "hcw_msisdn":null,
+                "mom_msisdn":"+27001",
+                "mom_id_type":"sa_id",
+                "mom_passport_origin":null,
+                "mom_lang":"en",
+                "mom_edd":null,
+                "mom_id_no":"2012315678097",
+                "mom_dob":"2020-12-31",
+                "clinic_code":null,
+                "authority":"personal"
+            }
         },
         "response": {
-          "code": 201,
-          "data": {
-            "active": true,
-            "completed": false,
-            "contact_key": "63ee4fa9-6888-4f0c-065a-939dc2473a99",
-            "created_at": "2014-07-05T11:01:54.497870",
-            "id": 8,
-            "lang": "en",
-            "message_set": "/api/v1/message_set/2/",
-            "next_sequence_number": 7,
-            "resource_uri": "/api/v1/subscription/8/",
-            "schedule": "/api/v1/periodic_task/4/",
-            "to_addr": "+27821234567",
-            "updated_at": "2014-07-05T11:01:54.498122",
-            "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
-          }
+            "code": 201,
+            "data": {
+                "hcw_msisdn":null,
+                "mom_msisdn":"+27001",
+                "mom_id_type":"sa_id",
+                "mom_passport_origin":null,
+                "mom_lang":"en",
+                "mom_edd":null,
+                "mom_id_no":"2012315678097",
+                "mom_dob":"2020-12-31",
+                "clinic_code":null,
+                "authority":"personal"
+            }
         }
     },
+    // Vumi registration post - personal 5
     {
         "request": {
-          "method": "POST",
-          'headers': {
+            "method": "POST",
+            'headers': {
                 'Authorization': ['ApiKey test_user:test_key'],
                 'Content-Type': ['application/json']
             },
-          "url": "http://ndoh-control/api/v1/subscription/",
-          "data": {
-            "contact_key": "63ee4fa9-6888-4f0c-065a-939dc2473a99",
-            "lang": "en",
-            "message_set": "/api/v1/message_set/2/",
-            "next_sequence_number": 7,
-            "schedule": "/api/v1/periodic_task/4/",
-            "to_addr": "+27001",
-            "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
-          }
+            "url": "http://ndoh-control/api/v1/registration/",
+            "data": {
+                "hcw_msisdn":null,
+                "mom_msisdn":"+27001",
+                "mom_id_type":"passport",
+                "mom_passport_origin":"zw",
+                "mom_lang":"en",
+                "mom_edd":null,
+                "mom_id_no":"12345",
+                "mom_dob":null,
+                "clinic_code":null,
+                "authority":"personal"
+            }
         },
         "response": {
-          "code": 201,
-          "data": {
-            "active": true,
-            "completed": false,
-            "contact_key": "63ee4fa9-6888-4f0c-065a-939dc2473a99",
-            "created_at": "2014-07-05T11:01:54.497870",
-            "id": 8,
-            "lang": "en",
-            "message_set": "/api/v1/message_set/2/",
-            "next_sequence_number": 7,
-            "resource_uri": "/api/v1/subscription/8/",
-            "schedule": "/api/v1/periodic_task/4/",
-            "to_addr": "+27001",
-            "updated_at": "2014-07-05T11:01:54.498122",
-            "user_account": "4a11907a-4cc4-415a-9011-58251e15e2b4"
-          }
+            "code": 201,
+            "data": {
+                "hcw_msisdn":null,
+                "mom_msisdn":"+27001",
+                "mom_id_type":"passport",
+                "mom_passport_origin":"zw",
+                "mom_lang":"en",
+                "mom_edd":null,
+                "mom_id_no":"12345",
+                "mom_dob":null,
+                "clinic_code":null,
+                "authority":"personal"
+            }
         }
-      },
-      {
+    },
+    // Vumi registration post - personal 6
+    {
         "request": {
-          "method": "POST",
-          'headers': {
+            "method": "POST",
+            'headers': {
                 'Authorization': ['ApiKey test_user:test_key'],
                 'Content-Type': ['application/json']
             },
+            "url": "http://ndoh-control/api/v1/registration/",
+            "data": {
+                "hcw_msisdn":null,
+                "mom_msisdn":"+27001",
+                "mom_id_type":"passport",
+                "mom_passport_origin":"zw",
+                "mom_lang":"en",
+                "mom_edd":null,
+                "mom_id_no":"12345",
+                "mom_dob":"1981-01-01",
+                "clinic_code":null,
+                "authority":"personal"
+            }
+        },
+        "response": {
+            "code": 201,
+            "data": {
+                "hcw_msisdn":null,
+                "mom_msisdn":"+27001",
+                "mom_id_type":"passport",
+                "mom_passport_origin":"zw",
+                "mom_lang":"en",
+                "mom_edd":null,
+                "mom_id_no":"12345",
+                "mom_dob":"1981-01-01",
+                "clinic_code":null,
+                "authority":"personal"
+            }
+        }
+    },
+    // Vumi registration post - personal 7
+    {
+        "request": {
+            "method": "POST",
+            'headers': {
+                'Authorization': ['ApiKey test_user:test_key'],
+                'Content-Type': ['application/json']
+            },
+            "url": "http://ndoh-control/api/v1/registration/",
+            "data": {
+                "hcw_msisdn":null,
+                "mom_msisdn":"+27001",
+                "mom_id_type":"none",
+                "mom_passport_origin":null,
+                "mom_lang":"en",
+                "mom_edd":null,
+                "mom_id_no":null,
+                "mom_dob":null,
+                "clinic_code":null,
+                "authority":"personal"
+            }
+        },
+        "response": {
+            "code": 201,
+            "data": {
+                "hcw_msisdn":null,
+                "mom_msisdn":"+27001",
+                "mom_id_type":"none",
+                "mom_passport_origin":null,
+                "mom_lang":"en",
+                "mom_edd":null,
+                "mom_id_no":null,
+                "mom_dob":null,
+                "clinic_code":null,
+                "authority":"personal"
+            }
+        }
+    },
+    // Vumi registration post - chw 1
+    {
+        "request": {
+            "method": "POST",
+            'headers': {
+                'Authorization': ['ApiKey test_user:test_key'],
+                'Content-Type': ['application/json']
+            },
+            "url": "http://ndoh-control/api/v1/registration/",
+            "data": {
+                "hcw_msisdn":"+27001",
+                "mom_msisdn":"+27821234567",
+                "mom_id_type":"passport",
+                "mom_passport_origin":"zw",
+                "mom_lang":"en",
+                "mom_edd":null,
+                "mom_id_no":"12345",
+                "mom_dob":null,
+                "clinic_code":null,
+                "authority":"chw"
+            }
+        },
+        "response": {
+            "code": 201,
+            "data": {
+                "hcw_msisdn":"+27001",
+                "mom_msisdn":"+27821234567",
+                "mom_id_type":"passport",
+                "mom_passport_origin":"zw",
+                "mom_lang":"en",
+                "mom_edd":null,
+                "mom_id_no":"12345",
+                "mom_dob":null,
+                "clinic_code":null,
+                "authority":"chw"
+            }
+        }
+    },
+    // Vumi registration post - chw 2
+    {
+        "request": {
+            "method": "POST",
+            'headers': {
+                'Authorization': ['ApiKey test_user:test_key'],
+                'Content-Type': ['application/json']
+            },
+            "url": "http://ndoh-control/api/v1/registration/",
+            "data": {
+                "hcw_msisdn":null,
+                "mom_msisdn":"+27001",
+                "mom_id_type":"passport",
+                "mom_passport_origin":"zw",
+                "mom_lang":"en",
+                "mom_edd":null,
+                "mom_id_no":"5101025009086",
+                "mom_dob":null,
+                "clinic_code":null,
+                "authority":"chw"
+            }
+        },
+        "response": {
+            "code": 201,
+            "data": {
+                "hcw_msisdn":null,
+                "mom_msisdn":"+27001",
+                "mom_id_type":"passport",
+                "mom_passport_origin":"zw",
+                "mom_lang":"en",
+                "mom_edd":null,
+                "mom_id_no":"5101025009086",
+                "mom_dob":null,
+                "clinic_code":null,
+                "authority":"chw"
+            }
+        }
+    },
+    // Vumi registration post - chw 3
+    {
+        "request": {
+            "method": "POST",
+            'headers': {
+                'Authorization': ['ApiKey test_user:test_key'],
+                'Content-Type': ['application/json']
+            },
+            "url": "http://ndoh-control/api/v1/registration/",
+            "data": {
+                "hcw_msisdn":null,
+                "mom_msisdn":"+27001",
+                "mom_id_type":"sa_id",
+                "mom_passport_origin":null,
+                "mom_lang":"en",
+                "mom_edd":null,
+                "mom_id_no":"5101025009086",
+                "mom_dob":"1951-01-02",
+                "clinic_code":null,
+                "authority":"chw"
+            }
+        },
+        "response": {
+            "code": 201,
+            "data": {
+                "hcw_msisdn":null,
+                "mom_msisdn":"+27001",
+                "mom_id_type":"sa_id",
+                "mom_passport_origin":null,
+                "mom_lang":"en",
+                "mom_edd":null,
+                "mom_id_no":"5101025009086",
+                "mom_dob":"1951-01-02",
+                "clinic_code":null,
+                "authority":"chw"
+            }
+        }
+    },
 
-          "url": "http://ndoh-control/api/v1/snappybouncer/ticket/",
-          "data": {
-            "conversation":"/api/v1/snappybouncer/conversation/key/dummyconversation/",
-            "message": "DONUTS",
-            "contact_key": "63ee4fa9-6888-4f0c-065a-939dc2473a99",
-            "msisdn": "+27001"
-          }
+// POST Snappy Ticket
+    // Snappy ticket post
+    {
+        "request": {
+            "method": "POST",
+            'headers': {
+                'Authorization': ['ApiKey test_user:test_key'],
+                'Content-Type': ['application/json']
+            },
+            "url": "http://ndoh-control/api/v1/snappybouncer/ticket/",
+            "data": {
+                "conversation":"/api/v1/snappybouncer/conversation/key/dummyconversation/",
+                "message": "DONUTS",
+                "contact_key": "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                "msisdn": "+27001"
+            }
         },
         "response": {
-          "code": 201,
-          "data": {
-            "contact_key": "63ee4fa9-6888-4f0c-065a-939dc2473a99",
-            "conversation": "/api/v1/snappybouncer/conversation/1/",
-            "created_at": "2014-07-27T21:59:50.463810",
-            "id": 1,
-            "message": "DONUTS",
-            "msisdn": "+27001",
-            "resource_uri": "/api/v1/snappybouncer/ticket/1/",
-            "response": "",
-            "support_id": null,
-            "support_nonce": "alfz1cc1qkitdarc",
-            "updated_at": "2014-07-27T21:59:56.489255"
-          }
+            "code": 201,
+            "data": {
+                "contact_key": "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                "conversation": "/api/v1/snappybouncer/conversation/1/",
+                "created_at": "2014-07-27T21:59:50.463810",
+                "id": 1,
+                "message": "DONUTS",
+                "msisdn": "+27001",
+                "resource_uri": "/api/v1/snappybouncer/ticket/1/",
+                "response": "",
+                "support_id": null,
+                "support_nonce": "alfz1cc1qkitdarc",
+                "updated_at": "2014-07-27T21:59:56.489255"
+            }
         },
     },
+
+// POST Vumi Servicerating
     // Vumi Servicerating Post
     {
         "request": {
@@ -1110,6 +1363,8 @@ module.exports = function() {
             }
         }
     },
+
+// POST Jembi Servicerating
     // Jembi Servicerating Post
     {
         "request": {
@@ -1149,6 +1404,7 @@ module.exports = function() {
         }
     },
 
+// FAQ Browsing
     // TOPIC RESPONSE
     {
             'request': {
@@ -1631,5 +1887,6 @@ module.exports = function() {
                 }]
             }]
     }
-    ];
+
+];
 };

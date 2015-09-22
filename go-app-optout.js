@@ -184,9 +184,26 @@ go.utils = {
         return readable_no;
     },
 
-    normalise_sa_msisdn: function(msisdn) {
-        denormalised_no = '+27' + msisdn.slice(msisdn.length-9, msisdn.length);
-        return denormalised_no;
+    normalize_msisdn: function(raw, country_code) {
+        // don't touch shortcodes
+        if (raw.length <= 5) {
+            return raw;
+        }
+        // remove chars that are not numbers or +
+        raw = raw.replace(/[^0-9+]/g);
+        if (raw.substr(0,2) === '00') {
+            return '+' + raw.substr(2);
+        }
+        if (raw.substr(0,1) === '0') {
+            return '+' + country_code + raw.substr(1);
+        }
+        if (raw.substr(0,1) === '+') {
+            return raw;
+        }
+        if (raw.substr(0, country_code.length) === country_code) {
+            return '+' + raw;
+        }
+        return raw;
     },
 
     incr_user_extra: function(data_to_increment, amount_to_increment) {
@@ -204,9 +221,6 @@ go.utils = {
 
     get_subscription_type: function(type){
       var types = {
-        "subscription": 1,
-        "pre-registration": 2,
-        "registration": 3,
         "optout": 4,
         "babyloss": 5,
         "servicerating": 6
@@ -527,46 +541,94 @@ go.utils = {
     },
 
     subscription_type_and_rate: function(contact, im) {
-      var response = {
-          sub_type: null,
-          sub_rate: null,
-          sub_seq_start: 1
-      };
-      // substrings because QA names are appended with _qa
-      if (im.config.name.substring(0,8) == "personal") {
-          response.sub_type = im.config.subscription.subscription;
-          response.sub_rate = im.config.rate.two_per_week;
-      } else if (im.config.name.substring(0,3) == "chw") {
-          response.sub_type = im.config.subscription.chw;
-          response.sub_rate = im.config.rate.two_per_week;
-      } else if (im.config.name.substring(0,6) == "optout") {
-          response.sub_type = im.config.subscription[im.user.answers.states_start];
-          response.sub_rate = im.config.rate.two_per_week;
-      } else if (im.config.name.substring(0,10) == "smsinbound") {
-          response.sub_type = im.config.subscription.baby1;
-          response.sub_rate = im.config.rate.two_per_week;
-      } else {
-        // clinic line
-          var week = go.utils.calc_weeks(go.utils.get_today(im.config),
-                  contact.extra.due_date_month, contact.extra.due_date_day);
-          var mapped = go.utils.protocol_mapper(week, im);
-          var sub_seq_start = go.utils.calc_sequence_start(week);
-          response.sub_type = mapped.sub_type;
-          response.sub_rate = mapped.sub_rate;
-          response.sub_seq_start = sub_seq_start;
-      }
-      return response;
+        // Returns the subscription type, rate and start point
+        // for loss and baby message subscriptions
+        var response = {
+            sub_type: null,
+            sub_rate: null,
+            sub_seq_start: 1
+        };
+        if (im.config.name.substring(0,6) == "optout") {
+            response.sub_type = im.config.subscription[im.user.answers.states_start];
+            response.sub_rate = im.config.rate.two_per_week;
+        } else if (im.config.name.substring(0,10) == "smsinbound") {
+            response.sub_type = im.config.subscription.baby1;
+            response.sub_rate = im.config.rate.two_per_week;
+        }
+        return response;
     },
 
-    subscription_send_doc: function(contact, im, metric_prefix, env, opts) {
+    get_edd: function(im, contact) {
+        // Return estimated due date YYYY-MM-DD, default to null if unknown
+        if (!_.isUndefined(contact.extra.due_date_month) &&
+            !_.isUndefined(contact.extra.due_date_day)) {
+            var day = contact.extra.due_date_day;
+            var month = contact.extra.due_date_month;
+            var year = go.utils.get_due_year_from_month(month, go.utils.get_today(im.config));
+            return [year, month, day].join('-');
+        } else {
+            return null;
+        }
+    },
+
+    get_identification_no: function(contact) {
+        if (contact.extra.id_type === 'sa_id') {
+            return contact.extra.sa_id;
+        } else if (contact.extra.id_type === 'passport') {
+            return contact.extra.passport_no;
+        } else {
+            return null;
+        }
+    },
+
+    get_hcw_no: function(device_msisdn, contact_msisdn) {
+        var n_device_msisdn = go.utils.normalize_msisdn(device_msisdn, '27');
+        var n_contact_msisdn = go.utils.normalize_msisdn(contact_msisdn, '27');
+        if (n_device_msisdn === n_contact_msisdn) {
+            return null;
+        } else {
+            return n_device_msisdn;
+        }
+    },
+
+    get_passport_origin: function(id_type, passport_origin) {
+        if (id_type === 'passport') {
+            return passport_origin;
+        } else {
+            return null;
+        }
+    },
+
+    post_registration: function(device_msisdn, contact, im, reg_type) {
         var payload = {
-          contact_key: contact.key,
-          lang: contact.extra.language_choice,
-          message_set: "/api/v1/message_set/" + opts.sub_type + "/",
-          next_sequence_number: opts.sub_seq_start,
-          schedule: "/api/v1/periodic_task/" + opts.sub_rate + "/",
-          to_addr: contact.msisdn,
-          user_account: contact.user_account
+            hcw_msisdn: go.utils.get_hcw_no(device_msisdn, contact.msisdn),  // +27...
+            mom_msisdn: go.utils.normalize_msisdn(contact.msisdn, '27'),  // +27...
+            mom_id_type: contact.extra.id_type,  // 'sa_id' | 'passport' | 'none'
+            mom_passport_origin: go.utils.get_passport_origin(
+                contact.extra.id_type, contact.extra.passport_origin),
+            mom_lang: contact.extra.language_choice,  // 'en' | 'af' | 'xh' ...
+            mom_edd: go.utils.get_edd(im, contact),  // 'YYYY-MM-DD' | null
+            mom_id_no: go.utils.get_identification_no(contact),
+            mom_dob: contact.extra.dob || null,  // 'YYYY-MM-DD' | null
+            clinic_code: contact.extra.clinic_code || null,
+            authority: reg_type,  // 'clinic' | 'chw' | 'personal'
+        };
+        return go.utils
+            .control_api_call("post", null, payload, 'registration/', im)
+            .then(function(post_response) {
+                return go.utils.json_success_fail_metric(im, 'registration_call', post_response);
+            });
+    },
+
+    post_subscription: function(contact, im, metric_prefix, env, opts) {
+        var payload = {
+            contact_key: contact.key,
+            lang: contact.extra.language_choice,
+            message_set: "/api/v1/message_set/" + opts.sub_type + "/",
+            next_sequence_number: opts.sub_seq_start,
+            schedule: "/api/v1/periodic_task/" + opts.sub_rate + "/",
+            to_addr: contact.msisdn,
+            user_account: contact.user_account
         };
         return go.utils
             .control_api_call("post", null, payload, 'subscription/', im)
@@ -661,49 +723,6 @@ go.utils = {
         } else {
             return preg_week;
         }
-    },
-
-    protocol_mapper: function(weeks, im) {
-        // defines which message set at what rate for weeks
-      var response = {
-          sub_type: null,
-          sub_rate: null
-      };
-      if (weeks <= 31) {
-        response.sub_type = im.config.subscription.standard;
-        response.sub_rate = im.config.rate.two_per_week;
-      } else if (weeks <= 35) {
-        response.sub_type = im.config.subscription.later;
-        response.sub_rate = im.config.rate.three_per_week;
-      } else if (weeks <= 36) {
-        response.sub_type = im.config.subscription.accelerated;
-        response.sub_rate = im.config.rate.three_per_week;
-      } else if (weeks <= 37) {
-        response.sub_type = im.config.subscription.accelerated;
-        response.sub_rate = im.config.rate.four_per_week;
-      } else if (weeks <= 38) {
-        response.sub_type = im.config.subscription.accelerated;
-        response.sub_rate = im.config.rate.five_per_week;
-      } else {
-        response.sub_type = im.config.subscription.accelerated;
-        response.sub_rate = im.config.rate.daily;
-      }
-      return response;
-    },
-
-    calc_sequence_start: function(weeks) {
-        // calculates which sms in the sequence to start with
-        var seq_start;
-        if (weeks < 5) {
-            seq_start = 1;
-        } else if (weeks <= 31) {
-            seq_start = ((weeks-4)*2)-1;
-        } else if (weeks <= 35) {
-            seq_start = ((weeks-30)*3)-2;
-        } else {
-            seq_start = 1;
-        }
-        return seq_start;
     },
 
     support_log_ticket: function(message, contact, im, metric_prefix) {
@@ -828,7 +847,7 @@ go.utils = {
             // ensure user is not opted out
             go.utils.opt_in(im, contact),
             // activate new subscription
-            go.utils.subscription_send_doc(contact, im, metric_prefix, env, opts),
+            go.utils.post_subscription(contact, im, metric_prefix, env, opts),
             // send new subscription info to jembi
             go.utils.jembi_babyloss_send_json(contact, contact, 'babyloss', im, metric_prefix)
         ]);
@@ -1217,8 +1236,8 @@ go.app = function() {
                 ],
 
                 next: function(choice) {
-                    if (choice.value == "states_end_yes"){
-                        opts = go.utils.subscription_type_and_rate(self.contact, self.im);
+                    if (choice.value == "states_end_yes") {
+                        var opts = go.utils.subscription_type_and_rate(self.contact, self.im);
                         // set new subscription user extras
                         self.contact.extra.subscription_type = opts.sub_type.toString();
                         self.contact.extra.subscription_rate = opts.sub_rate.toString();
@@ -1230,15 +1249,14 @@ go.app = function() {
                                 api_optout=false, unsub_all=true, jembi_optout=true,
                                 self.metric_prefix, self.env)
                             .then(function() {
-                                return go.utils
-                                    .loss_message_opt_in(self.im, self.contact, self.metric_prefix, self.env, opts)
-                                    .then(function() {
-                                        return go.utils
-                                            .adjust_percentage_optouts(self.im, self.env)
-                                            .then(function() {
-                                                return choice.value;
-                                            });
-                                });
+                                return go.utils.loss_message_opt_in(self.im, self.contact,
+                                    self.metric_prefix, self.env, opts);
+                            })
+                            .then(function() {
+                                return go.utils.adjust_percentage_optouts(self.im, self.env);
+                            })
+                            .then(function() {
+                                return choice.value;
                             });
                     } else {
                         return choice.value;

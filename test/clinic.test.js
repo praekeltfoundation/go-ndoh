@@ -46,21 +46,6 @@ describe("utils", function() {
                 false);
             done();
         });
-        it('should find the right sms to start sending', function(done) {
-            // week 3
-            assert.equal(go.utils.calc_sequence_start(3), 1);
-            // week 5
-            assert.equal(go.utils.calc_sequence_start(5), 1);
-            // week 31
-            assert.equal(go.utils.calc_sequence_start(31), 53);
-            // week 32
-            assert.equal(go.utils.calc_sequence_start(32), 4);
-            // week 35
-            assert.equal(go.utils.calc_sequence_start(35), 13);
-            // week 36
-            assert.equal(go.utils.calc_sequence_start(36), 1);
-            done();
-        });
         it('should parse single digit days correctly', function(done) {
             assert.equal(go.utils.double_digit_day('1'), '01');
             assert.equal(go.utils.double_digit_day('01'), '01');
@@ -69,9 +54,10 @@ describe("utils", function() {
             done();
         });
         it('should normalise msisdn numbers logically', function(done) {
-            assert.equal(go.utils.normalise_sa_msisdn('0821112222'), '+27821112222');
-            assert.equal(go.utils.normalise_sa_msisdn('821112222'), '+27821112222');
-            assert.equal(go.utils.normalise_sa_msisdn('27821112222'), '+27821112222');
+            assert.equal(go.utils.normalize_msisdn('0821112222', '27'), '+27821112222');
+            assert.equal(go.utils.normalize_msisdn('+27821112222', '27'), '+27821112222');
+            assert.equal(go.utils.normalize_msisdn('0027821112222', '27'), '+27821112222');
+            assert.equal(go.utils.normalize_msisdn('27821112222', '27'), '+27821112222');
             done();
         });
         it('should reject invalid numbers', function(done) {
@@ -1882,8 +1868,6 @@ describe("app", function() {
                             assert.equal(contact.extra.metric_sessions_to_register, '5');
                             assert.equal(contact.extra.no_registrations, undefined);
                             assert.equal(contact.extra.registered_by, undefined);
-                            assert.equal(contact.extra.subscription_type, '2');
-                            assert.equal(contact.extra.subscription_rate, '4');
                             assert.equal(contact.extra.is_registered, 'true');
                             assert.equal(contact.extra.is_registered_by, 'clinic');
                             assert.equal(contact.extra.service_rating_reminders, '0');
@@ -1895,7 +1879,6 @@ describe("app", function() {
                             assert.deepEqual(metrics['test.clinic.avg.sessions_to_register'].values, [5]);
                             assert.deepEqual(metrics['test.clinic.percent_incomplete_registrations'].values, [25]);
                             assert.deepEqual(metrics['test.clinic.percent_complete_registrations'].values, [75]);
-                            assert.deepEqual(metrics['test.sum.subscriptions'].values, [1]);
                             assert.deepEqual(metrics['test.personal.conversion_rate'].values, [100]);
                             assert.deepEqual(metrics['test.chw.conversion_rate'].values, [33.33]);
                         })
@@ -1951,7 +1934,6 @@ describe("app", function() {
                             assert.deepEqual(metrics['test.clinic.avg.sessions_to_register'].values, [5]);
                             assert.deepEqual(metrics['test.clinic.percent_incomplete_registrations'].values, [25]);
                             assert.deepEqual(metrics['test.clinic.percent_complete_registrations'].values, [75]);
-                            assert.deepEqual(metrics['test.sum.subscriptions'].values, [1]);
                             assert.deepEqual(metrics['test.personal.conversion_rate'], undefined);
                             assert.deepEqual(metrics['test.chw.conversion_rate'], undefined);
                         })
@@ -2136,7 +2118,6 @@ describe("app", function() {
                             assert.deepEqual(metrics['test.clinic.avg.sessions_to_register'].values, [5]);
                             assert.deepEqual(metrics['test.clinic.percent_incomplete_registrations'].values, [25]);
                             assert.deepEqual(metrics['test.clinic.percent_complete_registrations'].values, [75]);
-                            assert.deepEqual(metrics['test.sum.subscriptions'].values, [1]);
                         })
                         .check.reply.ends_session()
                         .run();

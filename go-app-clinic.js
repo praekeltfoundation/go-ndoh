@@ -1794,9 +1794,6 @@ go.app = function() {
                     self.contact.extra.language_choice = choice.value;
                     self.contact.extra.is_registered = 'true';
                     self.contact.extra.metric_sessions_to_register = self.user.extra.ussd_sessions;
-                    self.contact.extra.service_rating_reminders = '0';
-                    self.contact.extra.service_rating_reminder = go.utils.get_tomorrow(self.im.config);
-                    self.contact.extra.last_service_rating = 'never';
 
                     return self.im.groups.get(choice.value)
                         .then(function(group) {

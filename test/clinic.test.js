@@ -1774,12 +1774,6 @@ describe("app", function() {
                             assert.equal(contact_mom.extra.is_registered_by, 'clinic');
                             assert.equal(contact_user.extra.is_registered, undefined);
                             assert.equal(contact_user.extra.is_registered_by, undefined);
-                            assert.equal(contact_mom.extra.service_rating_reminders, '0');
-                            assert.equal(contact_mom.extra.service_rating_reminder, '2014-04-05');
-                            assert.equal(contact_mom.extra.last_service_rating, 'never');
-                            assert.equal(contact_user.extra.service_rating_reminders, undefined);
-                            assert.equal(contact_user.extra.service_rating_reminder, undefined);
-                            assert.equal(contact_user.extra.last_service_rating, undefined);
                         })
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
@@ -1835,9 +1829,6 @@ describe("app", function() {
                             assert.equal(contact.extra.registered_by, undefined);
                             assert.equal(contact.extra.is_registered, 'true');
                             assert.equal(contact.extra.is_registered_by, 'clinic');
-                            assert.equal(contact.extra.service_rating_reminders, '0');
-                            assert.equal(contact.extra.service_rating_reminder, '2014-04-05');
-                            assert.equal(contact.extra.last_service_rating, 'never');
                         })
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;

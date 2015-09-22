@@ -689,42 +689,6 @@ go.utils = {
             });
     },
 
-    is_month_this_year: function(today, month) {
-        return ((today.getMonth() + 1)) <= month;
-    },
-
-    calc_weeks: function(today, due_month, due_day) {
-        // Taken from MAMA USSD
-        // today should be var today = new Date();
-        // due_month should be 1 bound (1 = Jan)
-        // check if month provided is this year
-        // console.log("Today:", today);
-        // console.log("Due Month:", due_month);
-        var month_is_this_year = go.utils.is_month_this_year(today, due_month);
-        // console.log("Month this year?", month_is_this_year);
-        // set the due year to this or next
-        var due_year = (month_is_this_year ? today.getFullYear() : today.getFullYear()+1);
-        // console.log("Due Year:", due_year);
-        // due dates are estimated at mid-month
-        var due_date = new Date(due_month+"/" + due_day + "/"+due_year);
-        // console.log("Due date:", due_date);
-        // calc diff betwen now and due day
-        var diff = (due_date - today);
-        // console.log("Dates diff:", diff);
-        // get it in weeks
-        var diff_weeks = Math.floor((diff / (1000*7*24*60*60)));
-        // console.log("Dates diff in weeks:", diff_weeks);
-        // get preg week
-        var preg_week = 40-diff_weeks;
-        // console.log("Week of preg:", preg_week);
-        // You can't be less than two week preg
-        if (preg_week <= 1) {
-            return false;
-        } else {
-            return preg_week;
-        }
-    },
-
     support_log_ticket: function(message, contact, im, metric_prefix) {
         var payload = {
           conversation: "/api/v1/snappybouncer/conversation/key/" + im.config.snappybouncer.conversation + "/",

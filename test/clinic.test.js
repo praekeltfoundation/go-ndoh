@@ -11,41 +11,6 @@ var DummyOptoutResource = optoutstore.DummyOptoutResource;
 
 describe("utils", function() {
     describe("for clinic use", function() {
-        it('should tell us whether a month is this year or not', function(done) {
-            assert.equal(
-                go.utils.is_month_this_year(new Date('2014-08-01'), 10),
-                true);
-            assert.equal(
-                go.utils.is_month_this_year(new Date('2014-08-01'), 8),
-                true);
-            assert.equal(
-                go.utils.is_month_this_year(new Date('2015-08-01'), 7),
-                false);
-            done();
-        });
-        it('should tell us what week of pregnancy date is using month', function(done) {
-            // full term
-            assert.equal(
-                go.utils.calc_weeks(new Date('2014-07-13'), '07', '14'),
-                40);
-            // -1 week
-            assert.equal(
-                go.utils.calc_weeks(new Date('2014-07-06'), '07', '14'),
-                39);
-            // -2 weeks
-            assert.equal(
-                go.utils.calc_weeks(new Date('2014-06-29'), '07', '14'),
-                38);
-            // -37 weeks
-            assert.equal(
-                go.utils.calc_weeks(new Date('2014-01-01'), '09', '21'),
-                3);
-            // Can't be less than 2 weeks preg
-            assert.equal(
-                go.utils.calc_weeks(new Date('2014-01-01'), '10', '03'),
-                false);
-            done();
-        });
         it('should parse single digit days correctly', function(done) {
             assert.equal(go.utils.double_digit_day('1'), '01');
             assert.equal(go.utils.double_digit_day('01'), '01');

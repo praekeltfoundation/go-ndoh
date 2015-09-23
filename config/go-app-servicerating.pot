@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2015-03-11 12:55:+0000\n"
+"POT-Creation-Date: 2015-09-23 09:01:+0000\n"
 "Project-Id-Version: PACKAGE VERSION\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -9,115 +9,115 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 
-#: go-app-servicerating.js:27
+#: go-app-servicerating.js:24
 msgid "Jan"
 msgstr ""
 
-#: go-app-servicerating.js:28
+#: go-app-servicerating.js:25
 msgid "Feb"
 msgstr ""
 
-#: go-app-servicerating.js:29
+#: go-app-servicerating.js:26
 msgid "Mar"
 msgstr ""
 
-#: go-app-servicerating.js:30
+#: go-app-servicerating.js:27
 msgid "Apr"
 msgstr ""
 
-#: go-app-servicerating.js:31
+#: go-app-servicerating.js:28
 msgid "May"
 msgstr ""
 
-#: go-app-servicerating.js:32
+#: go-app-servicerating.js:29
 msgid "Jun"
 msgstr ""
 
-#: go-app-servicerating.js:33
+#: go-app-servicerating.js:30
 msgid "Jul"
 msgstr ""
 
-#: go-app-servicerating.js:34
+#: go-app-servicerating.js:31
 msgid "Aug"
 msgstr ""
 
-#: go-app-servicerating.js:35
+#: go-app-servicerating.js:32
 msgid "Sep"
 msgstr ""
 
-#: go-app-servicerating.js:36
+#: go-app-servicerating.js:33
 msgid "Oct"
 msgstr ""
 
-#: go-app-servicerating.js:37
+#: go-app-servicerating.js:34
 msgid "Nov"
 msgstr ""
 
-#: go-app-servicerating.js:38
+#: go-app-servicerating.js:35
 msgid "Dec"
 msgstr ""
 
-#: go-app-servicerating.js:1658
+#: go-app-servicerating.js:1210
 msgid "Welcome. When you signed up, were staff at the facility friendly & helpful?"
 msgstr ""
 
-#: go-app-servicerating.js:1661 go-app-servicerating.js:1678 go-app-servicerating.js:1708 go-app-servicerating.js:1723
+#: go-app-servicerating.js:1213 go-app-servicerating.js:1230 go-app-servicerating.js:1260 go-app-servicerating.js:1275
 msgid "Very Satisfied"
 msgstr ""
 
-#: go-app-servicerating.js:1662 go-app-servicerating.js:1679 go-app-servicerating.js:1709 go-app-servicerating.js:1724
+#: go-app-servicerating.js:1214 go-app-servicerating.js:1231 go-app-servicerating.js:1261 go-app-servicerating.js:1276
 msgid "Satisfied"
 msgstr ""
 
-#: go-app-servicerating.js:1663 go-app-servicerating.js:1680 go-app-servicerating.js:1710 go-app-servicerating.js:1725
+#: go-app-servicerating.js:1215 go-app-servicerating.js:1232 go-app-servicerating.js:1262 go-app-servicerating.js:1277
 msgid "Not Satisfied"
 msgstr ""
 
-#: go-app-servicerating.js:1664 go-app-servicerating.js:1681 go-app-servicerating.js:1711 go-app-servicerating.js:1726
+#: go-app-servicerating.js:1216 go-app-servicerating.js:1233 go-app-servicerating.js:1263 go-app-servicerating.js:1278
 msgid "Very unsatisfied"
 msgstr ""
 
-#: go-app-servicerating.js:1675
+#: go-app-servicerating.js:1227
 msgid "How do you feel about the time you had to wait at the facility?"
 msgstr ""
 
-#: go-app-servicerating.js:1690
+#: go-app-servicerating.js:1242
 msgid "How long did you wait to be helped at the clinic?"
 msgstr ""
 
-#: go-app-servicerating.js:1693
+#: go-app-servicerating.js:1245
 msgid "Less than an hour"
 msgstr ""
 
-#: go-app-servicerating.js:1694
+#: go-app-servicerating.js:1246
 msgid "Between 1 and 3 hours"
 msgstr ""
 
-#: go-app-servicerating.js:1695
+#: go-app-servicerating.js:1247
 msgid "More than 4 hours"
 msgstr ""
 
-#: go-app-servicerating.js:1696
+#: go-app-servicerating.js:1248
 msgid "All day"
 msgstr ""
 
-#: go-app-servicerating.js:1705
+#: go-app-servicerating.js:1257
 msgid "Was the facility clean?"
 msgstr ""
 
-#: go-app-servicerating.js:1720
+#: go-app-servicerating.js:1272
 msgid "Did you feel that your privacy was respected by the staff?"
 msgstr ""
 
-#: go-app-servicerating.js:1740 go-app-servicerating.js:1757
+#: go-app-servicerating.js:1292 go-app-servicerating.js:1309
 msgid "Thank you for rating our service."
 msgstr ""
 
-#: go-app-servicerating.js:1764
+#: go-app-servicerating.js:1316
 msgid "Please register at a clinic before using this line."
 msgstr ""
 
-#: go-app-servicerating.js:1771
+#: go-app-servicerating.js:1323
 msgid ""
 "Sorry, you've already rated service. For baby and pregnancy help or if you "
 "have compliments or complaints dial {{public_channel}} or reply to any of "

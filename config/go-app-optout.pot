@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2015-03-11 12:55:+0000\n"
+"POT-Creation-Date: 2015-09-23 09:01:+0000\n"
 "Project-Id-Version: PACKAGE VERSION\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -9,103 +9,103 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 
-#: go-app-optout.js:27
+#: go-app-optout.js:24
 msgid "Jan"
 msgstr ""
 
-#: go-app-optout.js:28
+#: go-app-optout.js:25
 msgid "Feb"
 msgstr ""
 
-#: go-app-optout.js:29
+#: go-app-optout.js:26
 msgid "Mar"
 msgstr ""
 
-#: go-app-optout.js:30
+#: go-app-optout.js:27
 msgid "Apr"
 msgstr ""
 
-#: go-app-optout.js:31
+#: go-app-optout.js:28
 msgid "May"
 msgstr ""
 
-#: go-app-optout.js:32
+#: go-app-optout.js:29
 msgid "Jun"
 msgstr ""
 
-#: go-app-optout.js:33
+#: go-app-optout.js:30
 msgid "Jul"
 msgstr ""
 
-#: go-app-optout.js:34
+#: go-app-optout.js:31
 msgid "Aug"
 msgstr ""
 
-#: go-app-optout.js:35
+#: go-app-optout.js:32
 msgid "Sep"
 msgstr ""
 
-#: go-app-optout.js:36
+#: go-app-optout.js:33
 msgid "Oct"
 msgstr ""
 
-#: go-app-optout.js:37
+#: go-app-optout.js:34
 msgid "Nov"
 msgstr ""
 
-#: go-app-optout.js:38
+#: go-app-optout.js:35
 msgid "Dec"
 msgstr ""
 
-#: go-app-optout.js:1613
+#: go-app-optout.js:1162
 msgid "Please let us know why you do not want MomConnect messages"
 msgstr ""
 
-#: go-app-optout.js:1615
+#: go-app-optout.js:1164
 msgid "Please tell us why you previously opted out of messages"
 msgstr ""
 
-#: go-app-optout.js:1622
+#: go-app-optout.js:1171
 msgid "Miscarriage"
 msgstr ""
 
-#: go-app-optout.js:1623
+#: go-app-optout.js:1172
 msgid "Baby was stillborn"
 msgstr ""
 
-#: go-app-optout.js:1624
+#: go-app-optout.js:1173
 msgid "Baby died"
 msgstr ""
 
-#: go-app-optout.js:1625
+#: go-app-optout.js:1174
 msgid "Messages not useful"
 msgstr ""
 
-#: go-app-optout.js:1626
+#: go-app-optout.js:1175
 msgid "Other"
 msgstr ""
 
-#: go-app-optout.js:1644
+#: go-app-optout.js:1193
 msgid ""
 "We are sorry for your loss. Would you like to receive a small set of free "
 "messages to help you in this difficult time?"
 msgstr ""
 
-#: go-app-optout.js:1649
+#: go-app-optout.js:1198
 msgid "Yes"
 msgstr ""
 
-#: go-app-optout.js:1650
+#: go-app-optout.js:1199
 msgid "No"
 msgstr ""
 
-#: go-app-optout.js:1695
+#: go-app-optout.js:1243
 msgid ""
 "Thank you. You will no longer receive messages from us. If you have any "
 "medical concerns please visit your nearest clinic."
 msgstr ""
 
-#: go-app-optout.js:1706
+#: go-app-optout.js:1254
 msgid ""
 "Thank you. You will receive support messages from MomConnect in the coming "
 "weeks."

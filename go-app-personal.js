@@ -1469,22 +1469,18 @@ go.app = function() {
                     self.contact.extra.language_choice = choice.value;
                     self.contact.extra.is_registered = 'false';
 
-                    return self.im.groups.get(choice.value)
-                        .then(function(group) {
-                            self.contact.groups.push(group.key);
-                            return self.im.user
-                                .set_lang(choice.value)
-                                .then(function() {
-                                    return self.im.contacts.save(self.contact);
-                                })
-                                .then(function() {
-                                    if (!self.im.config.faq_enabled){
-                                        return 'states_suspect_pregnancy';
-                                    } else {
-                                        return 'states_register_info';
-                                    }
+                    return self.im.user
+                        .set_lang(choice.value)
+                        .then(function() {
+                            return self.im.contacts.save(self.contact);
+                        })
+                        .then(function() {
+                            if (!self.im.config.faq_enabled){
+                                return 'states_suspect_pregnancy';
+                            } else {
+                                return 'states_register_info';
+                            }
 
-                                });
                         });
                 },
 

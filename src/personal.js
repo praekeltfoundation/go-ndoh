@@ -326,16 +326,28 @@ go.app = function() {
 
 
         self.add('states_language', function(name) {
-            return new ChoiceState(name, {
+            return new PaginatedChoiceState(name, {
                 question: 'Welcome to the Department of Health\'s MomConnect. Choose your language:',
-
+                // [
+                //     new Choice('en', 'English'),
+                //     new Choice('af', 'Afrikaans'),
+                //     new Choice('zu', 'Zulu'),
+                //     new Choice('xh', 'Xhosa'),
+                //     new Choice('st', 'Sotho'),
+                //     new Choice('tn', 'Setswana')
+                // ]
                 choices: [
-                    new Choice('en', 'English'),
+                    new Choice('zu', 'isiZulu'),
+                    new Choice('xh', 'isiXhosa'),
                     new Choice('af', 'Afrikaans'),
-                    new Choice('zu', 'Zulu'),
-                    new Choice('xh', 'Xhosa'),
-                    new Choice('st', 'Sotho'),
-                    new Choice('tn', 'Setswana')
+                    new Choice('en', 'English'),
+                    new Choice('nso', 'Sesotho sa Leboa'),
+                    new Choice('tn', 'Setswana'),
+                    new Choice('st', 'Sesotho'),
+                    new Choice('ts', 'Xitsonga'),
+                    new Choice('ss', 'siSwati'),
+                    new Choice('ve', 'Tshivenda'),
+                    new Choice('nr', 'isiNdebele'),
                 ],
 
                 next: function(choice) {

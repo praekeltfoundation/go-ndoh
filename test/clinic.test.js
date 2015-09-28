@@ -507,6 +507,7 @@ describe("app", function() {
             it("should check if no. belongs to pregnant woman", function() {
                 return tester
                     .setup.user.addr('27821234444')
+                    .setup.char_limit(160)  // limit first state chars
                     .start()
                     .check.interaction({
                         state: 'states_start',
@@ -541,6 +542,7 @@ describe("app", function() {
             describe("when the user timed out during registration", function() {
                 it("should ask it they want to continue registration", function() {
                     return tester
+                        .setup.char_limit(160)  // limit first state chars
                         .setup(function(api) {
                             api.contacts.add({
                                 msisdn: '+27821234444',
@@ -1738,7 +1740,6 @@ describe("app", function() {
                             ].join('\n')
                         })
                         .run();
-
                 });
             });
 

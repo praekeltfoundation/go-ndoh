@@ -327,6 +327,7 @@ describe("app", function() {
             describe("when the user timed out but not during registration", function() {
                 it("should take them back through states_start", function() {
                     return tester
+                        .setup.char_limit(160)  // limit first state chars
                         .setup(function(api) {
                             api.contacts.add({
                                 msisdn: '+27821234444',
@@ -421,6 +422,7 @@ describe("app", function() {
             describe("when the user chooses to abort registration", function() {
                 it("should take them back to states_language", function() {
                     return tester
+                        .setup.char_limit(160)  // limit first state chars
                         .setup(function(api) {
                             api.contacts.add({
                                 msisdn: '+27821234444',

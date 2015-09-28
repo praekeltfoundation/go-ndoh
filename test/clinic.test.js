@@ -68,7 +68,7 @@ describe("app", function() {
                         name: 'en',
                     });
                 })
-                .setup.char_limit(160)
+                .setup.char_limit(182)
                 .setup.config.app({
                     name: 'clinic',
                     env: 'test',
@@ -196,7 +196,7 @@ describe("app", function() {
                         {session_event: 'new'},
                         '1',        // states_timed_out - yes
                         '5101025009086', // states_sa_id
-                        '1'         // states_language - en
+                        '4'         // states_language - en
                         )
                     .check.interaction({
                         state: 'states_end_success'
@@ -241,7 +241,7 @@ describe("app", function() {
                         {session_event: 'new'},
                         '1',        // states_timed_out - yes
                         '5101025009086', // states_sa_id
-                        '1'         // states_language - en
+                        '4'         // states_language - en
                         )
                     .check.interaction({
                         state: 'states_end_success'
@@ -1274,12 +1274,12 @@ describe("app", function() {
                         state: 'states_language',
                         reply: ['Please select the language that the ' +
                             'pregnant mother would like to get messages in:',
-                            '1. English',
-                            '2. Afrikaans',
-                            '3. Zulu',
-                            '4. Xhosa',
-                            '5. Sotho',
-                            '6. Setswana'
+                            '1. isiZulu',
+                            '2. isiXhosa',
+                            '3. Afrikaans',
+                            '4. English',
+                            '5. Sesotho sa Leboa',
+                            '6. More'
                             ].join('\n')
                     })
                     .check(function(api) {
@@ -1431,12 +1431,12 @@ describe("app", function() {
                         state: 'states_language',
                         reply: ['Please select the language that the ' +
                             'pregnant mother would like to get messages in:',
-                            '1. English',
-                            '2. Afrikaans',
-                            '3. Zulu',
-                            '4. Xhosa',
-                            '5. Sotho',
-                            '6. Setswana'
+                            '1. isiZulu',
+                            '2. isiXhosa',
+                            '3. Afrikaans',
+                            '4. English',
+                            '5. Sesotho sa Leboa',
+                            '6. More'
                             ].join('\n')
                     })
                     .check(function(api) {
@@ -1697,13 +1697,13 @@ describe("app", function() {
                             state: 'states_language',
                             reply: ['Please select the language that the ' +
                                 'pregnant mother would like to get messages in:',
-                                '1. English',
-                                '2. Afrikaans',
-                                '3. Zulu',
-                                '4. Xhosa',
-                                '5. Sotho',
-                                '6. Setswana'
-                                ].join('\n')
+                                '1. isiZulu',
+                                '2. isiXhosa',
+                                '3. Afrikaans',
+                                '4. English',
+                                '5. Sesotho sa Leboa',
+                                '6. More'
+                            ].join('\n')
                         })
                         .check(function(api) {
                             var contact = _.find(api.contacts.store, {
@@ -1718,6 +1718,49 @@ describe("app", function() {
         });
 
         describe("after the mom's msg language is selected", function() {
+            describe("if they select to see language page 2", function() {
+                it("should display more language options", function() {
+                    return tester
+                        .setup.user.addr('270001')
+                        .setup.user.state('states_language')
+                        .input('6')
+                        .check.interaction({
+                            state: 'states_language',
+                            reply: ['Please select the language that the ' +
+                                'pregnant mother would like to get messages in:',
+                                '1. Setswana',
+                                '2. Sesotho',
+                                '3. Xitsonga',
+                                '4. siSwati',
+                                '5. Tshivenda',
+                                '6. More',
+                                '7. Back'
+                            ].join('\n')
+                        })
+                        .run();
+
+                });
+            });
+
+            describe("if they select to see language page 3", function() {
+                it("should display more language options", function() {
+                    return tester
+                        .setup.user.addr('270001')
+                        .setup.user.state('states_language')
+                        .inputs('6', '6')
+                        .check.interaction({
+                            state: 'states_language',
+                            reply: ['Please select the language that the ' +
+                                'pregnant mother would like to get messages in:',
+                                '1. isiNdebele',
+                                '2. Back'
+                            ].join('\n')
+                        })
+                        .run();
+
+                });
+            });
+
             describe("if the phone used is not the mom's", function() {
                 it("should save msg language, thank them and exit", function() {
                     return tester
@@ -1749,7 +1792,7 @@ describe("app", function() {
                             });
                         })
                         .setup.user.state('states_language')
-                        .input('1')
+                        .input('4')
                         .check.interaction({
                             state: 'states_end_success',
                             reply: ('Thank you. The pregnant woman will now ' +
@@ -1810,7 +1853,7 @@ describe("app", function() {
                             });
                         })
                         .setup.user.state('states_language')
-                        .input('1')
+                        .input('4')
                         .check.interaction({
                             state: 'states_end_success',
                             reply: ('Thank you. The pregnant woman will now ' +
@@ -1878,7 +1921,7 @@ describe("app", function() {
                             api.kv.store['test.chw.conversions_to_clinic'] = 0;
                             api.kv.store['test.personal.conversions_to_clinic'] = 0;
                         })
-                        .input('1')
+                        .input('4')
                         .check.interaction({
                             state: 'states_end_success',
                             reply: ('Thank you. The pregnant woman will now ' +
@@ -1926,7 +1969,7 @@ describe("app", function() {
                             });
                         })
                         .setup.user.state('states_language')
-                        .input('1')
+                        .input('4')
                         .check(function(api) {
                             var contact = api.contacts.store[0];
                             assert.equal(contact.extra.language_choice, 'en');
@@ -1960,7 +2003,7 @@ describe("app", function() {
                             });
                         })
                         .setup.user.state('states_language')
-                        .input('1')
+                        .input('4')
                         .check(function(api) {
                             var smses = _.where(api.outbound.store, {
                                 endpoint: 'sms'
@@ -2008,7 +2051,7 @@ describe("app", function() {
                             });
                         })
                         .setup.user.state('states_language')
-                        .input('1')
+                        .input('4')
                         .check(function(api) {
                             var smses = _.where(api.outbound.store, {
                                 endpoint: 'sms'
@@ -2049,7 +2092,7 @@ describe("app", function() {
                             });
                         })
                         .setup.user.state('states_language')
-                        .input('1')
+                        .input('4')
                         .check.interaction({
                             state: 'states_end_success',
                             reply: ('Thank you. The pregnant woman will now ' +

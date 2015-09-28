@@ -47,7 +47,7 @@ describe("app", function() {
                         }
                     );
                 })
-                .setup.char_limit(160)
+                .setup.char_limit(182)
                 .setup.config.app({
                     name: 'personal',
                     testing: 'true',
@@ -327,6 +327,7 @@ describe("app", function() {
             describe("when the user timed out but not during registration", function() {
                 it("should take them back through states_start", function() {
                     return tester
+                        .setup.char_limit(160)  // limit first state chars
                         .setup(function(api) {
                             api.contacts.add({
                                 msisdn: '+27821234444',
@@ -421,6 +422,7 @@ describe("app", function() {
             describe("when the user chooses to abort registration", function() {
                 it("should take them back to states_language", function() {
                     return tester
+                        .setup.char_limit(160)  // limit first state chars
                         .setup(function(api) {
                             api.contacts.add({
                                 msisdn: '+27821234444',
@@ -441,12 +443,13 @@ describe("app", function() {
                             state: 'states_language',
                             reply: [
                                 'Welcome to the Department of Health\'s MomConnect. Choose your language:',
-                                '1. English',
-                                '2. Afrikaans',
-                                '3. Zulu',
-                                '4. Xhosa',
-                                '5. Sotho',
-                                '6. Setswana'
+                                '1. isiZulu',
+                                '2. isiXhosa',
+                                '3. Afrikaans',
+                                '4. English',
+                                '5. Sesotho sa Leboa',
+                                '6. Setswana',
+                                '7. More'
                             ].join('\n')
                         })
                         .run();
@@ -465,12 +468,13 @@ describe("app", function() {
                             state: 'states_language',
                             reply: [
                                 'Welcome to the Department of Health\'s MomConnect. Choose your language:',
-                                '1. English',
-                                '2. Afrikaans',
-                                '3. Zulu',
-                                '4. Xhosa',
-                                '5. Sotho',
-                                '6. Setswana'
+                                '1. isiZulu',
+                                '2. isiXhosa',
+                                '3. Afrikaans',
+                                '4. English',
+                                '5. Sesotho sa Leboa',
+                                '6. Setswana',
+                                '7. More'
                             ].join('\n')
                         })
                         .check(function(api) {
@@ -482,6 +486,28 @@ describe("app", function() {
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
                             assert.deepEqual(metrics['test.sum.sessions'].values, [1]);
+                        })
+                        .run();
+                });
+
+                it("should ask for their preferred language from second page if choose more", function() {
+                    return tester
+                        .setup.user.addr('27001')
+                        .inputs(
+                            {session_event: 'new'}  // states_start
+                            , '7'  // states_language
+                        )
+                        .check.interaction({
+                            state: 'states_language',
+                            reply: [
+                                'Welcome to the Department of Health\'s MomConnect. Choose your language:',
+                                '1. Sesotho',
+                                '2. Xitsonga',
+                                '3. siSwati',
+                                '4. Tshivenda',
+                                '5. isiNdebele',
+                                '6. Back'
+                            ].join('\n')
                         })
                         .run();
                 });
@@ -505,12 +531,13 @@ describe("app", function() {
                             state: 'states_language',
                             reply: [
                                 'Welcome to the Department of Health\'s MomConnect. Choose your language:',
-                                '1. English',
-                                '2. Afrikaans',
-                                '3. Zulu',
-                                '4. Xhosa',
-                                '5. Sotho',
-                                '6. Setswana'
+                                '1. isiZulu',
+                                '2. isiXhosa',
+                                '3. Afrikaans',
+                                '4. English',
+                                '5. Sesotho sa Leboa',
+                                '6. Setswana',
+                                '7. More'
                             ].join('\n')
                         })
                         .check(function(api) {
@@ -703,7 +730,7 @@ describe("app", function() {
             it("should ask if they want to register or get info", function() {
                 return tester
                     .setup.user.addr('27001')
-                    .inputs('start', '1')
+                    .inputs('start', '4')
                     .check.interaction({
                         state: 'states_register_info',
                         reply: [
@@ -739,7 +766,7 @@ describe("app", function() {
                 return tester
                     .setup.user.addr('27001')
                     .setup.user.state('states_language')
-                    .input('4')
+                    .input('2')
                     .check.interaction({
                         state: 'states_register_info',
                         reply: [
@@ -783,7 +810,7 @@ describe("app", function() {
                 return tester
                     .setup.user.addr('27001')
                     .setup.user.state('states_language')
-                    .input('1')
+                    .input('4')
                     .check.interaction({
                         state: 'states_register_info',
                         reply: [
@@ -956,12 +983,13 @@ describe("app", function() {
                             state: 'states_language',
                             reply: [
                                 'Welcome to the Department of Health\'s MomConnect. Choose your language:',
-                                '1. English',
-                                '2. Afrikaans',
-                                '3. Zulu',
-                                '4. Xhosa',
-                                '5. Sotho',
-                                '6. Setswana'
+                                '1. isiZulu',
+                                '2. isiXhosa',
+                                '3. Afrikaans',
+                                '4. English',
+                                '5. Sesotho sa Leboa',
+                                '6. Setswana',
+                                '7. More'
                             ].join('\n')
                         })
                         .run();
@@ -1933,14 +1961,15 @@ describe("app", function() {
                     .check.interaction({
                         state: 'states_language',
                         reply: [
-                            'Welcome to the Department of Health\'s MomConnect. Choose your language:',
-                                '1. English',
-                                '2. Afrikaans',
-                                '3. Zulu',
-                                '4. Xhosa',
-                                '5. Sotho',
-                                '6. Setswana'
-                        ].join('\n')
+                                'Welcome to the Department of Health\'s MomConnect. Choose your language:',
+                                '1. isiZulu',
+                                '2. isiXhosa',
+                                '3. Afrikaans',
+                                '4. English',
+                                '5. Sesotho sa Leboa',
+                                '6. Setswana',
+                                '7. More'
+                            ].join('\n')
                     })
                     .check(function(api) {
                         var smses = _.where(api.outbound.store, {
@@ -2050,7 +2079,7 @@ describe("app", function() {
                         }
                     );
                 })
-                .setup.char_limit(160)
+                .setup.char_limit(182)
                 .setup.config.app({
                     name: 'personal',
                     testing: 'true',
@@ -2130,12 +2159,13 @@ describe("app", function() {
                             state: 'states_language',
                             reply: [
                                 'Welcome to the Department of Health\'s MomConnect. Choose your language:',
-                                '1. English',
-                                '2. Afrikaans',
-                                '3. Zulu',
-                                '4. Xhosa',
-                                '5. Sotho',
-                                '6. Setswana'
+                                '1. isiZulu',
+                                '2. isiXhosa',
+                                '3. Afrikaans',
+                                '4. English',
+                                '5. Sesotho sa Leboa',
+                                '6. Setswana',
+                                '7. More'
                             ].join('\n')
                         })
                         // check extras
@@ -2160,7 +2190,7 @@ describe("app", function() {
                         .setup.user.addr('27001')
                         .inputs(
                             {session_event: 'new'}  // states_start
-                            , '1'  // states_language
+                            , '4'  // states_language
                         )
                         // check navigation
                         .check.interaction({
@@ -2183,7 +2213,7 @@ describe("app", function() {
                         .setup.user.addr('27001')
                         .inputs(
                             {session_event: 'new'}  // states_start
-                            , '1'  // states_language
+                            , '4'  // states_language
                             , '2'  // states_suspect_pregnancy
                         )
                         // check navigation
@@ -2217,7 +2247,7 @@ describe("app", function() {
                         .setup.user.addr('27001')
                         .inputs(
                             {session_event: 'new'}  // states_start
-                            , '1'  // states_language
+                            , '4'  // states_language
                             , '1'  // states_suspect_pregnancy
                         )
                         // check navigation
@@ -2273,7 +2303,7 @@ describe("app", function() {
                         .setup.user.addr("27001")
                         .inputs(
                             {session_event: 'new'}  // states_start
-                            , '1'  // states_language
+                            , '4'  // states_language
                             , {session_event: 'new'}  // simulate timeout and redial
                             , {session_event: 'new'}  // simulate timeout and redial
                         )

@@ -36,7 +36,7 @@ describe("app", function() {
                         name: 'en',
                     });
                 })
-                .setup.char_limit(160)
+                .setup.char_limit(182)
                 .setup.config.app({
                     name: 'servicerating',
                     testing: 'true',
@@ -174,6 +174,7 @@ describe("app", function() {
             describe("when the user has NOT registered at a clinic", function() {
                 it("should tell them to register at a clinic first", function() {
                     return tester
+                        .setup.char_limit(160)  // limit first state chars
                         .setup.user.addr('27001')
                         .setup(function(api) {
                             api.contacts.add({
@@ -192,6 +193,7 @@ describe("app", function() {
             describe("when the user HAS registered at a clinic", function() {
                 it("should ask for their friendliness rating", function() {
                     return tester
+                        .setup.char_limit(160)  // limit first state chars
                         .setup.user.addr('27001')
                         .setup(function(api) {
                             api.contacts.add({
@@ -251,6 +253,7 @@ describe("app", function() {
             describe("when the user has already logged a servicerating", function() {
                 it("should tell them they can't do it again", function() {
                     return tester
+                        .setup.char_limit(160)  // limit first state chars
                         .setup.user.addr('27001')
                         .setup(function(api) {
                             api.contacts.add({

@@ -1133,6 +1133,7 @@ go.app = function() {
     var App = vumigo.App;
     var Choice = vumigo.states.Choice;
     var ChoiceState = vumigo.states.ChoiceState;
+    var PaginatedChoiceState = vumigo.states.PaginatedChoiceState;
     var EndState = vumigo.states.EndState;
     var FreeText = vumigo.states.FreeText;
 
@@ -1777,19 +1778,23 @@ go.app = function() {
         });
 
         self.add('states_language', function(name) {
-            return new ChoiceState(name, {
+            return new PaginatedChoiceState(name, {
                 question: $('Please select the language that the ' +
                             'pregnant mother would like to get messages in:'),
-
+                options_per_page: null,
                 choices: [
-                    new Choice('en', $('English')),
-                    new Choice('af', $('Afrikaans')),
-                    new Choice('zu', $('Zulu')),
-                    new Choice('xh', $('Xhosa')),
-                    new Choice('st', $('Sotho')),
-                    new Choice('tn', $('Setswana'))
+                    new Choice('zu', 'isiZulu'),
+                    new Choice('xh', 'isiXhosa'),
+                    new Choice('af', 'Afrikaans'),
+                    new Choice('en', 'English'),
+                    new Choice('nso', 'Sesotho sa Leboa'),
+                    new Choice('tn', 'Setswana'),
+                    new Choice('st', 'Sesotho'),
+                    new Choice('ts', 'Xitsonga'),
+                    new Choice('ss', 'siSwati'),
+                    new Choice('ve', 'Tshivenda'),
+                    new Choice('nr', 'isiNdebele'),
                 ],
-
                 next: function(choice) {
                     self.contact.extra.language_choice = choice.value;
                     self.contact.extra.is_registered = 'true';

@@ -63,7 +63,7 @@ describe("app", function() {
                         five_per_week: 6
                     }
                 })
-                .setup.char_limit(140)
+                .setup.char_limit(182)
                 .setup(function(api) {
                     api.contacts.add( {
                         msisdn: '+27001',
@@ -498,6 +498,7 @@ describe("app", function() {
             describe("when the user has not previously opted out", function() {
                 it("should ask for the reason they are opting out", function() {
                     return tester
+                        .setup.char_limit(160)  // limit first state chars
                         .setup.user.addr('27001')
                         .inputs({session_event: "new"})
                         .check.interaction({
@@ -542,6 +543,7 @@ describe("app", function() {
         describe("when the user selects a reason for opting out", function() {
             it("should ask if they want further help", function() {
                 return tester
+                    .setup.char_limit(160)  // limit first state chars
                     .setup.user.addr('27001')
                     .inputs({session_event: "new"}, '1')
                     .check.interaction({
@@ -561,6 +563,7 @@ describe("app", function() {
         describe("when the user selects a reason for opting out 4 or 5", function() {
             it("should thank them and exit", function() {
                 return tester
+                    .setup.char_limit(160)  // limit first state chars
                     .setup.user.addr('27001')
                     .inputs({session_event: "new"}, '4')
                     .check.interaction({

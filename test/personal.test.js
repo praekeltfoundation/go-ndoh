@@ -447,9 +447,7 @@ describe("app", function() {
                                 '4. English',
                                 '5. Sesotho sa Leboa',
                                 '6. Setswana',
-                                '7. Sesotho',
-                                '8. Xitsonga',
-                                '9. More'
+                                '7. More'
                             ].join('\n')
                         })
                         .run();
@@ -474,9 +472,7 @@ describe("app", function() {
                                 '4. English',
                                 '5. Sesotho sa Leboa',
                                 '6. Setswana',
-                                '7. Sesotho',
-                                '8. Xitsonga',
-                                '9. More'
+                                '7. More'
                             ].join('\n')
                         })
                         .check(function(api) {
@@ -497,16 +493,18 @@ describe("app", function() {
                         .setup.user.addr('27001')
                         .inputs(
                             {session_event: 'new'}  // states_start
-                            , '9'  // states_language
+                            , '7'  // states_language
                         )
                         .check.interaction({
                             state: 'states_language',
                             reply: [
                                 'Welcome to the Department of Health\'s MomConnect. Choose your language:',
-                                '1. siSwati',
-                                '2. Tshivenda',
-                                '3. isiNdebele',
-                                '4. Back'
+                                '1. Sesotho',
+                                '2. Xitsonga',
+                                '3. siSwati',
+                                '4. Tshivenda',
+                                '5. isiNdebele',
+                                '6. Back'
                             ].join('\n')
                         })
                         .run();
@@ -537,9 +535,7 @@ describe("app", function() {
                                 '4. English',
                                 '5. Sesotho sa Leboa',
                                 '6. Setswana',
-                                '7. Sesotho',
-                                '8. Xitsonga',
-                                '9. More'
+                                '7. More'
                             ].join('\n')
                         })
                         .check(function(api) {
@@ -991,9 +987,7 @@ describe("app", function() {
                                 '4. English',
                                 '5. Sesotho sa Leboa',
                                 '6. Setswana',
-                                '7. Sesotho',
-                                '8. Xitsonga',
-                                '9. More'
+                                '7. More'
                             ].join('\n')
                         })
                         .run();
@@ -1965,17 +1959,15 @@ describe("app", function() {
                     .check.interaction({
                         state: 'states_language',
                         reply: [
-                            'Welcome to the Department of Health\'s MomConnect. Choose your language:',
+                                'Welcome to the Department of Health\'s MomConnect. Choose your language:',
                                 '1. isiZulu',
                                 '2. isiXhosa',
                                 '3. Afrikaans',
                                 '4. English',
                                 '5. Sesotho sa Leboa',
                                 '6. Setswana',
-                                '7. Sesotho',
-                                '8. Xitsonga',
-                                '9. More'
-                        ].join('\n')
+                                '7. More'
+                            ].join('\n')
                     })
                     .check(function(api) {
                         var smses = _.where(api.outbound.store, {
@@ -2171,9 +2163,7 @@ describe("app", function() {
                                 '4. English',
                                 '5. Sesotho sa Leboa',
                                 '6. Setswana',
-                                '7. Sesotho',
-                                '8. Xitsonga',
-                                '9. More'
+                                '7. More'
                             ].join('\n')
                         })
                         // check extras

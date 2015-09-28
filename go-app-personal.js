@@ -1455,14 +1455,8 @@ go.app = function() {
         self.add('states_language', function(name) {
             return new PaginatedChoiceState(name, {
                 question: 'Welcome to the Department of Health\'s MomConnect. Choose your language:',
-                // [
-                //     new Choice('en', 'English'),
-                //     new Choice('af', 'Afrikaans'),
-                //     new Choice('zu', 'Zulu'),
-                //     new Choice('xh', 'Xhosa'),
-                //     new Choice('st', 'Sotho'),
-                //     new Choice('tn', 'Setswana')
-                // ]
+                options_per_page: null,
+                characters_per_page: 160,
                 choices: [
                     new Choice('zu', 'isiZulu'),
                     new Choice('xh', 'isiXhosa'),

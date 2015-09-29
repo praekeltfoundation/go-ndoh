@@ -15,6 +15,10 @@
         "api_key": "test_key",
         "url": "http://qa-ndoh-control.za.prk-host.net/api/v1/"
     },
+    "control_v2": {
+        "url": "http://qa-ndoh-control.za.prk-host.net/api/v2/",
+        "api_token": "test_token"
+    }
     "subscription": {
         "standard": 1,
         "later": 2,

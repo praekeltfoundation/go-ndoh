@@ -790,10 +790,9 @@ module.exports = function() {
         "request": {
             "method": "POST",
             'headers': {
-                'Authorization': ['ApiKey test_user:test_key'],
-                'Content-Type': ['application/json']
+                'Authorization': ['Token test_token']
             },
-            "url": "http://ndoh-control/api/v1/registration/",
+            "url": "http://ndoh-control/api/v1/registrations/",
             "data": {
                 "hcw_msisdn": null,
                 "mom_msisdn": "+27821234567",
@@ -828,10 +827,9 @@ module.exports = function() {
         "request": {
             "method": "POST",
             'headers': {
-                'Authorization': ['ApiKey test_user:test_key'],
-                'Content-Type': ['application/json']
+                'Authorization': ['Token test_token']
             },
-            "url": "http://ndoh-control/api/v1/registration/",
+            "url": "http://ndoh-control/api/v1/registrations/",
             "data": {
                 "hcw_msisdn":"+270001",
                 "mom_msisdn":"+27821234567",
@@ -866,10 +864,9 @@ module.exports = function() {
         "request": {
             "method": "POST",
             'headers': {
-                'Authorization': ['ApiKey test_user:test_key'],
-                'Content-Type': ['application/json']
+                'Authorization': ['Token test_token']
             },
-            "url": "http://ndoh-control/api/v1/registration/",
+            "url": "http://ndoh-control/api/v1/registrations/",
             "data": {
                 "hcw_msisdn":null,
                 "mom_msisdn":"+27001",
@@ -904,10 +901,9 @@ module.exports = function() {
         "request": {
             "method": "POST",
             'headers': {
-                'Authorization': ['ApiKey test_user:test_key'],
-                'Content-Type': ['application/json']
+                'Authorization': ['Token test_token']
             },
-            "url": "http://ndoh-control/api/v1/registration/",
+            "url": "http://ndoh-control/api/v1/registrations/",
             "data": {
                 "hcw_msisdn":null,
                 "mom_msisdn":"+27001",
@@ -942,10 +938,9 @@ module.exports = function() {
         "request": {
             "method": "POST",
             'headers': {
-                'Authorization': ['ApiKey test_user:test_key'],
-                'Content-Type': ['application/json']
+                'Authorization': ['Token test_token']
             },
-            "url": "http://ndoh-control/api/v1/registration/",
+            "url": "http://ndoh-control/api/v1/registrations/",
             "data": {
                 "hcw_msisdn":null,
                 "mom_msisdn":"+27001",
@@ -980,10 +975,9 @@ module.exports = function() {
         "request": {
             "method": "POST",
             'headers': {
-                'Authorization': ['ApiKey test_user:test_key'],
-                'Content-Type': ['application/json']
+                'Authorization': ['Token test_token']
             },
-            "url": "http://ndoh-control/api/v1/registration/",
+            "url": "http://ndoh-control/api/v1/registrations/",
             "data": {
                 "hcw_msisdn":null,
                 "mom_msisdn":"+27001",
@@ -1018,10 +1012,9 @@ module.exports = function() {
         "request": {
             "method": "POST",
             'headers': {
-                'Authorization': ['ApiKey test_user:test_key'],
-                'Content-Type': ['application/json']
+                'Authorization': ['Token test_token']
             },
-            "url": "http://ndoh-control/api/v1/registration/",
+            "url": "http://ndoh-control/api/v1/registrations/",
             "data": {
                 "hcw_msisdn":null,
                 "mom_msisdn":"+27001",
@@ -1056,10 +1049,9 @@ module.exports = function() {
         "request": {
             "method": "POST",
             'headers': {
-                'Authorization': ['ApiKey test_user:test_key'],
-                'Content-Type': ['application/json']
+                'Authorization': ['Token test_token']
             },
-            "url": "http://ndoh-control/api/v1/registration/",
+            "url": "http://ndoh-control/api/v1/registrations/",
             "data": {
                 "hcw_msisdn":null,
                 "mom_msisdn":"+27001",
@@ -1094,10 +1086,9 @@ module.exports = function() {
         "request": {
             "method": "POST",
             'headers': {
-                'Authorization': ['ApiKey test_user:test_key'],
-                'Content-Type': ['application/json']
+                'Authorization': ['Token test_token']
             },
-            "url": "http://ndoh-control/api/v1/registration/",
+            "url": "http://ndoh-control/api/v1/registrations/",
             "data": {
                 "hcw_msisdn":null,
                 "mom_msisdn":"+27001",
@@ -1132,10 +1123,9 @@ module.exports = function() {
         "request": {
             "method": "POST",
             'headers': {
-                'Authorization': ['ApiKey test_user:test_key'],
-                'Content-Type': ['application/json']
+                'Authorization': ['Token test_token']
             },
-            "url": "http://ndoh-control/api/v1/registration/",
+            "url": "http://ndoh-control/api/v1/registrations/",
             "data": {
                 "hcw_msisdn":null,
                 "mom_msisdn":"+27001",
@@ -1170,10 +1160,9 @@ module.exports = function() {
         "request": {
             "method": "POST",
             'headers': {
-                'Authorization': ['ApiKey test_user:test_key'],
-                'Content-Type': ['application/json']
+                'Authorization': ['Token test_token']
             },
-            "url": "http://ndoh-control/api/v1/registration/",
+            "url": "http://ndoh-control/api/v1/registrations/",
             "data": {
                 "hcw_msisdn":"+27001",
                 "mom_msisdn":"+27821234567",
@@ -1208,10 +1197,9 @@ module.exports = function() {
         "request": {
             "method": "POST",
             'headers': {
-                'Authorization': ['ApiKey test_user:test_key'],
-                'Content-Type': ['application/json']
+                'Authorization': ['Token test_token']
             },
-            "url": "http://ndoh-control/api/v1/registration/",
+            "url": "http://ndoh-control/api/v1/registrations/",
             "data": {
                 "hcw_msisdn":null,
                 "mom_msisdn":"+27001",
@@ -1246,10 +1234,9 @@ module.exports = function() {
         "request": {
             "method": "POST",
             'headers': {
-                'Authorization': ['ApiKey test_user:test_key'],
-                'Content-Type': ['application/json']
+                'Authorization': ['Token test_token']
             },
-            "url": "http://ndoh-control/api/v1/registration/",
+            "url": "http://ndoh-control/api/v1/registrations/",
             "data": {
                 "hcw_msisdn":null,
                 "mom_msisdn":"+27001",

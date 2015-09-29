@@ -548,24 +548,24 @@ go.utils = {
         });
         switch (method) {
             case "post":
-                return http.post(im.config.control.url + endpoint, {
+                return http.post(im.config.control_v2.url + endpoint, {
                     data: payload
                 });
             case "get":
-                return http.get(im.config.control.url + endpoint, {
+                return http.get(im.config.control_v2.url + endpoint, {
                     params: params
                 });
             case "patch":
-                return http.patch(im.config.control.url + endpoint, {
+                return http.patch(im.config.control_v2.url + endpoint, {
                     data: payload
                 });
             case "put":
-                return http.put(im.config.control.url + endpoint, {
+                return http.put(im.config.control_v2.url + endpoint, {
                     params: params,
                   data: payload
                 });
             case "delete":
-                return http.delete(im.config.control.url + endpoint);
+                return http.delete(im.config.control_v2.url + endpoint);
             }
     },
 

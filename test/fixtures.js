@@ -792,7 +792,7 @@ module.exports = function() {
             'headers': {
                 'Authorization': ['Token test_token']
             },
-            "url": "http://ndoh-control/api/v1/registrations/",
+            "url": "http://ndoh-control/api/v2/registrations/",
             "data": {
                 "hcw_msisdn": null,
                 "mom_msisdn": "+27821234567",
@@ -829,7 +829,7 @@ module.exports = function() {
             'headers': {
                 'Authorization': ['Token test_token']
             },
-            "url": "http://ndoh-control/api/v1/registrations/",
+            "url": "http://ndoh-control/api/v2/registrations/",
             "data": {
                 "hcw_msisdn":"+270001",
                 "mom_msisdn":"+27821234567",
@@ -866,7 +866,7 @@ module.exports = function() {
             'headers': {
                 'Authorization': ['Token test_token']
             },
-            "url": "http://ndoh-control/api/v1/registrations/",
+            "url": "http://ndoh-control/api/v2/registrations/",
             "data": {
                 "hcw_msisdn":null,
                 "mom_msisdn":"+27001",
@@ -903,7 +903,7 @@ module.exports = function() {
             'headers': {
                 'Authorization': ['Token test_token']
             },
-            "url": "http://ndoh-control/api/v1/registrations/",
+            "url": "http://ndoh-control/api/v2/registrations/",
             "data": {
                 "hcw_msisdn":null,
                 "mom_msisdn":"+27001",
@@ -940,7 +940,7 @@ module.exports = function() {
             'headers': {
                 'Authorization': ['Token test_token']
             },
-            "url": "http://ndoh-control/api/v1/registrations/",
+            "url": "http://ndoh-control/api/v2/registrations/",
             "data": {
                 "hcw_msisdn":null,
                 "mom_msisdn":"+27001",
@@ -977,7 +977,7 @@ module.exports = function() {
             'headers': {
                 'Authorization': ['Token test_token']
             },
-            "url": "http://ndoh-control/api/v1/registrations/",
+            "url": "http://ndoh-control/api/v2/registrations/",
             "data": {
                 "hcw_msisdn":null,
                 "mom_msisdn":"+27001",
@@ -1014,7 +1014,7 @@ module.exports = function() {
             'headers': {
                 'Authorization': ['Token test_token']
             },
-            "url": "http://ndoh-control/api/v1/registrations/",
+            "url": "http://ndoh-control/api/v2/registrations/",
             "data": {
                 "hcw_msisdn":null,
                 "mom_msisdn":"+27001",
@@ -1051,7 +1051,7 @@ module.exports = function() {
             'headers': {
                 'Authorization': ['Token test_token']
             },
-            "url": "http://ndoh-control/api/v1/registrations/",
+            "url": "http://ndoh-control/api/v2/registrations/",
             "data": {
                 "hcw_msisdn":null,
                 "mom_msisdn":"+27001",
@@ -1088,7 +1088,7 @@ module.exports = function() {
             'headers': {
                 'Authorization': ['Token test_token']
             },
-            "url": "http://ndoh-control/api/v1/registrations/",
+            "url": "http://ndoh-control/api/v2/registrations/",
             "data": {
                 "hcw_msisdn":null,
                 "mom_msisdn":"+27001",
@@ -1125,7 +1125,7 @@ module.exports = function() {
             'headers': {
                 'Authorization': ['Token test_token']
             },
-            "url": "http://ndoh-control/api/v1/registrations/",
+            "url": "http://ndoh-control/api/v2/registrations/",
             "data": {
                 "hcw_msisdn":null,
                 "mom_msisdn":"+27001",
@@ -1162,7 +1162,7 @@ module.exports = function() {
             'headers': {
                 'Authorization': ['Token test_token']
             },
-            "url": "http://ndoh-control/api/v1/registrations/",
+            "url": "http://ndoh-control/api/v2/registrations/",
             "data": {
                 "hcw_msisdn":"+27001",
                 "mom_msisdn":"+27821234567",
@@ -1199,7 +1199,7 @@ module.exports = function() {
             'headers': {
                 'Authorization': ['Token test_token']
             },
-            "url": "http://ndoh-control/api/v1/registrations/",
+            "url": "http://ndoh-control/api/v2/registrations/",
             "data": {
                 "hcw_msisdn":null,
                 "mom_msisdn":"+27001",
@@ -1236,7 +1236,7 @@ module.exports = function() {
             'headers': {
                 'Authorization': ['Token test_token']
             },
-            "url": "http://ndoh-control/api/v1/registrations/",
+            "url": "http://ndoh-control/api/v2/registrations/",
             "data": {
                 "hcw_msisdn":null,
                 "mom_msisdn":"+27001",

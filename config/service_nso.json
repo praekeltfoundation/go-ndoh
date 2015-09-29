@@ -1,0 +1,127 @@
+{
+    "": {
+        "pot-creation-date": "2015-09-23 09:01:+0000",
+        "project-id-version": "service rating",
+        "language-team": "NSO <LL@li.org>",
+        "mime-version": "1.0",
+        "content-type": "text/plain; charset=UTF-8",
+        "content-transfer-encoding": "8bit",
+        "po-revision-date": "2015-09-24 11:00+0200",
+        "last-translator": "",
+        "x-generator": "Poedit 1.6.7",
+        "plural-forms": "nplurals=2; plural=(n > 1);",
+        "language": "nso"
+    },
+    "Jan": [
+        null,
+        "Jan"
+    ],
+    "Feb": [
+        null,
+        "Fep"
+    ],
+    "Mar": [
+        null,
+        "Matshe"
+    ],
+    "Apr": [
+        null,
+        "Aprele"
+    ],
+    "May": [
+        null,
+        "Mei"
+    ],
+    "Jun": [
+        null,
+        "Jun"
+    ],
+    "Jul": [
+        null,
+        "Julae"
+    ],
+    "Aug": [
+        null,
+        "Agostose"
+    ],
+    "Sep": [
+        null,
+        "Sept"
+    ],
+    "Oct": [
+        null,
+        "Okt"
+    ],
+    "Nov": [
+        null,
+        "Nof"
+    ],
+    "Dec": [
+        null,
+        "Des"
+    ],
+    "Welcome. When you signed up, were staff at the facility friendly & helpful?": [
+        null,
+        "O amogetswe. Ge o tsena, basomi ba na le segwera & thuso?"
+    ],
+    "Very Satisfied": [
+        null,
+        "Kgotsofetse kudu"
+    ],
+    "Satisfied": [
+        null,
+        "Kgotsofetse"
+    ],
+    "Not Satisfied": [
+        null,
+        "Ga ka kgotsofala"
+    ],
+    "Very unsatisfied": [
+        null,
+        "Ga ka kgotsofala kudu"
+    ],
+    "How do you feel about the time you had to wait at the facility?": [
+        null,
+        "O ikwa bjang ka nako ya kemelo ka lefelong?"
+    ],
+    "How long did you wait to be helped at the clinic?": [
+        null,
+        "O eme nako e kaakang go thuswa kliniking?"
+    ],
+    "Less than an hour": [
+        null,
+        "Ka fase ga iri"
+    ],
+    "Between 1 and 3 hours": [
+        null,
+        "Gare ga iri e 1 le tse 3"
+    ],
+    "More than 4 hours": [
+        null,
+        "Go feta diiri tse 4"
+    ],
+    "All day": [
+        null,
+        "Letsatsi ka moka"
+    ],
+    "Was the facility clean?": [
+        null,
+        "Naa lefelo le be le hlwekile?"
+    ],
+    "Did you feel that your privacy was respected by the staff?": [
+        null,
+        "Naa o ikwele gore sephiri sa gago se hlomphilwe ke basomi?"
+    ],
+    "Thank you for rating our service.": [
+        null,
+        "Re a leboga ge o etse tirelo ya rena."
+    ],
+    "Please register at a clinic before using this line.": [
+        null,
+        "Please register at a clinic before using this line."
+    ],
+    "Sorry, you've already rated service. For baby and pregnancy help or if you have compliments or complaints dial {{public_channel}} or reply to any of the SMSs you receive": [
+        null,
+        "Tshwarelo eupsa ga wa ela tirelo ya rena. Ge o nyaka go tlisa pelaelo goba tebogiso, hle fetola molaetsa wa MomConnect wo hweditsego."
+    ]
+}

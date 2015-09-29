@@ -1,0 +1,126 @@
+{
+    "": {
+        "pot-creation-date": "2015-09-23 09:01:+0000",
+        "project-id-version": "Service Rating",
+        "language-team": "Venda <LL@li.org>",
+        "mime-version": "1.0",
+        "content-type": "text/plain; charset=UTF-8",
+        "content-transfer-encoding": "8bit",
+        "po-revision-date": "2015-09-28 15:27+0200",
+        "last-translator": "",
+        "x-generator": "Poedit 1.6.7",
+        "language": "ve"
+    },
+    "Jan": [
+        null,
+        "Phnd"
+    ],
+    "Feb": [
+        null,
+        "Luh"
+    ],
+    "Mar": [
+        null,
+        "Thf"
+    ],
+    "Apr": [
+        null,
+        "Lmb"
+    ],
+    "May": [
+        null,
+        "Shnd"
+    ],
+    "Jun": [
+        null,
+        "Flw"
+    ],
+    "Jul": [
+        null,
+        "Flwn"
+    ],
+    "Aug": [
+        null,
+        "Thng"
+    ],
+    "Sep": [
+        null,
+        "Khbv"
+    ],
+    "Oct": [
+        null,
+        "Tshm"
+    ],
+    "Nov": [
+        null,
+        "Lr"
+    ],
+    "Dec": [
+        null,
+        "Nynd"
+    ],
+    "Welcome. When you signed up, were staff at the facility friendly & helpful?": [
+        null,
+        "Vho tanganedzwa. Musi vha tshi dinwalisa kiliniki, vho thuswa na u farwa zwavhudi?"
+    ],
+    "Very Satisfied": [
+        null,
+        "U fushea vhukuma"
+    ],
+    "Satisfied": [
+        null,
+        "U fushea"
+    ],
+    "Not Satisfied": [
+        null,
+        "U sa fushea"
+    ],
+    "Very unsatisfied": [
+        null,
+        "U sa fushea na luthihi"
+    ],
+    "How do you feel about the time you had to wait at the facility?": [
+        null,
+        "Vha dipfa hani nga tshifhinga tshe vha tea u lindela u wana thuso kiliniki?"
+    ],
+    "How long did you wait to be helped at the clinic?": [
+        null,
+        "Vho lindela tshifhinga tshi ngafhani uri vha thuswe kiliniki?"
+    ],
+    "Less than an hour": [
+        null,
+        "Fhasi ha awara"
+    ],
+    "Between 1 and 3 hours": [
+        null,
+        "Vhukati ha awara 1 na 3"
+    ],
+    "More than 4 hours": [
+        null,
+        "U fhira awara 4"
+    ],
+    "All day": [
+        null,
+        "Duvha lothe"
+    ],
+    "Was the facility clean?": [
+        null,
+        "Kiliniki yo vha yo kuna?"
+    ],
+    "Did you feel that your privacy was respected by the staff?": [
+        null,
+        "Vho pfa uri tshirunzi tshavho tsho thomphiwa nga vhashumi?"
+    ],
+    "Thank you for rating our service.": [
+        null,
+        "Ri khou livhuwa u ela havho tshumelo yashu."
+    ],
+    "Please register at a clinic before using this line.": [
+        null,
+        "Please register at a clinic before using this line."
+    ],
+    "Sorry, you've already rated service. For baby and pregnancy help or if you have compliments or complaints dial {{public_channel}} or reply to any of the SMSs you receive": [
+        null,
+        "Pfarelo vhunga vho no ela kushumele. Vha tshi todou vhiga mbilahelo kana u rumela thuthuwedzo/ndivhuho,vha fhindule mulaedza wa MomConnect we vha rumelwa."
+    ]
+}

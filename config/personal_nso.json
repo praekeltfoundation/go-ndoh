@@ -1,0 +1,287 @@
+{
+    "": {
+        "pot-creation-date": "2015-09-23 09:01:+0000",
+        "project-id-version": "Personal",
+        "language-team": "Northern Sotho <LL@li.org>",
+        "mime-version": "1.0",
+        "content-type": "text/plain; charset=UTF-8",
+        "content-transfer-encoding": "8bit",
+        "po-revision-date": "2015-09-28 12:23+0200",
+        "last-translator": "",
+        "x-generator": "Poedit 1.6.7",
+        "plural-forms": "nplurals=2; plural=(n > 1);",
+        "language": "nso"
+    },
+    "Jan": [
+        null,
+        "Jan"
+    ],
+    "Feb": [
+        null,
+        "Fep"
+    ],
+    "Mar": [
+        null,
+        "Matshe "
+    ],
+    "Apr": [
+        null,
+        "Aprele"
+    ],
+    "May": [
+        null,
+        "Mei"
+    ],
+    "Jun": [
+        null,
+        "Jun"
+    ],
+    "Jul": [
+        null,
+        "Julae"
+    ],
+    "Aug": [
+        null,
+        "Agostose"
+    ],
+    "Sep": [
+        null,
+        "Sept"
+    ],
+    "Oct": [
+        null,
+        "Okt"
+    ],
+    "Nov": [
+        null,
+        "Nof"
+    ],
+    "Dec": [
+        null,
+        "Des"
+    ],
+    "Your session timed out. Please dial back in to {{USSD_number}} to complete the pregnancy registration so that you can receive messages.": [
+        null,
+        "Poledisano ya gago e fedile. O kgopelwa go taela*134*550# gape go fetsa go tsenya tshedimoso gore o hwetse melaetsa."
+    ],
+    "Welcome back. Please select an option:": [
+        null,
+        "O amogetswe gape. Hle kgetha:"
+    ],
+    "Continue signing up for messages": [
+        null,
+        "Saenela melaetsa"
+    ],
+    "Main menu": [
+        null,
+        ""
+    ],
+    "Baby and pregnancy info": [
+        null,
+        ""
+    ],
+    "Send us a compliment": [
+        null,
+        ""
+    ],
+    "Send us a complaint": [
+        null,
+        ""
+    ],
+    "Welcome to the Department of Health's MomConnect. Please choose an option:": [
+        null,
+        ""
+    ],
+    "Thank you. We will send you a message shortly with instructions on how to send us your compliment.": [
+        null,
+        "Re a leboga. Re tla go romela molaetsa e se kgale wo o nago le ditaelo ka ga ka fao o ka re romelago tebogiso ya gago"
+    ],
+    "Please reply to this message with your compliment. If it relates to the service at the clinic, include the clinic or clinic worker name. Standard rates apply.": [
+        null,
+        "O kgopelwa go araba molaetsa ka pelaelo ya gago. Ge o amana le tirelo ya kliniki, akaretsa kliniki goba leina la modirelakliniki. Ditefo tsa tlwaelo di a soma."
+    ],
+    "Thank you. We will send you a message shortly with instructions on how to send us your complaint.": [
+        null,
+        ""
+    ],
+    "Please reply to this message with your complaint. If it relates to the service at the clinic, include the clinic or clinic worker name. Standard rates apply.": [
+        null,
+        "O kgopelwa go araba molaetsa ka tumiso ya gago. Ge o amana le tirelo ya kliniki, akaretsa kliniki goba leina la modirelakliniki. Ditefo tsa tlwaelo di a soma."
+    ],
+    "Baby and pregnancy info (English only)": [
+        null,
+        ""
+    ],
+    "Get the full set of messages": [
+        null,
+        ""
+    ],
+    "Welcome to the Department of Health's MomConnect. Choose an option:": [
+        null,
+        ""
+    ],
+    "To register for the full set of MomConnect messages, please visit your nearest clinic.": [
+        null,
+        "Go ingwadisetsa melaetsa ka botlalo ya MomConnect, hle etela kliniking ya geno ya kgauswi."
+    ],
+    "Register for messages": [
+        null,
+        ""
+    ],
+    "Baby and Pregnancy info (English only)": [
+        null,
+        ""
+    ],
+    "Welcome to the Department of Health's MomConnect. Please select:": [
+        null,
+        ""
+    ],
+    "MomConnect sends free support SMSs to pregnant mothers. Are you or do you suspect that you are pregnant?": [
+        null,
+        "MomConnect e romela di-SMS tsa thekgo tsa mahala go bomma bao ba imilego. O imile goba o belaela gore o imile?"
+    ],
+    "Yes": [
+        null,
+        "Ee"
+    ],
+    "No": [
+        null,
+        "Aowa"
+    ],
+    "You have previously opted out of MomConnect SMSs. Please confirm that you would like to opt in to receive messages again?": [
+        null,
+        "Nakong ye fetilego o kgopetse go tswa go di-SMS tsa MomConnect. Hle tiisetsa gore o nyaka go tsena go hwetsa melaetsa gape?"
+    ],
+    "You have chosen not to receive MomConnect SMSs and so cannot complete registration.": [
+        null,
+        "O kgethile go se hwetse di-SMS tsa MomConnect ka fao o ka se fetse ngwadiso."
+    ],
+    "Main Menu": [
+        null,
+        "Menyu o Mogolo"
+    ],
+    "We are sorry but this service is only for pregnant mothers. If you have other health concerns please visit your nearest clinic.": [
+        null,
+        "Re maswabi eupsa tirelo ye ke ya bomma bao ba imilego fela. Ge o na le mathata a mangwe a maphelo o kgopelwa go etela kliniking ya kgauswi."
+    ],
+    "We need some info to message you. This is private and will only be used to help you at a clinic. What kind of ID do you have?": [
+        null,
+        ""
+    ],
+    "SA ID": [
+        null,
+        ""
+    ],
+    "Passport": [
+        null,
+        ""
+    ],
+    "None": [
+        null,
+        ""
+    ],
+    "Sorry, your ID number did not validate. Please reenter your SA ID number:": [
+        null,
+        ""
+    ],
+    "Please enter your SA ID number:": [
+        null,
+        ""
+    ],
+    "What is the country of origin of the passport?": [
+        null,
+        ""
+    ],
+    "Zimbabwe": [
+        null,
+        ""
+    ],
+    "Mozambique": [
+        null,
+        ""
+    ],
+    "Malawi": [
+        null,
+        ""
+    ],
+    "Nigeria": [
+        null,
+        ""
+    ],
+    "DRC": [
+        null,
+        ""
+    ],
+    "Somalia": [
+        null,
+        ""
+    ],
+    "Other": [
+        null,
+        ""
+    ],
+    "There was an error in your entry. Please carefully enter your passport number again.": [
+        null,
+        ""
+    ],
+    "Please enter your Passport number:": [
+        null,
+        ""
+    ],
+    "There was an error in your entry. Please carefully enter your year of birth again (for example: 2001)": [
+        null,
+        ""
+    ],
+    "Since you don't have an ID or passport, please enter the year that you were born (for example: 1981)": [
+        null,
+        ""
+    ],
+    "Please enter the month that you were born.": [
+        null,
+        ""
+    ],
+    "There was an error in your entry. Please carefully enter your day of birth again (for example: 8)": [
+        null,
+        ""
+    ],
+    "Please enter the day that you were born (for example: 14).": [
+        null,
+        ""
+    ],
+    "The date you entered ({{ dob }}) is not a real date. Please try again.": [
+        null,
+        ""
+    ],
+    "Continue": [
+        null,
+        ""
+    ],
+    "Congratulations on your pregnancy. You will now get free SMSs about MomConnect. You can register for the full set of FREE helpful messages at a clinic.": [
+        null,
+        "Re a go lebogisa ge o imile. O tla hwetsa di-SMS tsa mahala go MomConnect. O ka ingwadisetsa melaetsa ya mohola ya MAHALA ka kliniking."
+    ],
+    "We have gathered information in the areas below. Please select:": [
+        null,
+        ""
+    ],
+    "Please select one:": [
+        null,
+        ""
+    ],
+    "More": [
+        null,
+        ""
+    ],
+    "Back": [
+        null,
+        ""
+    ],
+    "Send to me by SMS": [
+        null,
+        ""
+    ],
+    "Thank you. Your SMS will be delivered shortly.": [
+        null,
+        "Ke a leboga. SMS ya gago e tla romelwa e se kgale."
+    ]
+}

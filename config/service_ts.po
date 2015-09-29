@@ -1,0 +1,132 @@
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2015-09-23 09:01:+0000\n"
+"Project-Id-Version: Service rating\n"
+"Language-Team: Tsonga <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2015-09-24 11:57+0200\n"
+"Last-Translator: \n"
+"X-Generator: Poedit 1.6.7\n"
+"Language: ts\n"
+
+#: go-app-servicerating.js:24
+msgid "Jan"
+msgstr "Sung"
+
+#: go-app-servicerating.js:25
+msgid "Feb"
+msgstr "Nyenyen"
+
+#: go-app-servicerating.js:26
+msgid "Mar"
+msgstr "Nyenyank"
+
+#: go-app-servicerating.js:27
+msgid "Apr"
+msgstr "Dziv"
+
+#: go-app-servicerating.js:28
+msgid "May"
+msgstr " Mudy"
+
+#: go-app-servicerating.js:29
+msgid "Jun"
+msgstr "Khot"
+
+#: go-app-servicerating.js:30
+msgid "Jul"
+msgstr "Maw"
+
+#: go-app-servicerating.js:31
+msgid "Aug"
+msgstr "Mhaw"
+
+#: go-app-servicerating.js:32
+msgid "Sep"
+msgstr "Ndzhat"
+
+#: go-app-servicerating.js:33
+msgid "Oct"
+msgstr "Nhlang"
+
+#: go-app-servicerating.js:34
+msgid "Nov"
+msgstr "Huk"
+
+#: go-app-servicerating.js:35
+msgid "Dec"
+msgstr “N’wendz"
+
+#: go-app-servicerating.js:1210
+msgid ""
+"Welcome. When you signed up, were staff at the facility friendly & helpful?"
+msgstr "Wa amukeriwa. Loko u joyina, vatirhi a va ri na vunghana no pfuna?"
+
+#: go-app-servicerating.js:1213 go-app-servicerating.js:1230
+#: go-app-servicerating.js:1260 go-app-servicerating.js:1275
+msgid "Very Satisfied"
+msgstr "Ndzi enetekile swinene"
+
+#: go-app-servicerating.js:1214 go-app-servicerating.js:1231
+#: go-app-servicerating.js:1261 go-app-servicerating.js:1276
+msgid "Satisfied"
+msgstr "Ndzi enetekile"
+
+#: go-app-servicerating.js:1215 go-app-servicerating.js:1232
+#: go-app-servicerating.js:1262 go-app-servicerating.js:1277
+msgid "Not Satisfied"
+msgstr "A ndzi enetekanga"
+
+#: go-app-servicerating.js:1216 go-app-servicerating.js:1233
+#: go-app-servicerating.js:1263 go-app-servicerating.js:1278
+msgid "Very unsatisfied"
+msgstr "A ndzi eneketenga naswintsongo"
+
+#: go-app-servicerating.js:1227
+msgid "How do you feel about the time you had to wait at the facility?"
+msgstr "U titwa njhani hi nkarhi lowu u nga wu rindzela etliliniki?"
+
+#: go-app-servicerating.js:1242
+msgid "How long did you wait to be helped at the clinic?"
+msgstr "Xana u rindzele ku pfuniwa nkarhi wo leha ku fika kwihi?"
+
+#: go-app-servicerating.js:1245
+msgid "Less than an hour"
+msgstr "Ehansi ka awara"
+
+#: go-app-servicerating.js:1246
+msgid "Between 1 and 3 hours"
+msgstr "Exikarhi ka awara yin’we na tinharhu"
+
+#: go-app-servicerating.js:1247
+msgid "More than 4 hours"
+msgstr "Ku tlula tiawarata 4"
+
+#: go-app-servicerating.js:1248
+msgid "All day"
+msgstr "Siku hinkwar"
+
+#: go-app-servicerating.js:1257
+msgid "Was the facility clean?"
+msgstr "Xana tliliniki a yi basile?"
+
+#: go-app-servicerating.js:1272
+msgid "Did you feel that your privacy was respected by the staff?"
+msgstr "Xana u twa swihundla swa wena swi hloniphiwile hi vatirhi?"
+
+#: go-app-servicerating.js:1292 go-app-servicerating.js:1309
+msgid "Thank you for rating our service."
+msgstr "Ha khensa ku va u pimile vukorhokeri bya hina."
+
+#: go-app-servicerating.js:1316
+msgid "Please register at a clinic before using this line."
+msgstr "Please register at a clinic before using this line."
+
+#: go-app-servicerating.js:1323
+msgid ""
+"Sorry, you've already rated service. For baby and pregnancy help or if you "
+"have compliments or complaints dial {{public_channel}} or reply to any of "
+"the SMSs you receive"
+msgstr "U se u pimile vukorhokeri bya hina. Loko u lava ku nghenisa xivilelo/xibumabumelo,hlamula eka hungu rin'wana na rin’wana ra MomConnect leri u nga ri kuma"

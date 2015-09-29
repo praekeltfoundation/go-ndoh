@@ -1,0 +1,110 @@
+{
+    "": {
+        "pot-creation-date": "2015-09-23 09:01:+0000",
+        "project-id-version": "Opt out",
+        "language-team": "Swati <LL@li.org>",
+        "mime-version": "1.0",
+        "content-type": "text/plain; charset=UTF-8",
+        "content-transfer-encoding": "8bit",
+        "po-revision-date": "2015-09-28 14:29+0200",
+        "last-translator": "",
+        "x-generator": "Poedit 1.6.7",
+        "language": "ss"
+    },
+    "Jan": [
+        null,
+        "Bhi"
+    ],
+    "Feb": [
+        null,
+        "Indlovlenc"
+    ],
+    "Mar": [
+        null,
+        "Indlovlenkh"
+    ],
+    "Apr": [
+        null,
+        "Maba "
+    ],
+    "May": [
+        null,
+        "Inkhw"
+    ],
+    "Jun": [
+        null,
+        "Inhla"
+    ],
+    "Jul": [
+        null,
+        "Kholw"
+    ],
+    "Aug": [
+        null,
+        "Ingci"
+    ],
+    "Sep": [
+        null,
+        "Inyoni"
+    ],
+    "Oct": [
+        null,
+        "Imph"
+    ],
+    "Nov": [
+        null,
+        "Lweti"
+    ],
+    "Dec": [
+        null,
+        "Ingo"
+    ],
+    "Please let us know why you do not want MomConnect messages": [
+        null,
+        "Awusayifuni leni imilayeto ye-MomConnect"
+    ],
+    "Please tell us why you previously opted out of messages": [
+        null,
+        "Please tell us why you previously opted out of messages"
+    ],
+    "Miscarriage": [
+        null,
+        "Kuphuma kwesisu"
+    ],
+    "Baby was stillborn": [
+        null,
+        "Umntfwana watalwa afile"
+    ],
+    "Baby died": [
+        null,
+        "Umntfwana wafa"
+    ],
+    "Messages not useful": [
+        null,
+        "Imilayeto ayisiti"
+    ],
+    "Other": [
+        null,
+        "Lokunye"
+    ],
+    "We are sorry for your loss. Would you like to receive a small set of free messages to help you in this difficult time?": [
+        null,
+        "Sibuhlungu ngekulahlekelwa kwakho. Ungatsandza yini kutfola isethi lencane yemilayeto yamahhhala lengakusita kulesikhatsi lesimatima?"
+    ],
+    "Yes": [
+        null,
+        "Yebo"
+    ],
+    "No": [
+        null,
+        "Cha"
+    ],
+    "Thank you. You will no longer receive messages from us. If you have any medical concerns please visit your nearest clinic.": [
+        null,
+        "Siyabonga. Angeke asayitfola imilayeto levela kitsi. Nangabe kukhona kwetekwelashwa lokukukhatsatako, sicela uvakashele umtfolamphilo lodvute nawe."
+    ],
+    "Thank you. You will receive support messages from MomConnect in the coming weeks.": [
+        null,
+        "Siyabonga. Utawutfola imilayeto ye-MomConnect yekukwesekela kulamaviki letako."
+    ]
+}

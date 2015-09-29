@@ -1,0 +1,342 @@
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2015-09-23 09:01:+0000\n"
+"Project-Id-Version: Personal\n"
+"Language-Team: Tsonga <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2015-09-28 10:43+0200\n"
+"Last-Translator: \n"
+"X-Generator: Poedit 1.6.7\n"
+"Language: ts\n"
+
+#: go-app-personal.js:24
+msgid "Jan"
+msgstr " Sung"
+
+#: go-app-personal.js:25
+msgid "Feb"
+msgstr "Nyenyen"
+
+#: go-app-personal.js:26
+msgid "Mar"
+msgstr "Nyenyank"
+
+#: go-app-personal.js:27
+msgid "Apr"
+msgstr "Dziv"
+
+#: go-app-personal.js:28
+msgid "May"
+msgstr "Mudy"
+
+#: go-app-personal.js:29
+msgid "Jun"
+msgstr "Khot"
+
+#: go-app-personal.js:30
+msgid "Jul"
+msgstr "Maw"
+
+#: go-app-personal.js:31
+msgid "Aug"
+msgstr "Mhaw"
+
+#: go-app-personal.js:32
+msgid "Sep"
+msgstr "Ndzhat"
+
+#: go-app-personal.js:33
+msgid "Oct"
+msgstr "Nhlang"
+
+#: go-app-personal.js:34
+msgid "Nov"
+msgstr " Huk"
+
+#: go-app-personal.js:35
+msgid "Dec"
+msgstr "N'wendz"
+
+#: go-app-personal.js:1228
+msgid ""
+"Your session timed out. Please dial back in to {{USSD_number}} to complete "
+"the pregnancy registration so that you can receive messages."
+msgstr ""
+"Nkarhi wa wena wu herile. Tshikelela *134*550# ku va u hetisa ku nghenisa "
+"vuxokoxoko bya wena leswaku u ta kota ku kuma mahungu. "
+
+#: go-app-personal.js:1327
+msgid "Welcome back. Please select an option:"
+msgstr "Wa amukeriwa nakambe. Hlawula opuxini:"
+
+#: go-app-personal.js:1330
+msgid "Continue signing up for messages"
+msgstr "Yisa emahlweni ku titsarisela ku kuma mahungu"
+
+#: go-app-personal.js:1331
+msgid "Main menu"
+msgstr "Menyunkulu"
+
+#: go-app-personal.js:1346
+msgid "Baby and pregnancy info"
+msgstr "Mahungu ya n'wana na Vuyimani (Xinghezi ntsena)"
+
+#: go-app-personal.js:1347 go-app-personal.js:1352
+msgid "Send us a compliment"
+msgstr "Rhumela xibumabumelo"
+
+#: go-app-personal.js:1348 go-app-personal.js:1353
+msgid "Send us a complaint"
+msgstr "Nghenisa xivilelo"
+
+#: go-app-personal.js:1358
+msgid ""
+"Welcome to the Department of Health's MomConnect. Please choose an option:"
+msgstr "Wa amukeriwa eka MomConnect ya Ndzawulo ya Rihanyo. Hlawula opuxini:"
+
+#: go-app-personal.js:1375
+msgid ""
+"Thank you. We will send you a message shortly with instructions on how to "
+"send us your compliment."
+msgstr ""
+"Inkomu. Ku nga ri khale hi ta ku rhumela swiletelo swa leswi u faneleke ku "
+"hi rhumerisa swona swibumabumelo swa wena."
+
+#: go-app-personal.js:1385
+msgid ""
+"Please reply to this message with your compliment. If it relates to the "
+"service at the clinic, include the clinic or clinic worker name. Standard "
+"rates apply."
+msgstr ""
+"Hlamla mahungu law kanwe na xivlelo xa wen.Lok swi fambelan na vukorokeri "
+"bya tliniki, katsa vito ra mtirhi kumbe tliniki. Mtsengo leyi ringansweke ya "
+"tirha."
+
+#: go-app-personal.js:1397
+msgid ""
+"Thank you. We will send you a message shortly with instructions on how to "
+"send us your complaint."
+msgstr "Inkomu. SMS ya wena yi ta rhumeriwa ku nga ri khale."
+
+#: go-app-personal.js:1406
+msgid ""
+"Please reply to this message with your complaint. If it relates to the "
+"service at the clinic, include the clinic or clinic worker name. Standard "
+"rates apply."
+msgstr ""
+"Hlamla mahungu law kanwe na ku themndela ka wen.Lok swi fambelan na "
+"vukorokeri bya tliniki, katsa vito ra mtiri kumbe tliniki.Mtsengo leyi "
+"ringansweke ya tirha."
+
+#: go-app-personal.js:1421
+msgid "Baby and pregnancy info (English only)"
+msgstr "ahungu ya n'wana na Vuyimani (Xinghezi ntsena)"
+
+#: go-app-personal.js:1422 go-app-personal.js:1426
+msgid "Get the full set of messages"
+msgstr "Ku kuma mahungu yo helela"
+
+#: go-app-personal.js:1431
+msgid "Welcome to the Department of Health's MomConnect. Choose an option:"
+msgstr "Wa amukeriwa eka MomConnect ya Ndzawulo ya Rihanyo. Hlawula opuxini:"
+
+#: go-app-personal.js:1447
+msgid ""
+"To register for the full set of MomConnect messages, please visit your "
+"nearest clinic."
+msgstr ""
+"Ku titsarisela ku kuma mahungu yo helela ya MomConnect, endzela tliliniki ya "
+"le kusuhi na laha u tshamaka kona."
+
+#: go-app-personal.js:1506 go-app-personal.js:1511
+msgid "Register for messages"
+msgstr "Tsarisela ku rhumeriwa mahungu"
+
+#: go-app-personal.js:1507
+msgid "Baby and Pregnancy info (English only)"
+msgstr "Mahungu ya n'wana na Vuyimani (Xinghezi ntsena)"
+
+#: go-app-personal.js:1516
+msgid "Welcome to the Department of Health's MomConnect. Please select:"
+msgstr "Wa amukeriwa eka MomConnect ya Ndzawulo ya Rihanyo. Hlawula:"
+
+#: go-app-personal.js:1533
+msgid ""
+"MomConnect sends free support SMSs to pregnant mothers. Are you or do you "
+"suspect that you are pregnant?"
+msgstr ""
+"MomConnect yi rhumela tiSMS ta mahala to seketela eka vavasati lava nga "
+"vayimani.U muyimani kumbe u ehleketelela leswaku u nga va u ri muyimani?"
+
+#: go-app-personal.js:1538 go-app-personal.js:1580
+msgid "Yes"
+msgstr " Ina "
+
+#: go-app-personal.js:1539 go-app-personal.js:1581
+msgid "No"
+msgstr "E-e"
+
+#: go-app-personal.js:1575
+msgid ""
+"You have previously opted out of MomConnect SMSs. Please confirm that you "
+"would like to opt in to receive messages again?"
+msgstr ""
+"Nkarhi lowu hundzeke u komberile ku ka u nga ha rhumeriwi tiSMS ta "
+"MomConnect. Xana u lava ku rhumeriwa mahungu nakambe?"
+
+#: go-app-personal.js:1600
+msgid ""
+"You have chosen not to receive MomConnect SMSs and so cannot complete "
+"registration."
+msgstr ""
+"U hlawurile ku ka u nga rhumeriwi tiSMS ta MomConnect kutani u wu fanelanga "
+"ku tsarisa."
+
+#: go-app-personal.js:1604
+msgid "Main Menu"
+msgstr "Menyunkulu"
+
+#: go-app-personal.js:1616
+msgid ""
+"We are sorry but this service is only for pregnant mothers. If you have "
+"other health concerns please visit your nearest clinic."
+msgstr ""
+"U ta hi khomela, vukorhokeri lebyi i bya vavasati lava nga vayimani ntsena."
+"Loko u ri na swivilelo swin'wana swa rihanyo endzela tliliniki ya le kusuhi "
+"na wena."
+
+#: go-app-personal.js:1625
+msgid ""
+"We need some info to message you. This is private and will only be used to "
+"help you at a clinic. What kind of ID do you have?"
+msgstr ""
+
+#: go-app-personal.js:1630
+msgid "SA ID"
+msgstr ""
+
+#: go-app-personal.js:1631
+msgid "Passport"
+msgstr ""
+
+#: go-app-personal.js:1632
+msgid "None"
+msgstr ""
+
+#: go-app-personal.js:1652
+msgid ""
+"Sorry, your ID number did not validate. Please reenter your SA ID number:"
+msgstr ""
+
+#: go-app-personal.js:1655
+msgid "Please enter your SA ID number:"
+msgstr ""
+
+#: go-app-personal.js:1688
+msgid "What is the country of origin of the passport?"
+msgstr ""
+
+#: go-app-personal.js:1691
+msgid "Zimbabwe"
+msgstr ""
+
+#: go-app-personal.js:1692
+msgid "Mozambique"
+msgstr ""
+
+#: go-app-personal.js:1693
+msgid "Malawi"
+msgstr ""
+
+#: go-app-personal.js:1694
+msgid "Nigeria"
+msgstr ""
+
+#: go-app-personal.js:1695
+msgid "DRC"
+msgstr ""
+
+#: go-app-personal.js:1696
+msgid "Somalia"
+msgstr ""
+
+#: go-app-personal.js:1697
+msgid "Other"
+msgstr ""
+
+#: go-app-personal.js:1715
+msgid ""
+"There was an error in your entry. Please carefully enter your passport "
+"number again."
+msgstr ""
+
+#: go-app-personal.js:1717
+msgid "Please enter your Passport number:"
+msgstr ""
+
+#: go-app-personal.js:1743
+msgid ""
+"There was an error in your entry. Please carefully enter your year of birth "
+"again (for example: 2001)"
+msgstr ""
+
+#: go-app-personal.js:1747
+msgid ""
+"Since you don't have an ID or passport, please enter the year that you were "
+"born (for example: 1981)"
+msgstr ""
+
+#: go-app-personal.js:1778
+msgid "Please enter the month that you were born."
+msgstr ""
+
+#: go-app-personal.js:1797
+msgid ""
+"There was an error in your entry. Please carefully enter your day of birth "
+"again (for example: 8)"
+msgstr ""
+
+#: go-app-personal.js:1801
+msgid "Please enter the day that you were born (for example: 14)."
+msgstr ""
+
+#: go-app-personal.js:1840
+msgid "The date you entered ({{ dob }}) is not a real date. Please try again."
+msgstr ""
+
+#: go-app-personal.js:1845
+msgid "Continue"
+msgstr ""
+
+#: go-app-personal.js:1861 go-app-personal.js:1882
+msgid ""
+"Congratulations on your pregnancy. You will now get free SMSs about "
+"MomConnect. You can register for the full set of FREE helpful messages at a "
+"clinic."
+msgstr ""
+
+#: go-app-personal.js:1913
+msgid "We have gathered information in the areas below. Please select:"
+msgstr ""
+
+#: go-app-personal.js:1945
+msgid "Please select one:"
+msgstr ""
+
+#: go-app-personal.js:1974
+msgid "More"
+msgstr ""
+
+#: go-app-personal.js:1975
+msgid "Back"
+msgstr ""
+
+#: go-app-personal.js:1976
+msgid "Send to me by SMS"
+msgstr ""
+
+#: go-app-personal.js:2006
+msgid "Thank you. Your SMS will be delivered shortly."
+msgstr "Inkomu. SMS ya wena yi ta rhumeriwa ku nga ri khale."

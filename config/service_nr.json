@@ -1,0 +1,123 @@
+{
+    "": {
+        "pot-creation-date": "2015-09-23 09:01:+0000",
+        "project-id-version": "Service rating",
+        "language-team": "Ndebele <LL@li.org>",
+        "mime-version": "1.0",
+        "content-type": "text/plain; charset=UTF-8",
+        "content-transfer-encoding": "8bit",
+        "po-revision-date": "2015-09-24 11:52+0200",
+        "last-translator": "",
+        "x-generator": "Poedit 1.6.7",
+        "plural-forms": "nplurals=1; plural=0;",
+        "language": "nr"
+    },
+    "Jan": [
+        null,
+        "Bhi"
+    ],
+    "Feb": [
+        null,
+        "Indlovlenc"
+    ],
+    "Mar": [
+        null,
+        "Indlovlenk"
+    ],
+    "Apr": [
+        null,
+        "Maba"
+    ],
+    "May": [
+        null,
+        "Inkhw"
+    ],
+    "Jun": [
+        null,
+        "Inhla"
+    ],
+    "Jul": [
+        null,
+        "Kholw"
+    ],
+    "Aug": [
+        null,
+        "Ingci"
+    ],
+    "Sep": [
+        null,
+        "Inyoni"
+    ],
+    "Oct": [
+        null,
+        " Imph"
+    ],
+    "Nov": [
+        null,
+        "Lweti"
+    ],
+    "Dec": [
+        null,
+        " Ingo"
+    ],
+    "Welcome. When you signed up, were staff at the facility friendly & helpful?": [
+        null,
+        "Nawubhalisa, bonesi  bebanemusa futsi bakusita?"
+    ],
+    "Very Satisfied": [
+        null,
+        "Ngenetisa kakhulu"
+    ],
+    "Satisfied": [
+        null,
+        "Ngenetiseka"
+    ],
+    "Not Satisfied": [
+        null,
+        "Angizange ngenetiseka"
+    ],
+    "Very unsatisfied": [
+        null,
+        "Angizange ngenetiseka mbamba"
+    ],
+    "How do you feel about the time you had to wait at the facility?": [
+        null,
+        "Utiva njani mayelana nesikhatsi lowasicitsa ulindzile esikhungweni?"
+    ],
+    "How long did you wait to be helped at the clinic?": [
+        null,
+        "Wema sikhatsi lesingakanani emtfolamphilo ngembi kwekusitwa?"
+    ],
+    "Less than an hour": [
+        null,
+        "Ngaphansi kweli-awa"
+    ],
+    "Between 1 and 3 hours": [
+        null,
+        "Emkhatsini weli-awa-1 nala-3"
+    ],
+    "More than 4 hours": [
+        null,
+        "Ngetulu kwema-awa la-4”\n\n#: go-app-servicerating.js:1248\nmsgid "
+    ],
+    "Was the facility clean?": [
+        null,
+        "Ingabe lesikhungo besihlantekile?"
+    ],
+    "Did you feel that your privacy was respected by the staff?": [
+        null,
+        "Ingabe weva kutsi tisebenti tiyalihlonipha lingasense lakho"
+    ],
+    "Thank you for rating our service.": [
+        null,
+        "Siyabonga cuts unikete emaphuzu tinsita tetfu."
+    ],
+    "Please register at a clinic before using this line.": [
+        null,
+        "Please register at a clinic before using this line."
+    ],
+    "Sorry, you've already rated service. For baby and pregnancy help or if you have compliments or complaints dial {{public_channel}} or reply to any of the SMSs you receive": [
+        null,
+        "Ncesi, bewaniketile emaphuzu ekusebenta kwetfu."
+    ]
+}

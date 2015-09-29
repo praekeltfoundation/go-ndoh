@@ -1,0 +1,110 @@
+{
+    "": {
+        "pot-creation-date": "2015-09-23 09:01:+0000",
+        "project-id-version": "Opt out",
+        "language-team": "Tsonga <LL@li.org>",
+        "mime-version": "1.0",
+        "content-type": "text/plain; charset=UTF-8",
+        "content-transfer-encoding": "8bit",
+        "po-revision-date": "2015-09-28 14:38+0200",
+        "last-translator": "",
+        "x-generator": "Poedit 1.6.7",
+        "language": "ts"
+    },
+    "Jan": [
+        null,
+        "Sung"
+    ],
+    "Feb": [
+        null,
+        "Nyenyen"
+    ],
+    "Mar": [
+        null,
+        "Nyenyank"
+    ],
+    "Apr": [
+        null,
+        "Dziv"
+    ],
+    "May": [
+        null,
+        "Mudy"
+    ],
+    "Jun": [
+        null,
+        "Khot"
+    ],
+    "Jul": [
+        null,
+        "Maw"
+    ],
+    "Aug": [
+        null,
+        "Mhaw"
+    ],
+    "Sep": [
+        null,
+        "Ndzhat"
+    ],
+    "Oct": [
+        null,
+        "Nhlang"
+    ],
+    "Nov": [
+        null,
+        "Huk"
+    ],
+    "Dec": [
+        null,
+        "Nwendz"
+    ],
+    "Please let us know why you do not want MomConnect messages": [
+        null,
+        "Hikokwalaho ka yini u nga lavi mahungu ya MomConnect"
+    ],
+    "Please tell us why you previously opted out of messages": [
+        null,
+        "Please tell us why you previously opted out of messages"
+    ],
+    "Miscarriage": [
+        null,
+        "U onhakeriwile"
+    ],
+    "Baby was stillborn": [
+        null,
+        "U kumekile a lovile"
+    ],
+    "Baby died": [
+        null,
+        "U lovile"
+    ],
+    "Messages not useful": [
+        null,
+        "A ma pfuni"
+    ],
+    "Other": [
+        null,
+        "Swinwana"
+    ],
+    "We are sorry for your loss. Would you like to receive a small set of free messages to help you in this difficult time?": [
+        null,
+        "Chaveleleka eka ku lahlekeriwa ka wena. U nga tsakela ku kuma mahungu ya mahala lama nga ta ku pfunaka hi nkarhi lowo tika?"
+    ],
+    "Yes": [
+        null,
+        "Ina"
+    ],
+    "No": [
+        null,
+        "Ee"
+    ],
+    "Thank you. You will no longer receive messages from us. If you have any medical concerns please visit your nearest clinic.": [
+        null,
+        "Inkomu.A wu nga ha kumi mahungu yo huma eka hina.Loko u ri na swivilelo swa vutshunguri u komberiwa ku endzela ntliliniki ya le kusuhi na laha u tshamaka kona."
+    ],
+    "Thank you. You will receive support messages from MomConnect in the coming weeks.": [
+        null,
+        "Inkomu. U ta kuma mahungu yo ku seketela yo huma eka MomConnect eka mavhiki lama taka."
+    ]
+}

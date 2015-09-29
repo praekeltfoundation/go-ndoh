@@ -69,6 +69,10 @@ describe("app", function() {
                         api_key: 'test_key',
                         url: 'http://ndoh-control/api/v1/'
                     },
+                    control_v2: {
+                        url: 'http://ndoh-control/api/v2/',
+                        api_token: 'test_token'
+                    },
                     subscription: {
                         standard: 1,
                         later: 2,
@@ -2099,6 +2103,10 @@ describe("app", function() {
                         username: 'test_user',
                         api_key: 'test_key',
                         url: 'http://ndoh-control/api/v1/'
+                    },
+                    control_v2: {
+                        url: 'http://ndoh-control/api/v2/',
+                        api_token: 'test_token'
                     },
                     subscription: {
                         standard: 1,

@@ -15,6 +15,10 @@
         "api_key": "test_key",
         "url": "http://qa-ndoh-control.za.prk-host.net/api/v1/"
     },
+    "control_v2": {
+        "url": "http://qa-ndoh-control.za.prk-host.net/api/v2/",
+        "api_token": "test_token"
+    }
     "subscription": {
         "standard": 1,
         "later": 2,
@@ -40,7 +44,7 @@
         "username": "980d2423-292b-4c34-be81-c74784b9e99a",
         "account_id": "3088",
         "default_faq": "3134"
-    }, 
+    },
     "faq_enabled": false,
     "detailed_data_collection": false
 }

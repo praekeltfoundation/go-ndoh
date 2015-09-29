@@ -540,6 +540,35 @@ go.utils = {
         }
     },
 
+    control_v2_api_call: function (method, params, payload, endpoint, im) {
+        var http = new JsonApi(im, {
+            headers: {
+                'Authorization': ['Token ' + im.config.control_v2.api_token]
+            }
+        });
+        switch (method) {
+            case "post":
+                return http.post(im.config.control.url + endpoint, {
+                    data: payload
+                });
+            case "get":
+                return http.get(im.config.control.url + endpoint, {
+                    params: params
+                });
+            case "patch":
+                return http.patch(im.config.control.url + endpoint, {
+                    data: payload
+                });
+            case "put":
+                return http.put(im.config.control.url + endpoint, {
+                    params: params,
+                  data: payload
+                });
+            case "delete":
+                return http.delete(im.config.control.url + endpoint);
+            }
+    },
+
     subscription_type_and_rate: function(contact, im) {
         // Returns the subscription type, rate and start point
         // for loss and baby message subscriptions
@@ -614,7 +643,7 @@ go.utils = {
             authority: reg_type,  // 'clinic' | 'chw' | 'personal'
         };
         return go.utils
-            .control_api_call("post", null, payload, 'registration/', im)
+            .control_v2_api_call("post", null, payload, 'registration/', im)
             .then(function(post_response) {
                 return go.utils.json_success_fail_metric(im, 'registration_call', post_response);
             });

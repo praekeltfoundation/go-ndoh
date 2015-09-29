@@ -640,7 +640,7 @@ go.utils = {
             authority: reg_type,  // 'clinic' | 'chw' | 'personal'
         };
         return go.utils
-            .control_v2_api_call("post", null, payload, 'registration/', im)
+            .control_v2_api_call("post", null, payload, 'registrations/', im)
             .then(function(post_response) {
                 return go.utils.json_success_fail_metric(im, 'registration_call', post_response);
             });

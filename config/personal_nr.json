@@ -6,7 +6,7 @@
         "mime-version": "1.0",
         "content-type": "text/plain; charset=UTF-8",
         "content-transfer-encoding": "8bit",
-        "po-revision-date": "2015-09-28 11:46+0200",
+        "po-revision-date": "2015-09-30 09:56+0200",
         "last-translator": "",
         "x-generator": "Poedit 1.6.7",
         "plural-forms": "nplurals=1; plural=0;",
@@ -142,7 +142,7 @@
     ],
     "Yes": [
         null,
-        "Yesbo"
+        "Yebo"
     ],
     "No": [
         null,

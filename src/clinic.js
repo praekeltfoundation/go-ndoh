@@ -116,6 +116,7 @@ go.app = function() {
             return self.im.outbound.send({
                 to: self.contact,
                 endpoint: 'sms',
+                lang: self.contact.extra.language_choice,
                 content: $("Welcome. To stop getting SMSs dial {{optout_channel}} or for more " +
                            "services dial {{public_channel}} (No Cost). Standard rates apply " +
                            "when replying to any SMS from MomConnect.")

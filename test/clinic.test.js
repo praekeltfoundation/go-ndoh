@@ -1762,7 +1762,6 @@ describe("app", function() {
                             ].join('\n')
                         })
                         .run();
-
                 });
             });
 
@@ -2008,7 +2007,7 @@ describe("app", function() {
                             });
                         })
                         .setup.user.state('states_language')
-                        .input('4')
+                        .input('4')  // english
                         .check(function(api) {
                             var smses = _.where(api.outbound.store, {
                                 endpoint: 'sms'
@@ -2126,7 +2125,6 @@ describe("app", function() {
                         .run();
                 });
             });
-
         });
 
         describe("when a session is terminated", function() {

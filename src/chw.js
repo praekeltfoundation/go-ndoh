@@ -568,6 +568,7 @@ go.app = function() {
                     self.im.outbound.send({
                         to: self.contact,
                         endpoint: 'sms',
+                        lang: self.contact.extra.language_choice,
                         content: $("Congratulations on your pregnancy. You will now get free SMSs about MomConnect. " +
                                  "You can register for the full set of FREE helpful messages at a clinic.")
                     }),

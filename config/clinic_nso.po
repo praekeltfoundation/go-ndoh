@@ -1,0 +1,290 @@
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2015-09-23 09:01:+0000\n"
+"Project-Id-Version: Clinic\n"
+"Language-Team: Sepedi <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2015-10-15 15:57+0200\n"
+"Last-Translator: \n"
+"X-Generator: Poedit 1.6.7\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Language: nso\n"
+
+#: go-app-clinic.js:24
+msgid "Jan"
+msgstr ""
+
+#: go-app-clinic.js:25
+msgid "Feb"
+msgstr ""
+
+#: go-app-clinic.js:26
+msgid "Mar"
+msgstr ""
+
+#: go-app-clinic.js:27
+msgid "Apr"
+msgstr ""
+
+#: go-app-clinic.js:28
+msgid "May"
+msgstr ""
+
+#: go-app-clinic.js:29
+msgid "Jun"
+msgstr ""
+
+#: go-app-clinic.js:30
+msgid "Jul"
+msgstr ""
+
+#: go-app-clinic.js:31
+msgid "Aug"
+msgstr ""
+
+#: go-app-clinic.js:32
+msgid "Sep"
+msgstr ""
+
+#: go-app-clinic.js:33
+msgid "Oct"
+msgstr ""
+
+#: go-app-clinic.js:34
+msgid "Nov"
+msgstr ""
+
+#: go-app-clinic.js:35
+msgid "Dec"
+msgstr ""
+
+#: go-app-clinic.js:1221
+msgid ""
+"Please dial back in to {{ USSD_number }} to complete the pregnancy "
+"registration."
+msgstr ""
+
+#: go-app-clinic.js:1245
+msgid ""
+"Welcome. To stop getting SMSs dial {{optout_channel}} or for more services "
+"dial {{public_channel}} (No Cost). Standard rates apply when replying to any "
+"SMS from MomConnect."
+msgstr ""
+"O amogetswe go MomConnect. Go emisa diSMS leletsa *134*550*1# (Mahala). "
+"Hlokomela gore tefo ya tlwaelo ya SMS e a soma ge o araba diSMS go tswa go "
+"rena."
+
+#: go-app-clinic.js:1271
+msgid "Would you like to complete pregnancy registration for {{ num }}?"
+msgstr ""
+
+#: go-app-clinic.js:1276 go-app-clinic.js:1313 go-app-clinic.js:1342
+msgid "Yes"
+msgstr ""
+
+#: go-app-clinic.js:1277
+msgid "Start new registration"
+msgstr ""
+
+#: go-app-clinic.js:1307
+msgid ""
+"Welcome to The Department of Health's MomConnect. Tell us if this is the no. "
+"that the mother would like to get SMSs on: {{ num }}"
+msgstr ""
+
+#: go-app-clinic.js:1314 go-app-clinic.js:1343
+msgid "No"
+msgstr ""
+
+#: go-app-clinic.js:1337
+msgid ""
+"This number has previously opted out of MomConnect SMSs. Please confirm that "
+"the mom would like to opt in to receive messages again?"
+msgstr ""
+
+#: go-app-clinic.js:1371
+msgid ""
+"You have chosen not to receive MomConnect SMSs and so cannot complete "
+"registration."
+msgstr ""
+
+#: go-app-clinic.js:1375
+msgid "Main Menu"
+msgstr ""
+
+#: go-app-clinic.js:1385
+msgid ""
+"Sorry, the clinic number did not validate. Please reenter the clinic number:"
+msgstr ""
+
+#: go-app-clinic.js:1387
+msgid ""
+"Please enter the clinic code for the facility where this pregnancy is being "
+"registered:"
+msgstr ""
+
+#: go-app-clinic.js:1433
+msgid ""
+"Sorry, the mobile number did not validate. Please reenter the mobile number:"
+msgstr ""
+
+#: go-app-clinic.js:1436
+msgid "Please input the mobile number of the pregnant woman to be registered:"
+msgstr ""
+
+#: go-app-clinic.js:1475
+msgid "Please select the month when the baby is due:"
+msgstr ""
+
+#: go-app-clinic.js:1494
+msgid ""
+"Sorry, the number did not validate. Please enter the estimated day that the "
+"baby is due (For example 12):"
+msgstr ""
+
+#: go-app-clinic.js:1498
+msgid "Please enter the estimated day that the baby is due (For example 12):"
+msgstr ""
+
+#: go-app-clinic.js:1537
+msgid "The date you entered ({{ edd }}) is not a real date. Please try again."
+msgstr ""
+
+#: go-app-clinic.js:1542 go-app-clinic.js:1772
+msgid "Continue"
+msgstr ""
+
+#: go-app-clinic.js:1551
+msgid "What kind of identification does the pregnant mother have?"
+msgstr ""
+
+#: go-app-clinic.js:1555
+msgid "SA ID"
+msgstr ""
+
+#: go-app-clinic.js:1556
+msgid "Passport"
+msgstr ""
+
+#: go-app-clinic.js:1557
+msgid "None"
+msgstr ""
+
+#: go-app-clinic.js:1577
+msgid ""
+"Sorry, the mother's ID number did not validate. Please reenter the SA ID "
+"number:"
+msgstr ""
+
+#: go-app-clinic.js:1580
+msgid "Please enter the pregnant mother's SA ID number:"
+msgstr ""
+
+#: go-app-clinic.js:1614
+msgid "What is the country of origin of the passport?"
+msgstr ""
+
+#: go-app-clinic.js:1617
+msgid "Zimbabwe"
+msgstr ""
+
+#: go-app-clinic.js:1618
+msgid "Mozambique"
+msgstr ""
+
+#: go-app-clinic.js:1619
+msgid "Malawi"
+msgstr ""
+
+#: go-app-clinic.js:1620
+msgid "Nigeria"
+msgstr ""
+
+#: go-app-clinic.js:1621
+msgid "DRC"
+msgstr ""
+
+#: go-app-clinic.js:1622
+msgid "Somalia"
+msgstr ""
+
+#: go-app-clinic.js:1623
+msgid "Other"
+msgstr ""
+
+#: go-app-clinic.js:1641
+msgid ""
+"There was an error in your entry. Please carefully enter the passport number "
+"again."
+msgstr ""
+
+#: go-app-clinic.js:1643
+msgid "Please enter the pregnant mother's Passport number:"
+msgstr ""
+
+#: go-app-clinic.js:1669
+msgid ""
+"There was an error in your entry. Please carefully enter the mother's year "
+"of birth again (for example: 2001)"
+msgstr ""
+
+#: go-app-clinic.js:1673
+msgid ""
+"Please enter the year that the pregnant mother was born (for example: 1981)"
+msgstr ""
+
+#: go-app-clinic.js:1703
+msgid "Please enter the month that the mom was born."
+msgstr ""
+
+#: go-app-clinic.js:1723
+msgid ""
+"There was an error in your entry. Please carefully enter the mother's day of "
+"birth again (for example: 8)"
+msgstr ""
+
+#: go-app-clinic.js:1727
+msgid "Please enter the day that the mother was born (for example: 14)."
+msgstr ""
+
+#: go-app-clinic.js:1767
+msgid "The date you entered ({{ dob }}) is not a real date. Please try again."
+msgstr ""
+
+#: go-app-clinic.js:1781
+msgid ""
+"Please select the language that the pregnant mother would like to get "
+"messages in:"
+msgstr ""
+
+#: go-app-clinic.js:1785
+msgid "English"
+msgstr ""
+
+#: go-app-clinic.js:1786
+msgid "Afrikaans"
+msgstr ""
+
+#: go-app-clinic.js:1787
+msgid "Zulu"
+msgstr ""
+
+#: go-app-clinic.js:1788
+msgid "Xhosa"
+msgstr ""
+
+#: go-app-clinic.js:1789
+msgid "Sotho"
+msgstr ""
+
+#: go-app-clinic.js:1790
+msgid "Setswana"
+msgstr ""
+
+#: go-app-clinic.js:1850
+msgid ""
+"Thank you. The pregnant woman will now receive weekly messages about her "
+"pregnancy from MomConnect."
+msgstr ""

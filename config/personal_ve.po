@@ -6,7 +6,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2015-09-28 11:45+0200\n"
+"PO-Revision-Date: 2015-10-14 14:21+0200\n"
 "Last-Translator: \n"
 "X-Generator: Poedit 1.6.7\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -74,7 +74,7 @@ msgstr "Vho tanganedzwa kha MomConnect ya Muhasho wa Mutakalo.Vha nanga:"
 
 #: go-app-personal.js:1330
 msgid "Continue signing up for messages"
-msgstr "Kha vha ise phanḓa na u dinwalisela milaedza"
+msgstr "Kha vha ise phanda na u dinwalisela milaedza"
 
 #: go-app-personal.js:1331
 msgid "Main menu"
@@ -82,7 +82,7 @@ msgstr "Menumurangeli"
 
 #: go-app-personal.js:1346
 msgid "Baby and pregnancy info"
-msgstr "Tsivhudzo ya Vhana na U ḓihwala (Eng fhedzi) "
+msgstr "Tsivhudzo ya Vhana na U dihwala (Eng fhedzi) "
 
 #: go-app-personal.js:1347 go-app-personal.js:1352
 msgid "Send us a compliment"
@@ -102,7 +102,7 @@ msgid ""
 "Thank you. We will send you a message shortly with instructions on how to "
 "send us your compliment."
 msgstr ""
-"Ro livhuha. Ri ḓo rumela mulaedza hu si kale wa ndila dza u ri thuthuwedzo/"
+"Ro livhuha. Ri do rumela mulaedza hu si kale wa ndila dza u ri thuthuwedzo/"
 "ndivhuho yavho."
 
 #: go-app-personal.js:1385
@@ -119,7 +119,7 @@ msgstr ""
 msgid ""
 "Thank you. We will send you a message shortly with instructions on how to "
 "send us your complaint."
-msgstr "Ro livhuha. SMS i ḓo swika hu si kale."
+msgstr "Ro livhuha. SMS i do swika hu si kale."
 
 #: go-app-personal.js:1406
 msgid ""
@@ -133,7 +133,7 @@ msgstr ""
 
 #: go-app-personal.js:1421
 msgid "Baby and pregnancy info (English only)"
-msgstr "Tsivhudzo ya Vhana na U ḓihwala (nga Luisimane fhedzi)"
+msgstr "Tsivhudzo ya Vhana na U dihwala (nga Luisimane fhedzi)"
 
 #: go-app-personal.js:1422 go-app-personal.js:1426
 msgid "Get the full set of messages"
@@ -205,7 +205,7 @@ msgid ""
 "other health concerns please visit your nearest clinic."
 msgstr ""
 "Vha ri farele. Heyi tshumelo ndi ya vhathu vho dihwalaho fhedzi. Arali vha "
-"tshi toda thusho ya zwiṅwe-vho zwa mutakalo, kha vha ye kiliniki ya tsini "
+"tshi toda thusho ya zwinwe-vho zwa mutakalo, kha vha ye kiliniki ya tsini "
 "navho."
 
 #: go-app-personal.js:1625
@@ -317,7 +317,7 @@ msgid ""
 "MomConnect. You can register for the full set of FREE helpful messages at a "
 "clinic."
 msgstr ""
-"Ri a takala vho ḓihwala. Vha ḓo rumelwa dziSMS dza mahala dza MomConnect. "
+"Ri a takala vho dihwala. Vha do rumelwa dziSMS dza mahala dza MomConnect. "
 "Vha nga ya kiliniki vha dinwalisela sethe ya milaedza ya MAHALA i no do vha "
 "thusa."
 
@@ -343,4 +343,4 @@ msgstr ""
 
 #: go-app-personal.js:2006
 msgid "Thank you. Your SMS will be delivered shortly."
-msgstr "Ro livhuha. SMS i ḓo swika hu si kale."
+msgstr "Ro livhuha. SMS i do swika hu si kale."

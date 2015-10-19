@@ -6,7 +6,7 @@
         "mime-version": "1.0",
         "content-type": "text/plain; charset=UTF-8",
         "content-transfer-encoding": "8bit",
-        "po-revision-date": "2015-09-30 09:56+0200",
+        "po-revision-date": "2015-10-14 14:41+0200",
         "last-translator": "",
         "x-generator": "Poedit 1.6.7",
         "plural-forms": "nplurals=1; plural=0;",
@@ -70,7 +70,7 @@
     ],
     "Continue signing up for messages": [
         null,
-        ""
+        "Kuchubeka ngibhalisele kutfola imilayeto"
     ],
     "Main menu": [
         null,
@@ -158,7 +158,7 @@
     ],
     "Main Menu": [
         null,
-        ".Imenyu Lenkhulu"
+        "Imenyu Lenkhulu"
     ],
     "We are sorry but this service is only for pregnant mothers. If you have other health concerns please visit your nearest clinic.": [
         null,

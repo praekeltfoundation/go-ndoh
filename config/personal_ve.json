@@ -6,7 +6,7 @@
         "mime-version": "1.0",
         "content-type": "text/plain; charset=UTF-8",
         "content-transfer-encoding": "8bit",
-        "po-revision-date": "2015-09-28 11:45+0200",
+        "po-revision-date": "2015-10-14 14:21+0200",
         "last-translator": "",
         "x-generator": "Poedit 1.6.7",
         "plural-forms": "nplurals=2; plural=(n != 1);",
@@ -70,7 +70,7 @@
     ],
     "Continue signing up for messages": [
         null,
-        "Kha vha ise phanḓa na u dinwalisela milaedza"
+        "Kha vha ise phanda na u dinwalisela milaedza"
     ],
     "Main menu": [
         null,
@@ -78,7 +78,7 @@
     ],
     "Baby and pregnancy info": [
         null,
-        "Tsivhudzo ya Vhana na U ḓihwala (Eng fhedzi) "
+        "Tsivhudzo ya Vhana na U dihwala (Eng fhedzi) "
     ],
     "Send us a compliment": [
         null,
@@ -94,7 +94,7 @@
     ],
     "Thank you. We will send you a message shortly with instructions on how to send us your compliment.": [
         null,
-        "Ro livhuha. Ri ḓo rumela mulaedza hu si kale wa ndila dza u ri thuthuwedzo/ndivhuho yavho."
+        "Ro livhuha. Ri do rumela mulaedza hu si kale wa ndila dza u ri thuthuwedzo/ndivhuho yavho."
     ],
     "Please reply to this message with your compliment. If it relates to the service at the clinic, include the clinic or clinic worker name. Standard rates apply.": [
         null,
@@ -102,7 +102,7 @@
     ],
     "Thank you. We will send you a message shortly with instructions on how to send us your complaint.": [
         null,
-        "Ro livhuha. SMS i ḓo swika hu si kale."
+        "Ro livhuha. SMS i do swika hu si kale."
     ],
     "Please reply to this message with your complaint. If it relates to the service at the clinic, include the clinic or clinic worker name. Standard rates apply.": [
         null,
@@ -110,7 +110,7 @@
     ],
     "Baby and pregnancy info (English only)": [
         null,
-        "Tsivhudzo ya Vhana na U ḓihwala (nga Luisimane fhedzi)"
+        "Tsivhudzo ya Vhana na U dihwala (nga Luisimane fhedzi)"
     ],
     "Get the full set of messages": [
         null,
@@ -162,7 +162,7 @@
     ],
     "We are sorry but this service is only for pregnant mothers. If you have other health concerns please visit your nearest clinic.": [
         null,
-        "Vha ri farele. Heyi tshumelo ndi ya vhathu vho dihwalaho fhedzi. Arali vha tshi toda thusho ya zwiṅwe-vho zwa mutakalo, kha vha ye kiliniki ya tsini navho."
+        "Vha ri farele. Heyi tshumelo ndi ya vhathu vho dihwalaho fhedzi. Arali vha tshi toda thusho ya zwinwe-vho zwa mutakalo, kha vha ye kiliniki ya tsini navho."
     ],
     "We need some info to message you. This is private and will only be used to help you at a clinic. What kind of ID do you have?": [
         null,
@@ -258,7 +258,7 @@
     ],
     "Congratulations on your pregnancy. You will now get free SMSs about MomConnect. You can register for the full set of FREE helpful messages at a clinic.": [
         null,
-        "Ri a takala vho ḓihwala. Vha ḓo rumelwa dziSMS dza mahala dza MomConnect. Vha nga ya kiliniki vha dinwalisela sethe ya milaedza ya MAHALA i no do vha thusa."
+        "Ri a takala vho dihwala. Vha do rumelwa dziSMS dza mahala dza MomConnect. Vha nga ya kiliniki vha dinwalisela sethe ya milaedza ya MAHALA i no do vha thusa."
     ],
     "We have gathered information in the areas below. Please select:": [
         null,
@@ -282,6 +282,6 @@
     ],
     "Thank you. Your SMS will be delivered shortly.": [
         null,
-        "Ro livhuha. SMS i ḓo swika hu si kale."
+        "Ro livhuha. SMS i do swika hu si kale."
     ]
 }

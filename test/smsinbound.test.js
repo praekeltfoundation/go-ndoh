@@ -273,7 +273,8 @@ describe("app", function() {
                             api.contacts.add({
                                 msisdn: '+27001',
                                 extra : {
-                                    language_choice: 'en'
+                                    language_choice: 'en',
+                                    clinic_code: '123456'
                                 },
                                 key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                                 user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"

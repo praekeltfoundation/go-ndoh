@@ -720,7 +720,8 @@ go.utils = {
           conversation: "/api/v1/snappybouncer/conversation/key/" + im.config.snappybouncer.conversation + "/",
           message: message,
           contact_key: contact.key,
-          msisdn: contact.msisdn
+          msisdn: contact.msisdn,
+          faccode: parseInt(contact.extra.clinic_code, 10) || null
         };
         return go.utils
             .control_api_call("post", null, payload, 'snappybouncer/ticket/', im)

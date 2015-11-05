@@ -226,7 +226,8 @@ go.utils = {
     },
 
     get_swt: function(im) {
-        if (im.config.name.substring(0,10) === "smsinbound") {
+        if (im.config.name.substring(0,10) === "smsinbound" ||
+            im.config.name.substring(0,9) === "nurse_sms") {
             return 2;  // swt = 2 for sms optout
         } else {
             return 1;  // swt = 1 for ussd optout
@@ -905,6 +906,103 @@ go.utils = {
                                 queue2.push(function() {
                                     return im.metrics.fire.inc([env, 'sum', 'optout_on',
                                       reg_source].join('.'), {amount: 1});
+                                });
+
+                                // fire sum of all opt-outs metric
+                                queue2.push(function() {
+                                    return im.metrics.fire.inc([env, 'sum', 'optouts'].join('.'),
+                                      {amount: 1});
+                                });
+
+                                // fire loss / non-loss metric
+                                var loss_causes = ['miscarriage', 'babyloss', 'stillbirth'];
+                                if (_.contains(loss_causes, contact.extra.opt_out_reason)) {
+                                    queue2.push(function() {
+                                        return im.metrics.fire.inc([env, 'sum', 'optout_cause',
+                                          'loss'].join('.'), {amount: 1});
+                                    });
+                                } else {
+                                    queue2.push(function() {
+                                        return im.metrics.fire.inc([env, 'sum', 'optout_cause',
+                                          'non_loss'].join('.'), {amount: 1});
+                                    });
+                                }
+
+                                // fire cause metric
+                                queue2.push(function() {
+                                    return im.metrics.fire.inc([env, 'sum', 'optout_cause',
+                                      optout_reason].join('.'), {amount: 1});
+                                });
+
+                            }
+                            // End Queue 2
+
+                            return Q
+                                .all(queue2.map(Q.try))
+                                .then(function() {
+                                    return go.utils.adjust_percentage_optouts(im, env);
+                                });
+                        } else {
+                            return Q();
+                        }
+                    });
+            });
+    },
+
+    nurse_optout: function(im, contact, optout_reason, api_optout, unsub_all, jembi_optout,
+                      metric_prefix, env) {
+        var queue1 = [];
+        var prior_opt_out_reason;
+
+        // Start Queue 1
+        if (optout_reason !== undefined) {
+            prior_opt_out_reason = contact.extra.opt_out_reason || 'unknown';
+              // if reason was not previously saved it should be 'unknown' (from smsinbound)
+            contact.extra.opt_out_reason = optout_reason;
+            queue1.push(function() {
+                return im.contacts.save(contact);
+            });
+        }
+        // End Queue 1
+
+        return Q
+            .all(queue1.map(Q.try))
+            .then(function() {
+                return go.utils
+                    .opted_out(im, contact)
+                    .then(function(opted_out) {
+                        // if the contact is not opted out, opt them out OR
+                        // if the contact has opted out, but has an opted-out reason 'unknown'
+                        // (through SMSing STOP) but is now dialing in to opt-out line and
+                        // supplying a reason for their optout, opt them out again
+                        if (opted_out === false || (prior_opt_out_reason === 'unknown'
+                          && im.config.name.substring(0,6) === "optout")) {
+                            var queue2 = [];
+
+                            // Start Queue 2
+                            if (api_optout === true) {
+                                // vumi optout
+                                queue2.push(function() {
+                                    return im.api_request('optout.optout', {
+                                        address_type: "msisdn",
+                                        address_value: contact.msisdn,
+                                        message_id: im.msg.message_id
+                                    });
+                                });
+                            }
+
+                            if (unsub_all === true) {
+                                // deactivate all subscriptions
+                                queue2.push(function() {
+                                    return go.utils.subscription_unsubscribe_all(contact, im);
+                                });
+                            }
+
+                            if (jembi_optout === true) {
+                                // send optout to jembi
+                                queue2.push(function() {
+                                    return go.utils.jembi_optout_send_json(contact, contact,
+                                      'optout', im, metric_prefix);
                                 });
 
                                 // fire sum of all opt-outs metric

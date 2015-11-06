@@ -47,26 +47,6 @@ describe("app", function() {
                         api_key: 'test_key',
                         url: 'http://ndoh-control/api/v1/'
                     },
-                    subscription: {
-                        standard: 1,
-                        later: 2,
-                        accelerated: 3,
-                        baby1: 4,
-                        baby2: 5,
-                        miscarriage: 6,
-                        stillbirth: 7,
-                        babyloss: 8,
-                        subscription: 9,
-                        chw: 10
-                    },
-                    rate: {
-                        daily: 1,
-                        one_per_week: 2,
-                        two_per_week: 3,
-                        three_per_week: 4,
-                        four_per_week: 5,
-                        five_per_week: 6
-                    },
                     snappybouncer: {
                         conversation: 'dummyconversation'
                     }

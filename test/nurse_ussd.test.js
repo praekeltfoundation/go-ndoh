@@ -9,36 +9,6 @@ var DummyMessageStoreResource = messagestore.DummyMessageStoreResource;
 var DummyOptoutResource = optoutstore.DummyOptoutResource;
 
 
-describe("utils", function() {
-    describe("for nurse ussd use", function() {
-        it('should parse single digit days correctly', function(done) {
-            assert.equal(go.utils.double_digit_day('1'), '01');
-            assert.equal(go.utils.double_digit_day('01'), '01');
-            assert.equal(go.utils.double_digit_day('21'), '21');
-            assert.equal(go.utils.double_digit_day('00027'), '27');
-            done();
-        });
-        it('should normalise msisdn numbers logically', function(done) {
-            assert.equal(go.utils.normalize_msisdn('0821112222', '27'), '+27821112222');
-            assert.equal(go.utils.normalize_msisdn('+27821112222', '27'), '+27821112222');
-            assert.equal(go.utils.normalize_msisdn('0027821112222', '27'), '+27821112222');
-            assert.equal(go.utils.normalize_msisdn('27821112222', '27'), '+27821112222');
-            done();
-        });
-        it('should reject invalid numbers', function(done) {
-            assert.equal(go.utils.check_valid_phone_number('0821112222'), true);
-            assert.equal(go.utils.check_valid_phone_number('821112222'), false);
-            assert.equal(go.utils.check_valid_phone_number('082 111 2222'), false);
-            assert.equal(go.utils.check_valid_phone_number('27 82 111 2222'), false);
-            assert.equal(go.utils.check_valid_phone_number('082111222'), false);
-            assert.equal(go.utils.check_valid_phone_number('21112222'), false);
-            assert.equal(go.utils.check_valid_phone_number('27821112222'), false);
-            assert.equal(go.utils.check_valid_phone_number('2721112222'), false);
-            done();
-        });
-    });
-});
-
 describe("app", function() {
     describe("for nurse ussd use", function() {
         var app;

@@ -1,0 +1,21 @@
+{
+    "name": "nurse_sms",
+    "env": "qa",
+    "metric_store": "ndoh_qa",
+    "endpoints": {"sms": {"delivery_class": "sms"}},
+    "channel": "longcode",
+    "jembi": {
+        "username": "test",
+        "password": "test",
+        "url": "http://188.226.141.131:5001/ws/rest/v1/registration/net.ihe/DocumentDossier",
+        "url_json": "http://188.226.141.131:5001/ws/rest/v1/subscription"
+    },
+    "control": {
+        "username": "test_user",
+        "api_key": "test_key",
+        "url": "http://qa-ndoh-control.za.prk-host.net/api/v1/"
+    },
+    "snappybouncer": {
+        "conversation": "7b01fe79bf5b4517a0658b81305f2033"
+    }
+}

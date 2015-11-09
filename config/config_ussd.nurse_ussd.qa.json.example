@@ -1,0 +1,45 @@
+{
+    "name": "nurse_ussd",
+    "env": "qa",
+    "metric_store": "ndoh_qa",
+    "endpoints": {"sms": {"delivery_class": "sms"}},
+    "channel": "*120*4216*5#",
+    "public_channel": "*120*4216#",
+    "optout_channel": "*120*4216*5#",
+    "jembi": {
+        "username": "test",
+        "password": "test",
+        "url": "http://188.226.141.131:5001/ws/rest/v1/registration/net.ihe/DocumentDossier",
+        "url_json": "http://188.226.141.131:5001/ws/rest/v1/subscription"
+    },
+    "clinic_codes": ["123456", "234567"],
+    "control": {
+        "username": "test_user",
+        "api_key": "test_key",
+        "url": "http://qa-ndoh-control.za.prk-host.net/api/v1/"
+    },
+    "control_v2": {
+        "url": "http://qa-ndoh-control.za.prk-host.net/api/v2/",
+        "api_token": "test_token"
+    }
+    "subscription": {
+        "standard": 1,
+        "later": 2,
+        "accelerated": 3,
+        "baby1": 4,
+        "baby2": 5,
+        "miscarriage": 6,
+        "stillbirth": 7,
+        "babyloss": 8,
+        "subscription": 9,
+        "chw": 10
+    },
+    "rate": {
+        "daily": 1,
+        "one_per_week": 2,
+        "two_per_week": 3,
+        "three_per_week": 4,
+        "four_per_week": 5,
+        "five_per_week": 6
+    }
+}

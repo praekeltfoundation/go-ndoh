@@ -1277,16 +1277,6 @@ go.app = function() {
 
             go.utils.attach_session_length_helper(self.im);
 
-            self.im.on('session:new', function(e) {
-                // self.user.extra.ussd_sessions = go.utils.incr_user_extra(self.user.extra.ussd_sessions, 1);
-                self.user.extra.metric_sum_sessions = go.utils.incr_user_extra(self.user.extra.metric_sum_sessions, 1);
-
-                return Q.all([
-                    self.im.contacts.save(self.user),
-                    // self.im.metrics.fire.inc([self.env, 'sum.sessions'].join('.'), 1)
-                ]);
-            });
-
             self.im.on('session:close', function(e) {
                 return self.dial_back(e);
             });
@@ -1340,24 +1330,6 @@ go.app = function() {
                     USSD_number: self.im.config.channel
                 });
         };
-
-
-
-    // UNUSED FUNCTIONALITY
-
-        // self.fire_incomplete = function(name, val) {
-        //     var ignore_states = [];
-        //     if (!_.contains(ignore_states, name)) {
-        //         return Q.all([
-        //             self.im.metrics.fire.inc(
-        //                 ([self.metric_prefix, name, "no_incomplete_rev1"].join('.')), {amount: val}),
-        //             self.im.metrics.fire.sum(
-        //                 ([self.metric_prefix, name, "no_incomplete_rev1.transient"].join('.')), val)
-        //         ]);
-        //     } else {
-        //         return Q();
-        //     }
-        // };
 
 
 

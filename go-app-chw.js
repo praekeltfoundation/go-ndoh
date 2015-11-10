@@ -359,11 +359,19 @@ go.utils = {
     },
 
     validate_clinic_code: function(im, clinic_code) {
-        return go.utils
-            .jembi_clinic_validate(im, clinic_code)
-            .then(function(json_result) {
-                return JSON.parse(json_result.data).rows.length > 0;
-            });
+        if (!go.utils.check_valid_number(clinic_code) ||
+            clinic_code.length !== 6) {
+            return Q()
+                .then(function() {
+                    return false;
+                });
+        } else {
+            return go.utils
+                .jembi_clinic_validate(im, clinic_code)
+                .then(function(json_result) {
+                    return JSON.parse(json_result.data).rows.length > 0;
+                });
+        }
     },
 
     is_alpha_numeric_only: function(input) {

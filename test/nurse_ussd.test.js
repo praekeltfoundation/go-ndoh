@@ -838,6 +838,64 @@ describe("app", function() {
             });
         });
 
+        // Faccode Validation
+        describe("faccode entry", function() {
+            describe("contains letter", function() {
+                it("should loop back without api call", function() {
+                    return tester
+                        .setup.user.state('st_faccode')
+                        .input('12345A')
+                        .check.interaction({
+                            state: 'st_faccode',
+                            reply: 'st_faccode error_text'
+                        })
+                        .run();
+                });
+            });
+            describe("is not 6-char number", function() {
+                it("should loop back without api call", function() {
+                    return tester
+                        .setup.user.state('st_faccode')
+                        .input('12345')
+                        .check.interaction({
+                            state: 'st_faccode',
+                            reply: 'st_faccode error_text'
+                        })
+                        .run();
+                });
+            });
+            describe("is not on jembi system", function() {
+                it("should loop back", function() {
+                    return tester
+                        .setup.user.state('st_faccode')
+                        .input('888888')
+                        .check.interaction({
+                            state: 'st_faccode',
+                            reply: 'st_faccode error_text'
+                        })
+                        .run();
+                });
+            });
+            describe("is valid", function() {
+                it("should continue", function() {
+                    return tester
+                        .setup.user.state('st_faccode')
+                        .input('123456')
+                        .check.interaction({
+                            state: 'st_facname',
+                            reply: [
+                                'st_facname text',
+                                '1. Confirm',
+                                '2. Not my facility'
+                            ].join('\n')
+                        })
+                        .run();
+                });
+            });
+        });
+
+
+
     });
 
 

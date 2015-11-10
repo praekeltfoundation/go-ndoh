@@ -761,7 +761,6 @@ go.app = function() {
             });
         });
 
-
         self.add('states_birth_day', function(name, opts) {
             var error = $('There was an error in your entry. Please ' +
                         'carefully enter the mother\'s day of birth again ' +

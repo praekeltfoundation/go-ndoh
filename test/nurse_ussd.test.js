@@ -513,10 +513,8 @@ describe("app", function() {
                             var contact = _.find(api.contacts.store, {
                               msisdn: '+27821234444'
                             });
-                            assert.equal(Object.keys(contact.extra).length, 2);
-                            // assert.equal(contact.extra.ussd_sessions, '1');
+                            assert.equal(Object.keys(contact.extra).length, 1);
                             assert.equal(contact.extra.metric_sum_sessions, '1');
-                            assert.equal(contact.extra.last_stage, 'st_not_subscribed');
                         })
                         .run();
                 });
@@ -723,6 +721,46 @@ describe("app", function() {
                     })
                     .run();
             });
+            it("should save extras", function() {
+                return tester
+                    .setup.user.addr('27821234444')
+                    .inputs(
+                        {session_event: 'new'}  // dial in
+                        , '1'  // st_not_subscribed - self registration
+                        , '1'  // st_permission_self - consent
+                        , '123456'  // st_faccode
+                        , '1'  // st_facname - confirm
+                        , '1'  // st_id_type - sa_id
+                        , '5101025009086'  // st_sa_id
+                    )
+                    .check(function(api) {
+                        var contact = _.find(api.contacts.store, {
+                          msisdn: '+27821234444'
+                        });
+                        assert.equal(Object.keys(contact.extra).length, 2);
+                        assert.equal(contact.extra.metric_sum_sessions, '1');
+                        assert.equal(contact.extra.faccode, '123456');
+                    })
+                    .run();
+            });
+            it("should fire no metrics", function() {
+                return tester
+                    .setup.user.addr('27821234444')
+                    .inputs(
+                        {session_event: 'new'}  // dial in
+                        , '1'  // st_not_subscribed - self registration
+                        , '1'  // st_permission_self - consent
+                        , '123456'  // st_faccode
+                        , '1'  // st_facname - confirm
+                        , '1'  // st_id_type - sa_id
+                        , '5101025009086'  // st_sa_id
+                    )
+                    .check(function(api) {
+                        var metrics = api.metrics.stores.test_metric_store;
+                        assert.equal(Object.keys(metrics).length, 0);
+                    })
+                    .run();
+            });
         });
 
         // Other Registration Flow (Passport)
@@ -745,6 +783,59 @@ describe("app", function() {
                     .check.interaction({
                         state: 'st_end_reg',
                         reply: 'st_end_reg text'
+                    })
+                    .run();
+            });
+            it("should save extras", function() {
+                return tester
+                    .setup.user.addr('27821234444')
+                    .inputs(
+                        {session_event: 'new'}  // dial in
+                        , '3'  // st_not_subscribed - other registration
+                        , '1'  // st_permission_self - consent
+                        , '0821235555'  // st_msisdn
+                        , '123456'  // st_faccode
+                        , '1'  // st_facname - confirm
+                        , '2'  // st_id_type - passport
+                        , '6'  // st_passport_country - cuba
+                        , 'ZA1234'  // st_passport_num
+                        , '19760307'  // st_dob - 7 March 1976
+                    )
+                    .check(function(api) {
+                        var contact = _.find(api.contacts.store, {
+                          msisdn: '+27821234444'
+                        });
+                        assert.equal(Object.keys(contact.extra).length, 2);
+                        assert.equal(contact.extra.metric_sum_sessions, '1');
+                        assert.equal(contact.extra.working_on, '+27821235555');
+                    })
+                    .check(function(api) {
+                        var contact = _.find(api.contacts.store, {
+                          msisdn: '+27821235555'
+                        });
+                        assert.equal(Object.keys(contact.extra).length, 1);
+                        assert.equal(contact.extra.faccode, '123456');
+                    })
+                    .run();
+            });
+            it("should fire no metrics", function() {
+                return tester
+                    .setup.user.addr('27821234444')
+                    .inputs(
+                        {session_event: 'new'}  // dial in
+                        , '3'  // st_not_subscribed - other registration
+                        , '1'  // st_permission_self - consent
+                        , '0821235555'  // st_msisdn
+                        , '123456'  // st_faccode
+                        , '1'  // st_facname - confirm
+                        , '2'  // st_id_type - passport
+                        , '6'  // st_passport_country - cuba
+                        , 'ZA1234'  // st_passport_num
+                        , '19760307'  // st_dob - 7 March 1976
+                    )
+                    .check(function(api) {
+                        var metrics = api.metrics.stores.test_metric_store;
+                        assert.equal(Object.keys(metrics).length, 0);
                     })
                     .run();
             });

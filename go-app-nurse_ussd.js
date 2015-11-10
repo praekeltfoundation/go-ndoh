@@ -1291,22 +1291,6 @@ go.app = function() {
                 return self.dial_back(e);
             });
 
-            // self.im.user.on('user:new', function(e) {
-            //     return go.utils.fire_users_metrics(self.im, self.store_name, self.env, self.metric_prefix);
-            // });
-
-            self.im.on('state:enter', function(e) {
-                self.contact.extra.last_stage = e.state.name;
-                return Q.all([
-                    self.im.contacts.save(self.contact),
-                    // self.fire_incomplete(e.state.name, 1)
-                ]);
-            });
-
-            // self.im.on('state:exit', function(e) {
-            //     return self.fire_incomplete(e.state.name, -1);
-            // });
-
             return self.im.contacts
                 .for_user()
                 .then(function(user_contact) {
@@ -1560,7 +1544,7 @@ go.app = function() {
                         });
                 },
                 next: function(content) {
-                    self.contact.extra.faccode = content;
+                    self.contact.extra.faccode = content.trim();
                     return self.im.contacts
                         .save(self.contact)
                         .then(function() {

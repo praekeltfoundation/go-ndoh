@@ -950,6 +950,58 @@ describe("app", function() {
             });
         });
 
+        // DOB Validation
+        describe("dob entry", function() {
+            describe("invalid dob chars", function() {
+                it("should loop back", function() {
+                    return tester
+                        .setup.user.state('st_dob')
+                        .input('1980-01-01')
+                        .check.interaction({
+                            state: 'st_dob',
+                            reply: 'st_dob error_text'
+                        })
+                        .run();
+                });
+            });
+            describe("not real date", function() {
+                it("should loop back", function() {
+                    return tester
+                        .setup.user.state('st_dob')
+                        .input('1980-02-29')
+                        .check.interaction({
+                            state: 'st_dob',
+                            reply: 'st_dob error_text'
+                        })
+                        .run();
+                });
+            });
+            describe("inverted date", function() {
+                it("should loop back", function() {
+                    return tester
+                        .setup.user.state('st_dob')
+                        .input('01011980')
+                        .check.interaction({
+                            state: 'st_dob',
+                            reply: 'st_dob error_text'
+                        })
+                        .run();
+                });
+            });
+            describe("is valid", function() {
+                it("should continue", function() {
+                    return tester
+                        .setup.user.state('st_dob')
+                        .input('19800101')
+                        .check.interaction({
+                            state: 'st_end_reg',
+                            reply: 'st_end_reg text'
+                        })
+                        .run();
+                });
+            });
+        });
+
 
 
     });

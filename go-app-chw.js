@@ -369,7 +369,13 @@ go.utils = {
             return go.utils
                 .jembi_clinic_validate(im, clinic_code)
                 .then(function(json_result) {
-                    return JSON.parse(json_result.data).rows.length > 0;
+                    var rows = JSON.parse(json_result.data).rows;
+                    // console.log(rows);
+                    if (rows.length === 0) {
+                        return false;
+                    } else {
+                        return rows[0][2];
+                    }
                 });
         }
     },

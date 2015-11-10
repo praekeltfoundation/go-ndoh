@@ -252,11 +252,16 @@ go.app = function() {
                 check: function(content) {
                     return go.utils
                         .validate_clinic_code(self.im, content.trim())
-                        .then(function(valid_clinic_code) {
-                            if (!valid_clinic_code) {
+                        .then(function(facname) {
+                            if (!facname) {
                                 return error;
                             } else {
-                                return null;  // vumi expects null or undefined if check passes
+                                self.contact.extra.facname = facname;
+                                return self.im.contacts
+                                    .save(self.contact)
+                                    .then(function() {
+                                        return null;  // vumi expects null or undefined if check passes
+                                    });
                             }
                         });
                 },

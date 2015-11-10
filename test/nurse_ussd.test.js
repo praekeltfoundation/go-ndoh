@@ -736,8 +736,9 @@ describe("app", function() {
                         var contact = _.find(api.contacts.store, {
                           msisdn: '+27821234444'
                         });
-                        assert.equal(Object.keys(contact.extra).length, 1);
+                        assert.equal(Object.keys(contact.extra).length, 2);
                         assert.equal(contact.extra.faccode, '123456');
+                        assert.equal(contact.extra.facname, 'WCL clinic');
                     })
                     .run();
             });
@@ -810,8 +811,9 @@ describe("app", function() {
                         var contact = _.find(api.contacts.store, {
                           msisdn: '+27821235555'
                         });
-                        assert.equal(Object.keys(contact.extra).length, 1);
+                        assert.equal(Object.keys(contact.extra).length, 2);
                         assert.equal(contact.extra.faccode, '123456');
+                        assert.equal(contact.extra.facname, 'WCL clinic');
                     })
                     .run();
             });

@@ -369,7 +369,13 @@ go.utils = {
             return go.utils
                 .jembi_clinic_validate(im, clinic_code)
                 .then(function(json_result) {
-                    return JSON.parse(json_result.data).rows.length > 0;
+                    var rows = JSON.parse(json_result.data).rows;
+                    // console.log(rows);
+                    if (rows.length === 0) {
+                        return false;
+                    } else {
+                        return rows[0][2];
+                    }
                 });
         }
     },
@@ -1515,11 +1521,16 @@ go.app = function() {
                 check: function(content) {
                     return go.utils
                         .validate_clinic_code(self.im, content.trim())
-                        .then(function(valid_clinic_code) {
-                            if (!valid_clinic_code) {
+                        .then(function(facname) {
+                            if (!facname) {
                                 return error;
                             } else {
-                                return null;  // vumi expects null or undefined if check passes
+                                self.contact.extra.facname = facname;
+                                return self.im.contacts
+                                    .save(self.contact)
+                                    .then(function() {
+                                        return null;  // vumi expects null or undefined if check passes
+                                    });
                             }
                         });
                 },

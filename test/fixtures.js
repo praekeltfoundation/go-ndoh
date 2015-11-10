@@ -705,19 +705,39 @@ module.exports = function() {
         "response": {
             "code": 200,
             "data": {
-                "title": "FacilityCheck",
-                "headers": [{
-                    "name": "code",
-                    "column": "code",
-                    "type": "java.lang.String",
-                    "hidden": false,
-                    "meta": false
-                }],
-                "rows": [
-                    ["123456"]
-                ],
-                "width": 1,
-                "height": 1
+              "title": "FacilityRegistry",
+              "headers": [
+                {
+                  "name": "value",
+                  "column": "value",
+                  "type": "java.lang.String",
+                  "hidden": false,
+                  "meta": false
+                },
+                {
+                  "name": "uid",
+                  "column": "uid",
+                  "type": "java.lang.String",
+                  "hidden": false,
+                  "meta": false
+                },
+                {
+                  "name": "name",
+                  "column": "name",
+                  "type": "java.lang.String",
+                  "hidden": false,
+                  "meta": false
+                }
+              ],
+              "rows": [
+                [
+                  "123456",
+                  "asdf7a803",
+                  "WCL clinic"
+                ]
+              ],
+              "width": 3,
+              "height": 1
             }
         }
     },
@@ -737,19 +757,39 @@ module.exports = function() {
         "response": {
             "code": 200,
             "data": {
-                "title": "FacilityCheck",
-                "headers": [{
-                    "name": "code",
-                    "column": "code",
-                    "type": "java.lang.String",
-                    "hidden": false,
-                    "meta": false
-                }],
-                "rows": [
-                    ["234567"]
-                ],
-                "width": 1,
-                "height": 1
+              "title": "FacilityRegistry",
+              "headers": [
+                {
+                  "name": "value",
+                  "column": "value",
+                  "type": "java.lang.String",
+                  "hidden": false,
+                  "meta": false
+                },
+                {
+                  "name": "uid",
+                  "column": "uid",
+                  "type": "java.lang.String",
+                  "hidden": false,
+                  "meta": false
+                },
+                {
+                  "name": "name",
+                  "column": "name",
+                  "type": "java.lang.String",
+                  "hidden": false,
+                  "meta": false
+                }
+              ],
+              "rows": [
+                [
+                  "234567",
+                  "asdf7aaff",
+                  "OLT clinic"
+                ]
+              ],
+              "width": 3,
+              "height": 1
             }
         }
     },

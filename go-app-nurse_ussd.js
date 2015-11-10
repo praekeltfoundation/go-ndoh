@@ -1324,6 +1324,9 @@ go.app = function() {
                 });
         };
 
+
+    // DIALBACK SMS HANDLING
+
         self.should_send_dialback = function(e) {
             return e.user_terminated
                 && !go.utils.is_true(self.contact.extra.redial_sms_sent);
@@ -1347,11 +1350,16 @@ go.app = function() {
         };
 
         self.get_finish_reg_sms = function() {
-            return $("Please dial back in to {{ USSD_number }} to complete the pregnancy registration.")
+            return $("Please dial back in to {{ USSD_number }} to " +
+                     "complete the NurseConnect registration.")
                 .context({
                     USSD_number: self.im.config.channel
                 });
         };
+
+
+
+    // UNUSED FUNCTIONALITY
 
         // self.fire_incomplete = function(name, val) {
         //     var ignore_states = [];
@@ -1367,6 +1375,10 @@ go.app = function() {
         //     }
         // };
 
+
+
+    // REGISTRATION FINISHED SMS HANDLING
+
         self.send_registration_thanks = function() {
             return self.im.outbound.send({
                 to: self.contact,
@@ -1381,7 +1393,6 @@ go.app = function() {
                     })
             });
         };
-
 
 
 
@@ -1452,6 +1463,7 @@ go.app = function() {
         });
 
 
+
     // DELEGATOR START STATE
 
         self.add('st_route', function(name) {
@@ -1488,6 +1500,41 @@ go.app = function() {
                 ],
                 next: function(choice) {
                     return choice.value;
+                }
+            });
+        });
+
+        self.add('st_subscribe_other', function(name) {
+            return new ChoiceState(name, {
+                question: $("st_subscribe_other text"),
+                choices: [
+                    new Choice('st_msisdn', $('Yes')),
+                    new Choice('st_permission_denied', $('No')),
+                ],
+                next: function(choice) {
+                    return choice.value;
+                }
+            });
+        });
+
+        self.add('st_msisdn', function(name) {
+            var error = $('st_msisdn error_text');
+            var question = $('st_msisdn text');
+            return new FreeText(name, {
+                question: question,
+                check: function(content) {
+                    if (!go.utils.check_valid_phone_number(content)) {
+                        return error;
+                    }
+                },
+                next: function(content) {
+                    msisdn = go.utils.normalize_msisdn(content, '27');
+                    self.user.extra.working_on = msisdn;
+                    return self.im.contacts
+                        .save(self.user)
+                        .then(function() {
+                            return 'st_check_optout';
+                        });
                 }
             });
         });
@@ -1535,6 +1582,96 @@ go.app = function() {
                 }
             });
         });
+
+        self.add('st_id_type', function(name) {
+            return new ChoiceState(name, {
+                question: $("st_id_type text"),
+                choices: [
+                    new Choice('st_sa_id', $('RSA ID')),
+                    new Choice('st_passport_country', $('Passport')),
+                ],
+                next: function(choice) {
+                    return choice.value;
+                }
+            });
+        });
+
+        self.add('st_sa_id', function(name) {
+            var error = $('st_sa_id error_text');
+            var question = $('st_sa_id text');
+            return new FreeText(name, {
+                question: question,
+                check: function(content) {
+                    if (!go.utils.validate_id_sa(content)) {
+                        return error;
+                    }
+                },
+                next: 'st_end_reg'
+            });
+        });
+
+        self.add('st_passport_country', function(name) {
+            return new ChoiceState(name, {
+                question: $("st_passport_country text"),
+                choices: [
+                    new Choice('namibia', $('Namibia')),
+                    new Choice('botswana', $('Botswana')),
+                    new Choice('mozambique', $('Mozambique')),
+                    new Choice('swaziland', $('Swaziland')),
+                    new Choice('lesotho', $('Lesotho')),
+                    new Choice('cuba', $('Cuba')),
+                    new Choice('other', $('Other')),
+                ],
+                next: function(choice) {
+                    return 'st_passport_num';
+                }
+            });
+        });
+
+        self.add('st_passport_num', function(name) {
+            var error = $('st_passport_num error_text');
+            var question = $('st_passport_num text');
+            return new FreeText(name, {
+                question: question,
+                check: function(content) {
+                    if (!go.utils.is_alpha_numeric_only(content) || content.length <= 4) {
+                        return error;
+                    }
+                },
+                next: 'st_dob'
+            });
+        });
+
+        self.add('st_dob', function(name) {
+            var error = $('st_dob error_text');
+            var question = $('st_dob text');
+            return new FreeText(name, {
+                question: question,
+                check: function(content) {
+                    if (!go.utils.is_valid_date(content.trim(), 'YYYYMMDD')) {
+                        return error;
+                    }
+                },
+                next: 'st_end_reg'
+            });
+        });
+
+        // reset extra working_on
+
+        self.add('st_end_reg', function(name) {
+            return new EndState(name, {
+                text: $('st_end_reg text'),
+                next: 'st_route',
+            });
+        });
+
+
+
+
+
+
+
+
 
 
         self.add('states_opt_in', function(name) {

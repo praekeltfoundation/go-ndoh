@@ -48,7 +48,7 @@ describe("app", function() {
                     endpoints: {
                         "sms": {"delivery_class": "sms"}
                     },
-                    channel: "*120*550*2#",
+                    channel: "*120*550*5#",
                     public_channel: "*120*550#",
                     optout_channel: "*120*550*1#",
                     jembi: {
@@ -560,7 +560,7 @@ describe("app", function() {
                             var sms = smses[0];
                             assert.equal(smses.length,1);
                             assert.equal(sms.content,
-                                "Please dial back in to *120*550*2# to complete the pregnancy registration."
+                                "Please dial back in to *120*550*5# to complete the NurseConnect registration."
                             );
                             assert.equal(sms.to_addr,'27821234444');
                         })
@@ -568,61 +568,31 @@ describe("app", function() {
                 });
             });
 
-        // describe("when a session is terminated", function() {
-        //     describe("when they have not completed registration",function() {
-        //         describe("when they have already been sent a registration sms",function() {
-        //             it("should not send them an sms",function() {
-        //                 return tester
-        //                     .setup(function(api) {
-        //                         api.contacts.add( {
-        //                             msisdn: '+273444',
-        //                             extra : {
-        //                                 redial_sms_sent: 'true'
-        //                             }
-        //                         });
-        //                     })
-        //                     .setup.user.addr('273444')
-        //                     .setup.user.state('states_start')
-        //                     .input('1')
-        //                     .input.session_event('close')
-        //                     .check(function(api) {
-        //                         var smses = _.where(api.outbound.store, {
-        //                             endpoint: 'sms'
-        //                         });
-        //                         assert.equal(smses.length,0);
-        //                     })
-        //                     .run();
-        //             });
-        //         });
-
-        //         describe("when they have not been sent a registration sms",function() {
-        //             it("should send them an sms thanking them for their registration",function() {
-        //                 return tester
-        //                     .setup(function(api) {
-        //                         api.contacts.add( {
-        //                             msisdn: '+273323',
-        //                             extra : {}
-        //                         });
-        //                     })
-        //                     .setup.user.addr('273323')
-        //                     .setup.user.state('states_start')
-        //                     .input(1)
-        //                     .input.session_event('close')
-        //                     .check(function(api) {
-        //                         var smses = _.where(api.outbound.store, {
-        //                             endpoint: 'sms'
-        //                         });
-        //                         var sms = smses[0];
-        //                         assert.equal(smses.length,1);
-        //                         assert.equal(sms.content,
-        //                             "Please dial back in to *120*550*2# to complete the pregnancy registration."
-        //                         );
-        //                         assert.equal(sms.to_addr,'273323');
-        //                     }).run();
-        //             });
-        //         });
-        //     });
-        // });
+            describe("second timeout", function() {
+                it("should not send another redial sms", function() {
+                    return tester
+                        .setup.user.addr('27821234444')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '1'  // st_not_subscribed
+                            , '1'  // st_permission_self
+                            , '123456'  // st_faccode
+                            , {session_event: 'close'}  // timeout
+                            , {session_event: 'new'}  // redial
+                            , {session_event: 'close'}  // timeout
+                            , {session_event: 'new'}  // redial
+                        )
+                        .check(function(api) {
+                            var smses = _.where(api.outbound.store, {
+                                endpoint: 'sms'
+                            });
+                            var sms = smses[0];
+                            assert.equal(smses.length,1);
+                            assert.equal(sms.to_addr,'27821234444');
+                        })
+                        .run();
+                });
+            });
 
             describe("timeout during registration", function() {
                 describe("if they were on a non-timeout state", function() {
@@ -727,6 +697,54 @@ describe("app", function() {
                         // assert.deepEqual(metrics['test.nurse_ussd.sum.unique_users'].values, [1]);
                         // assert.deepEqual(metrics['test.clinic.percentage_users'].values, [100]);
                         // assert.deepEqual(metrics['test.sum.unique_users'].values, [1]);
+                    })
+                    .run();
+            });
+        });
+
+
+        // Self Registration Flow (SA ID)
+        describe("self registration completion", function() {
+            it("should reach end state", function() {
+                return tester
+                    .setup.user.addr('27821234444')
+                    .inputs(
+                        {session_event: 'new'}  // dial in
+                        , '1'  // st_not_subscribed - self registration
+                        , '1'  // st_permission_self - consent
+                        , '123456'  // st_faccode
+                        , '1'  // st_facname - confirm
+                        , '1'  // st_id_type - sa_id
+                        , '5101025009086'  // st_sa_id
+                    )
+                    .check.interaction({
+                        state: 'st_end_reg',
+                        reply: 'st_end_reg text'
+                    })
+                    .run();
+            });
+        });
+
+        // Other Registration Flow (Passport)
+        describe("other registration completion", function() {
+            it("should reach end state", function() {
+                return tester
+                    .setup.user.addr('27821234444')
+                    .inputs(
+                        {session_event: 'new'}  // dial in
+                        , '3'  // st_not_subscribed - other registration
+                        , '1'  // st_permission_self - consent
+                        , '0821235555'  // st_msisdn
+                        , '123456'  // st_faccode
+                        , '1'  // st_facname - confirm
+                        , '2'  // st_id_type - passport
+                        , '6'  // st_passport_country - cuba
+                        , 'ZA1234'  // st_passport_num
+                        , '19760307'  // st_dob - 7 March 1976
+                    )
+                    .check.interaction({
+                        state: 'st_end_reg',
+                        reply: 'st_end_reg text'
                     })
                     .run();
             });

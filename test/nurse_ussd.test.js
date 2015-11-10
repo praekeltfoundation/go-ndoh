@@ -922,6 +922,34 @@ describe("app", function() {
             });
         });
 
+        // Passport Validation
+        describe("passport number entry", function() {
+            describe("invalid passport number", function() {
+                it("should loop back", function() {
+                    return tester
+                        .setup.user.state('st_passport_num')
+                        .input('AA-1234')
+                        .check.interaction({
+                            state: 'st_passport_num',
+                            reply: 'st_passport_num error_text'
+                        })
+                        .run();
+                });
+            });
+            describe("is valid", function() {
+                it("should continue", function() {
+                    return tester
+                        .setup.user.state('st_passport_num')
+                        .input('AA1234')
+                        .check.interaction({
+                            state: 'st_dob',
+                            reply: 'st_dob text'
+                        })
+                        .run();
+                });
+            });
+        });
+
 
 
     });

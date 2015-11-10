@@ -1266,7 +1266,7 @@ go.app = function() {
     var FreeText = vumigo.states.FreeText;
 
     var GoNDOH = App.extend(function(self) {
-        App.call(self, 'states_start');
+        App.call(self, 'st_route');
         var $ = self.$;
         var interrupt = true;
 
@@ -1278,12 +1278,12 @@ go.app = function() {
             go.utils.attach_session_length_helper(self.im);
 
             self.im.on('session:new', function(e) {
-                self.user.extra.ussd_sessions = go.utils.incr_user_extra(self.user.extra.ussd_sessions, 1);
+                // self.user.extra.ussd_sessions = go.utils.incr_user_extra(self.user.extra.ussd_sessions, 1);
                 self.user.extra.metric_sum_sessions = go.utils.incr_user_extra(self.user.extra.metric_sum_sessions, 1);
 
                 return Q.all([
                     self.im.contacts.save(self.user),
-                    self.im.metrics.fire.inc([self.env, 'sum.sessions'].join('.'), 1)
+                    // self.im.metrics.fire.inc([self.env, 'sum.sessions'].join('.'), 1)
                 ]);
             });
 
@@ -1291,21 +1291,21 @@ go.app = function() {
                 return self.dial_back(e);
             });
 
-            self.im.user.on('user:new', function(e) {
-                return go.utils.fire_users_metrics(self.im, self.store_name, self.env, self.metric_prefix);
-            });
+            // self.im.user.on('user:new', function(e) {
+            //     return go.utils.fire_users_metrics(self.im, self.store_name, self.env, self.metric_prefix);
+            // });
 
             self.im.on('state:enter', function(e) {
                 self.contact.extra.last_stage = e.state.name;
                 return Q.all([
                     self.im.contacts.save(self.contact),
-                    self.fire_incomplete(e.state.name, 1)
+                    // self.fire_incomplete(e.state.name, 1)
                 ]);
             });
 
-            self.im.on('state:exit', function(e) {
-                return self.fire_incomplete(e.state.name, -1);
-            });
+            // self.im.on('state:exit', function(e) {
+            //     return self.fire_incomplete(e.state.name, -1);
+            // });
 
             return self.im.contacts
                 .for_user()
@@ -1353,19 +1353,19 @@ go.app = function() {
                 });
         };
 
-        self.fire_incomplete = function(name, val) {
-            var ignore_states = [];
-            if (!_.contains(ignore_states, name)) {
-                return Q.all([
-                    self.im.metrics.fire.inc(
-                        ([self.metric_prefix, name, "no_incomplete_rev1"].join('.')), {amount: val}),
-                    self.im.metrics.fire.sum(
-                        ([self.metric_prefix, name, "no_incomplete_rev1.transient"].join('.')), val)
-                ]);
-            } else {
-                return Q();
-            }
-        };
+        // self.fire_incomplete = function(name, val) {
+        //     var ignore_states = [];
+        //     if (!_.contains(ignore_states, name)) {
+        //         return Q.all([
+        //             self.im.metrics.fire.inc(
+        //                 ([self.metric_prefix, name, "no_incomplete_rev1"].join('.')), {amount: val}),
+        //             self.im.metrics.fire.sum(
+        //                 ([self.metric_prefix, name, "no_incomplete_rev1.transient"].join('.')), val)
+        //         ]);
+        //     } else {
+        //         return Q();
+        //     }
+        // };
 
         self.send_registration_thanks = function() {
             return self.im.outbound.send({
@@ -1382,42 +1382,64 @@ go.app = function() {
             });
         };
 
+
+
+
+    // TIMEOUT HANDLING
+
+        // determine whether timed_out state should be used
+        self.timed_out = function() {
+            var no_redirects = [
+                'st_route',
+                'st_not_subscribed',
+                'st_permission_self',
+                'st_permission_other',
+                'st_permission_denied',
+                'st_msisdn',
+            ];
+            return self.im.msg.session_event === 'new'
+                && self.im.user.state.name
+                && no_redirects.indexOf(self.im.user.state.name) === -1;
+        };
+
+        // override normal state adding
         self.add = function(name, creator) {
             self.states.add(name, function(name, opts) {
-                if (!interrupt || !go.utils.timed_out(self.im))
+                if (!interrupt || !self.timed_out(self.im))
                     return creator(name, opts);
 
                 interrupt = false;
                 var timeout_opts = opts || {};
                 timeout_opts.name = name;
-                return self.states.create('states_timed_out', timeout_opts);
+                return self.states.create('st_timed_out', timeout_opts);
             });
         };
 
-        self.states.add('states_timed_out', function(name, creator_opts) {
+        // timeout state
+        self.states.add('st_timed_out', function(name, creator_opts) {
             var readable_no = go.utils.readable_sa_msisdn(self.contact.msisdn);
 
             return new ChoiceState(name, {
-                question: $('Would you like to complete pregnancy registration for ' +
+                question: $('Would you like to complete NurseConnect registration for ' +
                             '{{ num }}?')
                     .context({ num: readable_no }),
 
                 choices: [
                     new Choice(creator_opts.name, $('Yes')),
-                    new Choice('states_start', $('Start new registration'))
+                    new Choice('st_route', $('Start new registration'))
                 ],
 
                 next: function(choice) {
-                    if (choice.value === 'states_start') {
+                    if (choice.value === 'st_route') {
                         self.user.extra.working_on = "";
                         return self.im.contacts
                             .save(self.user)
                             .then(function() {
-                                return 'states_start';
+                                return 'st_route';
                             });
                     } else {
-                        return self
-                            .fire_incomplete(creator_opts.name, -1)
+                        return Q()
+                            // self.fire_incomplete(creator_opts.name, -1)
                             .then(function() {
                                 return {
                                     name: choice.value,
@@ -1430,37 +1452,90 @@ go.app = function() {
         });
 
 
-        self.add('states_start', function(name) {
+    // DELEGATOR START STATE
+
+        self.add('st_route', function(name) {
+            return self.states.create('st_not_subscribed');
+        });
+
+
+
+    // REGISTRATION STATES
+
+        self.add('st_not_subscribed', function(name) {
             var readable_no = go.utils.readable_sa_msisdn(self.im.user.addr);
 
             return new ChoiceState(name, {
-                question: $('Welcome to The Department of Health\'s ' +
-                            'MomConnect. Tell us if this is the no. that ' +
-                            'the mother would like to get SMSs on: {{ num }}')
+                question: $("Welcome to NurseConnect. Your number {{num}} is not subscribed:")
                     .context({ num: readable_no }),
-
                 choices: [
-                    new Choice('yes', $('Yes')),
-                    new Choice('no', $('No'))
+                    new Choice('st_subscribe_self', $('Subscribe as a new user')),
+                    new Choice('st_change_old_nr', $('Change your old number')),
+                    new Choice('st_subscribe_other', $('Subscribe somebody else'))
                 ],
-
                 next: function(choice) {
-                    if (choice.value === 'yes') {
-
-                        return go.utils
-                            .opted_out(self.im, self.contact)
-                            .then(function(opted_out) {
-                                return {
-                                    true: 'states_opt_in',
-                                    false: 'states_clinic_code',
-                                } [opted_out];
-                            });
-                    } else {
-                        return 'states_mobile_no';
-                    }
+                    return choice.value;
                 }
             });
         });
+
+        self.add('st_subscribe_self', function(name) {
+            return new ChoiceState(name, {
+                question: $("st_subscribe_self text"),
+                choices: [
+                    new Choice('st_check_optout', $('Yes')),
+                    new Choice('st_permission_denied', $('No')),
+                ],
+                next: function(choice) {
+                    return choice.value;
+                }
+            });
+        });
+
+        self.add('st_check_optout', function(name) {
+            return self.states.create('st_faccode');
+        });
+
+        self.add('st_faccode', function(name) {
+            var error = $('st_faccode error_text');
+            var question = $('st_faccode text');
+            return new FreeText(name, {
+                question: question,
+                check: function(content) {
+                    return go.utils
+                        .validate_clinic_code(self.im, content.trim())
+                        .then(function(valid_clinic_code) {
+                            if (!valid_clinic_code) {
+                                return error;
+                            } else {
+                                return null;  // vumi expects null or undefined if check passes
+                            }
+                        });
+                },
+                next: function(content) {
+                    self.contact.extra.faccode = content;
+                    return self.im.contacts
+                        .save(self.contact)
+                        .then(function() {
+                            return 'st_facname';
+                        });
+                }
+            });
+        });
+
+        self.add('st_facname', function(name) {
+            return new ChoiceState(name, {
+                question: $("st_facname text"),
+                choices: [
+                    new Choice('st_id_type', $('Confirm')),
+                    new Choice('st_faccode', $('Not my facility')),
+                ],
+                next: function(choice) {
+                    return choice.value;
+                }
+            });
+        });
+
 
         self.add('states_opt_in', function(name) {
             return new ChoiceState(name, {
@@ -1927,14 +2002,14 @@ go.app = function() {
                 next: function(choice) {
                     self.contact.extra.language_choice = choice.value;
                     self.contact.extra.is_registered = 'true';
-                    self.contact.extra.metric_sessions_to_register = self.user.extra.ussd_sessions;
+                    // self.contact.extra.metric_sessions_to_register = self.user.extra.ussd_sessions;
 
                     return self.im.contacts
                         .save(self.contact)
                         .then(function() {
                             return Q.all([
-                                self.im.metrics.fire.avg((self.metric_prefix + ".avg.sessions_to_register"),
-                                    parseInt(self.user.extra.ussd_sessions, 10)),
+                                // self.im.metrics.fire.avg((self.metric_prefix + ".avg.sessions_to_register"),
+                                //     parseInt(self.user.extra.ussd_sessions, 10)),
                                 go.utils.incr_kv(self.im, [self.store_name, 'no_complete_registrations'].join('.')),
                                 go.utils.decr_kv(self.im, [self.store_name, 'no_incomplete_registrations'].join('.')),
                                 go.utils.incr_kv_conversions(self.im, self.contact, self.env)
@@ -1946,7 +2021,7 @@ go.app = function() {
                                 self.user.extra.no_registrations = go.utils.incr_user_extra(self.user.extra.no_registrations, 1);
                                 self.contact.extra.registered_by = self.user.msisdn;
                             }
-                            self.user.extra.ussd_sessions = '0';
+                            // self.user.extra.ussd_sessions = '0';
                             self.contact.extra.is_registered_by = 'clinic';
                             return Q.all([
                                 self.im.contacts.save(self.user),

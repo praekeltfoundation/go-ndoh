@@ -148,547 +148,618 @@ describe("app", function() {
             });
         });
 
-        describe("after the user runs through the whole flow - mom's phone", function() {
-            it("should have all their extras saved", function() {
-                return tester
-                    .setup(function(api) {
-                        api.contacts.add({
-                            msisdn: '+27821234567',
-                            key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
-                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4",
-                        });
-                    })
-                    .setup.user.addr('27821234567')
-                    .inputs(
-                        {session_event: 'start'},
-                        '1',        // states_start - yes
-                        '12345',    // states_clinic_code - 12345
-                        '2',        // states_due_date_month - 05
-                        '30',       // states_due_date_day - 30
-                                    // user is registering in week 33
-                        '1',        // states_id_type - sa_id
-                        {session_event: 'new'},
-                        '1',        // states_timed_out - yes
-                        '5101025009086', // states_sa_id
-                        '4'         // states_language - en
-                        )
-                    .check.interaction({
-                        state: 'states_end_success'
-                    })
-                    .check(function(api) {
-                        var contact = _.find(api.contacts.store, {
-                          msisdn: '+27821234567'
-                        });
-                        assert.equal(contact.extra.clinic_code, '12345');
-                        assert.equal(contact.extra.due_date_month, '05');
-                        assert.equal(contact.extra.due_date_day, '30');
-                        assert.equal(contact.extra.id_type, 'sa_id');
-                        assert.equal(contact.extra.sa_id, '5101025009086');
-                        assert.equal(contact.extra.language_choice, 'en');
-                    })
-                    .run();
-            });
-        });
+        // describe("after the user runs through the whole flow - mom's phone", function() {
+        //     it("should have all their extras saved", function() {
+        //         return tester
+        //             .setup(function(api) {
+        //                 api.contacts.add({
+        //                     msisdn: '+27821234567',
+        //                     key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+        //                     user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4",
+        //                 });
+        //             })
+        //             .setup.user.addr('27821234567')
+        //             .inputs(
+        //                 {session_event: 'start'},
+        //                 '1',        // states_start - yes
+        //                 '12345',    // states_clinic_code - 12345
+        //                 '2',        // states_due_date_month - 05
+        //                 '30',       // states_due_date_day - 30
+        //                             // user is registering in week 33
+        //                 '1',        // states_id_type - sa_id
+        //                 {session_event: 'new'},
+        //                 '1',        // states_timed_out - yes
+        //                 '5101025009086', // states_sa_id
+        //                 '4'         // states_language - en
+        //                 )
+        //             .check.interaction({
+        //                 state: 'states_end_success'
+        //             })
+        //             .check(function(api) {
+        //                 var contact = _.find(api.contacts.store, {
+        //                   msisdn: '+27821234567'
+        //                 });
+        //                 assert.equal(contact.extra.clinic_code, '12345');
+        //                 assert.equal(contact.extra.due_date_month, '05');
+        //                 assert.equal(contact.extra.due_date_day, '30');
+        //                 assert.equal(contact.extra.id_type, 'sa_id');
+        //                 assert.equal(contact.extra.sa_id, '5101025009086');
+        //                 assert.equal(contact.extra.language_choice, 'en');
+        //             })
+        //             .run();
+        //     });
+        // });
 
-        describe("when the user runs through the whole flow - clinic worker's phone", function() {
-            it("should have all their extras saved", function() {
-                return tester
-                    .setup(function(api) {
-                        api.contacts.add({
-                            msisdn: '+27821234567',
-                            key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
-                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4",
-                        });
-                        api.contacts.add({
-                            msisdn: '+270001',
-                        });
-                    })
-                    .setup.user.addr('270001')
-                    .inputs(
-                        {session_event: 'start'},
-                        '2',        // states_start - no
-                        '0821234567', // states_mobile_no - +27821234567
-                        '12345',    // states_clinic_code - 12345
-                        '2',        // states_due_date_month - 05
-                        '30',       // states_due_date_day - 30
-                        '1',        // states_id_type - sa_id
-                        {session_event: 'new'},
-                        '1',        // states_timed_out - yes
-                        '5101025009086', // states_sa_id
-                        '4'         // states_language - en
-                        )
-                    .check.interaction({
-                        state: 'states_end_success'
-                    })
-                    .check(function(api) {
-                        var contact = _.find(api.contacts.store, {
-                          msisdn: '+27821234567'
-                        });
-                        // complete
-                        assert.equal(contact.extra.clinic_code, '12345');
-                        assert.equal(contact.extra.due_date_month, '05');
-                        assert.equal(contact.extra.due_date_day, '30');
-                        assert.equal(contact.extra.id_type, 'sa_id');
-                        assert.equal(contact.extra.sa_id, '5101025009086');
-                        assert.equal(contact.extra.language_choice, 'en');
-                    })
-                    .run();
-            });
-        });
+        // describe("when the user runs through the whole flow - clinic worker's phone", function() {
+        //     it("should have all their extras saved", function() {
+        //         return tester
+        //             .setup(function(api) {
+        //                 api.contacts.add({
+        //                     msisdn: '+27821234567',
+        //                     key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+        //                     user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4",
+        //                 });
+        //                 api.contacts.add({
+        //                     msisdn: '+270001',
+        //                 });
+        //             })
+        //             .setup.user.addr('270001')
+        //             .inputs(
+        //                 {session_event: 'start'},
+        //                 '2',        // states_start - no
+        //                 '0821234567', // states_mobile_no - +27821234567
+        //                 '12345',    // states_clinic_code - 12345
+        //                 '2',        // states_due_date_month - 05
+        //                 '30',       // states_due_date_day - 30
+        //                 '1',        // states_id_type - sa_id
+        //                 {session_event: 'new'},
+        //                 '1',        // states_timed_out - yes
+        //                 '5101025009086', // states_sa_id
+        //                 '4'         // states_language - en
+        //                 )
+        //             .check.interaction({
+        //                 state: 'states_end_success'
+        //             })
+        //             .check(function(api) {
+        //                 var contact = _.find(api.contacts.store, {
+        //                   msisdn: '+27821234567'
+        //                 });
+        //                 // complete
+        //                 assert.equal(contact.extra.clinic_code, '12345');
+        //                 assert.equal(contact.extra.due_date_month, '05');
+        //                 assert.equal(contact.extra.due_date_day, '30');
+        //                 assert.equal(contact.extra.id_type, 'sa_id');
+        //                 assert.equal(contact.extra.sa_id, '5101025009086');
+        //                 assert.equal(contact.extra.language_choice, 'en');
+        //             })
+        //             .run();
+        //     });
+        // });
 
         // no_incomplete metric tests
-        describe("test dropoff metrics", function() {
+        // describe("test dropoff metrics", function() {
 
-            describe("states_start", function() {
-                it("entering once", function() {
+        //     describe("states_start", function() {
+        //         it("entering once", function() {
+        //             return tester
+        //                 .setup.user.addr('27001')
+        //                 .inputs(
+        //                     {session_event: 'new'}  // dial in
+        //                 )
+        //                 .check(function(api) {
+        //                     var metrics = api.metrics.stores.test_metric_store;
+        //                     assert.deepEqual(metrics['test.nurse_ussd.states_start.no_incomplete_rev1'].values, [1]);
+        //                     assert.deepEqual(metrics['test.nurse_ussd.states_start.no_incomplete_rev1.transient'].values, [1]);
+        //                 })
+        //                 .run();
+        //         });
+
+        //         it("entering once, timing out", function() {
+        //             return tester
+        //                 .setup.user.addr('27001')
+        //                 .inputs(
+        //                     {session_event: 'new'}  // dial in
+        //                     , {session_event: 'close'}  // states_start
+        //                 )
+        //                 .check(function(api) {
+        //                     var metrics = api.metrics.stores.test_metric_store;
+        //                     assert.deepEqual(metrics['test.nurse_ussd.states_start.no_incomplete_rev1'].values, [1]);
+        //                     assert.deepEqual(metrics['test.nurse_ussd.states_start.no_incomplete_rev1.transient'].values, [1]);
+        //                 })
+        //                 .run();
+        //         });
+
+        //         it("entering once, timing out, redialing (session:close detected)", function() {
+        //             return tester
+        //                 .setup.user.addr('27001')
+        //                 .inputs(
+        //                     {session_event: 'new'}  // dial in
+        //                     , {session_event: 'close'}  // states_start
+        //                     , {session_event: 'new'}  // redial
+        //                 )
+        //                 .check(function(api) {
+        //                     var metrics = api.metrics.stores.test_metric_store;
+        //                     assert.deepEqual(metrics['test.nurse_ussd.states_start.no_incomplete_rev1'].values, [1]);
+        //                     assert.deepEqual(metrics['test.nurse_ussd.states_start.no_incomplete_rev1.transient'].values, [1]);
+        //                 })
+        //                 .run();
+        //         });
+
+        //         it("entering once, timing out, redialing (session:close not detected)", function() {
+        //             return tester
+        //                 .setup.user.addr('27001')
+        //                 .inputs(
+        //                     {session_event: 'new'}  // dial in
+        //                     , {session_event: 'new'}  // redial
+        //                 )
+        //                 .check(function(api) {
+        //                     var metrics = api.metrics.stores.test_metric_store;
+        //                     assert.deepEqual(metrics['test.nurse_ussd.states_start.no_incomplete_rev1'].values, [1]);
+        //                     assert.deepEqual(metrics['test.nurse_ussd.states_start.no_incomplete_rev1.transient'].values, [1]);
+        //                 })
+        //                 .run();
+        //         });
+
+        //         it("entering once, timing out, redialing, exiting", function() {
+        //             return tester
+        //                 .setup.user.addr('27001')
+        //                 .inputs(
+        //                     {session_event: 'new'}  // dial in
+        //                     , {session_event: 'close'}  // states_start
+        //                     , {session_event: 'new'}  // redial
+        //                     , '1'  // states_start
+        //                 )
+        //                 .check(function(api) {
+        //                     var metrics = api.metrics.stores.test_metric_store;
+        //                     assert.deepEqual(metrics['test.nurse_ussd.states_start.no_incomplete_rev1'].values, [1, 0]);
+        //                     assert.deepEqual(metrics['test.nurse_ussd.states_start.no_incomplete_rev1.transient'].values, [1, -1]);
+        //                 })
+        //                 .run();
+        //         });
+        //     });
+
+        //     describe("states_due_date_month", function() {
+        //         // This idea applies to all states except states_start and end states, for which measuring
+        //         // dropoffs is not a real thing
+        //         it("entering once", function() {
+        //             return tester
+        //                 .setup.user.addr('27001')
+        //                 .inputs(
+        //                     {session_event: 'new'}  // dial in
+        //                     , '1'  // states_start
+        //                     , '12345'  // states_clinic_code
+        //                 )
+        //                 .check(function(api) {
+        //                     var metrics = api.metrics.stores.test_metric_store;
+        //                     assert.deepEqual(metrics['test.nurse_ussd.states_start.no_incomplete_rev1'].values, [1, 0]);
+        //                     assert.deepEqual(metrics['test.nurse_ussd.states_start.no_incomplete_rev1.transient'].values, [1, -1]);
+        //                     assert.deepEqual(metrics['test.nurse_ussd.states_clinic_code.no_incomplete_rev1'].values, [1, 0]);
+        //                     assert.deepEqual(metrics['test.nurse_ussd.states_clinic_code.no_incomplete_rev1.transient'].values, [1, -1]);
+        //                     assert.deepEqual(metrics['test.nurse_ussd.states_due_date_month.no_incomplete_rev1'].values, [1]);
+        //                     assert.deepEqual(metrics['test.nurse_ussd.states_due_date_month.no_incomplete_rev1.transient'].values, [1]);
+        //                 })
+        //                 .run();
+        //         });
+
+        //         it("entering once, timing out", function() {
+        //             return tester
+        //                 .setup.user.addr('27001')
+        //                 .inputs(
+        //                     {session_event: 'new'}  // dial in
+        //                     , '1'  // states_start
+        //                     , '12345'  // states_clinic_code
+        //                     , {session_event: 'close'}  // states_due_date_month
+        //                 )
+        //                 .check(function(api) {
+        //                     var metrics = api.metrics.stores.test_metric_store;
+        //                     assert.deepEqual(metrics['test.nurse_ussd.states_start.no_incomplete_rev1'].values, [1, 0]);
+        //                     assert.deepEqual(metrics['test.nurse_ussd.states_start.no_incomplete_rev1.transient'].values, [1, -1]);
+        //                     assert.deepEqual(metrics['test.nurse_ussd.states_clinic_code.no_incomplete_rev1'].values, [1, 0]);
+        //                     assert.deepEqual(metrics['test.nurse_ussd.states_clinic_code.no_incomplete_rev1.transient'].values, [1, -1]);
+        //                     assert.deepEqual(metrics['test.nurse_ussd.states_due_date_month.no_incomplete_rev1'].values, [1]);
+        //                     assert.deepEqual(metrics['test.nurse_ussd.states_due_date_month.no_incomplete_rev1.transient'].values, [1]);
+        //                 })
+        //                 .run();
+        //         });
+
+        //         it("entering once, timing out, redialing (session:close detected)", function() {
+        //             return tester
+        //                 .setup.user.addr('27001')
+        //                 .inputs(
+        //                     {session_event: 'new'}  // dial in
+        //                     , '1'  // states_start
+        //                     , '12345'  // states_clinic_code
+        //                     , {session_event: 'close'}  // states_due_date_month
+        //                     , {session_event: 'new'}  // redial
+        //                 )
+        //                 .check(function(api) {
+        //                     var metrics = api.metrics.stores.test_metric_store;
+        //                     assert.deepEqual(metrics['test.nurse_ussd.states_start.no_incomplete_rev1'].values, [1, 0]);
+        //                     assert.deepEqual(metrics['test.nurse_ussd.states_start.no_incomplete_rev1.transient'].values, [1, -1]);
+        //                     assert.deepEqual(metrics['test.nurse_ussd.states_clinic_code.no_incomplete_rev1'].values, [1, 0]);
+        //                     assert.deepEqual(metrics['test.nurse_ussd.states_clinic_code.no_incomplete_rev1.transient'].values, [1, -1]);
+        //                     assert.deepEqual(metrics['test.nurse_ussd.states_due_date_month.no_incomplete_rev1'].values, [1]);
+        //                     assert.deepEqual(metrics['test.nurse_ussd.states_due_date_month.no_incomplete_rev1.transient'].values, [1]);
+        //                 })
+        //                 .run();
+        //         });
+
+        //         it("entering once, timing out, redialing (session:close not detected)", function() {
+        //             return tester
+        //                 .setup.user.addr('27001')
+        //                 .inputs(
+        //                     {session_event: 'new'}  // dial in
+        //                     , '1'  // states_start
+        //                     , '12345'  // states_clinic_code
+        //                     , {session_event: 'new'}  // redial
+        //                 )
+        //                 .check(function(api) {
+        //                     var metrics = api.metrics.stores.test_metric_store;
+        //                     assert.deepEqual(metrics['test.nurse_ussd.states_start.no_incomplete_rev1'].values, [1, 0]);
+        //                     assert.deepEqual(metrics['test.nurse_ussd.states_start.no_incomplete_rev1.transient'].values, [1, -1]);
+        //                     assert.deepEqual(metrics['test.nurse_ussd.states_clinic_code.no_incomplete_rev1'].values, [1, 0]);
+        //                     assert.deepEqual(metrics['test.nurse_ussd.states_clinic_code.no_incomplete_rev1.transient'].values, [1, -1]);
+        //                     assert.deepEqual(metrics['test.nurse_ussd.states_due_date_month.no_incomplete_rev1'].values, [1]);
+        //                     assert.deepEqual(metrics['test.nurse_ussd.states_due_date_month.no_incomplete_rev1.transient'].values, [1]);
+        //                 })
+        //                 .run();
+        //         });
+
+        //         it("entering once, timing out, redialing, abandoning registration", function() {
+        //             return tester
+        //                 .setup.user.addr('27001')
+        //                 .inputs(
+        //                     {session_event: 'new'}  // dial in
+        //                     , '1'  // states_start
+        //                     , '12345'  // states_clinic_code
+        //                     , {session_event: 'close'}  // states_due_date_month
+        //                     , {session_event: 'new'}  // redial
+        //                     , '2'  // states_timed_out
+        //                 )
+        //                 .check(function(api) {
+        //                     var metrics = api.metrics.stores.test_metric_store;
+        //                     assert.deepEqual(metrics['test.nurse_ussd.states_start.no_incomplete_rev1'].values, [1, 0, 1]);
+        //                     assert.deepEqual(metrics['test.nurse_ussd.states_start.no_incomplete_rev1.transient'].values, [1, -1, 1]);
+        //                     assert.deepEqual(metrics['test.nurse_ussd.states_clinic_code.no_incomplete_rev1'].values, [1, 0]);
+        //                     assert.deepEqual(metrics['test.nurse_ussd.states_clinic_code.no_incomplete_rev1.transient'].values, [1, -1]);
+        //                     assert.deepEqual(metrics['test.nurse_ussd.states_due_date_month.no_incomplete_rev1'].values, [1]);
+        //                     assert.deepEqual(metrics['test.nurse_ussd.states_due_date_month.no_incomplete_rev1.transient'].values, [1]);
+        //                 })
+        //                 .run();
+        //         });
+
+        //         it("entering once, timing out, redialing, continuing registration", function() {
+        //             return tester
+        //                 .setup.user.addr('27001')
+        //                 .inputs(
+        //                     {session_event: 'new'}  // dial in
+        //                     , '1'  // states_start
+        //                     , '12345'  // states_clinic_code
+        //                     , {session_event: 'close'}  // states_due_date_month
+        //                     , {session_event: 'new'}  // redial
+        //                     , '1'  // states_timed_out
+        //                 )
+        //                 .check(function(api) {
+        //                     var metrics = api.metrics.stores.test_metric_store;
+        //                     assert.deepEqual(metrics['test.nurse_ussd.states_start.no_incomplete_rev1'].values, [1, 0]);
+        //                     assert.deepEqual(metrics['test.nurse_ussd.states_start.no_incomplete_rev1.transient'].values, [1, -1]);
+        //                     assert.deepEqual(metrics['test.nurse_ussd.states_clinic_code.no_incomplete_rev1'].values, [1, 0]);
+        //                     assert.deepEqual(metrics['test.nurse_ussd.states_clinic_code.no_incomplete_rev1.transient'].values, [1, -1]);
+        //                     assert.deepEqual(metrics['test.nurse_ussd.states_due_date_month.no_incomplete_rev1'].values, [1, 0, 1]);
+        //                     assert.deepEqual(metrics['test.nurse_ussd.states_due_date_month.no_incomplete_rev1.transient'].values, [1, -1, 1]);
+        //                 })
+        //                 .run();
+        //         });
+
+        //         it("entering once, timing out, redialing, continuing registration, exiting", function() {
+        //             return tester
+        //                 .setup.user.addr('27001')
+        //                 .inputs(
+        //                     {session_event: 'new'}  // dial in
+        //                     , '1'  // states_start
+        //                     , '12345'  // states_clinic_code
+        //                     , {session_event: 'close'}  // states_due_date_month
+        //                     , {session_event: 'new'}  // redial
+        //                     , '1'  // states_timed_out
+        //                     , '5'  // states_due_date_month
+        //                 )
+        //                 .check(function(api) {
+        //                     var metrics = api.metrics.stores.test_metric_store;
+        //                     assert.deepEqual(metrics['test.nurse_ussd.states_start.no_incomplete_rev1'].values, [1, 0]);
+        //                     assert.deepEqual(metrics['test.nurse_ussd.states_start.no_incomplete_rev1.transient'].values, [1, -1]);
+        //                     assert.deepEqual(metrics['test.nurse_ussd.states_clinic_code.no_incomplete_rev1'].values, [1, 0]);
+        //                     assert.deepEqual(metrics['test.nurse_ussd.states_clinic_code.no_incomplete_rev1.transient'].values, [1, -1]);
+        //                     assert.deepEqual(metrics['test.nurse_ussd.states_due_date_month.no_incomplete_rev1'].values, [1, 0, 1, 0]);
+        //                     assert.deepEqual(metrics['test.nurse_ussd.states_due_date_month.no_incomplete_rev1.transient'].values, [1, -1, 1, -1]);
+        //                 })
+        //                 .run();
+        //         });
+        //     });
+        // });
+
+
+
+    describe.only("new code", function() {
+
+        // Session Start Delegation
+        describe("session start", function() {
+            describe("new user", function() {
+                it("should give 3 options", function() {
                     return tester
-                        .setup.user.addr('27001')
-                        .inputs(
-                            {session_event: 'new'}  // dial in
-                        )
-                        .check(function(api) {
-                            var metrics = api.metrics.stores.test_metric_store;
-                            assert.deepEqual(metrics['test.nurse_ussd.states_start.no_incomplete_rev1'].values, [1]);
-                            assert.deepEqual(metrics['test.nurse_ussd.states_start.no_incomplete_rev1.transient'].values, [1]);
-                        })
-                        .run();
-                });
-
-                it("entering once, timing out", function() {
-                    return tester
-                        .setup.user.addr('27001')
-                        .inputs(
-                            {session_event: 'new'}  // dial in
-                            , {session_event: 'close'}  // states_start
-                        )
-                        .check(function(api) {
-                            var metrics = api.metrics.stores.test_metric_store;
-                            assert.deepEqual(metrics['test.nurse_ussd.states_start.no_incomplete_rev1'].values, [1]);
-                            assert.deepEqual(metrics['test.nurse_ussd.states_start.no_incomplete_rev1.transient'].values, [1]);
-                        })
-                        .run();
-                });
-
-                it("entering once, timing out, redialing (session:close detected)", function() {
-                    return tester
-                        .setup.user.addr('27001')
-                        .inputs(
-                            {session_event: 'new'}  // dial in
-                            , {session_event: 'close'}  // states_start
-                            , {session_event: 'new'}  // redial
-                        )
-                        .check(function(api) {
-                            var metrics = api.metrics.stores.test_metric_store;
-                            assert.deepEqual(metrics['test.nurse_ussd.states_start.no_incomplete_rev1'].values, [1]);
-                            assert.deepEqual(metrics['test.nurse_ussd.states_start.no_incomplete_rev1.transient'].values, [1]);
-                        })
-                        .run();
-                });
-
-                it("entering once, timing out, redialing (session:close not detected)", function() {
-                    return tester
-                        .setup.user.addr('27001')
-                        .inputs(
-                            {session_event: 'new'}  // dial in
-                            , {session_event: 'new'}  // redial
-                        )
-                        .check(function(api) {
-                            var metrics = api.metrics.stores.test_metric_store;
-                            assert.deepEqual(metrics['test.nurse_ussd.states_start.no_incomplete_rev1'].values, [1]);
-                            assert.deepEqual(metrics['test.nurse_ussd.states_start.no_incomplete_rev1.transient'].values, [1]);
-                        })
-                        .run();
-                });
-
-                it("entering once, timing out, redialing, exiting", function() {
-                    return tester
-                        .setup.user.addr('27001')
-                        .inputs(
-                            {session_event: 'new'}  // dial in
-                            , {session_event: 'close'}  // states_start
-                            , {session_event: 'new'}  // redial
-                            , '1'  // states_start
-                        )
-                        .check(function(api) {
-                            var metrics = api.metrics.stores.test_metric_store;
-                            assert.deepEqual(metrics['test.nurse_ussd.states_start.no_incomplete_rev1'].values, [1, 0]);
-                            assert.deepEqual(metrics['test.nurse_ussd.states_start.no_incomplete_rev1.transient'].values, [1, -1]);
-                        })
-                        .run();
-                });
-            });
-
-            describe("states_due_date_month", function() {
-                // This idea applies to all states except states_start and end states, for which measuring
-                // dropoffs is not a real thing
-                it("entering once", function() {
-                    return tester
-                        .setup.user.addr('27001')
-                        .inputs(
-                            {session_event: 'new'}  // dial in
-                            , '1'  // states_start
-                            , '12345'  // states_clinic_code
-                        )
-                        .check(function(api) {
-                            var metrics = api.metrics.stores.test_metric_store;
-                            assert.deepEqual(metrics['test.nurse_ussd.states_start.no_incomplete_rev1'].values, [1, 0]);
-                            assert.deepEqual(metrics['test.nurse_ussd.states_start.no_incomplete_rev1.transient'].values, [1, -1]);
-                            assert.deepEqual(metrics['test.nurse_ussd.states_clinic_code.no_incomplete_rev1'].values, [1, 0]);
-                            assert.deepEqual(metrics['test.nurse_ussd.states_clinic_code.no_incomplete_rev1.transient'].values, [1, -1]);
-                            assert.deepEqual(metrics['test.nurse_ussd.states_due_date_month.no_incomplete_rev1'].values, [1]);
-                            assert.deepEqual(metrics['test.nurse_ussd.states_due_date_month.no_incomplete_rev1.transient'].values, [1]);
-                        })
-                        .run();
-                });
-
-                it("entering once, timing out", function() {
-                    return tester
-                        .setup.user.addr('27001')
-                        .inputs(
-                            {session_event: 'new'}  // dial in
-                            , '1'  // states_start
-                            , '12345'  // states_clinic_code
-                            , {session_event: 'close'}  // states_due_date_month
-                        )
-                        .check(function(api) {
-                            var metrics = api.metrics.stores.test_metric_store;
-                            assert.deepEqual(metrics['test.nurse_ussd.states_start.no_incomplete_rev1'].values, [1, 0]);
-                            assert.deepEqual(metrics['test.nurse_ussd.states_start.no_incomplete_rev1.transient'].values, [1, -1]);
-                            assert.deepEqual(metrics['test.nurse_ussd.states_clinic_code.no_incomplete_rev1'].values, [1, 0]);
-                            assert.deepEqual(metrics['test.nurse_ussd.states_clinic_code.no_incomplete_rev1.transient'].values, [1, -1]);
-                            assert.deepEqual(metrics['test.nurse_ussd.states_due_date_month.no_incomplete_rev1'].values, [1]);
-                            assert.deepEqual(metrics['test.nurse_ussd.states_due_date_month.no_incomplete_rev1.transient'].values, [1]);
-                        })
-                        .run();
-                });
-
-                it("entering once, timing out, redialing (session:close detected)", function() {
-                    return tester
-                        .setup.user.addr('27001')
-                        .inputs(
-                            {session_event: 'new'}  // dial in
-                            , '1'  // states_start
-                            , '12345'  // states_clinic_code
-                            , {session_event: 'close'}  // states_due_date_month
-                            , {session_event: 'new'}  // redial
-                        )
-                        .check(function(api) {
-                            var metrics = api.metrics.stores.test_metric_store;
-                            assert.deepEqual(metrics['test.nurse_ussd.states_start.no_incomplete_rev1'].values, [1, 0]);
-                            assert.deepEqual(metrics['test.nurse_ussd.states_start.no_incomplete_rev1.transient'].values, [1, -1]);
-                            assert.deepEqual(metrics['test.nurse_ussd.states_clinic_code.no_incomplete_rev1'].values, [1, 0]);
-                            assert.deepEqual(metrics['test.nurse_ussd.states_clinic_code.no_incomplete_rev1.transient'].values, [1, -1]);
-                            assert.deepEqual(metrics['test.nurse_ussd.states_due_date_month.no_incomplete_rev1'].values, [1]);
-                            assert.deepEqual(metrics['test.nurse_ussd.states_due_date_month.no_incomplete_rev1.transient'].values, [1]);
-                        })
-                        .run();
-                });
-
-                it("entering once, timing out, redialing (session:close not detected)", function() {
-                    return tester
-                        .setup.user.addr('27001')
-                        .inputs(
-                            {session_event: 'new'}  // dial in
-                            , '1'  // states_start
-                            , '12345'  // states_clinic_code
-                            , {session_event: 'new'}  // redial
-                        )
-                        .check(function(api) {
-                            var metrics = api.metrics.stores.test_metric_store;
-                            assert.deepEqual(metrics['test.nurse_ussd.states_start.no_incomplete_rev1'].values, [1, 0]);
-                            assert.deepEqual(metrics['test.nurse_ussd.states_start.no_incomplete_rev1.transient'].values, [1, -1]);
-                            assert.deepEqual(metrics['test.nurse_ussd.states_clinic_code.no_incomplete_rev1'].values, [1, 0]);
-                            assert.deepEqual(metrics['test.nurse_ussd.states_clinic_code.no_incomplete_rev1.transient'].values, [1, -1]);
-                            assert.deepEqual(metrics['test.nurse_ussd.states_due_date_month.no_incomplete_rev1'].values, [1]);
-                            assert.deepEqual(metrics['test.nurse_ussd.states_due_date_month.no_incomplete_rev1.transient'].values, [1]);
-                        })
-                        .run();
-                });
-
-                it("entering once, timing out, redialing, abandoning registration", function() {
-                    return tester
-                        .setup.user.addr('27001')
-                        .inputs(
-                            {session_event: 'new'}  // dial in
-                            , '1'  // states_start
-                            , '12345'  // states_clinic_code
-                            , {session_event: 'close'}  // states_due_date_month
-                            , {session_event: 'new'}  // redial
-                            , '2'  // states_timed_out
-                        )
-                        .check(function(api) {
-                            var metrics = api.metrics.stores.test_metric_store;
-                            assert.deepEqual(metrics['test.nurse_ussd.states_start.no_incomplete_rev1'].values, [1, 0, 1]);
-                            assert.deepEqual(metrics['test.nurse_ussd.states_start.no_incomplete_rev1.transient'].values, [1, -1, 1]);
-                            assert.deepEqual(metrics['test.nurse_ussd.states_clinic_code.no_incomplete_rev1'].values, [1, 0]);
-                            assert.deepEqual(metrics['test.nurse_ussd.states_clinic_code.no_incomplete_rev1.transient'].values, [1, -1]);
-                            assert.deepEqual(metrics['test.nurse_ussd.states_due_date_month.no_incomplete_rev1'].values, [1]);
-                            assert.deepEqual(metrics['test.nurse_ussd.states_due_date_month.no_incomplete_rev1.transient'].values, [1]);
-                        })
-                        .run();
-                });
-
-                it("entering once, timing out, redialing, continuing registration", function() {
-                    return tester
-                        .setup.user.addr('27001')
-                        .inputs(
-                            {session_event: 'new'}  // dial in
-                            , '1'  // states_start
-                            , '12345'  // states_clinic_code
-                            , {session_event: 'close'}  // states_due_date_month
-                            , {session_event: 'new'}  // redial
-                            , '1'  // states_timed_out
-                        )
-                        .check(function(api) {
-                            var metrics = api.metrics.stores.test_metric_store;
-                            assert.deepEqual(metrics['test.nurse_ussd.states_start.no_incomplete_rev1'].values, [1, 0]);
-                            assert.deepEqual(metrics['test.nurse_ussd.states_start.no_incomplete_rev1.transient'].values, [1, -1]);
-                            assert.deepEqual(metrics['test.nurse_ussd.states_clinic_code.no_incomplete_rev1'].values, [1, 0]);
-                            assert.deepEqual(metrics['test.nurse_ussd.states_clinic_code.no_incomplete_rev1.transient'].values, [1, -1]);
-                            assert.deepEqual(metrics['test.nurse_ussd.states_due_date_month.no_incomplete_rev1'].values, [1, 0, 1]);
-                            assert.deepEqual(metrics['test.nurse_ussd.states_due_date_month.no_incomplete_rev1.transient'].values, [1, -1, 1]);
-                        })
-                        .run();
-                });
-
-                it("entering once, timing out, redialing, continuing registration, exiting", function() {
-                    return tester
-                        .setup.user.addr('27001')
-                        .inputs(
-                            {session_event: 'new'}  // dial in
-                            , '1'  // states_start
-                            , '12345'  // states_clinic_code
-                            , {session_event: 'close'}  // states_due_date_month
-                            , {session_event: 'new'}  // redial
-                            , '1'  // states_timed_out
-                            , '5'  // states_due_date_month
-                        )
-                        .check(function(api) {
-                            var metrics = api.metrics.stores.test_metric_store;
-                            assert.deepEqual(metrics['test.nurse_ussd.states_start.no_incomplete_rev1'].values, [1, 0]);
-                            assert.deepEqual(metrics['test.nurse_ussd.states_start.no_incomplete_rev1.transient'].values, [1, -1]);
-                            assert.deepEqual(metrics['test.nurse_ussd.states_clinic_code.no_incomplete_rev1'].values, [1, 0]);
-                            assert.deepEqual(metrics['test.nurse_ussd.states_clinic_code.no_incomplete_rev1.transient'].values, [1, -1]);
-                            assert.deepEqual(metrics['test.nurse_ussd.states_due_date_month.no_incomplete_rev1'].values, [1, 0, 1, 0]);
-                            assert.deepEqual(metrics['test.nurse_ussd.states_due_date_month.no_incomplete_rev1.transient'].values, [1, -1, 1, -1]);
-                        })
-                        .run();
-                });
-            });
-        });
-
-        describe("when the user starts a session", function() {
-            it("should check if no. belongs to pregnant woman", function() {
-                return tester
-                    .setup.user.addr('27821234444')
-                    .setup.char_limit(160)  // limit first state chars
-                    .start()
-                    .check.interaction({
-                        state: 'states_start',
-                        reply: [
-                            'Welcome to The Department of Health\'s ' +
-                            'MomConnect. Tell us if this is the no. that ' +
-                            'the mother would like to get SMSs on: 0821234444',
-                            '1. Yes',
-                            '2. No'
-                        ].join('\n')
-                    })
-                    .check(function(api) {
-                        var contact = _.find(api.contacts.store, {
-                          msisdn: '+27821234444'
-                        });
-                        assert.equal(contact.extra.ussd_sessions, '1');
-                        assert.equal(contact.extra.metric_sum_sessions, '1');
-                        assert.equal(contact.extra.last_stage, 'states_start');
-                    })
-                    .check(function(api) {
-                        var metrics = api.metrics.stores.test_metric_store;
-                        assert.deepEqual(metrics['test.sum.sessions'].values, [1]);
-                    })
-                    .run();
-            });
-        });
-
-        // re-dial flow tests
-        describe("when a user timed out", function() {
-
-            // clinic worker's phone
-            describe("when the user timed out during registration", function() {
-                it("should ask it they want to continue registration", function() {
-                    return tester
+                        .setup.user.addr('27821234444')
                         .setup.char_limit(160)  // limit first state chars
-                        .setup(function(api) {
-                            api.contacts.add({
-                                msisdn: '+27821234444',
-                                extra : {
-                                    working_on: '+27821234567',
-                                }
-                            });
-                            api.contacts.add( {
-                                msisdn: '+27821234567',
-                                extra : {
-                                    clinic_code: '12345',
-                                },
-                            });
-                        })
-                        .setup.user.addr('27821234444')
-                        .setup.user.state('states_id_type')
-                        .input.session_event('new')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                        )
                         .check.interaction({
-                            state: 'states_timed_out',
+                            state: 'st_not_subscribed',
                             reply: [
-                                'Would you like to complete pregnancy registration for 0821234567?',
-                                '1. Yes',
-                                '2. Start new registration'
+                                "Welcome to NurseConnect. Your number 0821234444 is not subscribed:",
+                                '1. Subscribe as a new user',
+                                '2. Change your old number',
+                                '3. Subscribe somebody else'
                             ].join('\n')
                         })
                         .run();
                 });
-            });
-
-            // pregnant woman's phone
-            describe("when the user timed out during registration", function() {
-                it("should ask it they want to continue registration", function() {
+                it("should save extras", function() {
                     return tester
-                        .setup(function(api) {
-                            api.contacts.add({
-                                msisdn: '+27821234444',
-                            });
-                            api.contacts.add( {
-                                msisdn: '+27821234567',
-                                extra : {
-                                    clinic_code: '12345',
-                                },
-                            });
-                        })
-                        .setup.user.addr('27821234567')
-                        .setup.user.state('states_id_type')
-                        .input.session_event('new')
-                        .check.interaction({
-                            state: 'states_timed_out',
-                            reply: [
-                                'Would you like to complete pregnancy registration for 0821234567?',
-                                '1. Yes',
-                                '2. Start new registration'
-                            ].join('\n')
-                        })
-                        .run();
-                });
-            });
-
-            describe("when the user chooses to continue registration", function() {
-                it("should take them back to state they were on at timeout", function() {
-                    return tester
-                        .setup(function(api) {
-                            api.contacts.add({
-                                msisdn: '+27821234444',
-                                extra : {
-                                    working_on: '+27821234567',
-                                }
-                            });
-                            api.contacts.add( {
-                                msisdn: '+27821234567',
-                                extra : {
-                                    clinic_code: '12345',
-                                },
-                            });
-                        })
                         .setup.user.addr('27821234444')
-                        .setup.user.state('states_id_type')
-                        .inputs({session_event: 'new'}, '1')
-                        .check.interaction({
-                            state: 'states_id_type',
-                            reply: [
-                                'What kind of identification does the pregnant ' +
-                                'mother have?',
-                                '1. SA ID',
-                                '2. Passport',
-                                '3. None'
-                            ].join('\n')
-                        })
-                        .run();
-                });
-            });
-
-            describe("when the user chooses to abort registration", function() {
-                it("should take them back to states_start", function() {
-                    return tester
-                        .setup(function(api) {
-                            api.contacts.add({
-                                msisdn: '+27821234444',
-                                extra : {
-                                    working_on: '+27821234567',
-                                }
-                            });
-                            api.contacts.add( {
-                                msisdn: '+27821234567',
-                                extra : {
-                                    clinic_code: '12345',
-                                },
-                            });
-                        })
-                        .setup.user.addr('27821234444')
-                        .setup.user.state('states_id_type')
-                        .inputs({session_event: 'new'}, '2')
-                        .check.interaction({
-                            state: 'states_start',
-                            reply: [
-                                'Welcome to The Department of Health\'s ' +
-                                'MomConnect. Tell us if this is the no. that ' +
-                                'the mother would like to get SMSs on: 0821234444',
-                                '1. Yes',
-                                '2. No'
-                            ].join('\n')
-                        })
+                        .setup.char_limit(160)  // limit first state chars
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                        )
                         .check(function(api) {
                             var contact = _.find(api.contacts.store, {
                               msisdn: '+27821234444'
                             });
-                            assert.equal(contact.extra.working_on, '');
+                            assert.equal(Object.keys(contact.extra).length, 2);
+                            // assert.equal(contact.extra.ussd_sessions, '1');
+                            assert.equal(contact.extra.metric_sum_sessions, '1');
+                            assert.equal(contact.extra.last_stage, 'st_not_subscribed');
+                        })
+                        .run();
+                });
+                it("should record metrics", function() {
+                    return tester
+                        .setup.user.addr('27821234444')
+                        .setup.char_limit(160)  // limit first state chars
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                        )
+                        .check(function(api) {
+                            var metrics = api.metrics.stores.test_metric_store;
+                            assert.equal(Object.keys(metrics).length, 0);
+                            assert.deepEqual(metrics['test.sum.sessions'], undefined);
                         })
                         .run();
                 });
             });
         });
-        // end re-dial flow tests
 
+
+        // Timeout Testing Start
+        describe("when a user timed out", function() {
+
+            describe("very first timeout", function() {
+                it("should send redial sms", function() {
+                    return tester
+                        .setup.user.addr('27821234444')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '1'  // st_not_subscribed
+                            , '1'  // st_permission_self
+                            , '123456'  // st_faccode
+                            , {session_event: 'close'}  // timeout
+                            , {session_event: 'new'}  // redial
+                        )
+                        .check(function(api) {
+                            var smses = _.where(api.outbound.store, {
+                                endpoint: 'sms'
+                            });
+                            var sms = smses[0];
+                            assert.equal(smses.length,1);
+                            assert.equal(sms.content,
+                                "Please dial back in to *120*550*2# to complete the pregnancy registration."
+                            );
+                            assert.equal(sms.to_addr,'27821234444');
+                        })
+                        .run();
+                });
+            });
+
+        // describe("when a session is terminated", function() {
+        //     describe("when they have not completed registration",function() {
+        //         describe("when they have already been sent a registration sms",function() {
+        //             it("should not send them an sms",function() {
+        //                 return tester
+        //                     .setup(function(api) {
+        //                         api.contacts.add( {
+        //                             msisdn: '+273444',
+        //                             extra : {
+        //                                 redial_sms_sent: 'true'
+        //                             }
+        //                         });
+        //                     })
+        //                     .setup.user.addr('273444')
+        //                     .setup.user.state('states_start')
+        //                     .input('1')
+        //                     .input.session_event('close')
+        //                     .check(function(api) {
+        //                         var smses = _.where(api.outbound.store, {
+        //                             endpoint: 'sms'
+        //                         });
+        //                         assert.equal(smses.length,0);
+        //                     })
+        //                     .run();
+        //             });
+        //         });
+
+        //         describe("when they have not been sent a registration sms",function() {
+        //             it("should send them an sms thanking them for their registration",function() {
+        //                 return tester
+        //                     .setup(function(api) {
+        //                         api.contacts.add( {
+        //                             msisdn: '+273323',
+        //                             extra : {}
+        //                         });
+        //                     })
+        //                     .setup.user.addr('273323')
+        //                     .setup.user.state('states_start')
+        //                     .input(1)
+        //                     .input.session_event('close')
+        //                     .check(function(api) {
+        //                         var smses = _.where(api.outbound.store, {
+        //                             endpoint: 'sms'
+        //                         });
+        //                         var sms = smses[0];
+        //                         assert.equal(smses.length,1);
+        //                         assert.equal(sms.content,
+        //                             "Please dial back in to *120*550*2# to complete the pregnancy registration."
+        //                         );
+        //                         assert.equal(sms.to_addr,'273323');
+        //                     }).run();
+        //             });
+        //         });
+        //     });
+        // });
+
+            describe("timeout during registration", function() {
+                describe("if they were on a non-timeout state", function() {
+                    it("should directly go back to their previous state", function() {
+                        return tester
+                            .setup.user.addr('27821234444')
+                            .inputs(
+                                {session_event: 'new'}  // dial in
+                                , {session_event: 'close'}  // timeout
+                                , {session_event: 'new'}  // redial
+                            )
+                            .check.interaction({
+                                state: 'st_not_subscribed'
+                            })
+                            .run();
+                    });
+                });
+
+                describe("if they were on a timeout state", function() {
+                    it("should ask if they want to continue registration", function() {
+                        return tester
+                            .setup.user.addr('27821234444')
+                            .inputs(
+                                {session_event: 'new'}  // dial in
+                                , '1'  // st_not_subscribed
+                                , '1'  // st_permission_self
+                                , '123456'  // st_faccode
+                                , {session_event: 'close'}  // timeout
+                                , {session_event: 'new'}  // redial
+                            )
+                            .check.interaction({
+                                state: 'st_timed_out',
+                                reply: [
+                                    'Would you like to complete NurseConnect registration for 0821234444?',
+                                    '1. Yes',
+                                    '2. Start new registration'
+                                ].join('\n')
+                            })
+                            .run();
+                    });
+                });
+            });
+
+            describe("if the user chooses to continue registration", function() {
+                it("should return to dropoff state", function() {
+                    return tester
+                        .setup.user.addr('27821234444')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '1'  // st_not_subscribed
+                            , '1'  // st_permission_self
+                            , '123456'  // st_faccode
+                            , {session_event: 'close'}  // timeout
+                            , {session_event: 'new'}  // redial
+                            , '1'  // st_timed_out - continue registration
+                        )
+                        .check.interaction({
+                            state: 'st_facname',
+                            reply: [
+                                'st_facname text',
+                                '1. Confirm',
+                                '2. Not my facility'
+                            ].join('\n')
+                        })
+                        .run();
+                });
+            });
+
+            describe("if the user chooses to abort registration", function() {
+                it("should restart", function() {
+                    return tester
+                        .setup.user.addr('27821234444')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '1'  // st_not_subscribed
+                            , '1'  // st_permission_self
+                            , '123456'  // st_faccode
+                            , {session_event: 'close'}  // timeout
+                            , {session_event: 'new'}  // redial
+                            , '2'  // st_timed_out - abort registration
+                        )
+                        .check.interaction({
+                            state: 'st_not_subscribed'
+                        })
+                        .run();
+                });
+            });
+        });
+        // Timeout Testing End
+
+
+        // Unique User Metrics
         describe("when a new unique user logs on", function() {
-            it("should increment the no. of unique users by 1", function() {
+            it("should increment the no. of unique users metric by 1", function() {
                 return tester
-                    .start()
+                    .inputs(
+                            {session_event: 'new'}  // dial in
+                    )
                     .check(function(api) {
                         var metrics = api.metrics.stores.test_metric_store;
-                        assert.deepEqual(metrics['test.nurse_ussd.sum.unique_users'].values, [1]);
+                        assert.equal(Object.keys(metrics).length, 0);
+                        // assert.deepEqual(metrics['test.nurse_ussd.sum.unique_users'].values, [1]);
                         // assert.deepEqual(metrics['test.clinic.percentage_users'].values, [100]);
-                        assert.deepEqual(metrics['test.sum.unique_users'].values, [1]);
+                        // assert.deepEqual(metrics['test.sum.unique_users'].values, [1]);
                     })
                     .run();
             });
         });
 
-        describe("when the user has previously logged on", function() {
-            it("should increase their number of ussd_sessions by 1", function() {
-                return tester
-                    .setup(function(api) {
-                        api.contacts.add( {
-                            msisdn: '+270001',
-                            extra : {
-                                ussd_sessions: '3',
-                                working_on: '+2712345'
-                            }
-                        });
-                    })
-                    .setup.user.addr('270001')
-                    .start()
-                    .check(function(api) {
-                        var contact = _.find(api.contacts.store, {
-                          msisdn: '+270001'
-                        });
-                        assert.equal(contact.extra.ussd_sessions, '4');
-                    })
-                    .run();
-            });
-        });
+    });
+
+
+
+
+        // describe("when the user has previously logged on", function() {
+        //     it("should increase their number of ussd_sessions by 1", function() {
+        //         return tester
+        //             .setup(function(api) {
+        //                 api.contacts.add( {
+        //                     msisdn: '+270001',
+        //                     extra : {
+        //                         ussd_sessions: '3',
+        //                         working_on: '+2712345'
+        //                     }
+        //                 });
+        //             })
+        //             .setup.user.addr('270001')
+        //             .start()
+        //             .check(function(api) {
+        //                 var contact = _.find(api.contacts.store, {
+        //                   msisdn: '+270001'
+        //                 });
+        //                 assert.equal(contact.extra.ussd_sessions, '4');
+        //             })
+        //             .run();
+        //     });
+        // });
 
         // opt-in flow for contact phone usage
         describe("when the no. is the pregnant woman's no.", function() {

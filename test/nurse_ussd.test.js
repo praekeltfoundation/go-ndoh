@@ -894,6 +894,34 @@ describe("app", function() {
             });
         });
 
+        // ID Validation
+        describe("id number entry", function() {
+            describe("invalid id", function() {
+                it("should loop back", function() {
+                    return tester
+                        .setup.user.state('st_sa_id')
+                        .input('12345A')
+                        .check.interaction({
+                            state: 'st_sa_id',
+                            reply: 'st_sa_id error_text'
+                        })
+                        .run();
+                });
+            });
+            describe("is valid", function() {
+                it("should continue", function() {
+                    return tester
+                        .setup.user.state('st_sa_id')
+                        .input('5002285000007')
+                        .check.interaction({
+                            state: 'st_end_reg',
+                            reply: 'st_end_reg text'
+                        })
+                        .run();
+                });
+            });
+        });
+
 
 
     });

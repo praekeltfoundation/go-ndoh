@@ -875,6 +875,27 @@ describe("app", function() {
             });
         });
 
+        // Incorrect Facility Name
+        describe("user indicates wrong facility", function() {
+            it("should return to faccode state", function() {
+                return tester
+                    .setup.user.addr('27821234444')
+                    .inputs(
+                        {session_event: 'new'}  // dial in
+                        , '3'  // st_not_subscribed - other registration
+                        , '1'  // st_permission_self - consent
+                        , '0821235555'  // st_msisdn
+                        , '123456'  // st_faccode
+                        , '2'  // st_facname - facility wrong
+                    )
+                    .check.interaction({
+                        state: 'st_faccode',
+                        reply: 'st_faccode text'
+                    })
+                    .run();
+            });
+        });
+
         // Faccode Validation
         describe("faccode entry", function() {
             describe("contains letter", function() {

@@ -819,7 +819,7 @@ describe("app", function() {
                     })
                     .run();
             });
-            it("should save extras", function() {
+            it.only("should save extras", function() {
                 return tester
                     .setup.user.addr('27821234444')
                     .inputs(
@@ -835,19 +835,22 @@ describe("app", function() {
                         , '19760307'  // st_dob - 7 March 1976
                     )
                     .check(function(api) {
-                        var contact = _.find(api.contacts.store, {
+                        var user = _.find(api.contacts.store, {
                           msisdn: '+27821234444'
                         });
-                        assert.equal(Object.keys(contact.extra).length, 1);
-                        assert.equal(contact.extra.working_on, '+27821235555');
+                        assert.equal(Object.keys(user.extra).length, 2);
+                        assert.equal(user.extra.working_on, '+27821235555');
+                        assert.equal(user.extra.registrees, '+27821235555');
                     })
                     .check(function(api) {
                         var contact = _.find(api.contacts.store, {
                           msisdn: '+27821235555'
                         });
-                        assert.equal(Object.keys(contact.extra).length, 2);
+                        assert.equal(Object.keys(contact.extra).length, 4);
                         assert.equal(contact.extra.faccode, '123456');
                         assert.equal(contact.extra.facname, 'WCL clinic');
+                        assert.equal(contact.extra.is_registered, 'true');
+                        assert.equal(contact.extra.registered_by, '+27821234444');
                     })
                     .run();
             });

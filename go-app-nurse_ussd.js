@@ -1657,7 +1657,7 @@ go.app = function() {
                         return error;
                     }
                 },
-                next: 'st_end_reg'
+                next: 'st_save_nursereg'
             });
         });
 
@@ -1703,9 +1703,42 @@ go.app = function() {
                         return error;
                     }
                 },
-                next: 'st_end_reg'
+                next: 'st_save_nursereg'
             });
         });
+
+        self.add('st_save_nursereg', function(name) {
+            // Save useful contact extras
+            self.contact.extra.is_registered = 'true';
+
+            if (self.user.extra.working_on !== "") {
+                self.contact.extra.registered_by = self.user.msisdn;
+
+                if (self.user.extra.registrees === undefined) {
+                    self.user.extra.registrees = self.contact.msisdn;
+                } else {
+                    self.user.extra.registrees += ', ' + self.contact.msisdn;
+                }
+            }
+            return Q
+                .all([
+                    self.im.contacts.save(self.user),
+                    self.im.contacts.save(self.contact)
+                ])
+                .then(function() {
+                    return self.states.create('st_end_reg');
+                });
+        });
+
+
+        // save nursereg
+        // return Q.all([
+        //     go.utils.post_nursereg('arguments'),
+        //     self.send_registration_thanks(),
+        // ])
+        // .then(function() {
+        //     return self.states.create('st_end_reg');
+        // });
 
         self.add('st_end_reg', function(name) {
             return new EndState(name, {

@@ -649,7 +649,7 @@ describe("app", function() {
                         .check.interaction({
                             state: 'st_facname',
                             reply: [
-                                'st_facname text',
+                                'st_facname text WCL clinic',
                                 '1. Confirm',
                                 '2. Not my facility'
                             ].join('\n')
@@ -886,7 +886,7 @@ describe("app", function() {
                         .check.interaction({
                             state: 'st_facname',
                             reply: [
-                                'st_facname text',
+                                'st_facname text WCL clinic',
                                 '1. Confirm',
                                 '2. Not my facility'
                             ].join('\n')

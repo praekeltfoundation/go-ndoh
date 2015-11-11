@@ -1547,7 +1547,8 @@ go.app = function() {
 
         self.add('st_facname', function(name) {
             return new ChoiceState(name, {
-                question: $("st_facname text"),
+                question: $("st_facname text {{facname}}")
+                    .context({facname: self.contact.extra.facname}),
                 choices: [
                     new Choice('st_id_type', $('Confirm')),
                     new Choice('st_faccode', $('Not my facility')),

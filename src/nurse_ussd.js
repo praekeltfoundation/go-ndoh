@@ -29,7 +29,8 @@ go.app = function() {
             return self.im.contacts
                 .for_user()
                 .then(function(user_contact) {
-                    if ((!_.isUndefined(user_contact.extra.working_on)) && (user_contact.extra.working_on !== "")){
+                    if ((!_.isUndefined(user_contact.extra.working_on)) &&
+                        (user_contact.extra.working_on !== "")) {
                         self.user = user_contact;
                         return self.im.contacts
                             .get(user_contact.extra.working_on, {create: true})
@@ -168,9 +169,14 @@ go.app = function() {
     // DELEGATOR START STATE
 
         self.add('st_route', function(name) {
-            return self.states.create('st_not_subscribed');
+            // reset working_on extra
+            self.user.extra.working_on = "";
+            return self.im.contacts
+                .save(self.user)
+                .then(function() {
+                    return self.states.create('st_not_subscribed');
+                });
         });
-
 
 
     // REGISTRATION STATES
@@ -246,14 +252,73 @@ go.app = function() {
                     return self.im.contacts
                         .save(self.user)
                         .then(function() {
-                            return 'st_check_optout';
+                            return 'st_reload_contact';
                         });
                 }
             });
         });
 
+        self.add('st_reload_contact', function(name) {
+            return self.im.contacts
+                .for_user()
+                .then(function(user_contact) {
+                    return self.im.contacts
+                        .get(user_contact.extra.working_on, {create: true})
+                        .then(function(working_on){
+                            self.contact = working_on;
+                        });
+                })
+                .then(function() {
+                    return self.states.create('st_check_optout');
+                });
+        });
+
         self.add('st_check_optout', function(name) {
-            return self.states.create('st_faccode');
+            return go.utils
+                .opted_out(self.im, self.contact)
+                .then(function(opted_out) {
+                    if (opted_out === true) {
+                        return self.states.create('st_opt_in');
+                    } else {
+                        return self.states.create('st_faccode');
+                    }
+                });
+        });
+
+        self.add('st_opt_in', function(name) {
+            return new ChoiceState(name, {
+                question: $('This number has previously opted out of ' +
+                            'NurseConnect SMSs. Please confirm that the mom ' +
+                            'would like to opt in to receive messages again?'),
+                choices: [
+                    new Choice('yes', $('Yes')),
+                    new Choice('no', $('No'))
+                ],
+                next: function(choice) {
+                    if (choice.value === 'yes') {
+                        return go.utils
+                            .opt_in(self.im, self.contact)
+                            .then(function() {
+                                return 'st_faccode';
+                            });
+                    } else {
+                        return 'st_stay_out';
+                    }
+                }
+            });
+        });
+
+        self.add('st_stay_out', function(name) {
+            return new ChoiceState(name, {
+                question: $('You have chosen not to receive MomConnect SMSs ' +
+                            'and so cannot complete registration.'),
+                choices: [
+                    new Choice('main_menu', $('Main Menu'))
+                ],
+                next: function(choice) {
+                    return 'st_route';
+                }
+            });
         });
 
         self.add('st_faccode', function(name) {

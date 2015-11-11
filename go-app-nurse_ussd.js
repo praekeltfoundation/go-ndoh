@@ -1487,6 +1487,18 @@ go.app = function() {
             });
         });
 
+        self.add('st_permission_denied', function(name) {
+            return new ChoiceState(name, {
+                question: $("st_permission_denied text"),
+                choices: [
+                    new Choice('st_route', $('Main menu'))
+                ],
+                next: function(choice) {
+                    return choice.value;
+                }
+            });
+        });
+
         self.add('st_msisdn', function(name) {
             var error = $('st_msisdn error_text');
             var question = $('st_msisdn text');

@@ -840,6 +840,41 @@ describe("app", function() {
             });
         });
 
+        // Deny Registration Permission
+        describe("denying registration consent", function() {
+            it("should present main menu option", function() {
+                return tester
+                    .setup.user.addr('27821234444')
+                    .inputs(
+                        {session_event: 'new'}  // dial in
+                        , '3'  // st_not_subscribed - other registration
+                        , '2'  // st_permission_self - denied
+                    )
+                    .check.interaction({
+                        state: 'st_permission_denied',
+                        reply: [
+                            'st_permission_denied text',
+                            '1. Main menu'
+                        ].join('\n')
+                    })
+                    .run();
+            });
+            it("should start over if main menu is selected", function() {
+                return tester
+                    .setup.user.addr('27821234444')
+                    .inputs(
+                        {session_event: 'new'}  // dial in
+                        , '3'  // st_not_subscribed - other registration
+                        , '2'  // st_permission_self - denied
+                        , '1'  // st_permission_denied - main menu
+                    )
+                    .check.interaction({
+                        state: 'st_not_subscribed',
+                    })
+                    .run();
+            });
+        });
+
         // Faccode Validation
         describe("faccode entry", function() {
             describe("contains letter", function() {

@@ -313,7 +313,7 @@ go.app = function() {
                 question: $('You have chosen not to receive MomConnect SMSs ' +
                             'and so cannot complete registration.'),
                 choices: [
-                    new Choice('main_menu', $('Main Menu'))
+                    new Choice('main_menu', $('Main menu'))
                 ],
                 next: function(choice) {
                     return 'st_route';

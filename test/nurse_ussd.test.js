@@ -1043,6 +1043,46 @@ describe("app", function() {
             });
         });
 
+        // Deny Opt-in Permission
+        describe("denying opt-in consent", function() {
+            it("should present main menu option", function() {
+                return tester
+                    .setup.user.addr('27821234444')
+                    .inputs(
+                        {session_event: 'new'}  // dial in
+                        , '3'  // st_not_subscribed - other registration
+                        , '1'  // st_permission_other - consent
+                        , '0821239999'  // st_msisdn
+                        , '2'  // st_opt_in - deny
+                    )
+                    .check.interaction({
+                        state: 'st_stay_out',
+                        reply: [
+                            'You have chosen not to receive MomConnect SMSs ' +
+                            'and so cannot complete registration.',
+                            '1. Main menu'
+                        ].join('\n')
+                    })
+                    .run();
+            });
+            it("should present main menu option", function() {
+                return tester
+                    .setup.user.addr('27821234444')
+                    .inputs(
+                        {session_event: 'new'}  // dial in
+                        , '3'  // st_not_subscribed - other registration
+                        , '1'  // st_permission_other - consent
+                        , '0821239999'  // st_msisdn
+                        , '2'  // st_opt_in - deny
+                        , '1'  // st_stay_out - main menu
+                    )
+                    .check.interaction({
+                        state: 'st_not_subscribed',
+                    })
+                    .run();
+            });
+        });
+
         // Deny Registration Permission
         describe("denying registration consent", function() {
             it("should present main menu option", function() {

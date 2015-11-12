@@ -1763,7 +1763,7 @@ go.app = function() {
                     self.im.contacts.save(self.user),
                     self.im.contacts.save(self.contact),
                     self.send_registration_thanks(),
-                    // go.utils.post_nursereg('arguments'),
+                    // TODO #207 go.utils.post_nursereg(args),
                 ])
                 .then(function() {
                     return self.states.create('st_end_reg');

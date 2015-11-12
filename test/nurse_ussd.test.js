@@ -43,61 +43,21 @@ describe("app", function() {
                     name: 'nurse_ussd',
                     env: 'test',
                     metric_store: 'test_metric_store',
-                    testing: 'true',
                     testing_today: 'April 4, 2014 07:07:07',
                     endpoints: {
                         "sms": {"delivery_class": "sms"}
                     },
                     channel: "*120*550*5#",
-                    public_channel: "*120*550#",
-                    optout_channel: "*120*550*1#",
                     jembi: {
                         username: 'foo',
                         password: 'bar',
                         url: 'http://test/v2/',
                         url_json: 'http://test/v2/json/'
                     },
-                    clinic_codes: ['12345', '234567'],
-                    control: {
-                        username: 'test_user',
-                        api_key: 'test_key',
-                        url: 'http://ndoh-control/api/v1/'
-                    },
                     control_v2: {
                         url: 'http://ndoh-control/api/v2/',
                         api_token: 'test_token'
-                    },
-                    subscription: {
-                        standard: 1,
-                        later: 2,
-                        accelerated: 3,
-                        baby1: 4,
-                        baby2: 5,
-                        miscarriage: 6,
-                        stillbirth: 7,
-                        babyloss: 8,
-                        subscription: 9,
-                        chw: 10
-                    },
-                    rate: {
-                        daily: 1,
-                        one_per_week: 2,
-                        two_per_week: 3,
-                        three_per_week: 4,
-                        four_per_week: 5,
-                        five_per_week: 6
                     }
-                })
-                .setup(function(api) {
-                    api.kv.store['test.nurse_ussd.unique_users'] = 0;
-                    api.kv.store['test.chw.unique_users'] = 0;
-                    api.kv.store['test.personal.unique_users'] = 0;
-                    api.kv.store['test.nurse_ussd.no_complete_registrations'] = 2;
-                    api.kv.store['test.nurse_ussd.no_incomplete_registrations'] = 2;
-                    api.kv.store['test.chw.conversion_registrations'] = 3;
-                    api.kv.store['test.personal.conversion_registrations'] = 3;
-                    api.kv.store['test.chw.conversions_to_clinic'] = 1;
-                    api.kv.store['test.personal.conversions_to_clinic'] = 2;
                 })
                 .setup(function(api) {
                     api.metrics.stores = {'test_metric_store': {}};

@@ -1346,7 +1346,6 @@ go.app = function() {
         };
 
 
-
     // REGISTRATION FINISHED SMS HANDLING
 
         self.send_registration_thanks = function() {
@@ -1354,13 +1353,9 @@ go.app = function() {
                 to: self.contact,
                 endpoint: 'sms',
                 lang: self.contact.extra.language_choice,
-                content: $("Welcome. To stop getting SMSs dial {{optout_channel}} or for more " +
-                           "services dial {{public_channel}} (No Cost). Standard rates apply " +
-                           "when replying to any SMS from MomConnect.")
-                    .context({
-                        public_channel: self.im.config.public_channel,
-                        optout_channel: self.im.config.optout_channel
-                    })
+                content: $("Welcome to NurseConnect. For more options or to " +
+                           "opt out, dial {{channel}}.")
+                    .context({channel: self.im.config.channel})
             });
         };
 
@@ -1724,7 +1719,6 @@ go.app = function() {
                 self.contact.extra.passport_num = self.im.user.answers.st_passport_num.trim();
                 self.contact.extra.dob = moment(self.im.user.answers.st_dob.trim(), 'YYYYMMDD'
                     ).format('YYYY-MM-DD');
-
             }
 
             if (self.user.extra.working_on !== "") {
@@ -1736,6 +1730,7 @@ go.app = function() {
                     self.user.extra.registrees += ', ' + self.contact.msisdn;
                 }
             }
+
             return Q
                 .all([
                     self.im.contacts.save(self.user),

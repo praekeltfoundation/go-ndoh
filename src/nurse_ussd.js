@@ -28,8 +28,8 @@ go.app = function() {
             return self.im.contacts
                 .for_user()
                 .then(function(user_contact) {
-                    if ((!_.isUndefined(user_contact.extra.working_on)) &&
-                        (user_contact.extra.working_on !== "")) {
+                    if ((!_.isUndefined(user_contact.extra.working_on))
+                        && (user_contact.extra.working_on !== "")) {
                         self.user = user_contact;
                         return self.im.contacts
                             .get(user_contact.extra.working_on, {create: true})
@@ -417,7 +417,8 @@ go.app = function() {
             return new FreeText(name, {
                 question: question,
                 check: function(content) {
-                    if (!go.utils.is_alpha_numeric_only(content) || content.length <= 4) {
+                    if (!go.utils.is_alpha_numeric_only(content)
+                        || content.length <= 4) {
                         return error;
                     }
                 },
@@ -454,7 +455,6 @@ go.app = function() {
                 self.contact.extra.passport_num = self.im.user.answers.st_passport_num.trim();
                 self.contact.extra.dob = moment(self.im.user.answers.st_dob.trim(), 'YYYYMMDD'
                     ).format('YYYY-MM-DD');
-
             }
 
             if (self.user.extra.working_on !== "") {
@@ -466,6 +466,7 @@ go.app = function() {
                     self.user.extra.registrees += ', ' + self.contact.msisdn;
                 }
             }
+
             return Q
                 .all([
                     self.im.contacts.save(self.user),

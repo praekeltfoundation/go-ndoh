@@ -1297,8 +1297,8 @@ go.app = function() {
             return self.im.contacts
                 .for_user()
                 .then(function(user_contact) {
-                    if ((!_.isUndefined(user_contact.extra.working_on)) &&
-                        (user_contact.extra.working_on !== "")) {
+                    if ((!_.isUndefined(user_contact.extra.working_on))
+                        && (user_contact.extra.working_on !== "")) {
                         self.user = user_contact;
                         return self.im.contacts
                             .get(user_contact.extra.working_on, {create: true})
@@ -1686,7 +1686,8 @@ go.app = function() {
             return new FreeText(name, {
                 question: question,
                 check: function(content) {
-                    if (!go.utils.is_alpha_numeric_only(content) || content.length <= 4) {
+                    if (!go.utils.is_alpha_numeric_only(content)
+                        || content.length <= 4) {
                         return error;
                     }
                 },

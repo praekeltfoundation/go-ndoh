@@ -235,7 +235,6 @@ describe("app", function() {
 
         // Timeout Testing
         describe("when a user timed out", function() {
-
             describe("very first timeout", function() {
                 it("should send redial sms", function() {
                     return tester
@@ -262,7 +261,6 @@ describe("app", function() {
                         .run();
                 });
             });
-
             describe("second timeout", function() {
                 it("should not send another redial sms", function() {
                     return tester
@@ -288,7 +286,6 @@ describe("app", function() {
                         .run();
                 });
             });
-
             describe("timeout during registration", function() {
                 describe("if they were on a non-timeout state", function() {
                     it("should directly go back to their previous state", function() {
@@ -305,7 +302,6 @@ describe("app", function() {
                             .run();
                     });
                 });
-
                 describe("if they were on a timeout state", function() {
                     it("should ask if they want to continue registration", function() {
                         return tester
@@ -330,7 +326,6 @@ describe("app", function() {
                     });
                 });
             });
-
             describe("if the user chooses to continue registration", function() {
                 it("should return to dropoff state", function() {
                     return tester
@@ -355,7 +350,6 @@ describe("app", function() {
                         .run();
                 });
             });
-
             describe("if the user chooses to abort registration", function() {
                 it("should restart", function() {
                     return tester

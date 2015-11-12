@@ -1365,12 +1365,8 @@ go.app = function() {
         // determine whether timed_out state should be used
         self.timed_out = function() {
             var no_redirects = [
-                'isl_route',
+                'st_subscribed',
                 'st_not_subscribed',
-                'st_permission_self',
-                'st_permission_other',
-                'st_permission_denied',
-                'st_msisdn',
             ];
             return self.im.msg.session_event === 'new'
                 && self.im.user.state.name

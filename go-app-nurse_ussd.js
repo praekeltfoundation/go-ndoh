@@ -1661,12 +1661,12 @@ go.app = function() {
             return new ChoiceState(name, {
                 question: $("st_passport_country text"),
                 choices: [
-                    new Choice('namibia', $('Namibia')),
-                    new Choice('botswana', $('Botswana')),
-                    new Choice('mozambique', $('Mozambique')),
-                    new Choice('swaziland', $('Swaziland')),
-                    new Choice('lesotho', $('Lesotho')),
-                    new Choice('cuba', $('Cuba')),
+                    new Choice('na', $('Namibia')),
+                    new Choice('bw', $('Botswana')),
+                    new Choice('mz', $('Mozambique')),
+                    new Choice('sz', $('Swaziland')),
+                    new Choice('ls', $('Lesotho')),
+                    new Choice('cu', $('Cuba')),
                     new Choice('other', $('Other')),
                 ],
                 next: function(choice) {

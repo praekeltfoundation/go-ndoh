@@ -480,7 +480,7 @@ describe("app", function() {
                         assert.equal(contact.extra.is_registered, 'true');
                         assert.equal(contact.extra.registered_by, '+27821234444');
                         assert.equal(contact.extra.id_type, 'passport');
-                        assert.equal(contact.extra.passport_country, 'cuba');
+                        assert.equal(contact.extra.passport_country, 'cu');
                         assert.equal(contact.extra.passport_num, 'Cub1234');
                         assert.equal(contact.extra.dob, '1976-03-07');
                     })

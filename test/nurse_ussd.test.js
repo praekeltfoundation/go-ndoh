@@ -110,7 +110,7 @@ describe("app", function() {
                         api.kv.store['session_length_helper.' + api.config.app.name + '.foodacom'] = 42;
                     })
                     .setup.user({
-                        state: 'st_route',
+                        state: 'isl_route',
                         metadata: {
                           session_length_helper: {
                             // one minute before the mocked timestamp

@@ -1279,7 +1279,7 @@ go.app = function() {
     var FreeText = vumigo.states.FreeText;
 
     var GoNDOH = App.extend(function(self) {
-        App.call(self, 'st_route');
+        App.call(self, 'isl_route');
         var $ = self.$;
         var interrupt = true;
 
@@ -1360,13 +1360,12 @@ go.app = function() {
         };
 
 
-
     // TIMEOUT HANDLING
 
         // determine whether timed_out state should be used
         self.timed_out = function() {
             var no_redirects = [
-                'st_route',
+                'isl_route',
                 'st_not_subscribed',
                 'st_permission_self',
                 'st_permission_other',
@@ -1402,16 +1401,16 @@ go.app = function() {
 
                 choices: [
                     new Choice(creator_opts.name, $('Yes')),
-                    new Choice('st_route', $('Start new registration'))
+                    new Choice('isl_route', $('Start new registration'))
                 ],
 
                 next: function(choice) {
-                    if (choice.value === 'st_route') {
+                    if (choice.value === 'isl_route') {
                         self.user.extra.working_on = "";
                         return self.im.contacts
                             .save(self.user)
                             .then(function() {
-                                return 'st_route';
+                                return 'isl_route';
                             });
                     } else {
                         return Q()
@@ -1428,10 +1427,9 @@ go.app = function() {
         });
 
 
-
     // DELEGATOR START STATE
 
-        self.add('st_route', function(name) {
+        self.add('isl_route', function(name) {
             // reset working_on extra
             self.user.extra.working_on = "";
             return self.im.contacts
@@ -1492,7 +1490,7 @@ go.app = function() {
             return new ChoiceState(name, {
                 question: $("st_subscribe_self text"),
                 choices: [
-                    new Choice('st_check_optout', $('Yes')),
+                    new Choice('isl_check_optout', $('Yes')),
                     new Choice('st_permission_denied', $('No')),
                 ],
                 next: function(choice) {
@@ -1518,7 +1516,7 @@ go.app = function() {
             return new ChoiceState(name, {
                 question: $("st_permission_denied text"),
                 choices: [
-                    new Choice('st_route', $('Main menu'))
+                    new Choice('isl_route', $('Main menu'))
                 ],
                 next: function(choice) {
                     return choice.value;
@@ -1542,13 +1540,13 @@ go.app = function() {
                     return self.im.contacts
                         .save(self.user)
                         .then(function() {
-                            return 'st_reload_contact';
+                            return 'isl_reload_contact';
                         });
                 }
             });
         });
 
-        self.add('st_reload_contact', function(name) {
+        self.add('isl_reload_contact', function(name) {
             return self.im.contacts
                 .for_user()
                 .then(function(user_contact) {
@@ -1559,11 +1557,11 @@ go.app = function() {
                         });
                 })
                 .then(function() {
-                    return self.states.create('st_check_optout');
+                    return self.states.create('isl_check_optout');
                 });
         });
 
-        self.add('st_check_optout', function(name) {
+        self.add('isl_check_optout', function(name) {
             return go.utils
                 .opted_out(self.im, self.contact)
                 .then(function(opted_out) {
@@ -1606,7 +1604,7 @@ go.app = function() {
                     new Choice('main_menu', $('Main menu'))
                 ],
                 next: function(choice) {
-                    return 'st_route';
+                    return 'isl_route';
                 }
             });
         });
@@ -1680,7 +1678,7 @@ go.app = function() {
                         return error;
                     }
                 },
-                next: 'st_save_nursereg'
+                next: 'isl_save_nursereg'
             });
         });
 
@@ -1727,11 +1725,11 @@ go.app = function() {
                         return error;
                     }
                 },
-                next: 'st_save_nursereg'
+                next: 'isl_save_nursereg'
             });
         });
 
-        self.add('st_save_nursereg', function(name) {
+        self.add('isl_save_nursereg', function(name) {
             // Save useful contact extras
             self.contact.extra.is_registered = 'true';
 
@@ -1773,7 +1771,7 @@ go.app = function() {
         self.add('st_end_reg', function(name) {
             return new EndState(name, {
                 text: $('st_end_reg text'),
-                next: 'st_route',
+                next: 'isl_route',
             });
         });
 

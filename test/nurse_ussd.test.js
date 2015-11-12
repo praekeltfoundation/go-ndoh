@@ -889,7 +889,7 @@ describe("app", function() {
                         .input('07262520201')
                         .check.interaction({
                             state: 'st_msisdn',
-                            reply: "Sorry, the format of the mobile number is not correct. Please enter your mobile number again, e.g. 0726252020"
+                            reply: "Sorry, the format of the mobile number is not correct. Please enter the mobile number again, e.g. 0726252020"
                         })
                         .run();
                 });

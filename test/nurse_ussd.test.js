@@ -75,6 +75,21 @@ describe("app", function() {
                     });
                 })
                 .setup(function(api) {
+                    // registered user
+                    api.contacts.add({
+                        msisdn: '+27821237777',
+                        extra: {
+                            is_registered: 'true',
+                            faccode: '123456',
+                            facname: 'WCL clinic',
+                            working_on: "",
+                            id_type: "sa_id",
+                            sa_id_no: "5101025009086",
+                            dob: "1951-01-02"
+                        },
+                    });
+                })
+                .setup(function(api) {
                     // opted_out user
                     api.contacts.add({
                         msisdn: '+27821239999',
@@ -134,14 +149,14 @@ describe("app", function() {
                 it("should give 3 options", function() {
                     return tester
                         .setup.user.addr('27821234444')
-                        .setup.char_limit(160)  // limit first state chars
+                        .setup.char_limit(140)  // limit first state chars
                         .inputs(
                             {session_event: 'new'}  // dial in
                         )
                         .check.interaction({
                             state: 'st_not_subscribed',
                             reply: [
-                                "Welcome to NurseConnect. Your number 0821234444 is not subscribed:",
+                                "Welcome to NurseConnect. Do you want to:",
                                 '1. Subscribe as a new user',
                                 '2. Change your old number',
                                 '3. Subscribe somebody else'
@@ -189,6 +204,29 @@ describe("app", function() {
                             var metrics = api.metrics.stores.test_metric_store;
                             assert.equal(Object.keys(metrics).length, 0);
                             assert.deepEqual(metrics['test.sum.sessions'], undefined);
+                        })
+                        .run();
+                });
+            });
+            describe("registered user", function() {
+                it("should give 6 options", function() {
+                    return tester
+                        .setup.user.addr('27821237777')
+                        .setup.char_limit(140)  // limit first state chars
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                        )
+                        .check.interaction({
+                            state: 'st_subscribed',
+                            reply: [
+                                "Welcome to NurseConnect",
+                                '1. Subscribe a friend',
+                                '2. Change your no.',
+                                '3. Change facility code',
+                                '4. Change SANC no.',
+                                '5. Change Persal no.',
+                                '6. Stop SMS'
+                            ].join('\n')
                         })
                         .run();
                 });

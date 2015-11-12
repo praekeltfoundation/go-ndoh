@@ -168,18 +168,42 @@ go.app = function() {
             return self.im.contacts
                 .save(self.user)
                 .then(function() {
-                    return self.states.create('st_not_subscribed');
+                    if (self.contact.extra.is_registered === 'true') {
+                        return self.states.create('st_subscribed');
+                    } else {
+                        return self.states.create('st_not_subscribed');
+                    }
                 });
         });
 
 
-    // REGISTRATION STATES
+    // INITIAL STATES
+
+        self.add('st_subscribed', function(name) {
+            var readable_no = go.utils.readable_sa_msisdn(self.im.user.addr);
+
+            return new ChoiceState(name, {
+                question: $("Welcome to NurseConnect")
+                    .context({ num: readable_no }),
+                choices: [
+                    new Choice('st_subscribe_other', $('Subscribe a friend')),
+                    new Choice('st_change_num', $('Change your no.')),
+                    new Choice('st_change_faccode', $('Change facility code')),
+                    new Choice('st_change_sanc', $('Change SANC no.')),
+                    new Choice('st_change_persal', $('Change Persal no.')),
+                    new Choice('st_optout', $('Stop SMS')),
+                ],
+                next: function(choice) {
+                    return choice.value;
+                }
+            });
+        });
 
         self.add('st_not_subscribed', function(name) {
             var readable_no = go.utils.readable_sa_msisdn(self.im.user.addr);
 
             return new ChoiceState(name, {
-                question: $("Welcome to NurseConnect. Your number {{num}} is not subscribed:")
+                question: $("Welcome to NurseConnect. Do you want to:")
                     .context({ num: readable_no }),
                 choices: [
                     new Choice('st_subscribe_self', $('Subscribe as a new user')),
@@ -191,6 +215,9 @@ go.app = function() {
                 }
             });
         });
+
+
+    // REGISTRATION STATES
 
         self.add('st_subscribe_self', function(name) {
             return new ChoiceState(name, {

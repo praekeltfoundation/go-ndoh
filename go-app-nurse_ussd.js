@@ -1761,22 +1761,14 @@ go.app = function() {
             return Q
                 .all([
                     self.im.contacts.save(self.user),
-                    self.im.contacts.save(self.contact)
+                    self.im.contacts.save(self.contact),
+                    self.send_registration_thanks(),
+                    // go.utils.post_nursereg('arguments'),
                 ])
                 .then(function() {
                     return self.states.create('st_end_reg');
                 });
         });
-
-
-        // save nursereg
-        // return Q.all([
-        //     go.utils.post_nursereg('arguments'),
-        //     self.send_registration_thanks(),
-        // ])
-        // .then(function() {
-        //     return self.states.create('st_end_reg');
-        // });
 
         self.add('st_end_reg', function(name) {
             return new EndState(name, {

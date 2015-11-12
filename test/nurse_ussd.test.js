@@ -460,6 +460,32 @@ describe("app", function() {
                     })
                     .run();
             });
+            it("should send welcome sms", function() {
+                return tester
+                    .setup.user.addr('27821234444')
+                    .inputs(
+                        {session_event: 'new'}  // dial in
+                        , '1'  // st_not_subscribed - self registration
+                        , '1'  // st_permission_self - consent
+                        , '123456'  // st_faccode
+                        , '1'  // st_facname - confirm
+                        , '1'  // st_id_type - sa_id
+                        , '5101025009086'  // st_sa_id
+                    )
+                    .check(function(api) {
+                        var smses = _.where(api.outbound.store, {
+                            endpoint: 'sms'
+                        });
+                        var sms = smses[0];
+                        assert.equal(smses.length, 1);
+                        assert.equal(sms.content,
+                            "Welcome to NurseConnect. For more options or to " +
+                            "opt out, dial *120*550*5#."
+                        );
+                        assert.equal(sms.to_addr, '+27821234444');
+                    })
+                    .run();
+                });
         });
 
         // Other Registration Flow (Passport)
@@ -542,6 +568,35 @@ describe("app", function() {
                     .check(function(api) {
                         var metrics = api.metrics.stores.test_metric_store;
                         assert.equal(Object.keys(metrics).length, 0);
+                    })
+                    .run();
+            });
+            it("should send welcome sms", function() {
+                return tester
+                    .setup.user.addr('27821234444')
+                    .inputs(
+                        {session_event: 'new'}  // dial in
+                        , '3'  // st_not_subscribed - other registration
+                        , '1'  // st_permission_other - consent
+                        , '0821235555'  // st_msisdn
+                        , '123456'  // st_faccode
+                        , '1'  // st_facname - confirm
+                        , '2'  // st_id_type - passport
+                        , '6'  // st_passport_country - cuba
+                        , 'ZA1234'  // st_passport_num
+                        , '19760307'  // st_dob - 7 March 1976
+                    )
+                    .check(function(api) {
+                        var smses = _.where(api.outbound.store, {
+                            endpoint: 'sms'
+                        });
+                        var sms = smses[0];
+                        assert.equal(smses.length, 1);
+                        assert.equal(sms.content,
+                            "Welcome to NurseConnect. For more options or to " +
+                            "opt out, dial *120*550*5#."
+                        );
+                        assert.equal(sms.to_addr, '+27821235555');
                     })
                     .run();
             });

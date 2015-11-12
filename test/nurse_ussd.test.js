@@ -763,16 +763,21 @@ describe("app", function() {
                         , '123456'  // st_faccode
                         , '1'  // st_facname - confirm
                         , '1'  // st_id_type - sa_id
-                        , '5101025009086'  // st_sa_id
+                        , '5101025009086 '  // st_sa_id
                     )
                     .check(function(api) {
                         var contact = _.find(api.contacts.store, {
                           msisdn: '+27821234444'
                         });
-                        assert.equal(Object.keys(contact.extra).length, 3);
+                        // console.log(contact.extra);
+                        assert.equal(Object.keys(contact.extra).length, 7);
                         assert.equal(contact.extra.faccode, '123456');
                         assert.equal(contact.extra.facname, 'WCL clinic');
+                        assert.equal(contact.extra.is_registered, 'true');
                         assert.equal(contact.extra.working_on, "");
+                        assert.equal(contact.extra.id_type, "sa_id");
+                        assert.equal(contact.extra.sa_id_no, "5101025009086");
+                        assert.equal(contact.extra.dob, "1951-01-02");
                     })
                     .run();
             });
@@ -819,7 +824,7 @@ describe("app", function() {
                     })
                     .run();
             });
-            it.only("should save extras", function() {
+            it("should save extras", function() {
                 return tester
                     .setup.user.addr('27821234444')
                     .inputs(
@@ -831,13 +836,14 @@ describe("app", function() {
                         , '1'  // st_facname - confirm
                         , '2'  // st_id_type - passport
                         , '6'  // st_passport_country - cuba
-                        , 'ZA1234'  // st_passport_num
+                        , 'Cub1234'  // st_passport_num
                         , '19760307'  // st_dob - 7 March 1976
                     )
                     .check(function(api) {
                         var user = _.find(api.contacts.store, {
                           msisdn: '+27821234444'
                         });
+                        // console.log(user.extra);
                         assert.equal(Object.keys(user.extra).length, 2);
                         assert.equal(user.extra.working_on, '+27821235555');
                         assert.equal(user.extra.registrees, '+27821235555');
@@ -846,11 +852,16 @@ describe("app", function() {
                         var contact = _.find(api.contacts.store, {
                           msisdn: '+27821235555'
                         });
-                        assert.equal(Object.keys(contact.extra).length, 4);
+                        // console.log(contact.extra);
+                        assert.equal(Object.keys(contact.extra).length, 8);
                         assert.equal(contact.extra.faccode, '123456');
                         assert.equal(contact.extra.facname, 'WCL clinic');
                         assert.equal(contact.extra.is_registered, 'true');
                         assert.equal(contact.extra.registered_by, '+27821234444');
+                        assert.equal(contact.extra.id_type, 'passport');
+                        assert.equal(contact.extra.passport_country, 'cuba');
+                        assert.equal(contact.extra.passport_num, 'Cub1234');
+                        assert.equal(contact.extra.dob, '1976-03-07');
                     })
                     .run();
             });
@@ -1180,22 +1191,6 @@ describe("app", function() {
                         .run();
                 });
             });
-            describe("is valid", function() {
-                it("should continue", function() {
-                    return tester
-                        .setup.user.state('st_faccode')
-                        .input('123456')
-                        .check.interaction({
-                            state: 'st_facname',
-                            reply: [
-                                'st_facname text WCL clinic',
-                                '1. Confirm',
-                                '2. Not my facility'
-                            ].join('\n')
-                        })
-                        .run();
-                });
-            });
         });
 
         // ID Validation
@@ -1212,18 +1207,6 @@ describe("app", function() {
                         .run();
                 });
             });
-            describe("is valid", function() {
-                it("should continue", function() {
-                    return tester
-                        .setup.user.state('st_sa_id')
-                        .input('5002285000007')
-                        .check.interaction({
-                            state: 'st_end_reg',
-                            reply: 'st_end_reg text'
-                        })
-                        .run();
-                });
-            });
         });
 
         // Passport Validation
@@ -1236,18 +1219,6 @@ describe("app", function() {
                         .check.interaction({
                             state: 'st_passport_num',
                             reply: 'st_passport_num error_text'
-                        })
-                        .run();
-                });
-            });
-            describe("is valid", function() {
-                it("should continue", function() {
-                    return tester
-                        .setup.user.state('st_passport_num')
-                        .input('AA1234')
-                        .check.interaction({
-                            state: 'st_dob',
-                            reply: 'st_dob text'
                         })
                         .run();
                 });
@@ -1288,18 +1259,6 @@ describe("app", function() {
                         .check.interaction({
                             state: 'st_dob',
                             reply: 'st_dob error_text'
-                        })
-                        .run();
-                });
-            });
-            describe("is valid", function() {
-                it("should continue", function() {
-                    return tester
-                        .setup.user.state('st_dob')
-                        .input('19800101')
-                        .check.interaction({
-                            state: 'st_end_reg',
-                            reply: 'st_end_reg text'
                         })
                         .run();
                 });

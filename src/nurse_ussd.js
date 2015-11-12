@@ -2,6 +2,7 @@ go.app = function() {
     var vumigo = require('vumigo_v02');
     var _ = require('lodash');
     var Q = require('q');
+    var moment = require('moment');
     var App = vumigo.App;
     var Choice = vumigo.states.Choice;
     var ChoiceState = vumigo.states.ChoiceState;
@@ -384,7 +385,7 @@ go.app = function() {
             return new FreeText(name, {
                 question: question,
                 check: function(content) {
-                    if (!go.utils.validate_id_sa(content)) {
+                    if (!go.utils.validate_id_sa(content.trim())) {
                         return error;
                     }
                 },
@@ -441,6 +442,20 @@ go.app = function() {
         self.add('st_save_nursereg', function(name) {
             // Save useful contact extras
             self.contact.extra.is_registered = 'true';
+
+            if (self.im.user.answers.st_id_type === 'st_sa_id') {  // rsa id
+                self.contact.extra.id_type = 'sa_id';
+                self.contact.extra.sa_id_no = self.im.user.answers.st_sa_id.trim();
+                self.contact.extra.dob = go.utils.extract_id_dob(
+                    self.im.user.answers.st_sa_id.trim());
+            } else {  // passport
+                self.contact.extra.id_type = 'passport';
+                self.contact.extra.passport_country = self.im.user.answers.st_passport_country;
+                self.contact.extra.passport_num = self.im.user.answers.st_passport_num.trim();
+                self.contact.extra.dob = moment(self.im.user.answers.st_dob.trim(), 'YYYYMMDD'
+                    ).format('YYYY-MM-DD');
+
+            }
 
             if (self.user.extra.working_on !== "") {
                 self.contact.extra.registered_by = self.user.msisdn;

@@ -157,7 +157,7 @@ describe("app", function() {
                             state: 'st_not_subscribed',
                             reply: [
                                 "Welcome to NurseConnect. Do you want to:",
-                                '1. Subscribe as a new user',
+                                '1. Subscribe for the first time',
                                 '2. Change your old number',
                                 '3. Subscribe somebody else'
                             ].join('\n')
@@ -302,7 +302,7 @@ describe("app", function() {
                             .run();
                     });
                 });
-                describe("if they were on a timeout state", function() {
+                describe("if they were on a timeout state - self reg", function() {
                     it("should ask if they want to continue registration", function() {
                         return tester
                             .setup.user.addr('27821234444')
@@ -317,9 +317,33 @@ describe("app", function() {
                             .check.interaction({
                                 state: 'st_timed_out',
                                 reply: [
-                                    'Would you like to complete NurseConnect registration for 0821234444?',
+                                    "Welcome to NurseConnect. Would you like to continue your previous session for 0821234444?",
                                     '1. Yes',
-                                    '2. Start new registration'
+                                    '2. Start Over'
+                                ].join('\n')
+                            })
+                            .run();
+                    });
+                });
+                describe("if they were on a timeout state - other reg", function() {
+                    it("should ask if they want to continue registration", function() {
+                        return tester
+                            .setup.user.addr('27821234444')
+                            .inputs(
+                                {session_event: 'new'}  // dial in
+                                , '3'  // st_not_subscribed
+                                , '1'  // st_permission_other
+                                , '0821235555'  // st_msisdn
+                                , '123456'  // st_faccode
+                                , {session_event: 'close'}  // timeout
+                                , {session_event: 'new'}  // redial
+                            )
+                            .check.interaction({
+                                state: 'st_timed_out',
+                                reply: [
+                                    "Welcome to NurseConnect. Would you like to continue your previous session for 0821235555?",
+                                    '1. Yes',
+                                    '2. Start Over'
                                 ].join('\n')
                             })
                             .run();
@@ -342,9 +366,9 @@ describe("app", function() {
                         .check.interaction({
                             state: 'st_facname',
                             reply: [
-                                'st_facname text WCL clinic',
+                                'Please confirm your facility: WCL clinic',
                                 '1. Confirm',
-                                '2. Not my facility'
+                                '2. Not the right facility'
                             ].join('\n')
                         })
                         .run();
@@ -405,7 +429,7 @@ describe("app", function() {
                     )
                     .check.interaction({
                         state: 'st_end_reg',
-                        reply: 'st_end_reg text'
+                        reply: "Thank you. Weekly NurseConnect messages will now be sent to this number."
                     })
                     .run();
             });
@@ -497,11 +521,11 @@ describe("app", function() {
                         , '2'  // st_id_type - passport
                         , '6'  // st_passport_country - cuba
                         , 'ZA1234'  // st_passport_num
-                        , '19760307'  // st_dob - 7 March 1976
+                        , '07031976'  // st_dob - 7 March 1976
                     )
                     .check.interaction({
                         state: 'st_end_reg',
-                        reply: 'st_end_reg text'
+                        reply: "Thank you. Weekly NurseConnect messages will now be sent to this number."
                     })
                     .run();
             });
@@ -518,7 +542,7 @@ describe("app", function() {
                         , '2'  // st_id_type - passport
                         , '6'  // st_passport_country - cuba
                         , 'Cub1234'  // st_passport_num
-                        , '19760307'  // st_dob - 7 March 1976
+                        , '07031976'  // st_dob - 7 March 1976
                     )
                     .check(function(api) {
                         var user = _.find(api.contacts.store, {
@@ -557,7 +581,7 @@ describe("app", function() {
                         , '2'  // st_id_type - passport
                         , '6'  // st_passport_country - cuba
                         , 'ZA1234'  // st_passport_num
-                        , '19760307'  // st_dob - 7 March 1976
+                        , '07031976'  // st_dob - 7 March 1976
                     )
                     .check(function(api) {
                         var metrics = api.metrics.stores.test_metric_store;
@@ -578,7 +602,7 @@ describe("app", function() {
                         , '2'  // st_id_type - passport
                         , '6'  // st_passport_country - cuba
                         , 'ZA1234'  // st_passport_num
-                        , '19760307'  // st_dob - 7 March 1976
+                        , '07031976'  // st_dob - 7 March 1976
                     )
                     .check(function(api) {
                         var smses = _.where(api.outbound.store, {
@@ -609,9 +633,7 @@ describe("app", function() {
                     .check.interaction({
                         state: 'st_opt_in',
                         reply: [
-                            'This number has previously opted out of ' +
-                            'NurseConnect SMSs. Please confirm that the mom ' +
-                            'would like to opt in to receive messages again?',
+                            "This number previously opted out of NurseConnect messages. Please confirm that you would like to register this number again?",
                             '1. Yes',
                             '2. No'
                         ].join('\n')
@@ -685,9 +707,7 @@ describe("app", function() {
                     .check.interaction({
                         state: 'st_opt_in',
                         reply: [
-                            'This number has previously opted out of ' +
-                            'NurseConnect SMSs. Please confirm that the mom ' +
-                            'would like to opt in to receive messages again?',
+                            "This number previously opted out of NurseConnect messages. Please confirm that you would like to register this number again?",
                             '1. Yes',
                             '2. No'
                         ].join('\n')
@@ -780,9 +800,8 @@ describe("app", function() {
                     .check.interaction({
                         state: 'st_stay_out',
                         reply: [
-                            'You have chosen not to receive MomConnect SMSs ' +
-                            'and so cannot complete registration.',
-                            '1. Main menu'
+                            "You have chosen not to receive NurseConnect SMSs on this number and so cannot complete registration.",
+                            '1. Main Menu'
                         ].join('\n')
                     })
                     .run();
@@ -818,8 +837,8 @@ describe("app", function() {
                     .check.interaction({
                         state: 'st_permission_denied',
                         reply: [
-                            'st_permission_denied text',
-                            '1. Main menu'
+                            "You have chosen not to receive NurseConnect SMSs on this number and so cannot complete registration.",
+                            '1. Main Menu'
                         ].join('\n')
                     })
                     .run();
@@ -855,9 +874,25 @@ describe("app", function() {
                     )
                     .check.interaction({
                         state: 'st_faccode',
-                        reply: 'st_faccode text'
+                        reply: "Please enter their 6-digit facility code:"
                     })
                     .run();
+            });
+        });
+
+        // Msisdn Validation
+        describe("msisdn entry", function() {
+            describe("poor input", function() {
+                it("should loop back", function() {
+                    return tester
+                        .setup.user.state('st_msisdn')
+                        .input('07262520201')
+                        .check.interaction({
+                            state: 'st_msisdn',
+                            reply: "Sorry, the format of the mobile number is not correct. Please enter your mobile number again, e.g. 0726252020"
+                        })
+                        .run();
+                });
             });
         });
 
@@ -870,7 +905,7 @@ describe("app", function() {
                         .input('12345A')
                         .check.interaction({
                             state: 'st_faccode',
-                            reply: 'st_faccode error_text'
+                            reply: "Sorry, that code is not recognized. Please enter the 6-digit facility code again, e. 535970:"
                         })
                         .run();
                 });
@@ -882,7 +917,7 @@ describe("app", function() {
                         .input('12345')
                         .check.interaction({
                             state: 'st_faccode',
-                            reply: 'st_faccode error_text'
+                            reply: "Sorry, that code is not recognized. Please enter the 6-digit facility code again, e. 535970:"
                         })
                         .run();
                 });
@@ -894,7 +929,7 @@ describe("app", function() {
                         .input('888888')
                         .check.interaction({
                             state: 'st_faccode',
-                            reply: 'st_faccode error_text'
+                            reply: "Sorry, that code is not recognized. Please enter the 6-digit facility code again, e. 535970:"
                         })
                         .run();
                 });
@@ -910,7 +945,7 @@ describe("app", function() {
                         .input('12345A')
                         .check.interaction({
                             state: 'st_sa_id',
-                            reply: 'st_sa_id error_text'
+                            reply: "Sorry, the format of the ID number is not correct. Please enter their RSA ID number again, e.g. 7602095060082"
                         })
                         .run();
                 });
@@ -926,7 +961,7 @@ describe("app", function() {
                         .input('AA-1234')
                         .check.interaction({
                             state: 'st_passport_num',
-                            reply: 'st_passport_num error_text'
+                            reply: "Sorry, the format of the passport number is not correct. Please enter the passport number again."
                         })
                         .run();
                 });
@@ -938,7 +973,7 @@ describe("app", function() {
                         .input('1234')
                         .check.interaction({
                             state: 'st_passport_num',
-                            reply: 'st_passport_num error_text'
+                            reply: "Sorry, the format of the passport number is not correct. Please enter the passport number again."
                         })
                         .run();
                 });
@@ -951,10 +986,10 @@ describe("app", function() {
                 it("should loop back", function() {
                     return tester
                         .setup.user.state('st_dob')
-                        .input('1980-01-01')
+                        .input('01-01-1980')
                         .check.interaction({
                             state: 'st_dob',
-                            reply: 'st_dob error_text'
+                            reply: "Sorry, the format of the date of birth is not correct. Please enter it again, e.g. 27 May 1975 as 27051975:"
                         })
                         .run();
                 });
@@ -963,10 +998,10 @@ describe("app", function() {
                 it("should loop back", function() {
                     return tester
                         .setup.user.state('st_dob')
-                        .input('1980-02-29')
+                        .input('29021981    ')
                         .check.interaction({
                             state: 'st_dob',
-                            reply: 'st_dob error_text'
+                            reply: "Sorry, the format of the date of birth is not correct. Please enter it again, e.g. 27 May 1975 as 27051975:"
                         })
                         .run();
                 });
@@ -975,10 +1010,10 @@ describe("app", function() {
                 it("should loop back", function() {
                     return tester
                         .setup.user.state('st_dob')
-                        .input('01011980')
+                        .input('19800101')
                         .check.interaction({
                             state: 'st_dob',
-                            reply: 'st_dob error_text'
+                            reply: "Sorry, the format of the date of birth is not correct. Please enter it again, e.g. 27 May 1975 as 27051975:"
                         })
                         .run();
                 });

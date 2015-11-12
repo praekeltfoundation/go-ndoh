@@ -1338,10 +1338,9 @@ go.app = function() {
         };
 
         self.get_finish_reg_sms = function() {
-            return $("Please dial back in to {{ USSD_number }} to " +
-                     "complete the NurseConnect registration.")
+            return $("Please dial back in to {{channel}} to complete the NurseConnect registration.")
                 .context({
-                    USSD_number: self.im.config.channel
+                    channel: self.im.config.channel
                 });
         };
 
@@ -1391,13 +1390,12 @@ go.app = function() {
             var readable_no = go.utils.readable_sa_msisdn(self.contact.msisdn);
 
             return new ChoiceState(name, {
-                question: $('Would you like to complete NurseConnect registration for ' +
-                            '{{ num }}?')
+                question: $("Welcome to NurseConnect. Would you like to continue your previous session for {{num}}?")
                     .context({ num: readable_no }),
 
                 choices: [
                     new Choice(creator_opts.name, $('Yes')),
-                    new Choice('isl_route', $('Start new registration'))
+                    new Choice('isl_route', $('Start Over'))
                 ],
 
                 next: function(choice) {
@@ -1469,7 +1467,7 @@ go.app = function() {
                 question: $("Welcome to NurseConnect. Do you want to:")
                     .context({ num: readable_no }),
                 choices: [
-                    new Choice('st_subscribe_self', $('Subscribe as a new user')),
+                    new Choice('st_subscribe_self', $("Subscribe for the first time")),
                     new Choice('st_change_old_nr', $('Change your old number')),
                     new Choice('st_subscribe_other', $('Subscribe somebody else'))
                 ],
@@ -1484,7 +1482,7 @@ go.app = function() {
 
         self.add('st_subscribe_self', function(name) {
             return new ChoiceState(name, {
-                question: $("st_subscribe_self text"),
+                question: $("To register we need to collect, store & use your info. You may also get messages on public holidays & weekends. Do you consent?"),
                 choices: [
                     new Choice('isl_check_optout', $('Yes')),
                     new Choice('st_permission_denied', $('No')),
@@ -1497,7 +1495,7 @@ go.app = function() {
 
         self.add('st_subscribe_other', function(name) {
             return new ChoiceState(name, {
-                question: $("st_subscribe_other text"),
+                question: $("We need to collect, store & use your friend's info. She may get messages on public holidays & weekends. Does she consent?"),
                 choices: [
                     new Choice('st_msisdn', $('Yes')),
                     new Choice('st_permission_denied', $('No')),
@@ -1510,9 +1508,9 @@ go.app = function() {
 
         self.add('st_permission_denied', function(name) {
             return new ChoiceState(name, {
-                question: $("st_permission_denied text"),
+                question: $("You have chosen not to receive NurseConnect SMSs on this number and so cannot complete registration."),
                 choices: [
-                    new Choice('isl_route', $('Main menu'))
+                    new Choice('isl_route', $('Main Menu'))
                 ],
                 next: function(choice) {
                     return choice.value;
@@ -1521,8 +1519,8 @@ go.app = function() {
         });
 
         self.add('st_msisdn', function(name) {
-            var error = $('st_msisdn error_text');
-            var question = $('st_msisdn text');
+            var error = $("Sorry, the format of the mobile number is not correct. Please enter your mobile number again, e.g. 0726252020");
+            var question = $("Please enter the number you would like to register, e.g. 0726252020:");
             return new FreeText(name, {
                 question: question,
                 check: function(content) {
@@ -1571,9 +1569,7 @@ go.app = function() {
 
         self.add('st_opt_in', function(name) {
             return new ChoiceState(name, {
-                question: $('This number has previously opted out of ' +
-                            'NurseConnect SMSs. Please confirm that the mom ' +
-                            'would like to opt in to receive messages again?'),
+                question: $("This number previously opted out of NurseConnect messages. Please confirm that you would like to register this number again?"),
                 choices: [
                     new Choice('yes', $('Yes')),
                     new Choice('no', $('No'))
@@ -1594,20 +1590,21 @@ go.app = function() {
 
         self.add('st_stay_out', function(name) {
             return new ChoiceState(name, {
-                question: $('You have chosen not to receive MomConnect SMSs ' +
-                            'and so cannot complete registration.'),
+                question: $("You have chosen not to receive NurseConnect SMSs on this number and so cannot complete registration."),
                 choices: [
-                    new Choice('main_menu', $('Main menu'))
+                    new Choice('isl_route', $('Main Menu'))
                 ],
                 next: function(choice) {
-                    return 'isl_route';
+                    return choice.value;
                 }
             });
         });
 
         self.add('st_faccode', function(name) {
-            var error = $('st_faccode error_text');
-            var question = $('st_faccode text');
+            var owner = self.user.extra.working_on === "" ? 'your' : 'their';
+            var error = $("Sorry, that code is not recognized. Please enter the 6-digit facility code again, e. 535970:");
+            var question = $("Please enter {{owner}} 6-digit facility code:")
+                .context({owner: owner});
             return new FreeText(name, {
                 question: question,
                 check: function(content) {
@@ -1638,12 +1635,16 @@ go.app = function() {
         });
 
         self.add('st_facname', function(name) {
+            var owner = self.user.extra.working_on === "" ? 'your' : 'their';
             return new ChoiceState(name, {
-                question: $("st_facname text {{facname}}")
-                    .context({facname: self.contact.extra.facname}),
+                question: $("Please confirm {{owner}} facility: {{facname}}")
+                    .context({
+                        owner: owner,
+                        facname: self.contact.extra.facname
+                    }),
                 choices: [
                     new Choice('st_id_type', $('Confirm')),
-                    new Choice('st_faccode', $('Not my facility')),
+                    new Choice('st_faccode', $('Not the right facility')),
                 ],
                 next: function(choice) {
                     return choice.value;
@@ -1652,8 +1653,10 @@ go.app = function() {
         });
 
         self.add('st_id_type', function(name) {
+            var owner = self.user.extra.working_on === "" ? 'your' : 'their';
             return new ChoiceState(name, {
-                question: $("st_id_type text"),
+                question: $("Please select {{owner}} type of identification:")
+                    .context({owner: owner}),
                 choices: [
                     new Choice('st_sa_id', $('RSA ID')),
                     new Choice('st_passport_country', $('Passport')),
@@ -1665,8 +1668,11 @@ go.app = function() {
         });
 
         self.add('st_sa_id', function(name) {
-            var error = $('st_sa_id error_text');
-            var question = $('st_sa_id text');
+            var owner = self.user.extra.working_on === "" ? 'your' : 'their';
+            var error = $("Sorry, the format of the ID number is not correct. Please enter {{owner}} RSA ID number again, e.g. 7602095060082")
+                .context({owner: owner});
+            var question = $("Please enter {{owner}} 13-digit RSA ID number:")
+                .context({owner: owner});
             return new FreeText(name, {
                 question: question,
                 check: function(content) {
@@ -1680,7 +1686,7 @@ go.app = function() {
 
         self.add('st_passport_country', function(name) {
             return new ChoiceState(name, {
-                question: $("st_passport_country text"),
+                question: $("What is the country of origin of the passport?"),
                 choices: [
                     new Choice('na', $('Namibia')),
                     new Choice('bw', $('Botswana')),
@@ -1697,8 +1703,8 @@ go.app = function() {
         });
 
         self.add('st_passport_num', function(name) {
-            var error = $('st_passport_num error_text');
-            var question = $('st_passport_num text');
+            var error = $("Sorry, the format of the passport number is not correct. Please enter the passport number again.");
+            var question = $("Please enter the passport number:");
             return new FreeText(name, {
                 question: question,
                 check: function(content) {
@@ -1712,12 +1718,12 @@ go.app = function() {
         });
 
         self.add('st_dob', function(name) {
-            var error = $('st_dob error_text');
-            var question = $('st_dob text');
+            var error = $("Sorry, the format of the date of birth is not correct. Please enter it again, e.g. 27 May 1975 as 27051975:");
+            var question = $("Please enter the date of birth, e.g. 27 May 1975 as 27051975:");
             return new FreeText(name, {
                 question: question,
                 check: function(content) {
-                    if (!go.utils.is_valid_date(content.trim(), 'YYYYMMDD')) {
+                    if (!go.utils.is_valid_date(content.trim(), 'DDMMYYYY')) {
                         return error;
                     }
                 },
@@ -1738,7 +1744,7 @@ go.app = function() {
                 self.contact.extra.id_type = 'passport';
                 self.contact.extra.passport_country = self.im.user.answers.st_passport_country;
                 self.contact.extra.passport_num = self.im.user.answers.st_passport_num.trim();
-                self.contact.extra.dob = moment(self.im.user.answers.st_dob.trim(), 'YYYYMMDD'
+                self.contact.extra.dob = moment(self.im.user.answers.st_dob.trim(), 'DDMMYYYY'
                     ).format('YYYY-MM-DD');
             }
 
@@ -1766,7 +1772,7 @@ go.app = function() {
 
         self.add('st_end_reg', function(name) {
             return new EndState(name, {
-                text: $('st_end_reg text'),
+                text: $("Thank you. Weekly NurseConnect messages will now be sent to this number."),
                 next: 'isl_route',
             });
         });

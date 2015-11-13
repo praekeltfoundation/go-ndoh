@@ -519,7 +519,7 @@ describe("app", function() {
                         , '1'  // st_facname - confirm
                         , '2'  // st_id_type - passport
                         , '6'  // st_passport_country - cuba
-                        , 'ZA1234'  // st_passport_num
+                        , 'Cub1234'  // st_passport_num
                         , '07031976'  // st_dob - 7 March 1976
                     )
                     .check.interaction({
@@ -579,7 +579,7 @@ describe("app", function() {
                         , '1'  // st_facname - confirm
                         , '2'  // st_id_type - passport
                         , '6'  // st_passport_country - cuba
-                        , 'ZA1234'  // st_passport_num
+                        , 'Cub1234'  // st_passport_num
                         , '07031976'  // st_dob - 7 March 1976
                     )
                     .check(function(api) {
@@ -600,7 +600,7 @@ describe("app", function() {
                         , '1'  // st_facname - confirm
                         , '2'  // st_id_type - passport
                         , '6'  // st_passport_country - cuba
-                        , 'ZA1234'  // st_passport_num
+                        , 'Cub1234'  // st_passport_num
                         , '07031976'  // st_dob - 7 March 1976
                     )
                     .check(function(api) {

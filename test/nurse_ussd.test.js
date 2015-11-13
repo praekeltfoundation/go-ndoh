@@ -797,7 +797,7 @@ describe("app", function() {
                         , '2'  // st_opt_in - deny
                     )
                     .check.interaction({
-                        state: 'st_stay_out',
+                        state: 'st_permission_denied',
                         reply: [
                             "You have chosen not to receive NurseConnect SMSs on this number and so cannot complete registration.",
                             '1. Main Menu'
@@ -814,7 +814,7 @@ describe("app", function() {
                         , '1'  // st_permission_other - consent
                         , '0821239999'  // st_msisdn
                         , '2'  // st_opt_in - deny
-                        , '1'  // st_stay_out - main menu
+                        , '1'  // st_permission_denied - main menu
                     )
                     .check.interaction({
                         state: 'st_not_subscribed',

@@ -307,20 +307,8 @@ go.app = function() {
                                 return 'st_faccode';
                             });
                     } else {
-                        return 'st_stay_out';
+                        return 'st_permission_denied';
                     }
-                }
-            });
-        });
-
-        self.add('st_stay_out', function(name) {
-            return new ChoiceState(name, {
-                question: $("You have chosen not to receive NurseConnect SMSs on this number and so cannot complete registration."),
-                choices: [
-                    new Choice('isl_route', $('Main Menu'))
-                ],
-                next: function(choice) {
-                    return choice.value;
                 }
             });
         });

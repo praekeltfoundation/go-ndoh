@@ -200,7 +200,7 @@ describe("app", function() {
                     })
                     .check(function(api) {
                         var contact = _.find(api.contacts.store, { msisdn: '+27001' });
-                        assert.equal(contact.extra.opt_out_reason, 'unknown');
+                        assert.equal(contact.extra.nc_opt_out_reason, 'unknown');
                     })
                     .run();
             });
@@ -229,7 +229,7 @@ describe("app", function() {
                     })
                     .check(function(api) {
                         var contact = _.find(api.contacts.store, { msisdn: '+27001' });
-                        assert.equal(contact.extra.opt_out_reason, 'unknown');
+                        assert.equal(contact.extra.nc_opt_out_reason, 'unknown');
                     })
                     .run();
             });
@@ -243,7 +243,7 @@ describe("app", function() {
                             msisdn: '+27001',
                             extra : {
                                 language_choice: 'en',
-                                opt_out_reason: 'unknown'
+                                nc_opt_out_reason: 'unknown'
                             },
                             key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                             user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
@@ -259,7 +259,7 @@ describe("app", function() {
                     })
                     .check(function(api) {
                         var contact = _.find(api.contacts.store, { msisdn: '+27001' });
-                        assert.equal(contact.extra.opt_out_reason, '');
+                        assert.equal(contact.extra.nc_opt_out_reason, '');
                     })
                     .run();
             });

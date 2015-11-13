@@ -87,7 +87,7 @@ describe("app", function() {
                         url: 'http://test/v2/',
                         url_json: 'http://test/v2/json/'
                     },
-                    clinic_codes: ['12345', '234567'],
+                    clinic_codes: ['123456', '234567'],
                     control: {
                         username: 'test_user',
                         api_key: 'test_key',
@@ -192,7 +192,7 @@ describe("app", function() {
                     .inputs(
                         {session_event: 'start'},
                         '1',        // states_start - yes
-                        '12345',    // states_clinic_code - 12345
+                        '123456',    // states_clinic_code - 123456
                         '2',        // states_due_date_month - 05
                         '30',       // states_due_date_day - 30
                                     // user is registering in week 33
@@ -209,7 +209,7 @@ describe("app", function() {
                         var contact = _.find(api.contacts.store, {
                           msisdn: '+27821234567'
                         });
-                        assert.equal(contact.extra.clinic_code, '12345');
+                        assert.equal(contact.extra.clinic_code, '123456');
                         assert.equal(contact.extra.due_date_month, '05');
                         assert.equal(contact.extra.due_date_day, '30');
                         assert.equal(contact.extra.id_type, 'sa_id');
@@ -238,7 +238,7 @@ describe("app", function() {
                         {session_event: 'start'},
                         '2',        // states_start - no
                         '0821234567', // states_mobile_no - +27821234567
-                        '12345',    // states_clinic_code - 12345
+                        '123456',    // states_clinic_code - 123456
                         '2',        // states_due_date_month - 05
                         '30',       // states_due_date_day - 30
                         '1',        // states_id_type - sa_id
@@ -255,7 +255,7 @@ describe("app", function() {
                           msisdn: '+27821234567'
                         });
                         // complete
-                        assert.equal(contact.extra.clinic_code, '12345');
+                        assert.equal(contact.extra.clinic_code, '123456');
                         assert.equal(contact.extra.due_date_month, '05');
                         assert.equal(contact.extra.due_date_day, '30');
                         assert.equal(contact.extra.id_type, 'sa_id');
@@ -357,7 +357,7 @@ describe("app", function() {
                         .inputs(
                             {session_event: 'new'}  // dial in
                             , '1'  // states_start
-                            , '12345'  // states_clinic_code
+                            , '123456'  // states_clinic_code
                         )
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
@@ -377,7 +377,7 @@ describe("app", function() {
                         .inputs(
                             {session_event: 'new'}  // dial in
                             , '1'  // states_start
-                            , '12345'  // states_clinic_code
+                            , '123456'  // states_clinic_code
                             , {session_event: 'close'}  // states_due_date_month
                         )
                         .check(function(api) {
@@ -398,7 +398,7 @@ describe("app", function() {
                         .inputs(
                             {session_event: 'new'}  // dial in
                             , '1'  // states_start
-                            , '12345'  // states_clinic_code
+                            , '123456'  // states_clinic_code
                             , {session_event: 'close'}  // states_due_date_month
                             , {session_event: 'new'}  // redial
                         )
@@ -420,7 +420,7 @@ describe("app", function() {
                         .inputs(
                             {session_event: 'new'}  // dial in
                             , '1'  // states_start
-                            , '12345'  // states_clinic_code
+                            , '123456'  // states_clinic_code
                             , {session_event: 'new'}  // redial
                         )
                         .check(function(api) {
@@ -441,7 +441,7 @@ describe("app", function() {
                         .inputs(
                             {session_event: 'new'}  // dial in
                             , '1'  // states_start
-                            , '12345'  // states_clinic_code
+                            , '123456'  // states_clinic_code
                             , {session_event: 'close'}  // states_due_date_month
                             , {session_event: 'new'}  // redial
                             , '2'  // states_timed_out
@@ -464,7 +464,7 @@ describe("app", function() {
                         .inputs(
                             {session_event: 'new'}  // dial in
                             , '1'  // states_start
-                            , '12345'  // states_clinic_code
+                            , '123456'  // states_clinic_code
                             , {session_event: 'close'}  // states_due_date_month
                             , {session_event: 'new'}  // redial
                             , '1'  // states_timed_out
@@ -487,7 +487,7 @@ describe("app", function() {
                         .inputs(
                             {session_event: 'new'}  // dial in
                             , '1'  // states_start
-                            , '12345'  // states_clinic_code
+                            , '123456'  // states_clinic_code
                             , {session_event: 'close'}  // states_due_date_month
                             , {session_event: 'new'}  // redial
                             , '1'  // states_timed_out
@@ -557,7 +557,7 @@ describe("app", function() {
                             api.contacts.add( {
                                 msisdn: '+27821234567',
                                 extra : {
-                                    clinic_code: '12345',
+                                    clinic_code: '123456',
                                 },
                             });
                         })
@@ -587,7 +587,7 @@ describe("app", function() {
                             api.contacts.add( {
                                 msisdn: '+27821234567',
                                 extra : {
-                                    clinic_code: '12345',
+                                    clinic_code: '123456',
                                 },
                             });
                         })
@@ -619,7 +619,7 @@ describe("app", function() {
                             api.contacts.add( {
                                 msisdn: '+27821234567',
                                 extra : {
-                                    clinic_code: '12345',
+                                    clinic_code: '123456',
                                 },
                             });
                         })
@@ -653,7 +653,7 @@ describe("app", function() {
                             api.contacts.add( {
                                 msisdn: '+27821234567',
                                 extra : {
-                                    clinic_code: '12345',
+                                    clinic_code: '123456',
                                 },
                             });
                         })
@@ -788,7 +788,7 @@ describe("app", function() {
                         })
                         .check(function(api) {
                             var optouts = api.optout.optout_store;
-                            assert.equal(optouts.length, 0);
+                            assert.equal(optouts.length, 1);
                         })
                         .run();
                 });
@@ -819,7 +819,7 @@ describe("app", function() {
                         })
                         .check(function(api) {
                             var optouts = api.optout.optout_store;
-                            assert.equal(optouts.length, 1);
+                            assert.equal(optouts.length, 2);
                         })
                         .run();
                 });
@@ -969,7 +969,7 @@ describe("app", function() {
                         })
                         .check(function(api) {
                             var optouts = api.optout.optout_store;
-                            assert.equal(optouts.length, 0);
+                            assert.equal(optouts.length, 1);
                         })
                         .run();
                 });
@@ -1068,7 +1068,7 @@ describe("app", function() {
                 it("should save clinic code, ask for the month the baby is due", function() {
                     return tester
                         .setup.user.addr('270001')
-                        .inputs('start', '2', '0821234567', '12345')
+                        .inputs('start', '2', '0821234567', '123456')
                         .check.interaction({
                             state: 'states_due_date_month',
                             reply: [
@@ -1089,7 +1089,7 @@ describe("app", function() {
                             var contact = _.find(api.contacts.store, {
                               msisdn: '+27821234567'
                             });
-                            assert.equal(contact.extra.clinic_code, '12345');
+                            assert.equal(contact.extra.clinic_code, '123456');
                             assert.equal(contact.extra.is_registered, 'false');
                             assert.equal(contact.extra.last_stage, 'states_due_date_month');
                         })
@@ -1780,7 +1780,7 @@ describe("app", function() {
                             api.contacts.add( {
                                 msisdn: '+27821234567',
                                 extra : {
-                                    clinic_code: '12345',
+                                    clinic_code: '123456',
                                     suspect_pregnancy: 'yes',
                                     id_type: 'sa_id',
                                     sa_id: '5101025009086',
@@ -1839,7 +1839,7 @@ describe("app", function() {
                             api.contacts.add( {
                                 msisdn: '+27821234567',
                                 extra : {
-                                    clinic_code: '12345',
+                                    clinic_code: '123456',
                                     suspect_pregnancy: 'yes',
                                     id_type: 'sa_id',
                                     sa_id: '5101025009086',
@@ -1901,7 +1901,7 @@ describe("app", function() {
                             api.contacts.add( {
                                 msisdn: '+27821234567',
                                 extra : {
-                                    clinic_code: '12345',
+                                    clinic_code: '123456',
                                     suspect_pregnancy: 'yes',
                                     id_type: 'sa_id',
                                     sa_id: '5101025009086',
@@ -1956,7 +1956,7 @@ describe("app", function() {
                             api.contacts.add( {
                                 msisdn: '+27821234567',
                                 extra : {
-                                    clinic_code: '12345',
+                                    clinic_code: '123456',
                                     suspect_pregnancy: 'yes',
                                     id_type: 'sa_id',
                                     sa_id: '5101025009086',
@@ -1990,7 +1990,7 @@ describe("app", function() {
                             api.contacts.add( {
                                 msisdn: '+27821234567',
                                 extra : {
-                                    clinic_code: '12345',
+                                    clinic_code: '123456',
                                     suspect_pregnancy: 'yes',
                                     id_type: 'sa_id',
                                     sa_id: '5101025009086',
@@ -2039,7 +2039,7 @@ describe("app", function() {
                             api.contacts.add( {
                                 msisdn: '+27821234567',
                                 extra : {
-                                    clinic_code: '12345',
+                                    clinic_code: '123456',
                                     suspect_pregnancy: 'yes',
                                     id_type: 'sa_id',
                                     sa_id: '5101025009086',
@@ -2080,7 +2080,7 @@ describe("app", function() {
                             api.contacts.add( {
                                 msisdn: '+27001',
                                 extra : {
-                                    clinic_code: '12345',
+                                    clinic_code: '123456',
                                     suspect_pregnancy: 'yes',
                                     id_type: 'none',
                                     ussd_sessions: '5',

@@ -1,17 +1,16 @@
 go.app = function() {
     var vumigo = require('vumigo_v02');
     var _ = require('lodash');
-    var moment = require('moment');
     var Q = require('q');
+    var moment = require('moment');
     var App = vumigo.App;
     var Choice = vumigo.states.Choice;
     var ChoiceState = vumigo.states.ChoiceState;
-    var PaginatedChoiceState = vumigo.states.PaginatedChoiceState;
     var EndState = vumigo.states.EndState;
     var FreeText = vumigo.states.FreeText;
 
     var GoNDOH = App.extend(function(self) {
-        App.call(self, 'states_start');
+        App.call(self, 'isl_route');
         var $ = self.$;
         var interrupt = true;
 
@@ -22,43 +21,18 @@ go.app = function() {
 
             go.utils.attach_session_length_helper(self.im);
 
-            self.im.on('session:new', function(e) {
-                self.user.extra.ussd_sessions = go.utils.incr_user_extra(self.user.extra.ussd_sessions, 1);
-                self.user.extra.metric_sum_sessions = go.utils.incr_user_extra(self.user.extra.metric_sum_sessions, 1);
-
-                return Q.all([
-                    self.im.contacts.save(self.user),
-                    self.im.metrics.fire.inc([self.env, 'sum.sessions'].join('.'), 1)
-                ]);
-            });
-
             self.im.on('session:close', function(e) {
                 return self.dial_back(e);
-            });
-
-            self.im.user.on('user:new', function(e) {
-                return go.utils.fire_users_metrics(self.im, self.store_name, self.env, self.metric_prefix);
-            });
-
-            self.im.on('state:enter', function(e) {
-                self.contact.extra.last_stage = e.state.name;
-                return Q.all([
-                    self.im.contacts.save(self.contact),
-                    self.fire_incomplete(e.state.name, 1)
-                ]);
-            });
-
-            self.im.on('state:exit', function(e) {
-                return self.fire_incomplete(e.state.name, -1);
             });
 
             return self.im.contacts
                 .for_user()
                 .then(function(user_contact) {
-                    if ((!_.isUndefined(user_contact.extra.working_on)) && (user_contact.extra.working_on !== "")){
+                    if ((!_.isUndefined(user_contact.extra.nc_working_on))
+                        && (user_contact.extra.nc_working_on !== "")) {
                         self.user = user_contact;
                         return self.im.contacts
-                            .get(user_contact.extra.working_on, {create: true})
+                            .get(user_contact.extra.nc_working_on, {create: true})
                             .then(function(working_on){
                                 self.contact = working_on;
                             });
@@ -69,9 +43,12 @@ go.app = function() {
                 });
         };
 
+
+    // DIALBACK SMS HANDLING
+
         self.should_send_dialback = function(e) {
             return e.user_terminated
-                && !go.utils.is_true(self.contact.extra.redial_sms_sent);
+                && !go.utils.is_true(self.contact.extra.nc_redial_sms_sent);
         };
 
         self.send_dialback = function() {
@@ -81,7 +58,7 @@ go.app = function() {
                     content: self.get_finish_reg_sms()
                 })
                 .then(function() {
-                    self.contact.extra.redial_sms_sent = 'true';
+                    self.contact.extra.nc_redial_sms_sent = 'true';
                     return self.im.contacts.save(self.contact);
                 });
         };
@@ -92,77 +69,77 @@ go.app = function() {
         };
 
         self.get_finish_reg_sms = function() {
-            return $("Please dial back in to {{ USSD_number }} to complete the pregnancy registration.")
+            return $("Please dial back in to {{channel}} to complete the NurseConnect registration.")
                 .context({
-                    USSD_number: self.im.config.channel
+                    channel: self.im.config.channel
                 });
         };
 
-        self.fire_incomplete = function(name, val) {
-            var ignore_states = [];
-            if (!_.contains(ignore_states, name)) {
-                return Q.all([
-                    self.im.metrics.fire.inc(
-                        ([self.metric_prefix, name, "no_incomplete_rev1"].join('.')), {amount: val}),
-                    self.im.metrics.fire.sum(
-                        ([self.metric_prefix, name, "no_incomplete_rev1.transient"].join('.')), val)
-                ]);
-            } else {
-                return Q();
-            }
-        };
+
+    // REGISTRATION FINISHED SMS HANDLING
 
         self.send_registration_thanks = function() {
             return self.im.outbound.send({
                 to: self.contact,
                 endpoint: 'sms',
-                lang: self.contact.extra.language_choice,
-                content: $("Welcome. To stop getting SMSs dial {{optout_channel}} or for more " +
-                           "services dial {{public_channel}} (No Cost). Standard rates apply " +
-                           "when replying to any SMS from MomConnect.")
-                    .context({
-                        public_channel: self.im.config.public_channel,
-                        optout_channel: self.im.config.optout_channel
-                    })
+                lang: self.contact.extra.nc_language_choice,
+                content: $("Welcome to NurseConnect. For more options or to " +
+                           "opt out, dial {{channel}}.")
+                    .context({channel: self.im.config.channel})
             });
         };
 
+
+    // TIMEOUT HANDLING
+
+        // determine whether timed_out state should be used
+        self.timed_out = function() {
+            var no_redirects = [
+                'st_subscribed',
+                'st_not_subscribed',
+            ];
+            return self.im.msg.session_event === 'new'
+                && self.im.user.state.name
+                && no_redirects.indexOf(self.im.user.state.name) === -1;
+        };
+
+        // override normal state adding
         self.add = function(name, creator) {
             self.states.add(name, function(name, opts) {
-                if (!interrupt || !go.utils.timed_out(self.im))
+                if (!interrupt || !self.timed_out(self.im))
                     return creator(name, opts);
 
                 interrupt = false;
                 var timeout_opts = opts || {};
                 timeout_opts.name = name;
-                return self.states.create('states_timed_out', timeout_opts);
+                return self.states.create('st_timed_out', timeout_opts);
             });
         };
 
-        self.states.add('states_timed_out', function(name, creator_opts) {
+        // timeout state
+        self.states.add('st_timed_out', function(name, creator_opts) {
             var readable_no = go.utils.readable_sa_msisdn(self.contact.msisdn);
 
             return new ChoiceState(name, {
-                question: $('Would you like to complete pregnancy registration for ' +
-                            '{{ num }}?')
+                question: $("Welcome to NurseConnect. Would you like to continue your previous session for {{num}}?")
                     .context({ num: readable_no }),
 
                 choices: [
                     new Choice(creator_opts.name, $('Yes')),
-                    new Choice('states_start', $('Start new registration'))
+                    new Choice('isl_route', $('Start Over'))
                 ],
 
                 next: function(choice) {
-                    if (choice.value === 'states_start') {
-                        self.user.extra.working_on = "";
+                    if (choice.value === 'isl_route') {
+                        self.user.extra.nc_working_on = "";
                         return self.im.contacts
                             .save(self.user)
                             .then(function() {
-                                return 'states_start';
+                                return 'isl_route';
                             });
                     } else {
-                        return self
-                            .fire_incomplete(creator_opts.name, -1)
+                        return Q()
+                            // self.fire_incomplete(creator_opts.name, -1)
                             .then(function() {
                                 return {
                                     name: choice.value,
@@ -175,558 +152,335 @@ go.app = function() {
         });
 
 
-        self.add('states_start', function(name) {
-            var readable_no = go.utils.readable_sa_msisdn(self.im.user.addr);
+    // DELEGATOR START STATE
 
-            return new ChoiceState(name, {
-                question: $('Welcome to The Department of Health\'s ' +
-                            'MomConnect. Tell us if this is the no. that ' +
-                            'the mother would like to get SMSs on: {{ num }}')
-                    .context({ num: readable_no }),
-
-                choices: [
-                    new Choice('yes', $('Yes')),
-                    new Choice('no', $('No'))
-                ],
-
-                next: function(choice) {
-                    if (choice.value === 'yes') {
-
-                        return go.utils
-                            .opted_out(self.im, self.contact)
-                            .then(function(opted_out) {
-                                return {
-                                    true: 'states_opt_in',
-                                    false: 'states_clinic_code',
-                                } [opted_out];
-                            });
+        self.add('isl_route', function(name) {
+            // reset working_on extra
+            self.user.extra.nc_working_on = "";
+            return self.im.contacts
+                .save(self.user)
+                .then(function() {
+                    if (self.contact.extra.nc_is_registered === 'true') {
+                        return self.states.create('st_subscribed');
                     } else {
-                        return 'states_mobile_no';
+                        return self.states.create('st_not_subscribed');
                     }
-                }
-            });
+                });
         });
 
-        self.add('states_opt_in', function(name) {
+
+    // INITIAL STATES
+
+        self.add('st_subscribed', function(name) {
             return new ChoiceState(name, {
-                question: $('This number has previously opted out of MomConnect ' +
-                            'SMSs. Please confirm that the mom would like to ' +
-                            'opt in to receive messages again?'),
-
+                question: $("Welcome to NurseConnect"),
                 choices: [
-                    new Choice('yes', $('Yes')),
-                    new Choice('no', $('No'))
+                    new Choice('st_subscribe_other', $('Subscribe a friend')),
+                    new Choice('st_change_num', $('Change your no.')),
+                    new Choice('st_change_faccode', $('Change facility code')),
+                    new Choice('st_change_sanc', $('Change SANC no.')),
+                    new Choice('st_change_persal', $('Change Persal no.')),
+                    new Choice('st_optout', $('Stop SMS')),
                 ],
-
                 next: function(choice) {
-                    if (choice.value === 'yes') {
-                        return go.utils
-                            .opt_in(self.im, self.contact)
-                            .then(function() {
-                                return 'states_clinic_code';
-                            });
-                    } else {
-                        if (!_.isUndefined(self.user.extra.working_on)) {
-                            self.user.extra.working_on = "";
-                            return self.im.contacts
-                                .save(self.user)
-                                .then(function() {
-                                    return 'states_stay_out';
-                                });
-                        } else {
-                            return 'states_stay_out';
-                        }
-                    }
+                    return choice.value;
                 }
             });
         });
 
-        self.add('states_stay_out', function(name) {
+        self.add('st_not_subscribed', function(name) {
             return new ChoiceState(name, {
-                question: $('You have chosen not to receive MomConnect SMSs ' +
-                            'and so cannot complete registration.'),
-
+                question: $("Welcome to NurseConnect. Do you want to:"),
                 choices: [
-                    new Choice('main_menu', $('Main Menu'))
+                    new Choice('st_subscribe_self', $("Subscribe for the first time")),
+                    new Choice('st_change_old_nr', $('Change your old number')),
+                    new Choice('st_subscribe_other', $('Subscribe somebody else'))
                 ],
-
                 next: function(choice) {
-                    return 'states_start';
+                    return choice.value;
                 }
             });
         });
 
-        self.add('states_clinic_code', function(name) {
-            var error = $('Sorry, the clinic number did not validate. ' +
-                          'Please reenter the clinic number:');
-            var question = $('Please enter the clinic code for the facility ' +
-                            'where this pregnancy is being registered:');
 
+    // REGISTRATION STATES
 
+        self.add('st_subscribe_self', function(name) {
+            return new ChoiceState(name, {
+                question: $("To register we need to collect, store & use your info. You may also get messages on public holidays & weekends. Do you consent?"),
+                choices: [
+                    new Choice('isl_check_optout', $('Yes')),
+                    new Choice('st_permission_denied', $('No')),
+                ],
+                next: function(choice) {
+                    return choice.value;
+                }
+            });
+        });
+
+        self.add('st_subscribe_other', function(name) {
+            return new ChoiceState(name, {
+                question: $("We need to collect, store & use your friend's info. She may get messages on public holidays & weekends. Does she consent?"),
+                choices: [
+                    new Choice('st_msisdn', $('Yes')),
+                    new Choice('st_permission_denied', $('No')),
+                ],
+                next: function(choice) {
+                    return choice.value;
+                }
+            });
+        });
+
+        self.add('st_permission_denied', function(name) {
+            return new ChoiceState(name, {
+                question: $("You have chosen not to receive NurseConnect SMSs on this number and so cannot complete registration."),
+                choices: [
+                    new Choice('isl_route', $('Main Menu'))
+                ],
+                next: function(choice) {
+                    return choice.value;
+                }
+            });
+        });
+
+        self.add('st_msisdn', function(name) {
+            var error = $("Sorry, the format of the mobile number is not correct. Please enter the mobile number again, e.g. 0726252020");
+            var question = $("Please enter the number you would like to register, e.g. 0726252020:");
             return new FreeText(name, {
                 question: question,
-
-                check: function(content) {
-                    return go.utils
-                        .validate_clinic_code(self.im, content.trim())
-                        .then(function(valid_clinic_code) {
-                            if (!valid_clinic_code) {
-                                return error;
-                            } else {
-                                return null;  // vumi expects null or undefined if check passes
-                            }
-                        });
-                },
-
-                next: function(content) {
-                    self.contact.extra.clinic_code = content;
-                    self.contact.extra.is_registered = 'false';
-
-                    return self.im.contacts
-                        .save(self.contact)
-                        .then(function() {
-                            return {
-                                name: 'states_due_date_month'
-                            };
-                        });
-                },
-
-                events: {
-                    'state:enter': function(content) {
-                        return go.utils
-                            .incr_kv(self.im, [self.store_name, 'no_incomplete_registrations'].join('.'))
-                            .then(function() {
-                                return go.utils.adjust_percentage_registrations(self.im, self.metric_prefix);
-                            });
-                    }
-                }
-
-            });
-        });
-
-        self.add('states_mobile_no', function(name, opts) {
-            var error = $('Sorry, the mobile number did not validate. ' +
-                          'Please reenter the mobile number:');
-
-            var question = $('Please input the mobile number of the ' +
-                            'pregnant woman to be registered:');
-
-            return new FreeText(name, {
-                question: question,
-
                 check: function(content) {
                     if (!go.utils.check_valid_phone_number(content)) {
                         return error;
                     }
                 },
-
                 next: function(content) {
                     msisdn = go.utils.normalize_msisdn(content, '27');
-                    self.user.extra.working_on = msisdn;
-
+                    self.user.extra.nc_working_on = msisdn;
                     return self.im.contacts
                         .save(self.user)
                         .then(function() {
-                            return go.utils
-                                .opted_out_by_msisdn(self.im, msisdn)
-                                .then(function(opted_out) {
-                                    return {
-                                        true: 'states_opt_in',
-                                        false: 'states_clinic_code',
-                                    } [opted_out];
-                                });
+                            return 'isl_reload_contact';
                         });
                 }
             });
         });
 
-        self.add('states_due_date_month', function(name) {
-
-            var today = go.utils.get_today(self.im.config);
-            var month = today.getMonth();   // 0-bound
-
-            return new ChoiceState(name, {
-
-                question: $('Please select the month when the baby is due:'),
-
-                choices: go.utils.make_month_choices($, month, 10),
-
-                next: function(choice) {
-                    self.contact.extra.due_date_month = choice.value;
-
+        self.add('isl_reload_contact', function(name) {
+            return self.im.contacts
+                .for_user()
+                .then(function(user_contact) {
                     return self.im.contacts
-                        .save(self.contact)
-                        .then(function() {
-                            return {
-                                name: 'states_due_date_day'
-                            };
+                        .get(user_contact.extra.nc_working_on, {create: true})
+                        .then(function(working_on){
+                            self.contact = working_on;
                         });
-                }
-            });
+                })
+                .then(function() {
+                    return self.states.create('isl_check_optout');
+                });
         });
 
-        self.add('states_due_date_day', function(name, opts) {
-            var error = $('Sorry, the number did not validate. ' +
-                          'Please enter the estimated day that the baby ' +
-                          'is due (For example 12):');
-
-            var question = $('Please enter the estimated day that the baby ' +
-                             'is due (For example 12):');
-
-            return new FreeText(name, {
-                question: question,
-
-                check: function(content) {
-                    if (!go.utils.check_number_in_range(content, 1, 31)) {
-                        return error;
+        self.add('isl_check_optout', function(name) {
+            return go.utils
+                .opted_out(self.im, self.contact)
+                .then(function(opted_out) {
+                    if (opted_out === true) {
+                        return self.states.create('st_opt_in');
+                    } else {
+                        return self.states.create('st_faccode');
                     }
-                },
+                });
+        });
 
-                next: function(content) {
-                    var edd = go.utils.get_entered_due_date(self.contact.extra.due_date_month,
-                                                            content, self.im.config);
-
-                    if (go.utils.is_valid_date(edd, 'YYYY-MM-DD')) {
-                        self.contact.extra.due_date_day = go.utils.double_digit_day(content);
-
-                        return self.im.contacts
-                            .save(self.contact)
+        self.add('st_opt_in', function(name) {
+            return new ChoiceState(name, {
+                question: $("This number previously opted out of NurseConnect messages. Please confirm that you would like to register this number again?"),
+                choices: [
+                    new Choice('yes', $('Yes')),
+                    new Choice('no', $('No'))
+                ],
+                next: function(choice) {
+                    if (choice.value === 'yes') {
+                        return go.utils
+                            .nurse_opt_in(self.im, self.contact)
                             .then(function() {
-                                return {
-                                    name: 'states_id_type'
-                                };
+                                return 'st_faccode';
                             });
                     } else {
-                        return {
-                            name: 'states_invalid_edd',
-                            creator_opts: {edd: edd}
-                        };
+                        return 'st_permission_denied';
                     }
                 }
             });
         });
 
-        self.add('states_invalid_edd', function(name, opts) {
-            return new ChoiceState(name, {
-                question:
-                    $('The date you entered ({{ edd }}) is not a ' +
-                        'real date. Please try again.'
-                     ).context({ edd: opts.edd }),
-
-                choices: [
-                    new Choice('continue', $('Continue'))
-                ],
-
-                next: 'states_due_date_month'
-            });
-        });
-
-        self.add('states_id_type', function(name) {
-            return new ChoiceState(name, {
-                question: $('What kind of identification does the pregnant ' +
-                            'mother have?'),
-
-                choices: [
-                    new Choice('sa_id', $('SA ID')),
-                    new Choice('passport', $('Passport')),
-                    new Choice('none', $('None'))
-                ],
-
-                next: function(choice) {
-                    self.contact.extra.id_type = choice.value;
-
-                    return self.im.contacts
-                        .save(self.contact)
-                        .then(function() {
-                            return {
-                                sa_id: 'states_sa_id',
-                                passport: 'states_passport_origin',
-                                none: 'states_birth_year'
-                            } [choice.value];
-                        });
-                }
-            });
-        });
-
-        self.add('states_sa_id', function(name, opts) {
-            var error = $('Sorry, the mother\'s ID number did not validate. ' +
-                          'Please reenter the SA ID number:');
-
-            var question = $('Please enter the pregnant mother\'s SA ID ' +
-                            'number:');
-
+        self.add('st_faccode', function(name) {
+            var owner = self.user.extra.nc_working_on === "" ? 'your' : 'their';
+            var error = $("Sorry, that code is not recognized. Please enter the 6-digit facility code again, e. 535970:");
+            var question = $("Please enter {{owner}} 6-digit facility code:")
+                .context({owner: owner});
             return new FreeText(name, {
                 question: question,
-
                 check: function(content) {
-                    if (!go.utils.validate_id_sa(content)) {
-                        return error;
-                    }
-                },
-
-                next: function(content) {
-                    self.contact.extra.sa_id = content;
-
-                    var id_date_of_birth = go.utils.extract_id_dob(content);
-                    self.contact.extra.birth_year = moment(id_date_of_birth, 'YYYY-MM-DD').format('YYYY');
-                    self.contact.extra.birth_month = moment(id_date_of_birth, 'YYYY-MM-DD').format('MM');
-                    self.contact.extra.birth_day = moment(id_date_of_birth, 'YYYY-MM-DD').format('DD');
-                    self.contact.extra.dob = id_date_of_birth;
-
-                    return self.im.contacts
-                        .save(self.contact)
-                        .then(function() {
-                            return {
-                                name: 'states_language'
-                            };
-                        });
-                }
-            });
-        });
-
-        self.add('states_passport_origin', function(name) {
-            return new ChoiceState(name, {
-                question: $('What is the country of origin of the passport?'),
-
-                choices: [
-                    new Choice('zw', $('Zimbabwe')),
-                    new Choice('mz', $('Mozambique')),
-                    new Choice('mw', $('Malawi')),
-                    new Choice('ng', $('Nigeria')),
-                    new Choice('cd', $('DRC')),
-                    new Choice('so', $('Somalia')),
-                    new Choice('other', $('Other'))
-                ],
-
-                next: function(choice) {
-                    self.contact.extra.passport_origin = choice.value;
-
-                    return self.im.contacts
-                        .save(self.contact)
-                        .then(function() {
-                            return {
-                                name: 'states_passport_no'
-                            };
-                        });
-                }
-            });
-        });
-
-        self.add('states_passport_no', function(name) {
-            var error = $('There was an error in your entry. Please ' +
-                        'carefully enter the passport number again.');
-            var question = $('Please enter the pregnant mother\'s Passport number:');
-
-            return new FreeText(name, {
-                question: question,
-
-                check: function(content) {
-                    if (!go.utils.is_alpha_numeric_only(content) || content.length <= 4) {
-                        return error;
-                    }
-                },
-
-                next: function(content) {
-                    self.contact.extra.passport_no = content;
-
-                    return self.im.contacts
-                        .save(self.contact)
-                        .then(function() {
-                            return {
-                                name: 'states_language'
-                            };
-                        });
-                }
-            });
-        });
-
-        self.add('states_birth_year', function(name, opts) {
-            var error = $('There was an error in your entry. Please ' +
-                        'carefully enter the mother\'s year of birth again ' +
-                        '(for example: 2001)');
-
-            var question = $('Please enter the year that the pregnant ' +
-                    'mother was born (for example: 1981)');
-
-            return new FreeText(name, {
-                question: question,
-
-                check: function(content) {
-                    if (!go.utils.check_number_in_range(content, 1900,
-                      go.utils.get_today(self.im.config).getFullYear() - 5)) {
-                        // assumes youngest possible birth age is 5 years old
-                        return error;
-                    }
-                },
-
-                next: function(content) {
-                    self.contact.extra.birth_year = content;
-
-                    return self.im.contacts
-                        .save(self.contact)
-                        .then(function() {
-                            return {
-                                name: 'states_birth_month'
-                            };
-                        });
-                }
-            });
-        });
-
-        self.add('states_birth_month', function(name) {
-            return new ChoiceState(name, {
-                question: $('Please enter the month that the mom was born.'),
-
-                choices: go.utils.make_month_choices($, 0, 12),
-
-                next: function(choice) {
-                    self.contact.extra.birth_month = choice.value;
-
-                    return self.im.contacts
-                        .save(self.contact)
-                        .then(function() {
-                            return {
-                                name: 'states_birth_day'
-                            };
-                        });
-                }
-            });
-        });
-
-
-        self.add('states_birth_day', function(name, opts) {
-            var error = $('There was an error in your entry. Please ' +
-                        'carefully enter the mother\'s day of birth again ' +
-                        '(for example: 8)');
-
-            var question = $('Please enter the day that the mother was born ' +
-                    '(for example: 14).');
-
-            return new FreeText(name, {
-                question: question,
-
-                check: function(content) {
-                    if (!go.utils.check_number_in_range(content, 1, 31)) {
-                        return error;
-                    }
-                },
-
-                next: function(content) {
-                    var dob = go.utils.get_entered_birth_date(self.im.user.answers.states_birth_year,
-                        self.im.user.answers.states_birth_month, content);
-
-                    if (go.utils.is_valid_date(dob, 'YYYY-MM-DD')) {
-                        self.contact.extra.birth_day = go.utils.double_digit_day(content);
-                        self.contact.extra.dob = dob;
-
-                        return self.im.contacts
-                            .save(self.contact)
-                            .then(function() {
-                                return {
-                                    name: 'states_language'
-                                };
-                            });
-                    } else {
-                        return {
-                            name: 'states_invalid_dob',
-                            creator_opts: {dob: dob}
-                        };
-                    }
-                }
-            });
-        });
-
-        self.add('states_invalid_dob', function(name, opts) {
-            return new ChoiceState(name, {
-                question:
-                    $('The date you entered ({{ dob }}) is not a ' +
-                        'real date. Please try again.'
-                     ).context({ dob: opts.dob }),
-
-                choices: [
-                    new Choice('continue', $('Continue'))
-                ],
-
-                next: 'states_birth_year'
-            });
-        });
-
-        self.add('states_language', function(name) {
-            return new PaginatedChoiceState(name, {
-                question: $('Please select the language that the ' +
-                            'pregnant mother would like to get messages in:'),
-                options_per_page: null,
-                choices: [
-                    new Choice('zu', 'isiZulu'),
-                    new Choice('xh', 'isiXhosa'),
-                    new Choice('af', 'Afrikaans'),
-                    new Choice('en', 'English'),
-                    new Choice('nso', 'Sesotho sa Leboa'),
-                    new Choice('tn', 'Setswana'),
-                    new Choice('st', 'Sesotho'),
-                    new Choice('ts', 'Xitsonga'),
-                    new Choice('ss', 'siSwati'),
-                    new Choice('ve', 'Tshivenda'),
-                    new Choice('nr', 'isiNdebele'),
-                ],
-                next: function(choice) {
-                    self.contact.extra.language_choice = choice.value;
-                    self.contact.extra.is_registered = 'true';
-                    self.contact.extra.metric_sessions_to_register = self.user.extra.ussd_sessions;
-
-                    return self.im.contacts
-                        .save(self.contact)
-                        .then(function() {
-                            return Q.all([
-                                self.im.metrics.fire.avg((self.metric_prefix + ".avg.sessions_to_register"),
-                                    parseInt(self.user.extra.ussd_sessions, 10)),
-                                go.utils.incr_kv(self.im, [self.store_name, 'no_complete_registrations'].join('.')),
-                                go.utils.decr_kv(self.im, [self.store_name, 'no_incomplete_registrations'].join('.')),
-                                go.utils.incr_kv_conversions(self.im, self.contact, self.env)
-                            ]);
-                        })
-                        .then(function() {
-                            if (!_.isUndefined(self.user.extra.working_on) && (self.user.extra.working_on !== "")) {
-                                self.user.extra.working_on = "";
-                                self.user.extra.no_registrations = go.utils.incr_user_extra(self.user.extra.no_registrations, 1);
-                                self.contact.extra.registered_by = self.user.msisdn;
+                    return go.utils
+                        .validate_clinic_code(self.im, content.trim())
+                        .then(function(facname) {
+                            if (!facname) {
+                                return error;
+                            } else {
+                                self.contact.extra.nc_facname = facname;
+                                self.contact.extra.nc_faccode = content.trim();
+                                return self.im.contacts
+                                    .save(self.contact)
+                                    .then(function() {
+                                        return null;  // vumi expects null or undefined if check passes
+                                    });
                             }
-                            self.user.extra.ussd_sessions = '0';
-                            self.contact.extra.is_registered_by = 'clinic';
-                            return Q.all([
-                                self.im.contacts.save(self.user),
-                                self.im.contacts.save(self.contact),
-                                go.utils.adjust_percentage_registrations(self.im, self.metric_prefix),
-                                go.utils.adjust_conversion_rates(self.im, self.env)
-                            ]);
-                        })
-                        .then(function() {
-                            return 'states_save_subscription';
                         });
+                },
+                next: 'st_facname'
+            });
+        });
+
+        self.add('st_facname', function(name) {
+            var owner = self.user.extra.nc_working_on === "" ? 'your' : 'their';
+            return new ChoiceState(name, {
+                question: $("Please confirm {{owner}} facility: {{facname}}")
+                    .context({
+                        owner: owner,
+                        facname: self.contact.extra.nc_facname
+                    }),
+                choices: [
+                    new Choice('st_id_type', $('Confirm')),
+                    new Choice('st_faccode', $('Not the right facility')),
+                ],
+                next: function(choice) {
+                    return choice.value;
                 }
             });
         });
 
-        self.add('states_save_subscription', function(name) {
-            if (self.contact.extra.id_type !== undefined) {
-                return Q.all([
-                    go.utils.post_registration(self.user.msisdn, self.contact, self.im, 'clinic'),
+        self.add('st_id_type', function(name) {
+            var owner = self.user.extra.nc_working_on === "" ? 'your' : 'their';
+            return new ChoiceState(name, {
+                question: $("Please select {{owner}} type of identification:")
+                    .context({owner: owner}),
+                choices: [
+                    new Choice('st_sa_id', $('RSA ID')),
+                    new Choice('st_passport_country', $('Passport')),
+                ],
+                next: function(choice) {
+                    return choice.value;
+                }
+            });
+        });
+
+        self.add('st_sa_id', function(name) {
+            var owner = self.user.extra.nc_working_on === "" ? 'your' : 'their';
+            var error = $("Sorry, the format of the ID number is not correct. Please enter {{owner}} RSA ID number again, e.g. 7602095060082")
+                .context({owner: owner});
+            var question = $("Please enter {{owner}} 13-digit RSA ID number:")
+                .context({owner: owner});
+            return new FreeText(name, {
+                question: question,
+                check: function(content) {
+                    if (!go.utils.validate_id_sa(content.trim())) {
+                        return error;
+                    }
+                },
+                next: 'isl_save_nursereg'
+            });
+        });
+
+        self.add('st_passport_country', function(name) {
+            return new ChoiceState(name, {
+                question: $("What is the country of origin of the passport?"),
+                choices: [
+                    new Choice('na', $('Namibia')),
+                    new Choice('bw', $('Botswana')),
+                    new Choice('mz', $('Mozambique')),
+                    new Choice('sz', $('Swaziland')),
+                    new Choice('ls', $('Lesotho')),
+                    new Choice('cu', $('Cuba')),
+                    new Choice('other', $('Other')),
+                ],
+                next: function(choice) {
+                    return 'st_passport_num';
+                }
+            });
+        });
+
+        self.add('st_passport_num', function(name) {
+            var error = $("Sorry, the format of the passport number is not correct. Please enter the passport number again.");
+            var question = $("Please enter the passport number:");
+            return new FreeText(name, {
+                question: question,
+                check: function(content) {
+                    if (!go.utils.is_alpha_numeric_only(content)
+                        || content.length <= 4) {
+                        return error;
+                    }
+                },
+                next: 'st_dob'
+            });
+        });
+
+        self.add('st_dob', function(name) {
+            var error = $("Sorry, the format of the date of birth is not correct. Please enter it again, e.g. 27 May 1975 as 27051975:");
+            var question = $("Please enter the date of birth, e.g. 27 May 1975 as 27051975:");
+            return new FreeText(name, {
+                question: question,
+                check: function(content) {
+                    if (!go.utils.is_valid_date(content.trim(), 'DDMMYYYY')) {
+                        return error;
+                    }
+                },
+                next: 'isl_save_nursereg'
+            });
+        });
+
+        self.add('isl_save_nursereg', function(name) {
+            // Save useful contact extras
+            self.contact.extra.nc_is_registered = 'true';
+
+            if (self.im.user.answers.st_id_type === 'st_sa_id') {  // rsa id
+                self.contact.extra.nc_id_type = 'sa_id';
+                self.contact.extra.nc_sa_id_no = self.im.user.answers.st_sa_id.trim();
+                self.contact.extra.nc_dob = go.utils.extract_id_dob(
+                    self.im.user.answers.st_sa_id.trim());
+            } else {  // passport
+                self.contact.extra.nc_id_type = 'passport';
+                self.contact.extra.nc_passport_country = self.im.user.answers.st_passport_country;
+                self.contact.extra.nc_passport_num = self.im.user.answers.st_passport_num.trim();
+                self.contact.extra.nc_dob = moment(self.im.user.answers.st_dob.trim(), 'DDMMYYYY'
+                    ).format('YYYY-MM-DD');
+            }
+
+            if (self.user.extra.nc_working_on !== "") {
+                self.contact.extra.nc_registered_by = self.user.msisdn;
+
+                if (self.user.extra.nc_registrees === undefined) {
+                    self.user.extra.nc_registrees = self.contact.msisdn;
+                } else {
+                    self.user.extra.nc_registrees += ', ' + self.contact.msisdn;
+                }
+            }
+
+            return Q
+                .all([
+                    self.im.contacts.save(self.user),
+                    self.im.contacts.save(self.contact),
                     self.send_registration_thanks(),
+                    // TODO #207 go.utils.post_nursereg(args),
                 ])
                 .then(function() {
-                    return self.states.create('states_end_success');
+                    return self.states.create('st_end_reg');
                 });
-            }
         });
 
-        self.add('states_end_success', function(name) {
-            // If none passport then only json push
+        self.add('st_end_reg', function(name) {
             return new EndState(name, {
-                text: $('Thank you. The pregnant woman will now ' +
-                        'receive weekly messages about her pregnancy ' +
-                        'from MomConnect.'),
-
-                next: 'states_start',
+                text: $("Thank you. Weekly NurseConnect messages will now be sent to this number."),
+                next: 'isl_route',
             });
         });
 

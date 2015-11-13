@@ -689,7 +689,7 @@ module.exports = function() {
     },
 
 // GET Jembi facilityCheck
-    // Jembi Clinic Code validation - code 12345
+    // Jembi Clinic Code validation - code 123456
     {
         "request": {
             "method": "GET",
@@ -699,25 +699,45 @@ module.exports = function() {
             },
             "url": "http://test/v2/json/facilityCheck",
             "params": {
-                "criteria": "code:12345"
+                "criteria": "code:123456"
             }
         },
         "response": {
             "code": 200,
             "data": {
-                "title": "FacilityCheck",
-                "headers": [{
-                    "name": "code",
-                    "column": "code",
-                    "type": "java.lang.String",
-                    "hidden": false,
-                    "meta": false
-                }],
-                "rows": [
-                    ["12345"]
-                ],
-                "width": 1,
-                "height": 1
+              "title": "FacilityRegistry",
+              "headers": [
+                {
+                  "name": "value",
+                  "column": "value",
+                  "type": "java.lang.String",
+                  "hidden": false,
+                  "meta": false
+                },
+                {
+                  "name": "uid",
+                  "column": "uid",
+                  "type": "java.lang.String",
+                  "hidden": false,
+                  "meta": false
+                },
+                {
+                  "name": "name",
+                  "column": "name",
+                  "type": "java.lang.String",
+                  "hidden": false,
+                  "meta": false
+                }
+              ],
+              "rows": [
+                [
+                  "123456",
+                  "asdf7a803",
+                  "WCL clinic"
+                ]
+              ],
+              "width": 3,
+              "height": 1
             }
         }
     },
@@ -737,19 +757,39 @@ module.exports = function() {
         "response": {
             "code": 200,
             "data": {
-                "title": "FacilityCheck",
-                "headers": [{
-                    "name": "code",
-                    "column": "code",
-                    "type": "java.lang.String",
-                    "hidden": false,
-                    "meta": false
-                }],
-                "rows": [
-                    ["234567"]
-                ],
-                "width": 1,
-                "height": 1
+              "title": "FacilityRegistry",
+              "headers": [
+                {
+                  "name": "value",
+                  "column": "value",
+                  "type": "java.lang.String",
+                  "hidden": false,
+                  "meta": false
+                },
+                {
+                  "name": "uid",
+                  "column": "uid",
+                  "type": "java.lang.String",
+                  "hidden": false,
+                  "meta": false
+                },
+                {
+                  "name": "name",
+                  "column": "name",
+                  "type": "java.lang.String",
+                  "hidden": false,
+                  "meta": false
+                }
+              ],
+              "rows": [
+                [
+                  "234567",
+                  "asdf7aaff",
+                  "OLT clinic"
+                ]
+              ],
+              "width": 3,
+              "height": 1
             }
         }
     },
@@ -802,7 +842,7 @@ module.exports = function() {
                 "mom_edd": "2014-05-30",
                 "mom_id_no": "5101025009086",
                 "mom_dob": "1951-01-02",
-                "clinic_code": "12345",
+                "clinic_code": "123456",
                 "authority": "clinic"
             }
         },
@@ -817,7 +857,7 @@ module.exports = function() {
                 "mom_edd": "2014-05-30",
                 "mom_id_no": "5101025009086",
                 "mom_dob": "1951-01-02",
-                "clinic_code": "12345",
+                "clinic_code": "123456",
                 "authority": "clinic"
             }
         }
@@ -839,7 +879,7 @@ module.exports = function() {
                 "mom_edd":"2014-05-30",
                 "mom_id_no":"5101025009086",
                 "mom_dob":"1951-01-02",
-                "clinic_code":"12345",
+                "clinic_code":"123456",
                 "authority":"clinic"
             }
         },
@@ -854,7 +894,7 @@ module.exports = function() {
                 "mom_edd":"2014-05-30",
                 "mom_id_no":"5101025009086",
                 "mom_dob":"1951-01-02",
-                "clinic_code":"12345",
+                "clinic_code":"123456",
                 "authority":"clinic"
             }
         }
@@ -876,7 +916,7 @@ module.exports = function() {
                 "mom_edd":"2014-05-30",
                 "mom_id_no":null,
                 "mom_dob":"1951-01-02",
-                "clinic_code":"12345",
+                "clinic_code":"123456",
                 "authority":"clinic"
             }
         },
@@ -891,7 +931,7 @@ module.exports = function() {
                 "mom_edd":"2014-05-30",
                 "mom_id_no":null,
                 "mom_dob":"1951-01-02",
-                "clinic_code":"12345",
+                "clinic_code":"123456",
                 "authority":"clinic"
             }
         }
@@ -1356,7 +1396,7 @@ module.exports = function() {
                 "contact": {
                     "extra": {
                         "is_registered_by": "clinic",
-                        "clinic_code": "12345",
+                        "clinic_code": "123456",
                         "last_service_rating": "never"
                     },
                     "groups": [],
@@ -1405,7 +1445,7 @@ module.exports = function() {
                 "dmsisdn": "+27001",
                 "cmsisdn": "+27001",
                 "type": 6,
-                "faccode": "12345",
+                "faccode": "123456",
                 "encdate": "20130819144811",
                 "data": [
                     {

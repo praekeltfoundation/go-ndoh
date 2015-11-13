@@ -356,11 +356,25 @@ go.utils = {
     },
 
     validate_clinic_code: function(im, clinic_code) {
-        return go.utils
-            .jembi_clinic_validate(im, clinic_code)
-            .then(function(json_result) {
-                return JSON.parse(json_result.data).rows.length > 0;
-            });
+        if (!go.utils.check_valid_number(clinic_code) ||
+            clinic_code.length !== 6) {
+            return Q()
+                .then(function() {
+                    return false;
+                });
+        } else {
+            return go.utils
+                .jembi_clinic_validate(im, clinic_code)
+                .then(function(json_result) {
+                    var rows = JSON.parse(json_result.data).rows;
+                    // console.log(rows);
+                    if (rows.length === 0) {
+                        return false;
+                    } else {
+                        return rows[0][2];
+                    }
+                });
+        }
     },
 
     is_alpha_numeric_only: function(input) {
@@ -956,9 +970,9 @@ go.utils = {
 
         // Start Queue 1
         if (optout_reason !== undefined) {
-            prior_opt_out_reason = contact.extra.opt_out_reason || 'unknown';
+            prior_opt_out_reason = contact.extra.nc_opt_out_reason || 'unknown';
               // if reason was not previously saved it should be 'unknown' (from smsinbound)
-            contact.extra.opt_out_reason = optout_reason;
+            contact.extra.nc_opt_out_reason = optout_reason;
             queue1.push(function() {
                 return im.contacts.save(contact);
             });
@@ -1013,7 +1027,7 @@ go.utils = {
 
                                 // fire loss / non-loss metric
                                 var loss_causes = ['miscarriage', 'babyloss', 'stillbirth'];
-                                if (_.contains(loss_causes, contact.extra.opt_out_reason)) {
+                                if (_.contains(loss_causes, contact.extra.nc_opt_out_reason)) {
                                     queue2.push(function() {
                                         return im.metrics.fire.inc([env, 'sum', 'optout_cause',
                                           'loss'].join('.'), {amount: 1});
@@ -1068,6 +1082,17 @@ go.utils = {
     opt_in: function(im, contact) {
         contact.extra.opt_out_reason = '';
 
+        return Q.all([
+            im.api_request('optout.cancel_optout', {
+                address_type: "msisdn",
+                address_value: contact.msisdn
+            }),
+            im.contacts.save(contact)
+        ]);
+    },
+
+    nurse_opt_in: function(im, contact) {
+        contact.extra.nc_opt_out_reason = '';
         return Q.all([
             im.api_request('optout.cancel_optout', {
                 address_type: "msisdn",

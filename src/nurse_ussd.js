@@ -172,11 +172,8 @@ go.app = function() {
     // INITIAL STATES
 
         self.add('st_subscribed', function(name) {
-            var readable_no = go.utils.readable_sa_msisdn(self.im.user.addr);
-
             return new ChoiceState(name, {
-                question: $("Welcome to NurseConnect")
-                    .context({ num: readable_no }),
+                question: $("Welcome to NurseConnect"),
                 choices: [
                     new Choice('st_subscribe_other', $('Subscribe a friend')),
                     new Choice('st_change_num', $('Change your no.')),
@@ -192,11 +189,8 @@ go.app = function() {
         });
 
         self.add('st_not_subscribed', function(name) {
-            var readable_no = go.utils.readable_sa_msisdn(self.im.user.addr);
-
             return new ChoiceState(name, {
-                question: $("Welcome to NurseConnect. Do you want to:")
-                    .context({ num: readable_no }),
+                question: $("Welcome to NurseConnect. Do you want to:"),
                 choices: [
                     new Choice('st_subscribe_self', $("Subscribe for the first time")),
                     new Choice('st_change_old_nr', $('Change your old number')),

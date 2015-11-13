@@ -328,6 +328,7 @@ go.app = function() {
                                 return error;
                             } else {
                                 self.contact.extra.nc_facname = facname;
+                                self.contact.extra.nc_faccode = content.trim();
                                 return self.im.contacts
                                     .save(self.contact)
                                     .then(function() {
@@ -336,14 +337,7 @@ go.app = function() {
                             }
                         });
                 },
-                next: function(content) {
-                    self.contact.extra.nc_faccode = content.trim();
-                    return self.im.contacts
-                        .save(self.contact)
-                        .then(function() {
-                            return 'st_facname';
-                        });
-                }
+                next: 'st_facname'
             });
         });
 

@@ -973,9 +973,9 @@ go.utils = {
 
         // Start Queue 1
         if (optout_reason !== undefined) {
-            prior_opt_out_reason = contact.extra.opt_out_reason || 'unknown';
+            prior_opt_out_reason = contact.extra.nc_opt_out_reason || 'unknown';
               // if reason was not previously saved it should be 'unknown' (from smsinbound)
-            contact.extra.opt_out_reason = optout_reason;
+            contact.extra.nc_opt_out_reason = optout_reason;
             queue1.push(function() {
                 return im.contacts.save(contact);
             });
@@ -1030,7 +1030,7 @@ go.utils = {
 
                                 // fire loss / non-loss metric
                                 var loss_causes = ['miscarriage', 'babyloss', 'stillbirth'];
-                                if (_.contains(loss_causes, contact.extra.opt_out_reason)) {
+                                if (_.contains(loss_causes, contact.extra.nc_opt_out_reason)) {
                                     queue2.push(function() {
                                         return im.metrics.fire.inc([env, 'sum', 'optout_cause',
                                           'loss'].join('.'), {amount: 1});
@@ -1085,6 +1085,17 @@ go.utils = {
     opt_in: function(im, contact) {
         contact.extra.opt_out_reason = '';
 
+        return Q.all([
+            im.api_request('optout.cancel_optout', {
+                address_type: "msisdn",
+                address_value: contact.msisdn
+            }),
+            im.contacts.save(contact)
+        ]);
+    },
+
+    nurse_opt_in: function(im, contact) {
+        contact.extra.nc_opt_out_reason = '';
         return Q.all([
             im.api_request('optout.cancel_optout', {
                 address_type: "msisdn",
@@ -1354,7 +1365,7 @@ go.app = function() {
 
         self.states.add('states_opt_in_enter', function(name) {
             return go.utils
-                .opt_in(self.im, self.contact)
+                .nurse_opt_in(self.im, self.contact)
                 .then(function() {
                     return self.states.create('states_opt_in');
                 });

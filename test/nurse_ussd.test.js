@@ -70,7 +70,7 @@ describe("app", function() {
                     api.contacts.add({
                         msisdn: '+27821231111',
                         extra: {
-                            working_on: '+27821232222'
+                            nc_working_on: '+27821232222'
                         },
                     });
                 })
@@ -79,13 +79,13 @@ describe("app", function() {
                     api.contacts.add({
                         msisdn: '+27821237777',
                         extra: {
-                            is_registered: 'true',
-                            faccode: '123456',
-                            facname: 'WCL clinic',
-                            working_on: "",
-                            id_type: "sa_id",
-                            sa_id_no: "5101025009086",
-                            dob: "1951-01-02"
+                            nc_is_registered: 'true',
+                            nc_faccode: '123456',
+                            nc_facname: 'WCL clinic',
+                            nc_working_on: "",
+                            nc_id_type: "sa_id",
+                            nc_sa_id_no: "5101025009086",
+                            nc_dob: "1951-01-02"
                         },
                     });
                 })
@@ -94,7 +94,7 @@ describe("app", function() {
                     api.contacts.add({
                         msisdn: '+27821239999',
                         extra: {
-                            opt_out_reason: 'job_change'
+                            nc_opt_out_reason: 'job_change'
                         },
                     });
                 })
@@ -175,7 +175,7 @@ describe("app", function() {
                               msisdn: '+27821231111'
                             });
                             assert.equal(Object.keys(contact.extra).length, 1);
-                            assert.equal(contact.extra.working_on, "");
+                            assert.equal(contact.extra.nc_working_on, "");
                         })
                         .run();
                 });
@@ -190,7 +190,7 @@ describe("app", function() {
                               msisdn: '+27821234444'
                             });
                             assert.equal(Object.keys(contact.extra).length, 1);
-                            assert.equal(contact.extra.working_on, "");
+                            assert.equal(contact.extra.nc_working_on, "");
                         })
                         .run();
                 });
@@ -406,7 +406,6 @@ describe("app", function() {
                         var metrics = api.metrics.stores.test_metric_store;
                         assert.equal(Object.keys(metrics).length, 0);
                         // assert.deepEqual(metrics['test.nurse_ussd.sum.unique_users'].values, [1]);
-                        // assert.deepEqual(metrics['test.clinic.percentage_users'].values, [100]);
                         // assert.deepEqual(metrics['test.sum.unique_users'].values, [1]);
                     })
                     .run();
@@ -450,13 +449,13 @@ describe("app", function() {
                           msisdn: '+27821234444'
                         });
                         assert.equal(Object.keys(contact.extra).length, 7);
-                        assert.equal(contact.extra.faccode, '123456');
-                        assert.equal(contact.extra.facname, 'WCL clinic');
-                        assert.equal(contact.extra.is_registered, 'true');
-                        assert.equal(contact.extra.working_on, "");
-                        assert.equal(contact.extra.id_type, "sa_id");
-                        assert.equal(contact.extra.sa_id_no, "5101025009086");
-                        assert.equal(contact.extra.dob, "1951-01-02");
+                        assert.equal(contact.extra.nc_faccode, '123456');
+                        assert.equal(contact.extra.nc_facname, 'WCL clinic');
+                        assert.equal(contact.extra.nc_is_registered, 'true');
+                        assert.equal(contact.extra.nc_working_on, "");
+                        assert.equal(contact.extra.nc_id_type, "sa_id");
+                        assert.equal(contact.extra.nc_sa_id_no, "5101025009086");
+                        assert.equal(contact.extra.nc_dob, "1951-01-02");
                     })
                     .run();
             });
@@ -549,22 +548,22 @@ describe("app", function() {
                           msisdn: '+27821234444'
                         });
                         assert.equal(Object.keys(user.extra).length, 2);
-                        assert.equal(user.extra.working_on, '+27821235555');
-                        assert.equal(user.extra.registrees, '+27821235555');
+                        assert.equal(user.extra.nc_working_on, '+27821235555');
+                        assert.equal(user.extra.nc_registrees, '+27821235555');
                     })
                     .check(function(api) {
                         var contact = _.find(api.contacts.store, {
                           msisdn: '+27821235555'
                         });
                         assert.equal(Object.keys(contact.extra).length, 8);
-                        assert.equal(contact.extra.faccode, '123456');
-                        assert.equal(contact.extra.facname, 'WCL clinic');
-                        assert.equal(contact.extra.is_registered, 'true');
-                        assert.equal(contact.extra.registered_by, '+27821234444');
-                        assert.equal(contact.extra.id_type, 'passport');
-                        assert.equal(contact.extra.passport_country, 'cu');
-                        assert.equal(contact.extra.passport_num, 'Cub1234');
-                        assert.equal(contact.extra.dob, '1976-03-07');
+                        assert.equal(contact.extra.nc_faccode, '123456');
+                        assert.equal(contact.extra.nc_facname, 'WCL clinic');
+                        assert.equal(contact.extra.nc_is_registered, 'true');
+                        assert.equal(contact.extra.nc_registered_by, '+27821234444');
+                        assert.equal(contact.extra.nc_id_type, 'passport');
+                        assert.equal(contact.extra.nc_passport_country, 'cu');
+                        assert.equal(contact.extra.nc_passport_num, 'Cub1234');
+                        assert.equal(contact.extra.nc_dob, '1976-03-07');
                     })
                     .run();
             });
@@ -653,8 +652,8 @@ describe("app", function() {
                           msisdn: '+27821239999'
                         });
                         assert.equal(Object.keys(contact.extra).length, 2);
-                        assert.equal(contact.extra.working_on, "");
-                        assert.equal(contact.extra.opt_out_reason, "job_change");
+                        assert.equal(contact.extra.nc_working_on, "");
+                        assert.equal(contact.extra.nc_opt_out_reason, "job_change");
                     })
                     .run();
             });
@@ -686,8 +685,8 @@ describe("app", function() {
                           msisdn: '+27821239999'
                         });
                         assert.equal(Object.keys(contact.extra).length, 2);
-                        assert.equal(contact.extra.working_on, "");
-                        assert.equal(contact.extra.opt_out_reason, "");
+                        assert.equal(contact.extra.nc_working_on, "");
+                        assert.equal(contact.extra.nc_opt_out_reason, "");
                     })
                     .run();
             });
@@ -728,15 +727,15 @@ describe("app", function() {
                           msisdn: '+27821239999'
                         });
                         assert.equal(Object.keys(contact.extra).length, 1);
-                        assert.equal(contact.extra.working_on, undefined);  // defined on user
-                        assert.equal(contact.extra.opt_out_reason, "job_change");
+                        assert.equal(contact.extra.nc_working_on, undefined);  // defined on user
+                        assert.equal(contact.extra.nc_opt_out_reason, "job_change");
                     })
                     .check(function(api) {
                         var contact = _.find(api.contacts.store, {
                           msisdn: '+27821234444'
                         });
                         assert.equal(Object.keys(contact.extra).length, 1);
-                        assert.equal(contact.extra.working_on, "+27821239999");
+                        assert.equal(contact.extra.nc_working_on, "+27821239999");
                     })
                     .run();
             });
@@ -771,15 +770,15 @@ describe("app", function() {
                           msisdn: '+27821239999'
                         });
                         assert.equal(Object.keys(contact.extra).length, 1);
-                        assert.equal(contact.extra.working_on, undefined);  // defined on user
-                        assert.equal(contact.extra.opt_out_reason, "");
+                        assert.equal(contact.extra.nc_working_on, undefined);  // defined on user
+                        assert.equal(contact.extra.nc_opt_out_reason, "");
                     })
                     .check(function(api) {
                         var contact = _.find(api.contacts.store, {
                           msisdn: '+27821234444'
                         });
                         assert.equal(Object.keys(contact.extra).length, 1);
-                        assert.equal(contact.extra.working_on, "+27821239999");
+                        assert.equal(contact.extra.nc_working_on, "+27821239999");
                     })
                     .run();
             });

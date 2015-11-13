@@ -28,11 +28,11 @@ go.app = function() {
             return self.im.contacts
                 .for_user()
                 .then(function(user_contact) {
-                    if ((!_.isUndefined(user_contact.extra.working_on))
-                        && (user_contact.extra.working_on !== "")) {
+                    if ((!_.isUndefined(user_contact.extra.nc_working_on))
+                        && (user_contact.extra.nc_working_on !== "")) {
                         self.user = user_contact;
                         return self.im.contacts
-                            .get(user_contact.extra.working_on, {create: true})
+                            .get(user_contact.extra.nc_working_on, {create: true})
                             .then(function(working_on){
                                 self.contact = working_on;
                             });
@@ -48,7 +48,7 @@ go.app = function() {
 
         self.should_send_dialback = function(e) {
             return e.user_terminated
-                && !go.utils.is_true(self.contact.extra.redial_sms_sent);
+                && !go.utils.is_true(self.contact.extra.nc_redial_sms_sent);
         };
 
         self.send_dialback = function() {
@@ -58,7 +58,7 @@ go.app = function() {
                     content: self.get_finish_reg_sms()
                 })
                 .then(function() {
-                    self.contact.extra.redial_sms_sent = 'true';
+                    self.contact.extra.nc_redial_sms_sent = 'true';
                     return self.im.contacts.save(self.contact);
                 });
         };
@@ -82,7 +82,7 @@ go.app = function() {
             return self.im.outbound.send({
                 to: self.contact,
                 endpoint: 'sms',
-                lang: self.contact.extra.language_choice,
+                lang: self.contact.extra.nc_language_choice,
                 content: $("Welcome to NurseConnect. For more options or to " +
                            "opt out, dial {{channel}}.")
                     .context({channel: self.im.config.channel})
@@ -131,7 +131,7 @@ go.app = function() {
 
                 next: function(choice) {
                     if (choice.value === 'isl_route') {
-                        self.user.extra.working_on = "";
+                        self.user.extra.nc_working_on = "";
                         return self.im.contacts
                             .save(self.user)
                             .then(function() {
@@ -156,11 +156,11 @@ go.app = function() {
 
         self.add('isl_route', function(name) {
             // reset working_on extra
-            self.user.extra.working_on = "";
+            self.user.extra.nc_working_on = "";
             return self.im.contacts
                 .save(self.user)
                 .then(function() {
-                    if (self.contact.extra.is_registered === 'true') {
+                    if (self.contact.extra.nc_is_registered === 'true') {
                         return self.states.create('st_subscribed');
                     } else {
                         return self.states.create('st_not_subscribed');
@@ -255,7 +255,7 @@ go.app = function() {
                 },
                 next: function(content) {
                     msisdn = go.utils.normalize_msisdn(content, '27');
-                    self.user.extra.working_on = msisdn;
+                    self.user.extra.nc_working_on = msisdn;
                     return self.im.contacts
                         .save(self.user)
                         .then(function() {
@@ -270,7 +270,7 @@ go.app = function() {
                 .for_user()
                 .then(function(user_contact) {
                     return self.im.contacts
-                        .get(user_contact.extra.working_on, {create: true})
+                        .get(user_contact.extra.nc_working_on, {create: true})
                         .then(function(working_on){
                             self.contact = working_on;
                         });
@@ -302,7 +302,7 @@ go.app = function() {
                 next: function(choice) {
                     if (choice.value === 'yes') {
                         return go.utils
-                            .opt_in(self.im, self.contact)
+                            .nurse_opt_in(self.im, self.contact)
                             .then(function() {
                                 return 'st_faccode';
                             });
@@ -326,7 +326,7 @@ go.app = function() {
         });
 
         self.add('st_faccode', function(name) {
-            var owner = self.user.extra.working_on === "" ? 'your' : 'their';
+            var owner = self.user.extra.nc_working_on === "" ? 'your' : 'their';
             var error = $("Sorry, that code is not recognized. Please enter the 6-digit facility code again, e. 535970:");
             var question = $("Please enter {{owner}} 6-digit facility code:")
                 .context({owner: owner});
@@ -339,7 +339,7 @@ go.app = function() {
                             if (!facname) {
                                 return error;
                             } else {
-                                self.contact.extra.facname = facname;
+                                self.contact.extra.nc_facname = facname;
                                 return self.im.contacts
                                     .save(self.contact)
                                     .then(function() {
@@ -349,7 +349,7 @@ go.app = function() {
                         });
                 },
                 next: function(content) {
-                    self.contact.extra.faccode = content.trim();
+                    self.contact.extra.nc_faccode = content.trim();
                     return self.im.contacts
                         .save(self.contact)
                         .then(function() {
@@ -360,12 +360,12 @@ go.app = function() {
         });
 
         self.add('st_facname', function(name) {
-            var owner = self.user.extra.working_on === "" ? 'your' : 'their';
+            var owner = self.user.extra.nc_working_on === "" ? 'your' : 'their';
             return new ChoiceState(name, {
                 question: $("Please confirm {{owner}} facility: {{facname}}")
                     .context({
                         owner: owner,
-                        facname: self.contact.extra.facname
+                        facname: self.contact.extra.nc_facname
                     }),
                 choices: [
                     new Choice('st_id_type', $('Confirm')),
@@ -378,7 +378,7 @@ go.app = function() {
         });
 
         self.add('st_id_type', function(name) {
-            var owner = self.user.extra.working_on === "" ? 'your' : 'their';
+            var owner = self.user.extra.nc_working_on === "" ? 'your' : 'their';
             return new ChoiceState(name, {
                 question: $("Please select {{owner}} type of identification:")
                     .context({owner: owner}),
@@ -393,7 +393,7 @@ go.app = function() {
         });
 
         self.add('st_sa_id', function(name) {
-            var owner = self.user.extra.working_on === "" ? 'your' : 'their';
+            var owner = self.user.extra.nc_working_on === "" ? 'your' : 'their';
             var error = $("Sorry, the format of the ID number is not correct. Please enter {{owner}} RSA ID number again, e.g. 7602095060082")
                 .context({owner: owner});
             var question = $("Please enter {{owner}} 13-digit RSA ID number:")
@@ -458,28 +458,28 @@ go.app = function() {
 
         self.add('isl_save_nursereg', function(name) {
             // Save useful contact extras
-            self.contact.extra.is_registered = 'true';
+            self.contact.extra.nc_is_registered = 'true';
 
             if (self.im.user.answers.st_id_type === 'st_sa_id') {  // rsa id
-                self.contact.extra.id_type = 'sa_id';
-                self.contact.extra.sa_id_no = self.im.user.answers.st_sa_id.trim();
-                self.contact.extra.dob = go.utils.extract_id_dob(
+                self.contact.extra.nc_id_type = 'sa_id';
+                self.contact.extra.nc_sa_id_no = self.im.user.answers.st_sa_id.trim();
+                self.contact.extra.nc_dob = go.utils.extract_id_dob(
                     self.im.user.answers.st_sa_id.trim());
             } else {  // passport
-                self.contact.extra.id_type = 'passport';
-                self.contact.extra.passport_country = self.im.user.answers.st_passport_country;
-                self.contact.extra.passport_num = self.im.user.answers.st_passport_num.trim();
-                self.contact.extra.dob = moment(self.im.user.answers.st_dob.trim(), 'DDMMYYYY'
+                self.contact.extra.nc_id_type = 'passport';
+                self.contact.extra.nc_passport_country = self.im.user.answers.st_passport_country;
+                self.contact.extra.nc_passport_num = self.im.user.answers.st_passport_num.trim();
+                self.contact.extra.nc_dob = moment(self.im.user.answers.st_dob.trim(), 'DDMMYYYY'
                     ).format('YYYY-MM-DD');
             }
 
-            if (self.user.extra.working_on !== "") {
-                self.contact.extra.registered_by = self.user.msisdn;
+            if (self.user.extra.nc_working_on !== "") {
+                self.contact.extra.nc_registered_by = self.user.msisdn;
 
-                if (self.user.extra.registrees === undefined) {
-                    self.user.extra.registrees = self.contact.msisdn;
+                if (self.user.extra.nc_registrees === undefined) {
+                    self.user.extra.nc_registrees = self.contact.msisdn;
                 } else {
-                    self.user.extra.registrees += ', ' + self.contact.msisdn;
+                    self.user.extra.nc_registrees += ', ' + self.contact.msisdn;
                 }
             }
 

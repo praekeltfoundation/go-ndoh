@@ -85,7 +85,7 @@ go.app = function() {
 
         self.states.add('states_opt_in_enter', function(name) {
             return go.utils
-                .opt_in(self.im, self.contact)
+                .nurse_opt_in(self.im, self.contact)
                 .then(function() {
                     return self.states.create('states_opt_in');
                 });

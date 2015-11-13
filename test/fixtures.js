@@ -1307,6 +1307,65 @@ module.exports = function() {
         }
     },
 
+// POST Vumi NurseReg
+    // Vumi registration post - sa_id (self reg)
+    {
+        "request": {
+            "method": "POST",
+            'headers': {
+                'Authorization': ['Token test_token']
+            },
+            "url": "http://ndoh-control/api/v2/nurseregs/",
+            "data": {
+                "msisdn": "+27821234444",
+                "faccode": "123456",
+                "id_type": "sa_id",
+                "id_no": "5101025009086",
+                "dob": "1951-01-02"
+            }
+        },
+        "response": {
+            "code": 201,
+            "data": {
+                "msisdn": "+27821234444",
+                "faccode": "123456",
+                "id_type": "sa_id",
+                "id_no": "5101025009086",
+                "dob": "1951-01-02"
+            }
+        }
+    },
+
+    // Vumi registration post - passport (other reg)
+    {
+        "request": {
+            "method": "POST",
+            'headers': {
+                'Authorization': ['Token test_token']
+            },
+            "url": "http://ndoh-control/api/v2/nurseregs/",
+            "data": {
+                "msisdn": "+27821235555",
+                "faccode": "123456",
+                "id_type": "passport",
+                "id_no": "Cub1234",
+                "dob": "1976-03-07",
+                "passport_origin": "cu"
+            }
+        },
+        "response": {
+            "code": 201,
+            "data": {
+                "msisdn": "+27821235555",
+                "faccode": "123456",
+                "id_type": "passport",
+                "id_no": "Cub1234",
+                "dob": "1976-03-07",
+                "passport_origin": "cu"
+            }
+        }
+    },
+
 // POST Snappy Ticket
     // Snappy ticket post - with clinic_code
     {

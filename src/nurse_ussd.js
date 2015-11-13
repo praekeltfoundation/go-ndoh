@@ -470,7 +470,7 @@ go.app = function() {
                     self.im.contacts.save(self.user),
                     self.im.contacts.save(self.contact),
                     self.send_registration_thanks(),
-                    // TODO #207 go.utils.post_nursereg(args),
+                    go.utils.post_nursereg(self.contact, self.im),
                 ])
                 .then(function() {
                     return self.states.create('st_end_reg');

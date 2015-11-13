@@ -661,6 +661,23 @@ go.utils = {
             });
     },
 
+    post_nursereg: function(contact, im) {
+        var payload = {
+            msisdn: go.utils.normalize_msisdn(contact.msisdn, '27'),  // +27...
+            faccode: contact.extra.nc_faccode,
+            id_type: contact.extra.nc_id_type,
+            dob: contact.extra.nc_dob
+        };
+        if (contact.extra.nc_id_type === 'sa_id') {
+            payload.id_no = contact.extra.nc_sa_id_no;
+        } else {
+            payload.id_no = contact.extra.nc_passport_num;
+            payload.passport_origin = contact.extra.nc_passport_country;
+        }
+        return go.utils
+            .control_v2_api_call("post", null, payload, 'nurseregs/', im);
+    },
+
     post_subscription: function(contact, im, metric_prefix, env, opts) {
         var payload = {
             contact_key: contact.key,

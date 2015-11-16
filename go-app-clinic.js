@@ -663,9 +663,10 @@ go.utils = {
             });
     },
 
-    post_nursereg: function(contact, im) {
+    post_nursereg: function(contact, dmsisdn, im) {
         var payload = {
-            msisdn: go.utils.normalize_msisdn(contact.msisdn, '27'),  // +27...
+            cmsisdn: go.utils.normalize_msisdn(contact.msisdn, '27'),  // +27...
+            dmsisdn: go.utils.normalize_msisdn(dmsisdn, '27'),  // +27...
             faccode: contact.extra.nc_faccode,
             id_type: contact.extra.nc_id_type,
             dob: contact.extra.nc_dob

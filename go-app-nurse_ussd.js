@@ -663,9 +663,10 @@ go.utils = {
             });
     },
 
-    post_nursereg: function(contact, im) {
+    post_nursereg: function(contact, dmsisdn, im) {
         var payload = {
-            msisdn: go.utils.normalize_msisdn(contact.msisdn, '27'),  // +27...
+            cmsisdn: go.utils.normalize_msisdn(contact.msisdn, '27'),  // +27...
+            dmsisdn: go.utils.normalize_msisdn(dmsisdn, '27'),  // +27...
             faccode: contact.extra.nc_faccode,
             id_type: contact.extra.nc_id_type,
             dob: contact.extra.nc_dob
@@ -1791,7 +1792,6 @@ go.app = function() {
 
             if (self.user.extra.nc_working_on !== "") {
                 self.contact.extra.nc_registered_by = self.user.msisdn;
-
                 if (self.user.extra.nc_registrees === undefined) {
                     self.user.extra.nc_registrees = self.contact.msisdn;
                 } else {
@@ -1804,7 +1804,7 @@ go.app = function() {
                     self.im.contacts.save(self.user),
                     self.im.contacts.save(self.contact),
                     self.send_registration_thanks(),
-                    go.utils.post_nursereg(self.contact, self.im),
+                    go.utils.post_nursereg(self.contact, self.user.msisdn, self.im),
                 ])
                 .then(function() {
                     return self.states.create('st_end_reg');

@@ -54,6 +54,11 @@ describe("app", function() {
                         url: 'http://test/v2/',
                         url_json: 'http://test/v2/json/'
                     },
+                    control: {
+                        username: 'test_user',
+                        api_key: 'test_key',
+                        url: 'http://ndoh-control/api/v1/'
+                    },
                     control_v2: {
                         url: 'http://ndoh-control/api/v2/',
                         api_token: 'test_token'
@@ -1014,6 +1019,56 @@ describe("app", function() {
                             state: 'st_dob',
                             reply: "Sorry, the format of the date of birth is not correct. Please enter it again, e.g. 27 May 1975 as 27051975:"
                         })
+                        .run();
+                });
+            });
+        });
+
+        // Change Old Number
+        describe.only("old number changing", function() {
+            describe("choosing to change old number", function() {
+                it("should go to st_change_old_nr", function() {
+                    return tester
+                        .setup.user.addr('27821234444')
+                        .setup.char_limit(140)  // limit first state chars
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '2'  // st_not_subscribed
+                        )
+                        .check.interaction({
+                            state: 'st_change_old_nr',
+                            reply: "Please enter the old number on which you used to receive messages, e.g. 0736436265:"
+                        })
+                        .run();
+                });
+            });
+            describe("entering poor phone number", function() {
+                it("should loop back", function() {
+                    return tester
+                        .setup.user.addr('27821234444')
+                        .setup.char_limit(140)  // limit first state chars
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '2'  // st_not_subscribed
+                            , '12345'  // st_change_old_nr
+                        )
+                        .check.interaction({
+                            state: 'st_change_old_nr',
+                            reply: "Sorry, the format of the mobile number is not correct. Please enter your old mobile number again, e.g. 0726252020"
+                        })
+                        .run();
+                });
+            });
+            describe("entering proper phone number", function() {
+                it("should continue", function() {
+                    return tester
+                        .setup.user.addr('27821234444')
+                        .setup.char_limit(140)  // limit first state chars
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '2'  // st_not_subscribed
+                            , '0821237777'  // st_change_old_nr
+                        )
                         .run();
                 });
             });

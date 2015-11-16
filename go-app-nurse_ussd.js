@@ -370,7 +370,6 @@ go.utils = {
                 .jembi_clinic_validate(im, clinic_code)
                 .then(function(json_result) {
                     var rows = JSON.parse(json_result.data).rows;
-                    // console.log(rows);
                     if (rows.length === 0) {
                         return false;
                     } else {
@@ -704,6 +703,17 @@ go.utils = {
                     return im.metrics.fire.inc([metric_prefix, "sum", "subscription_to_protocol_fail"].join('.'), {amount:1});
                 }
         });
+    },
+
+    get_subscription_by_msisdn: function(msisdn, im) {
+        var params = {
+            to_addr: msisdn
+        };
+        return go.utils
+            .control_api_call("get", params, null, 'subscription/', im)
+            .then(function(result) {
+                return JSON.parse(result.data);
+            });
     },
 
     subscription_unsubscribe_all: function(contact, im) {
@@ -1500,6 +1510,32 @@ go.app = function() {
         });
 
 
+    // CHANGE STATES
+
+        self.add('st_change_old_nr', function(name) {
+            var question = $("Please enter the old number on which you used to receive messages, e.g. 0736436265:");
+            var error = $("Sorry, the format of the mobile number is not correct. Please enter your old mobile number again, e.g. 0726252020");
+            return new FreeText(name, {
+                question: question,
+                check: function(content) {
+                    if (!go.utils.check_valid_phone_number(content.trim())) {
+                        return error;
+                    }
+                },
+                next: function(content) {
+                    return go.utils
+                        .get_subscription_by_msisdn(
+                            go.utils.normalize_msisdn(content, '27'),
+                            self.im)
+                        .then(function(subscription) {
+                            console.log(subscription);
+                        });
+
+                }
+            });
+        });
+
+
     // REGISTRATION STATES
 
         self.add('st_subscribe_self', function(name) {
@@ -1546,7 +1582,7 @@ go.app = function() {
             return new FreeText(name, {
                 question: question,
                 check: function(content) {
-                    if (!go.utils.check_valid_phone_number(content)) {
+                    if (!go.utils.check_valid_phone_number(content.trim())) {
                         return error;
                     }
                 },
@@ -1734,6 +1770,7 @@ go.app = function() {
                 next: 'isl_save_nursereg'
             });
         });
+
 
         self.add('isl_save_nursereg', function(name) {
             // Save useful contact extras

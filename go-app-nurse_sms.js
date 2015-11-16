@@ -370,7 +370,6 @@ go.utils = {
                 .jembi_clinic_validate(im, clinic_code)
                 .then(function(json_result) {
                     var rows = JSON.parse(json_result.data).rows;
-                    // console.log(rows);
                     if (rows.length === 0) {
                         return false;
                     } else {
@@ -704,6 +703,17 @@ go.utils = {
                     return im.metrics.fire.inc([metric_prefix, "sum", "subscription_to_protocol_fail"].join('.'), {amount:1});
                 }
         });
+    },
+
+    get_subscription_by_msisdn: function(msisdn, im) {
+        var params = {
+            to_addr: msisdn
+        };
+        return go.utils
+            .control_api_call("get", params, null, 'subscription/', im)
+            .then(function(result) {
+                return JSON.parse(result.data);
+            });
     },
 
     subscription_unsubscribe_all: function(contact, im) {

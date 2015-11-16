@@ -203,6 +203,32 @@ go.app = function() {
         });
 
 
+    // CHANGE STATES
+
+        self.add('st_change_old_nr', function(name) {
+            var question = $("Please enter the old number on which you used to receive messages, e.g. 0736436265:");
+            var error = $("Sorry, the format of the mobile number is not correct. Please enter your old mobile number again, e.g. 0726252020");
+            return new FreeText(name, {
+                question: question,
+                check: function(content) {
+                    if (!go.utils.check_valid_phone_number(content.trim())) {
+                        return error;
+                    }
+                },
+                next: function(content) {
+                    return go.utils
+                        .get_subscription_by_msisdn(
+                            go.utils.normalize_msisdn(content, '27'),
+                            self.im)
+                        .then(function(subscription) {
+                            console.log(subscription);
+                        });
+
+                }
+            });
+        });
+
+
     // REGISTRATION STATES
 
         self.add('st_subscribe_self', function(name) {
@@ -249,7 +275,7 @@ go.app = function() {
             return new FreeText(name, {
                 question: question,
                 check: function(content) {
-                    if (!go.utils.check_valid_phone_number(content)) {
+                    if (!go.utils.check_valid_phone_number(content.trim())) {
                         return error;
                     }
                 },

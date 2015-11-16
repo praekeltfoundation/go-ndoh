@@ -664,10 +664,10 @@ go.utils = {
             });
     },
 
-    post_nursereg: function(contact, user, im) {
+    post_nursereg: function(contact, dmsisdn, im) {
         var payload = {
             cmsisdn: go.utils.normalize_msisdn(contact.msisdn, '27'),  // +27...
-            dmsisdn: go.utils.normalize_msisdn(user.msisdn, '27'),  // +27...
+            dmsisdn: go.utils.normalize_msisdn(dmsisdn, '27'),  // +27...
             faccode: contact.extra.nc_faccode,
             id_type: contact.extra.nc_id_type,
             dob: contact.extra.nc_dob
@@ -1767,7 +1767,7 @@ go.app = function() {
                     self.im.contacts.save(self.user),
                     self.im.contacts.save(self.contact),
                     self.send_registration_thanks(),
-                    go.utils.post_nursereg(self.contact, self.user, self.im),
+                    go.utils.post_nursereg(self.contact, self.user.msisdn, self.im),
                 ])
                 .then(function() {
                     return self.states.create('st_end_reg');

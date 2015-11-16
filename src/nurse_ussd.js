@@ -469,7 +469,7 @@ go.app = function() {
                     self.im.contacts.save(self.user),
                     self.im.contacts.save(self.contact),
                     self.send_registration_thanks(),
-                    go.utils.post_nursereg(self.contact, self.user, self.im),
+                    go.utils.post_nursereg(self.contact, self.user.msisdn, self.im),
                 ])
                 .then(function() {
                     return self.states.create('st_end_reg');

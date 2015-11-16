@@ -1317,7 +1317,8 @@ module.exports = function() {
             },
             "url": "http://ndoh-control/api/v2/nurseregs/",
             "data": {
-                "msisdn": "+27821234444",
+                "cmsisdn": "+27821234444",
+                "dmsisdn": "+27821234444",
                 "faccode": "123456",
                 "id_type": "sa_id",
                 "id_no": "5101025009086",
@@ -1327,7 +1328,8 @@ module.exports = function() {
         "response": {
             "code": 201,
             "data": {
-                "msisdn": "+27821234444",
+                "cmsisdn": "+27821234444",
+                "dmsisdn": "+27821234444",
                 "faccode": "123456",
                 "id_type": "sa_id",
                 "id_no": "5101025009086",
@@ -1345,7 +1347,8 @@ module.exports = function() {
             },
             "url": "http://ndoh-control/api/v2/nurseregs/",
             "data": {
-                "msisdn": "+27821235555",
+                "cmsisdn": "+27821235555",
+                "dmsisdn": "+27821234444",
                 "faccode": "123456",
                 "id_type": "passport",
                 "id_no": "Cub1234",
@@ -1356,7 +1359,8 @@ module.exports = function() {
         "response": {
             "code": 201,
             "data": {
-                "msisdn": "+27821235555",
+                "cmsisdn": "+27821235555",
+                "dmsisdn": "+27821234444",
                 "faccode": "123456",
                 "id_type": "passport",
                 "id_no": "Cub1234",

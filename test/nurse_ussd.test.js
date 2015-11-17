@@ -1140,6 +1140,69 @@ describe("app", function() {
                         .run();
                 });
             });
+
+            describe("change sanc", function() {
+                it("should ask for sanc", function() {
+                    return tester
+                        .setup.user.addr('27821237777')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '4'  // st_subscribed - change sanc
+                        )
+                        .check.interaction({
+                            state: 'st_change_sanc',
+                            reply: "Please enter your 8-digit SANC registration number, e.g. 34567899:"
+                        })
+                        .run();
+                });
+                it("should have extras", function() {
+                    return tester
+                        .setup.user.addr('27821237777')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '4'  // st_subscribed - change sanc
+                        )
+                        .check(function(api) {
+                            var contact = _.find(api.contacts.store, {
+                              msisdn: '+27821237777'
+                            });
+                            assert.equal(Object.keys(contact.extra).length, 7);
+                            assert.equal(contact.extra.nc_sanc, undefined);
+                        })
+                        .run();
+                });
+                it("should reach details changed end state", function() {
+                    return tester
+                        .setup.user.addr('27821237777')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '4'  // st_subscribed - change sanc
+                            , '34567890'  // st_change_sanc
+                        )
+                        .check.interaction({
+                            state: 'st_end_detail_changed',
+                            reply: "Thank you. Your NurseConnect details have been changed. To change any other details, please dial *120*550*5# again."
+                        })
+                        .run();
+                });
+                it("should save extras", function() {
+                    return tester
+                        .setup.user.addr('27821237777')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '4'  // st_subscribed - change sanc
+                            , '34567890'  // st_change_sanc
+                        )
+                        .check(function(api) {
+                            var contact = _.find(api.contacts.store, {
+                              msisdn: '+27821237777'
+                            });
+                            assert.equal(Object.keys(contact.extra).length, 8);
+                            assert.equal(contact.extra.nc_sanc, "34567890");
+                        })
+                        .run();
+                });
+            });
         });
 
     });

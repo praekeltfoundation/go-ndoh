@@ -1171,6 +1171,34 @@ describe("app", function() {
                         })
                         .run();
                 });
+                it("should loop back if non-numeric char", function() {
+                    return tester
+                        .setup.user.addr('27821237777')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '4'  // st_subscribed - change sanc
+                            , '3456789A'  // st_change_sanc
+                        )
+                        .check.interaction({
+                            state: 'st_change_sanc',
+                            reply: "Sorry, the format of the SANC registration number is not correct. Please enter it again, e.g. 34567899:"
+                        })
+                        .run();
+                });
+                it("should loop back if not 8 chars", function() {
+                    return tester
+                        .setup.user.addr('27821237777')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '4'  // st_subscribed - change sanc
+                            , '3456789'  // st_change_sanc
+                        )
+                        .check.interaction({
+                            state: 'st_change_sanc',
+                            reply: "Sorry, the format of the SANC registration number is not correct. Please enter it again, e.g. 34567899:"
+                        })
+                        .run();
+                });
                 it("should reach details changed end state", function() {
                     return tester
                         .setup.user.addr('27821237777')
@@ -1231,6 +1259,34 @@ describe("app", function() {
                             });
                             assert.equal(Object.keys(contact.extra).length, 7);
                             assert.equal(contact.extra.nc_persal, undefined);
+                        })
+                        .run();
+                });
+                it("should loop back if non-numeric char", function() {
+                    return tester
+                        .setup.user.addr('27821237777')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '5'  // st_subscribed - change persal
+                            , '3456789A'  // st_change_persal
+                        )
+                        .check.interaction({
+                            state: 'st_change_persal',
+                            reply: "Sorry, the format of the Persal employee number is not correct. Please enter it again, e.g. 11118888:"
+                        })
+                        .run();
+                });
+                it("should loop back if not 8 chars", function() {
+                    return tester
+                        .setup.user.addr('27821237777')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '5'  // st_subscribed - change persal
+                            , '3456789'  // st_change_persal
+                        )
+                        .check.interaction({
+                            state: 'st_change_persal',
+                            reply: "Sorry, the format of the Persal employee number is not correct. Please enter it again, e.g. 11118888:"
                         })
                         .run();
                 });

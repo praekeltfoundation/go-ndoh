@@ -255,6 +255,30 @@ go.app = function() {
             });
         });
 
+        self.add('st_change_persal', function(name) {
+            var question = $("Please enter your 8-digit Persal employee number, e.g. 11118888:");
+            var error = $("Sorry, the format of the Persal employee number is not correct. Please enter it again, e.g. 11118888:");
+            return new FreeText(name, {
+                question: question,
+                check: function(content) {
+                    if (!go.utils.check_valid_number(content.trim())
+                        || content.trim().length !== 8) {
+                        return error;
+                    } else {
+                        return null;
+                    }
+                },
+                next: function(content) {
+                    self.contact.extra.nc_persal = content.trim();
+                    return self.im.contacts
+                        .save(self.contact)
+                        .then(function() {
+                            return 'isl_post_change_detail';
+                        });
+                }
+            });
+        });
+
         self.add('isl_post_change_detail', function() {
             return go.utils
                 .post_nursereg(self.contact, self.contact.msisdn, self.im)  // dmsisdn = cmsisdn for det changed

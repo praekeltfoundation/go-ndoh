@@ -667,7 +667,8 @@ go.utils = {
             faccode: contact.extra.nc_faccode,
             id_type: contact.extra.nc_id_type,
             dob: contact.extra.nc_dob,
-            sanc_reg_no: contact.extra.nc_sanc || null
+            sanc_reg_no: contact.extra.nc_sanc || null,
+            persal_no: contact.extra.nc_persal || null
         };
         if (contact.extra.nc_id_type === 'sa_id') {
             payload.id_no = contact.extra.nc_sa_id_no;

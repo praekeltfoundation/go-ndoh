@@ -1203,6 +1203,69 @@ describe("app", function() {
                         .run();
                 });
             });
+
+            describe("change persal", function() {
+                it("should ask for persal", function() {
+                    return tester
+                        .setup.user.addr('27821237777')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '5'  // st_subscribed - change persal
+                        )
+                        .check.interaction({
+                            state: 'st_change_persal',
+                            reply: "Please enter your 8-digit Persal employee number, e.g. 11118888:"
+                        })
+                        .run();
+                });
+                it("should have extras", function() {
+                    return tester
+                        .setup.user.addr('27821237777')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '5'  // st_subscribed - change persal
+                        )
+                        .check(function(api) {
+                            var contact = _.find(api.contacts.store, {
+                              msisdn: '+27821237777'
+                            });
+                            assert.equal(Object.keys(contact.extra).length, 7);
+                            assert.equal(contact.extra.nc_persal, undefined);
+                        })
+                        .run();
+                });
+                it("should reach details changed end state", function() {
+                    return tester
+                        .setup.user.addr('27821237777')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '5'  // st_subscribed - change persal
+                            , '11114444'  // st_change_persal
+                        )
+                        .check.interaction({
+                            state: 'st_end_detail_changed',
+                            reply: "Thank you. Your NurseConnect details have been changed. To change any other details, please dial *120*550*5# again."
+                        })
+                        .run();
+                });
+                it("should save extras", function() {
+                    return tester
+                        .setup.user.addr('27821237777')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '5'  // st_subscribed - change persal
+                            , '11114444'  // st_change_persal
+                        )
+                        .check(function(api) {
+                            var contact = _.find(api.contacts.store, {
+                              msisdn: '+27821237777'
+                            });
+                            assert.equal(Object.keys(contact.extra).length, 8);
+                            assert.equal(contact.extra.nc_persal, "11114444");
+                        })
+                        .run();
+                });
+            });
         });
 
     });

@@ -670,7 +670,8 @@ go.utils = {
             faccode: contact.extra.nc_faccode,
             id_type: contact.extra.nc_id_type,
             dob: contact.extra.nc_dob,
-            sanc_reg_no: contact.extra.nc_sanc || null
+            sanc_reg_no: contact.extra.nc_sanc || null,
+            persal_no: contact.extra.nc_persal || null
         };
         if (contact.extra.nc_id_type === 'sa_id') {
             payload.id_no = contact.extra.nc_sa_id_no;
@@ -1550,6 +1551,30 @@ go.app = function() {
                 },
                 next: function(content) {
                     self.contact.extra.nc_sanc = content.trim();
+                    return self.im.contacts
+                        .save(self.contact)
+                        .then(function() {
+                            return 'isl_post_change_detail';
+                        });
+                }
+            });
+        });
+
+        self.add('st_change_persal', function(name) {
+            var question = $("Please enter your 8-digit Persal employee number, e.g. 11118888:");
+            var error = $("Sorry, the format of the Persal employee number is not correct. Please enter it again, e.g. 11118888:");
+            return new FreeText(name, {
+                question: question,
+                check: function(content) {
+                    if (!go.utils.check_valid_number(content.trim())
+                        || content.trim().length !== 8) {
+                        return error;
+                    } else {
+                        return null;
+                    }
+                },
+                next: function(content) {
+                    self.contact.extra.nc_persal = content.trim();
                     return self.im.contacts
                         .save(self.contact)
                         .then(function() {

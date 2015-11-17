@@ -1323,7 +1323,8 @@ module.exports = function() {
                 "id_type": "sa_id",
                 "id_no": "5101025009086",
                 "dob": "1951-01-02",
-                "sanc_reg_no": null
+                "sanc_reg_no": null,
+                "persal_no": null
             }
         },
         "response": {
@@ -1335,7 +1336,8 @@ module.exports = function() {
                 "id_type": "sa_id",
                 "id_no": "5101025009086",
                 "dob": "1951-01-02",
-                "sanc_reg_no": null
+                "sanc_reg_no": null,
+                "persal_no": null
             }
         }
     },
@@ -1356,7 +1358,8 @@ module.exports = function() {
                 "id_no": "Cub1234",
                 "dob": "1976-03-07",
                 "passport_origin": "cu",
-                "sanc_reg_no": null
+                "sanc_reg_no": null,
+                "persal_no": null
             }
         },
         "response": {
@@ -1369,7 +1372,8 @@ module.exports = function() {
                 "id_no": "Cub1234",
                 "dob": "1976-03-07",
                 "passport_origin": "cu",
-                "sanc_reg_no": null
+                "sanc_reg_no": null,
+                "persal_no": null
             }
         }
     },
@@ -1389,7 +1393,8 @@ module.exports = function() {
                 "id_type": "sa_id",
                 "id_no": "5101025009086",
                 "dob": "1951-01-02",
-                "sanc_reg_no": null
+                "sanc_reg_no": null,
+                "persal_no": null
             }
         },
         "response": {
@@ -1401,7 +1406,8 @@ module.exports = function() {
                 "id_type": "sa_id",
                 "id_no": "5101025009086",
                 "dob": "1951-01-02",
-                "sanc_reg_no": null
+                "sanc_reg_no": null,
+                "persal_no": null
             }
         }
     },
@@ -1421,7 +1427,8 @@ module.exports = function() {
                 "id_type": "sa_id",
                 "id_no": "5101025009086",
                 "dob": "1951-01-02",
-                "sanc_reg_no": "34567890"
+                "sanc_reg_no": "34567890",
+                "persal_no": null
             }
         },
         "response": {
@@ -1433,7 +1440,42 @@ module.exports = function() {
                 "id_type": "sa_id",
                 "id_no": "5101025009086",
                 "dob": "1951-01-02",
-                "sanc_reg_no": "34567890"
+                "sanc_reg_no": "34567890",
+                "persal_no": null
+            }
+        }
+    },
+
+    // Vumi nursereg post - change detail persal
+    {
+        "request": {
+            "method": "POST",
+            'headers': {
+                'Authorization': ['Token test_token']
+            },
+            "url": "http://ndoh-control/api/v2/nurseregs/",
+            "data": {
+                "cmsisdn": "+27821237777",
+                "dmsisdn": "+27821237777",
+                "faccode": "123456",
+                "id_type": "sa_id",
+                "id_no": "5101025009086",
+                "dob": "1951-01-02",
+                "sanc_reg_no": null,
+                "persal_no": "11114444"
+            }
+        },
+        "response": {
+            "code": 201,
+            "data": {
+                "cmsisdn": "+27821237777",
+                "dmsisdn": "+27821237777",
+                "faccode": "123456",
+                "id_type": "sa_id",
+                "id_no": "5101025009086",
+                "dob": "1951-01-02",
+                "sanc_reg_no": null,
+                "persal_no": "11114444"
             }
         }
     },

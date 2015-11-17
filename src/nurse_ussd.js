@@ -212,13 +212,13 @@ go.app = function() {
                 question: question,
                 check: function(content) {
                     return go.utils
-                        .validate_clinic_code(self.im, content.trim())
+                        .validate_clinic_code(self.im, content)
                         .then(function(facname) {
                             if (!facname) {
                                 return error;
                             } else {
                                 self.contact.extra.nc_facname = facname;
-                                self.contact.extra.nc_faccode = content.trim();
+                                self.contact.extra.nc_faccode = content;
                                 return self.im.contacts
                                     .save(self.contact)
                                     .then(function() {
@@ -237,15 +237,15 @@ go.app = function() {
             return new FreeText(name, {
                 question: question,
                 check: function(content) {
-                    if (!go.utils.check_valid_number(content.trim())
-                        || content.trim().length !== 8) {
+                    if (!go.utils.check_valid_number(content)
+                        || content.length !== 8) {
                         return error;
                     } else {
                         return null;
                     }
                 },
                 next: function(content) {
-                    self.contact.extra.nc_sanc = content.trim();
+                    self.contact.extra.nc_sanc = content;
                     return self.im.contacts
                         .save(self.contact)
                         .then(function() {
@@ -261,15 +261,15 @@ go.app = function() {
             return new FreeText(name, {
                 question: question,
                 check: function(content) {
-                    if (!go.utils.check_valid_number(content.trim())
-                        || content.trim().length !== 8) {
+                    if (!go.utils.check_valid_number(content)
+                        || content.length !== 8) {
                         return error;
                     } else {
                         return null;
                     }
                 },
                 next: function(content) {
-                    self.contact.extra.nc_persal = content.trim();
+                    self.contact.extra.nc_persal = content;
                     return self.im.contacts
                         .save(self.contact)
                         .then(function() {
@@ -301,7 +301,7 @@ go.app = function() {
             return new FreeText(name, {
                 question: question,
                 check: function(content) {
-                    if (!go.utils.check_valid_phone_number(content.trim())) {
+                    if (!go.utils.check_valid_phone_number(content)) {
                         return error;
                     }
                 },
@@ -380,13 +380,13 @@ go.app = function() {
             return new FreeText(name, {
                 question: question,
                 check: function(content) {
-                    if (!go.utils.check_valid_phone_number(content.trim())) {
+                    if (!go.utils.check_valid_phone_number(content)) {
                         return error;
                     }
                 },
                 next: function(content) {
                     return self.im.contacts
-                        .get(go.utils.normalize_msisdn(content.trim(), '27'), {create: true})  // false raises exception
+                        .get(go.utils.normalize_msisdn(content, '27'), {create: true})  // false raises exception
                         .then(function(contact) {
                             if (contact.extra.nc_is_registered === "true") {
                                 return {
@@ -478,7 +478,7 @@ go.app = function() {
             return new FreeText(name, {
                 question: question,
                 check: function(content) {
-                    if (!go.utils.check_valid_phone_number(content.trim())) {
+                    if (!go.utils.check_valid_phone_number(content)) {
                         return error;
                     }
                 },
@@ -551,13 +551,13 @@ go.app = function() {
                 question: question,
                 check: function(content) {
                     return go.utils
-                        .validate_clinic_code(self.im, content.trim())
+                        .validate_clinic_code(self.im, content)
                         .then(function(facname) {
                             if (!facname) {
                                 return error;
                             } else {
                                 self.contact.extra.nc_facname = facname;
-                                self.contact.extra.nc_faccode = content.trim();
+                                self.contact.extra.nc_faccode = content;
                                 return self.im.contacts
                                     .save(self.contact)
                                     .then(function() {
@@ -612,7 +612,7 @@ go.app = function() {
             return new FreeText(name, {
                 question: question,
                 check: function(content) {
-                    if (!go.utils.validate_id_sa(content.trim())) {
+                    if (!go.utils.validate_id_sa(content)) {
                         return error;
                     }
                 },
@@ -659,7 +659,7 @@ go.app = function() {
             return new FreeText(name, {
                 question: question,
                 check: function(content) {
-                    if (!go.utils.is_valid_date(content.trim(), 'DDMMYYYY')) {
+                    if (!go.utils.is_valid_date(content, 'DDMMYYYY')) {
                         return error;
                     }
                 },
@@ -673,14 +673,14 @@ go.app = function() {
 
             if (self.im.user.answers.st_id_type === 'st_sa_id') {  // rsa id
                 self.contact.extra.nc_id_type = 'sa_id';
-                self.contact.extra.nc_sa_id_no = self.im.user.answers.st_sa_id.trim();
+                self.contact.extra.nc_sa_id_no = self.im.user.answers.st_sa_id;
                 self.contact.extra.nc_dob = go.utils.extract_id_dob(
-                    self.im.user.answers.st_sa_id.trim());
+                    self.im.user.answers.st_sa_id);
             } else {  // passport
                 self.contact.extra.nc_id_type = 'passport';
                 self.contact.extra.nc_passport_country = self.im.user.answers.st_passport_country;
-                self.contact.extra.nc_passport_num = self.im.user.answers.st_passport_num.trim();
-                self.contact.extra.nc_dob = moment(self.im.user.answers.st_dob.trim(), 'DDMMYYYY'
+                self.contact.extra.nc_passport_num = self.im.user.answers.st_passport_num;
+                self.contact.extra.nc_dob = moment(self.im.user.answers.st_dob, 'DDMMYYYY'
                     ).format('YYYY-MM-DD');
             }
 

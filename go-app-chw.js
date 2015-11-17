@@ -663,7 +663,7 @@ go.utils = {
             });
     },
 
-    post_nursereg: function(contact, dmsisdn, im) {
+    post_nursereg: function(contact, dmsisdn, im, rmsisdn) {
         var payload = {
             cmsisdn: go.utils.normalize_msisdn(contact.msisdn, '27'),  // +27...
             dmsisdn: go.utils.normalize_msisdn(dmsisdn, '27'),  // +27...
@@ -678,6 +678,9 @@ go.utils = {
         } else {
             payload.id_no = contact.extra.nc_passport_num;
             payload.passport_origin = contact.extra.nc_passport_country;
+        }
+        if (rmsisdn) {
+            payload.rmsisdn = rmsisdn;
         }
         return go.utils
             .control_v2_api_call("post", null, payload, 'nurseregs/', im);

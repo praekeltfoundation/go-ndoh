@@ -1025,54 +1025,132 @@ describe("app", function() {
         });
 
         // Change Old Number
-        // describe.only("old number changing", function() {
-        //     describe("choosing to change old number", function() {
-        //         it("should go to st_change_old_nr", function() {
-        //             return tester
-        //                 .setup.user.addr('27821234444')
-        //                 .setup.char_limit(140)  // limit first state chars
-        //                 .inputs(
-        //                     {session_event: 'new'}  // dial in
-        //                     , '2'  // st_not_subscribed
-        //                 )
-        //                 .check.interaction({
-        //                     state: 'st_change_old_nr',
-        //                     reply: "Please enter the old number on which you used to receive messages, e.g. 0736436265:"
-        //                 })
-        //                 .run();
-        //         });
-        //     });
-        //     describe("entering poor phone number", function() {
-        //         it("should loop back", function() {
-        //             return tester
-        //                 .setup.user.addr('27821234444')
-        //                 .setup.char_limit(140)  // limit first state chars
-        //                 .inputs(
-        //                     {session_event: 'new'}  // dial in
-        //                     , '2'  // st_not_subscribed
-        //                     , '12345'  // st_change_old_nr
-        //                 )
-        //                 .check.interaction({
-        //                     state: 'st_change_old_nr',
-        //                     reply: "Sorry, the format of the mobile number is not correct. Please enter your old mobile number again, e.g. 0726252020"
-        //                 })
-        //                 .run();
-        //         });
-        //     });
-        //     describe("entering proper phone number", function() {
-        //         it("should continue", function() {
-        //             return tester
-        //                 .setup.user.addr('27821234444')
-        //                 .setup.char_limit(140)  // limit first state chars
-        //                 .inputs(
-        //                     {session_event: 'new'}  // dial in
-        //                     , '2'  // st_not_subscribed
-        //                     , '0821237777'  // st_change_old_nr
-        //                 )
-        //                 .run();
-        //         });
-        //     });
-        // });
+        describe("old number changing", function() {
+            describe("choosing to change old number", function() {
+                it("should go to st_change_old_nr", function() {
+                    return tester
+                        .setup.user.addr('27821234444')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '2'  // st_not_subscribed
+                        )
+                        .check.interaction({
+                            state: 'st_change_old_nr',
+                            reply: "Please enter the old number on which you used to receive messages, e.g. 0736436265:"
+                        })
+                        .run();
+                });
+            });
+            describe("entering poor phone number", function() {
+                it("should loop back", function() {
+                    return tester
+                        .setup.user.addr('27821234444')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '2'  // st_not_subscribed
+                            , '12345'  // st_change_old_nr
+                        )
+                        .check.interaction({
+                            state: 'st_change_old_nr',
+                            reply: "Sorry, the format of the mobile number is not correct. Please enter your old mobile number again, e.g. 0726252020"
+                        })
+                        .run();
+                });
+            });
+            describe("entering proper phone number - non-existent contact", function() {
+                it("should ask to try again", function() {
+                    return tester
+                        .setup.user.addr('27821234444')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '2'  // st_not_subscribed
+                            , '0821236666'  // st_change_old_nr
+                        )
+                        .check.interaction({
+                            state: 'st_change_old_not_found',
+                            reply: [
+                                "The number 0821236666 is not currently subscribed to receive NurseConnect messages. Try again?",
+                                "1. Yes",
+                                "2. No"
+                            ].join('\n')
+                        })
+                        .run();
+                });
+                it("should try again if chosen", function() {
+                    return tester
+                        .setup.user.addr('27821234444')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '2'  // st_not_subscribed
+                            , '0821236666'  // st_change_old_nr
+                            , '1'  // st_change_old_not_found - yes
+                        )
+                        .check.interaction({
+                            state: 'st_change_old_nr',
+                        })
+                        .run();
+                });
+                it("should abort if chosen", function() {
+                    return tester
+                        .setup.user.addr('27821234444')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '2'  // st_not_subscribed
+                            , '0821236666'  // st_change_old_nr
+                            , '2'  // st_change_old_not_found
+                        )
+                        .check.interaction({
+                            state: 'st_permission_denied',
+                        })
+                        .run();
+                });
+            });
+            describe("entering proper phone number - existing contact", function() {
+                it("should reach details changed end state", function() {
+                    return tester
+                        .setup.user.addr('27821234444')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '2'  // st_not_subscribed
+                            , '0821237777'  // st_change_old_nr
+                        )
+                        .check.interaction({
+                            state: 'st_end_detail_changed',
+                            reply: "Thank you. Your NurseConnect details have been changed. To change any other details, please dial *120*550*5# again."
+                        })
+                        .run();
+                });
+                it("should transfer extras", function() {
+                    return tester
+                        .setup.user.addr('27821234444')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '2'  // st_not_subscribed
+                            , '0821237777'  // st_change_old_nr
+                        )
+                        .check(function(api) {
+                            var new_contact = _.find(api.contacts.store, {
+                              msisdn: '+27821234444'
+                            });
+                            assert.equal(Object.keys(new_contact.extra).length, 7);
+                            assert.equal(new_contact.extra.nc_faccode, '123456');
+                            assert.equal(new_contact.extra.nc_facname, 'WCL clinic');
+                            assert.equal(new_contact.extra.nc_is_registered, 'true');
+                            assert.equal(new_contact.extra.nc_working_on, "");
+                            assert.equal(new_contact.extra.nc_id_type, "sa_id");
+                            assert.equal(new_contact.extra.nc_sa_id_no, "5101025009086");
+                            assert.equal(new_contact.extra.nc_dob, "1951-01-02");
+                        })
+                        .check(function(api) {
+                            var old_contact = _.find(api.contacts.store, {
+                              msisdn: '+27821237777'
+                            });
+                            assert.equal(Object.keys(old_contact.extra).length, 0);
+                        })
+                        .run();
+                });
+            });
+        });
 
         // Change Details
         describe("changing details", function() {

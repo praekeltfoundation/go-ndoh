@@ -663,7 +663,7 @@ go.utils = {
             });
     },
 
-    post_nursereg: function(contact, dmsisdn, im) {
+    post_nursereg: function(contact, dmsisdn, im, rmsisdn) {
         var payload = {
             cmsisdn: go.utils.normalize_msisdn(contact.msisdn, '27'),  // +27...
             dmsisdn: go.utils.normalize_msisdn(dmsisdn, '27'),  // +27...
@@ -678,6 +678,9 @@ go.utils = {
         } else {
             payload.id_no = contact.extra.nc_passport_num;
             payload.passport_origin = contact.extra.nc_passport_country;
+        }
+        if (rmsisdn) {
+            payload.rmsisdn = rmsisdn;
         }
         return go.utils
             .control_v2_api_call("post", null, payload, 'nurseregs/', im);
@@ -1616,55 +1619,62 @@ go.app = function() {
         //     });
         // });
 
-        // self.add('st_change_old_nr', function(name) {
-        //     var question = $("Please enter the old number on which you used to receive messages, e.g. 0736436265:");
-        //     var error = $("Sorry, the format of the mobile number is not correct. Please enter your old mobile number again, e.g. 0726252020");
-        //     return new FreeText(name, {
-        //         question: question,
-        //         check: function(content) {
-        //             if (!go.utils.check_valid_phone_number(content.trim())) {
-        //                 return error;
-        //             }
-        //         },
-        //         next: function(content) {
-        //             return go.utils
-        //                 // OR get registration ??
-        //                 // check opted_out ??
-        //                 // get only active subscriptions ??
-        //                 .get_subscription_by_msisdn(
-        //                     go.utils.normalize_msisdn(content, '27'),
-        //                     self.im)
-        //                 .then(function(subscription) {
-        //                     if (subscription.objects.length > 0) {
-        //                         return 'isl_change_old_nr';
-        //                     }
-        //                 });
+        self.add('st_change_old_nr', function(name) {
+            var question = $("Please enter the old number on which you used to receive messages, e.g. 0736436265:");
+            var error = $("Sorry, the format of the mobile number is not correct. Please enter your old mobile number again, e.g. 0726252020");
+            return new FreeText(name, {
+                question: question,
+                check: function(content) {
+                    if (!go.utils.check_valid_phone_number(content.trim())) {
+                        return error;
+                    }
+                },
+                next: function(content) {
+                    return self.im.contacts
+                        .get(go.utils.normalize_msisdn(content.trim(), '27'), {create: true})  // false raises exception
+                        .then(function(contact) {
+                            if (contact.extra.nc_is_registered === "true") {
+                                return {
+                                    name: 'isl_change_old_nr',
+                                    creator_opts: {contact: contact}
+                                };
+                            } else {
+                                return 'st_change_old_not_found';
+                            }
+                        });
+                }
+            });
+        });
 
-        //         }
-        //     });
-        // });
+        self.add('st_change_old_not_found', function(name) {
+            return new ChoiceState(name, {
+                question: $("The number {{msisdn}} is not currently subscribed to receive NurseConnect messages. Try again?")
+                    .context({msisdn: self.im.user.answers.st_change_old_nr}),
+                choices: [
+                    new Choice('st_change_old_nr', $('Yes')),
+                    new Choice('st_permission_denied', $('No')),
+                ],
+                next: function(choice) {
+                    return choice.value;
+                }
+            });
+        });
 
-        // self.add('isl_change_old_nr', function(name) {
-            // load the old contact to read the extras
-            // OR load the registration ??
-
-            // set the old extras to the new contact
-            // add the replaces msisdn extra
-            // save the contact
-
-            // what to do with old contact?
-            // save extra replaced_by?
-            // clear old extras? def is_registered
-            // opt out
-
-            // patch old subscription with new msisdn
-            // post new registration with delay (shouldn't create new sub)
-            // OR
-            // deactivate old subscription (but keep next seq num)
-            // post new registration with seq num (creates new sub)
-
-            // opt out old contact?
-        // });
+        self.add('isl_change_old_nr', function(name, opts) {
+            // transfer the old extras to the new contact
+            self.contact.extra = opts.contact.extra;
+            // clean up old contact
+            opts.contact.extra = {};
+            // save the contacts and post nursreg
+            return Q.all([
+                self.im.contacts.save(self.contact),
+                self.im.contacts.save(opts.contact),
+                go.utils.post_nursereg(self.contact, self.contact.msisdn, self.im, opts.contact.msisdn),
+            ])
+            .then(function() {
+                return self.states.create('st_end_detail_changed');
+            });
+        });
 
 
     // REGISTRATION STATES
@@ -1933,7 +1943,7 @@ go.app = function() {
                     self.im.contacts.save(self.user),
                     self.im.contacts.save(self.contact),
                     self.send_registration_thanks(),
-                    go.utils.post_nursereg(self.contact, self.user.msisdn, self.im),
+                    go.utils.post_nursereg(self.contact, self.user.msisdn, self.im, null),
                 ])
                 .then(function() {
                     return self.states.create('st_end_reg');

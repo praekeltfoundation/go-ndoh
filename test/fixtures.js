@@ -1480,6 +1480,42 @@ module.exports = function() {
         }
     },
 
+    // Vumi nursereg post - change old phone number
+    {
+        "request": {
+            "method": "POST",
+            'headers': {
+                'Authorization': ['Token test_token']
+            },
+            "url": "http://ndoh-control/api/v2/nurseregs/",
+            "data": {
+                "cmsisdn": "+27821234444",
+                "dmsisdn": "+27821234444",
+                "rmsisdn": "+27821237777",
+                "faccode": "123456",
+                "id_type": "sa_id",
+                "id_no": "5101025009086",
+                "dob": "1951-01-02",
+                "sanc_reg_no": null,
+                "persal_no": null
+            }
+        },
+        "response": {
+            "code": 201,
+            "data": {
+                "cmsisdn": "+27821234444",
+                "dmsisdn": "+27821234444",
+                "rmsisdn": "+27821237777",
+                "faccode": "123456",
+                "id_type": "sa_id",
+                "id_no": "5101025009086",
+                "dob": "1951-01-02",
+                "sanc_reg_no": null,
+                "persal_no": null
+            }
+        }
+    },
+
 // GET Vumi Subscription - NurseReg
     // Nursereg subscription for 27821237777
     {

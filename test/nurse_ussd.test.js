@@ -1025,50 +1025,118 @@ describe("app", function() {
         });
 
         // Change Old Number
-        describe.only("old number changing", function() {
-            describe("choosing to change old number", function() {
-                it("should go to st_change_old_nr", function() {
+        // describe.only("old number changing", function() {
+        //     describe("choosing to change old number", function() {
+        //         it("should go to st_change_old_nr", function() {
+        //             return tester
+        //                 .setup.user.addr('27821234444')
+        //                 .setup.char_limit(140)  // limit first state chars
+        //                 .inputs(
+        //                     {session_event: 'new'}  // dial in
+        //                     , '2'  // st_not_subscribed
+        //                 )
+        //                 .check.interaction({
+        //                     state: 'st_change_old_nr',
+        //                     reply: "Please enter the old number on which you used to receive messages, e.g. 0736436265:"
+        //                 })
+        //                 .run();
+        //         });
+        //     });
+        //     describe("entering poor phone number", function() {
+        //         it("should loop back", function() {
+        //             return tester
+        //                 .setup.user.addr('27821234444')
+        //                 .setup.char_limit(140)  // limit first state chars
+        //                 .inputs(
+        //                     {session_event: 'new'}  // dial in
+        //                     , '2'  // st_not_subscribed
+        //                     , '12345'  // st_change_old_nr
+        //                 )
+        //                 .check.interaction({
+        //                     state: 'st_change_old_nr',
+        //                     reply: "Sorry, the format of the mobile number is not correct. Please enter your old mobile number again, e.g. 0726252020"
+        //                 })
+        //                 .run();
+        //         });
+        //     });
+        //     describe("entering proper phone number", function() {
+        //         it("should continue", function() {
+        //             return tester
+        //                 .setup.user.addr('27821234444')
+        //                 .setup.char_limit(140)  // limit first state chars
+        //                 .inputs(
+        //                     {session_event: 'new'}  // dial in
+        //                     , '2'  // st_not_subscribed
+        //                     , '0821237777'  // st_change_old_nr
+        //                 )
+        //                 .run();
+        //         });
+        //     });
+        // });
+
+        // Change Details
+        describe("changing details", function() {
+            describe("change faccode", function() {
+                it("should ask for new faccode", function() {
                     return tester
-                        .setup.user.addr('27821234444')
-                        .setup.char_limit(140)  // limit first state chars
+                        .setup.user.addr('27821237777')
                         .inputs(
                             {session_event: 'new'}  // dial in
-                            , '2'  // st_not_subscribed
+                            , '3'  // st_subscribed - change faccode
                         )
                         .check.interaction({
-                            state: 'st_change_old_nr',
-                            reply: "Please enter the old number on which you used to receive messages, e.g. 0736436265:"
+                            state: 'st_change_faccode',
+                            reply: "Please enter the 6-digit facility code for your new facility, e.g. 456789:"
                         })
                         .run();
                 });
-            });
-            describe("entering poor phone number", function() {
-                it("should loop back", function() {
+                it("should have extras", function() {
                     return tester
-                        .setup.user.addr('27821234444')
-                        .setup.char_limit(140)  // limit first state chars
+                        .setup.user.addr('27821237777')
                         .inputs(
                             {session_event: 'new'}  // dial in
-                            , '2'  // st_not_subscribed
-                            , '12345'  // st_change_old_nr
+                            , '3'  // st_subscribed - change faccode
                         )
-                        .check.interaction({
-                            state: 'st_change_old_nr',
-                            reply: "Sorry, the format of the mobile number is not correct. Please enter your old mobile number again, e.g. 0726252020"
+                        .check(function(api) {
+                            var contact = _.find(api.contacts.store, {
+                              msisdn: '+27821237777'
+                            });
+                            assert.equal(Object.keys(contact.extra).length, 7);
+                            assert.equal(contact.extra.nc_faccode, "123456");
+                            assert.equal(contact.extra.nc_facname, "WCL clinic");
                         })
                         .run();
                 });
-            });
-            describe("entering proper phone number", function() {
-                it("should continue", function() {
+                it("should reach details changed end state", function() {
                     return tester
-                        .setup.user.addr('27821234444')
-                        .setup.char_limit(140)  // limit first state chars
+                        .setup.user.addr('27821237777')
                         .inputs(
                             {session_event: 'new'}  // dial in
-                            , '2'  // st_not_subscribed
-                            , '0821237777'  // st_change_old_nr
+                            , '3'  // st_subscribed - change faccode
+                            , '234567'  // st_change_faccode - olt clinic
                         )
+                        .check.interaction({
+                            state: 'st_end_detail_changed',
+                            reply: "Thank you. Your NurseConnect details have been changed. To change any other details, please dial *120*550*5# again."
+                        })
+                        .run();
+                });
+                it("should save extras", function() {
+                    return tester
+                        .setup.user.addr('27821237777')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '3'  // st_subscribed - change faccode
+                            , '234567'  // st_change_faccode - olt clinic
+                        )
+                        .check(function(api) {
+                            var contact = _.find(api.contacts.store, {
+                              msisdn: '+27821237777'
+                            });
+                            assert.equal(Object.keys(contact.extra).length, 7);
+                            assert.equal(contact.extra.nc_faccode, "234567");
+                            assert.equal(contact.extra.nc_facname, "OLT clinic");
+                        })
                         .run();
                 });
             });

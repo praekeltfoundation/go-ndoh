@@ -1308,7 +1308,7 @@ module.exports = function() {
     },
 
 // POST Vumi NurseReg
-    // Vumi registration post - sa_id (self reg)
+    // Vumi nursereg post - sa_id (self reg)
     {
         "request": {
             "method": "POST",
@@ -1338,7 +1338,7 @@ module.exports = function() {
         }
     },
 
-    // Vumi registration post - passport (other reg)
+    // Vumi nursereg post - passport (other reg)
     {
         "request": {
             "method": "POST",
@@ -1366,6 +1366,36 @@ module.exports = function() {
                 "id_no": "Cub1234",
                 "dob": "1976-03-07",
                 "passport_origin": "cu"
+            }
+        }
+    },
+
+    // Vumi nursereg post - change detail faccode
+    {
+        "request": {
+            "method": "POST",
+            'headers': {
+                'Authorization': ['Token test_token']
+            },
+            "url": "http://ndoh-control/api/v2/nurseregs/",
+            "data": {
+                "cmsisdn": "+27821237777",
+                "dmsisdn": "+27821237777",
+                "faccode": "234567",
+                "id_type": "sa_id",
+                "id_no": "5101025009086",
+                "dob": "1951-01-02"
+            }
+        },
+        "response": {
+            "code": 201,
+            "data": {
+                "cmsisdn": "+27821237777",
+                "dmsisdn": "+27821237777",
+                "faccode": "234567",
+                "id_type": "sa_id",
+                "id_no": "5101025009086",
+                "dob": "1951-01-02"
             }
         }
     },

@@ -718,14 +718,9 @@ go.utils = {
     },
 
     subscription_unsubscribe_all: function(contact, im) {
-        var params = {
-            to_addr: contact.msisdn
-        };
         return go.utils
-            .control_api_call("get", params, null, 'subscription/', im)
-            .then(function(json_result) {
-                // make all subscriptions inactive
-                var update = JSON.parse(json_result.data);
+            .get_subscription_by_msisdn(contact.msisdn, im)
+            .then(function(update) {
                 var clean = true;  // clean tracks if api call is unnecessary
                 for (i=0;i<update.objects.length;i++) {
                     if (update.objects[i].active === true){
@@ -738,7 +733,7 @@ go.utils = {
                 } else {
                     return Q();
                 }
-            });
+        });
     },
 
     subscription_count_active: function(contact, im) {

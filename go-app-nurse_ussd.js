@@ -718,14 +718,9 @@ go.utils = {
     },
 
     subscription_unsubscribe_all: function(contact, im) {
-        var params = {
-            to_addr: contact.msisdn
-        };
         return go.utils
-            .control_api_call("get", params, null, 'subscription/', im)
-            .then(function(json_result) {
-                // make all subscriptions inactive
-                var update = JSON.parse(json_result.data);
+            .get_subscription_by_msisdn(contact.msisdn, im)
+            .then(function(update) {
                 var clean = true;  // clean tracks if api call is unnecessary
                 for (i=0;i<update.objects.length;i++) {
                     if (update.objects[i].active === true){
@@ -738,7 +733,7 @@ go.utils = {
                 } else {
                     return Q();
                 }
-            });
+        });
     },
 
     subscription_count_active: function(contact, im) {
@@ -1513,28 +1508,113 @@ go.app = function() {
 
     // CHANGE STATES
 
-        self.add('st_change_old_nr', function(name) {
-            var question = $("Please enter the old number on which you used to receive messages, e.g. 0736436265:");
-            var error = $("Sorry, the format of the mobile number is not correct. Please enter your old mobile number again, e.g. 0726252020");
+        self.add('st_change_faccode', function(name) {
+            var question = $("Please enter the 6-digit facility code for your new facility, e.g. 456789:");
+            var error = $("Sorry, that code is not recognized. Please enter the 6-digit facility code again, e. 535970:");
             return new FreeText(name, {
                 question: question,
                 check: function(content) {
-                    if (!go.utils.check_valid_phone_number(content.trim())) {
-                        return error;
-                    }
-                },
-                next: function(content) {
                     return go.utils
-                        .get_subscription_by_msisdn(
-                            go.utils.normalize_msisdn(content, '27'),
-                            self.im)
-                        .then(function(subscription) {
-                            console.log(subscription);
+                        .validate_clinic_code(self.im, content.trim())
+                        .then(function(facname) {
+                            if (!facname) {
+                                return error;
+                            } else {
+                                self.contact.extra.nc_facname = facname;
+                                self.contact.extra.nc_faccode = content.trim();
+                                return self.im.contacts
+                                    .save(self.contact)
+                                    .then(function() {
+                                        return null;  // vumi expects null or undefined if check passes
+                                    });
+                            }
                         });
-
-                }
+                },
+                next: 'isl_post_change_detail'
             });
         });
+
+        self.add('isl_post_change_detail', function() {
+            return go.utils
+                .post_nursereg(self.contact, self.contact.msisdn, self.im)  // dmsisdn = cmsisdn for det changed
+                .then(function(response) {
+                    return self.states.create('st_end_detail_changed');
+                });
+        });
+
+        self.add('st_end_detail_changed', function(name) {
+            return new EndState(name, {
+                text: $("Thank you. Your NurseConnect details have been changed. To change any other details, please dial {{channel}} again.")
+                    .context({channel: self.im.config.channel}),
+                next: 'isl_route',
+            });
+        });
+
+        // self.add('st_change_num', function(name) {
+        //     var question = $("Please enter the new number on which you want to receive messages, e.g. 0736252020:");
+        //     var error = $("Sorry, the format of the mobile number is not correct. Please enter the new number on which you want to receive messages, e.g. 0736252020");
+        //     return new FreeText(name, {
+        //         question: question,
+        //         check: function(content) {
+        //             if (!go.utils.check_valid_phone_number(content.trim())) {
+        //                 return error;
+        //             }
+        //         },
+        //         next: function(content) {
+        //             //
+        //         }
+        //     });
+        // });
+
+        // self.add('st_change_old_nr', function(name) {
+        //     var question = $("Please enter the old number on which you used to receive messages, e.g. 0736436265:");
+        //     var error = $("Sorry, the format of the mobile number is not correct. Please enter your old mobile number again, e.g. 0726252020");
+        //     return new FreeText(name, {
+        //         question: question,
+        //         check: function(content) {
+        //             if (!go.utils.check_valid_phone_number(content.trim())) {
+        //                 return error;
+        //             }
+        //         },
+        //         next: function(content) {
+        //             return go.utils
+        //                 // OR get registration ??
+        //                 // check opted_out ??
+        //                 // get only active subscriptions ??
+        //                 .get_subscription_by_msisdn(
+        //                     go.utils.normalize_msisdn(content, '27'),
+        //                     self.im)
+        //                 .then(function(subscription) {
+        //                     if (subscription.objects.length > 0) {
+        //                         return 'isl_change_old_nr';
+        //                     }
+        //                 });
+
+        //         }
+        //     });
+        // });
+
+        // self.add('isl_change_old_nr', function(name) {
+            // load the old contact to read the extras
+            // OR load the registration ??
+
+            // set the old extras to the new contact
+            // add the replaces msisdn extra
+            // save the contact
+
+            // what to do with old contact?
+            // save extra replaced_by?
+            // clear old extras? def is_registered
+            // opt out
+
+            // patch old subscription with new msisdn
+            // post new registration with delay (shouldn't create new sub)
+            // OR
+            // deactivate old subscription (but keep next seq num)
+            // post new registration with seq num (creates new sub)
+
+            // opt out old contact?
+        // });
 
 
     // REGISTRATION STATES
@@ -1771,7 +1851,6 @@ go.app = function() {
                 next: 'isl_save_nursereg'
             });
         });
-
 
         self.add('isl_save_nursereg', function(name) {
             // Save useful contact extras

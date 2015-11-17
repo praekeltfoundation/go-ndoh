@@ -1603,21 +1603,84 @@ go.app = function() {
             });
         });
 
-        // self.add('st_change_num', function(name) {
-        //     var question = $("Please enter the new number on which you want to receive messages, e.g. 0736252020:");
-        //     var error = $("Sorry, the format of the mobile number is not correct. Please enter the new number on which you want to receive messages, e.g. 0736252020");
-        //     return new FreeText(name, {
-        //         question: question,
-        //         check: function(content) {
-        //             if (!go.utils.check_valid_phone_number(content.trim())) {
-        //                 return error;
-        //             }
-        //         },
-        //         next: function(content) {
-        //             //
-        //         }
-        //     });
-        // });
+        self.add('st_change_num', function(name) {
+            var question = $("Please enter the new number on which you want to receive messages, e.g. 0736252020:");
+            var error = $("Sorry, the format of the mobile number is not correct. Please enter the new number on which you want to receive messages, e.g. 0736252020");
+            return new FreeText(name, {
+                question: question,
+                check: function(content) {
+                    if (!go.utils.check_valid_phone_number(content.trim())) {
+                        return error;
+                    }
+                },
+                next: function(content) {
+                    return 'isl_check_optout_change';
+                }
+            });
+        });
+
+        self.add('isl_check_optout_change', function(name) {
+            return go.utils
+                .opted_out_by_msisdn(self.im, go.utils.normalize_msisdn(
+                    self.im.user.answers.st_change_num, '27'))
+                .then(function(opted_out) {
+                    if (opted_out === true) {
+                        return self.states.create('st_opt_in_change');
+                    } else {
+                        return self.states.create('isl_switch_new_nr');
+                    }
+                });
+        });
+
+        self.add('isl_switch_new_nr', function(name) {
+            // load new contact
+            return self.im.contacts
+                .get(go.utils.normalize_msisdn(
+                    self.im.user.answers.st_change_num, '27'), {create: true})  // false raises exception
+                .then(function(new_contact) {
+                    // transfer the old extras to the new contact
+                    new_contact.extra = self.contact.extra;
+                    // self.contact.extra = opts.contact.extra;
+                    // clean up old contact
+                    self.contact.extra = {};
+                    // opts.contact.extra = {};
+                    // save the contacts and post nursereg
+                    return Q.all([
+                        self.im.contacts.save(self.contact),
+                        self.im.contacts.save(new_contact),
+                        go.utils.post_nursereg(new_contact, self.contact.msisdn, self.im, self.contact.msisdn),
+                    ])
+                    .then(function() {
+                        return self.states.create('st_end_detail_changed');
+                    });
+                });
+        });
+
+        self.add('st_opt_in_change', function(name) {
+            return new ChoiceState(name, {
+                question: $("This number opted out of NurseConnect messages before. Please confirm that you want to receive messages again on this number?"),
+                choices: [
+                    new Choice('yes', $('Yes')),
+                    new Choice('no', $('No'))
+                ],
+                next: function(choice) {
+                    if (choice.value === 'yes') {
+                        return self.im.contacts
+                            .get(go.utils.normalize_msisdn(
+                                self.im.user.answers.st_change_num, '27'), {create: true})  // false raises exception
+                            .then(function(new_contact) {
+                                return go.utils
+                                    .nurse_opt_in(self.im, new_contact)
+                                    .then(function() {
+                                        return 'isl_switch_new_nr';
+                                    });
+                            });
+                    } else {
+                        return 'st_permission_denied';
+                    }
+                }
+            });
+        });
 
         self.add('st_change_old_nr', function(name) {
             var question = $("Please enter the old number on which you used to receive messages, e.g. 0736436265:");
@@ -1665,7 +1728,7 @@ go.app = function() {
             self.contact.extra = opts.contact.extra;
             // clean up old contact
             opts.contact.extra = {};
-            // save the contacts and post nursreg
+            // save the contacts and post nursereg
             return Q.all([
                 self.im.contacts.save(self.contact),
                 self.im.contacts.save(opts.contact),
@@ -1683,7 +1746,7 @@ go.app = function() {
             return new ChoiceState(name, {
                 question: $("To register we need to collect, store & use your info. You may also get messages on public holidays & weekends. Do you consent?"),
                 choices: [
-                    new Choice('isl_check_optout', $('Yes')),
+                    new Choice('isl_check_optout_reg', $('Yes')),
                     new Choice('st_permission_denied', $('No')),
                 ],
                 next: function(choice) {
@@ -1750,23 +1813,23 @@ go.app = function() {
                         });
                 })
                 .then(function() {
-                    return self.states.create('isl_check_optout');
+                    return self.states.create('isl_check_optout_reg');
                 });
         });
 
-        self.add('isl_check_optout', function(name) {
+        self.add('isl_check_optout_reg', function(name) {
             return go.utils
                 .opted_out(self.im, self.contact)
                 .then(function(opted_out) {
                     if (opted_out === true) {
-                        return self.states.create('st_opt_in');
+                        return self.states.create('st_opt_in_reg');
                     } else {
                         return self.states.create('st_faccode');
                     }
                 });
         });
 
-        self.add('st_opt_in', function(name) {
+        self.add('st_opt_in_reg', function(name) {
             return new ChoiceState(name, {
                 question: $("This number previously opted out of NurseConnect messages. Please confirm that you would like to register this number again?"),
                 choices: [

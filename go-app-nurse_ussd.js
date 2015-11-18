@@ -1640,10 +1640,8 @@ go.app = function() {
                 .then(function(new_contact) {
                     // transfer the old extras to the new contact
                     new_contact.extra = self.contact.extra;
-                    // self.contact.extra = opts.contact.extra;
                     // clean up old contact
                     self.contact.extra = {};
-                    // opts.contact.extra = {};
                     // save the contacts and post nursereg
                     return Q.all([
                         self.im.contacts.save(self.contact),

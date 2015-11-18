@@ -281,7 +281,7 @@ go.app = function() {
 
         self.add('isl_post_change_detail', function() {
             return go.utils
-                .post_nursereg(self.contact, self.contact.msisdn, self.im)  // dmsisdn = cmsisdn for det changed
+                .post_nursereg(self.im, self.contact, self.contact.msisdn, null)  // dmsisdn = cmsisdn for det changed
                 .then(function(response) {
                     return self.states.create('st_end_detail_changed');
                 });
@@ -340,7 +340,7 @@ go.app = function() {
                     return Q.all([
                         self.im.contacts.save(self.contact),
                         self.im.contacts.save(new_contact),
-                        go.utils.post_nursereg(new_contact, self.contact.msisdn, self.im, self.contact.msisdn),
+                        go.utils.post_nursereg(self.im, new_contact, self.contact.msisdn, self.contact.msisdn),
                     ])
                     .then(function() {
                         return self.states.create('st_end_detail_changed');
@@ -424,7 +424,7 @@ go.app = function() {
             return Q.all([
                 self.im.contacts.save(self.contact),
                 self.im.contacts.save(opts.contact),
-                go.utils.post_nursereg(self.contact, self.contact.msisdn, self.im, opts.contact.msisdn),
+                go.utils.post_nursereg(self.im, self.contact, self.contact.msisdn, opts.contact.msisdn),
             ])
             .then(function() {
                 return self.states.create('st_end_detail_changed');
@@ -698,7 +698,7 @@ go.app = function() {
                     self.im.contacts.save(self.user),
                     self.im.contacts.save(self.contact),
                     self.send_registration_thanks(),
-                    go.utils.post_nursereg(self.contact, self.user.msisdn, self.im, null),
+                    go.utils.post_nursereg(self.im, self.contact, self.user.msisdn, null),
                 ])
                 .then(function() {
                     return self.states.create('st_end_reg');

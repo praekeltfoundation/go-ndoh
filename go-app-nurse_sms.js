@@ -663,7 +663,7 @@ go.utils = {
             });
     },
 
-    post_nursereg: function(contact, dmsisdn, im, rmsisdn) {
+    post_nursereg: function(im, contact, dmsisdn, rmsisdn) {
         var payload = {
             cmsisdn: go.utils.normalize_msisdn(contact.msisdn, '27'),  // +27...
             dmsisdn: go.utils.normalize_msisdn(dmsisdn, '27'),  // +27...

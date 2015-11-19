@@ -114,7 +114,7 @@ describe("app", function() {
                     });
                 })
                 .setup(function(api) {
-                    // opted_out user 2
+                    // opted_out user 3
                     api.contacts.add({
                         msisdn: '+27821230000',
                         extra: {

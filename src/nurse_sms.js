@@ -41,7 +41,6 @@ go.app = function() {
             }
         });
 
-
         self.states.add('states_dial_not_sms', function(name) {
             return new EndState(name, {
                 text: $("Please use your handset's keypad to dial the number that you received, " +

@@ -172,7 +172,31 @@ describe("app", function() {
                         .run();
                 });
             });
+        });
 
+        describe("when the user sends a message containing a USSD code", function() {
+            it("should tell them to dial the number, not sms it", function() {
+                return tester
+                    .setup(function(api) {
+                        api.contacts.add({
+                            msisdn: '+27001',
+                            extra : {
+                                language_choice: 'en'
+                            },
+                            key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
+                        });
+                    })
+                    .setup.user.addr('27001')
+                    .inputs('*134*12345# rate')
+                    .check.interaction({
+                        state: 'states_dial_not_sms',
+                        reply:
+                            "Please use your handset's keypad to dial the number that you " +
+                            "received, rather than sending it to us in an sms."
+                    })
+                    .run();
+            });
         });
 
         describe("when the user sends a STOP message", function() {

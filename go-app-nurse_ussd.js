@@ -1780,30 +1780,6 @@ go.app = function() {
         });
 
 
-        // self.add('st_optout', function(name) {
-        //     var question = $("Please tell us why you no longer want messages:");
-        //     // $("You have opted out before. Please tell us why:")
-        //     return new ChoiceState(name, {
-        //         question: question,
-        //         choices: [
-        //             new Choice('job_change', $('Not a nurse or midwife')),
-        //             new Choice('number_owner_change', $('New user of number')),
-        //             new Choice('not_useful', $("Messages not useful")),
-        //             new Choice('other', $("Other")),
-        //             new Choice('main_menu', $("Main menu"))
-        //         ],
-        //         next: function(choice) {
-        //             if (choice.value === 'main_menu') {
-        //                 return 'isl_route';
-        //             } else {
-
-        //                 return 'st_end_detail_changed';
-        //             }
-        //         }
-        //     });
-        // });
-
-
     // REGISTRATION STATES
 
         self.add('st_subscribe_self', function(name) {

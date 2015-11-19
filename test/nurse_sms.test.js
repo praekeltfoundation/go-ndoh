@@ -52,9 +52,6 @@ describe("app", function() {
                     }
                 })
                 .setup(function(api) {
-                    api.kv.store['test.nurse_sms.unique_users'] = 0;
-                })
-                .setup(function(api) {
                     api.metrics.stores = {'test_nurse_sms_ms': {}};
                 })
                 .setup(function(api) {
@@ -135,7 +132,7 @@ describe("app", function() {
             });
 
             describe("when the user sends a STOP message", function() {
-                it("should fire multiple metrics", function() {
+                it("should fire no metrics", function() {
                     return tester
                         .setup(function(api) {
                             api.contacts.add({
@@ -153,21 +150,7 @@ describe("app", function() {
                         .inputs('STOP')
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_nurse_sms_ms;
-                            assert.equal(Object.keys(metrics).length, 4);
-                            // should inc all opt-outs metric
-                            assert.deepEqual(metrics['test.sum.optouts'].values, [1]);
-                            // should NOT inc loss optouts metric
-                            assert.deepEqual(metrics['test.sum.optout_cause.non_loss'].values, [1]);
-                            // should inc cause optouts metric
-                            assert.deepEqual(metrics['test.sum.optout_cause.unknown'].values, [1]);
-
-                            var kv_store = api.kv.store;
-                            // should inc kv store for all optouts
-                            assert.equal(kv_store['test_nurse_sms_ms.test.sum.optouts'], 1);
-                            // should inc kv store for non-loss optouts
-                            assert.equal(kv_store['test_nurse_sms_ms.test.sum.optout_cause.non_loss'], 1);
-                            // should inc kv store cause optouts
-                            assert.equal(kv_store['test_nurse_sms_ms.test.sum.optout_cause.unknown'], 1);
+                            assert.equal(Object.keys(metrics).length, 0);
                         })
                         .run();
                 });

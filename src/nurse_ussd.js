@@ -319,9 +319,35 @@ go.app = function() {
                     if (opted_out === true) {
                         return self.states.create('st_opt_in_change');
                     } else {
-                        return self.states.create('isl_switch_new_nr');
+                        return self.states.create('isl_check_active_subs');
                     }
                 });
+        });
+
+        self.add('isl_check_active_subs', function(name) {
+            return go.utils
+                .get_subscriptions_by_msisdn(go.utils.normalize_msisdn(
+                    self.im.user.answers.st_change_num, '27'), self.im)
+                .then(function(subs) {
+                    var active_subs = 0;
+                    for (i=0; i<subs.objects.length; i++) {
+                        if (subs.objects[i].active === true) {
+                            active_subs += 1;
+                        }
+                    }
+                    if (active_subs === 0) {
+                        return self.states.create('isl_switch_new_nr');
+                    } else {
+                        return self.states.create('st_block_active_subs');
+                    }
+                });
+        });
+
+        self.add('st_block_active_subs', function(name) {
+            return new EndState(name, {
+                text: $("Sorry, the number you are trying to move to already has an active registration. To manage that registration, please redial from that number."),
+                next: 'isl_route',
+            });
         });
 
         self.add('isl_switch_new_nr', function(name) {

@@ -435,6 +435,7 @@ describe("app", function() {
                         state: 'st_end_reg',
                         reply: "Thank you. Weekly NurseConnect messages will now be sent to this number."
                     })
+                    .check.reply.ends_session()
                     .run();
             });
             it("should save extras", function() {
@@ -1153,7 +1154,7 @@ describe("app", function() {
         });
 
         // Change to New Number
-        describe("switch to new number", function() {
+        describe.only("switch to new number", function() {
             describe("choosing to switch to new number", function() {
                 it("should go to st_change_num", function() {
                     return tester
@@ -1292,6 +1293,23 @@ describe("app", function() {
                         .run();
                 });
             });
+            describe("entering non-opted-out number with active subs", function() {
+                it("should block progress", function() {
+                    return tester
+                        .setup.user.addr('27821237777')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '2'  // st_subscribed - change num
+                            , '0821238889'  // st_change_num
+                        )
+                        .check.interaction({
+                            state: 'st_block_active_subs',
+                            reply: "Sorry, the number you are trying to move to already has an active registration. To manage that registration, please redial from that number."
+                        })
+                        .check.reply.ends_session()
+                        .run();
+                });
+            });
         });
 
         // Change Details
@@ -1339,6 +1357,7 @@ describe("app", function() {
                             state: 'st_end_detail_changed',
                             reply: "Thank you. Your NurseConnect details have been changed. To change any other details, please dial *120*550*5# again."
                         })
+                        .check.reply.ends_session()
                         .run();
                 });
                 it("should save extras", function() {

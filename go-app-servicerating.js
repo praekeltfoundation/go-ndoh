@@ -711,7 +711,7 @@ go.utils = {
         });
     },
 
-    get_subscription_by_msisdn: function(msisdn, im) {
+    get_subscriptions_by_msisdn: function(msisdn, im) {
         var params = {
             to_addr: msisdn
         };
@@ -724,7 +724,7 @@ go.utils = {
 
     subscription_unsubscribe_all: function(contact, im) {
         return go.utils
-            .get_subscription_by_msisdn(contact.msisdn, im)
+            .get_subscriptions_by_msisdn(contact.msisdn, im)
             .then(function(update) {
                 var clean = true;  // clean tracks if api call is unnecessary
                 for (i=0;i<update.objects.length;i++) {

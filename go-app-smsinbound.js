@@ -370,7 +370,6 @@ go.utils = {
                 .jembi_clinic_validate(im, clinic_code)
                 .then(function(json_result) {
                     var rows = JSON.parse(json_result.data).rows;
-                    // console.log(rows);
                     if (rows.length === 0) {
                         return false;
                     } else {
@@ -664,19 +663,24 @@ go.utils = {
             });
     },
 
-    post_nursereg: function(contact, dmsisdn, im) {
+    post_nursereg: function(im, contact, dmsisdn, rmsisdn) {
         var payload = {
             cmsisdn: go.utils.normalize_msisdn(contact.msisdn, '27'),  // +27...
             dmsisdn: go.utils.normalize_msisdn(dmsisdn, '27'),  // +27...
             faccode: contact.extra.nc_faccode,
             id_type: contact.extra.nc_id_type,
-            dob: contact.extra.nc_dob
+            dob: contact.extra.nc_dob,
+            sanc_reg_no: contact.extra.nc_sanc || null,
+            persal_no: contact.extra.nc_persal || null
         };
         if (contact.extra.nc_id_type === 'sa_id') {
             payload.id_no = contact.extra.nc_sa_id_no;
         } else {
             payload.id_no = contact.extra.nc_passport_num;
             payload.passport_origin = contact.extra.nc_passport_country;
+        }
+        if (rmsisdn) {
+            payload.rmsisdn = rmsisdn;
         }
         return go.utils
             .control_v2_api_call("post", null, payload, 'nurseregs/', im);
@@ -707,15 +711,21 @@ go.utils = {
         });
     },
 
-    subscription_unsubscribe_all: function(contact, im) {
+    get_subscription_by_msisdn: function(msisdn, im) {
         var params = {
-            to_addr: contact.msisdn
+            to_addr: msisdn
         };
         return go.utils
             .control_api_call("get", params, null, 'subscription/', im)
-            .then(function(json_result) {
-                // make all subscriptions inactive
-                var update = JSON.parse(json_result.data);
+            .then(function(result) {
+                return JSON.parse(result.data);
+            });
+    },
+
+    subscription_unsubscribe_all: function(contact, im) {
+        return go.utils
+            .get_subscription_by_msisdn(contact.msisdn, im)
+            .then(function(update) {
                 var clean = true;  // clean tracks if api call is unnecessary
                 for (i=0;i<update.objects.length;i++) {
                     if (update.objects[i].active === true){
@@ -728,7 +738,7 @@ go.utils = {
                 } else {
                     return Q();
                 }
-            });
+        });
     },
 
     subscription_count_active: function(contact, im) {

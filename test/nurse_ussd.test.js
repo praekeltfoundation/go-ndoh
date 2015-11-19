@@ -54,6 +54,11 @@ describe("app", function() {
                         url: 'http://test/v2/',
                         url_json: 'http://test/v2/json/'
                     },
+                    control: {
+                        username: 'test_user',
+                        api_key: 'test_key',
+                        url: 'http://ndoh-control/api/v1/'
+                    },
                     control_v2: {
                         url: 'http://ndoh-control/api/v2/',
                         api_token: 'test_token'
@@ -621,7 +626,7 @@ describe("app", function() {
 
         // Opted Out User Opt-in (Self Registration)
         describe("opted out self reg", function() {
-            it("should reach st_opt_in", function() {
+            it("should reach st_opt_in_reg", function() {
                 return tester
                     .setup.user.addr('27821239999')
                     .inputs(
@@ -630,7 +635,7 @@ describe("app", function() {
                         , '1'  // st_permission_self - consent
                     )
                     .check.interaction({
-                        state: 'st_opt_in',
+                        state: 'st_opt_in_reg',
                         reply: [
                             "This number previously opted out of NurseConnect messages. Please confirm that you would like to register this number again?",
                             '1. Yes',
@@ -664,7 +669,7 @@ describe("app", function() {
                         {session_event: 'new'}  // dial in
                         , '1'  // st_not_subscribed - self registration
                         , '1'  // st_permission_self - consent
-                        , '1'  // st_opt_in - confirm
+                        , '1'  // st_opt_in_reg - confirm
                     )
                     .check.interaction({
                         state: 'st_faccode'
@@ -678,7 +683,7 @@ describe("app", function() {
                         {session_event: 'new'}  // dial in
                         , '1'  // st_not_subscribed - self registration
                         , '1'  // st_permission_self - consent
-                        , '1'  // st_opt_in - confirm
+                        , '1'  // st_opt_in_reg - confirm
                     )
                     .check(function(api) {
                         var contact = _.find(api.contacts.store, {
@@ -694,7 +699,7 @@ describe("app", function() {
 
         // Opted Out User Opt-in (Other Registration)
         describe("opted out other reg", function() {
-            it("should reach st_opt_in", function() {
+            it("should reach st_opt_in_reg", function() {
                 return tester
                     .setup.user.addr('27821234444')
                     .inputs(
@@ -704,7 +709,7 @@ describe("app", function() {
                         , '0821239999'  // st_msisdn
                     )
                     .check.interaction({
-                        state: 'st_opt_in',
+                        state: 'st_opt_in_reg',
                         reply: [
                             "This number previously opted out of NurseConnect messages. Please confirm that you would like to register this number again?",
                             '1. Yes',
@@ -747,7 +752,7 @@ describe("app", function() {
                         , '3'  // st_not_subscribed - other registration
                         , '1'  // st_permission_other - consent
                         , '0821239999'  // st_msisdn
-                        , '1'  // st_opt_in - confirm
+                        , '1'  // st_opt_in_reg - confirm
                     )
                     .check.interaction({
                         state: 'st_faccode'
@@ -763,7 +768,7 @@ describe("app", function() {
                         , '3'  // st_not_subscribed - other registration
                         , '1'  // st_permission_other - consent
                         , '0821239999'  // st_msisdn
-                        , '1'  // st_opt_in - confirm
+                        , '1'  // st_opt_in_reg - confirm
                     )
                     .check(function(api) {
                         var contact = _.find(api.contacts.store, {
@@ -794,7 +799,7 @@ describe("app", function() {
                         , '3'  // st_not_subscribed - other registration
                         , '1'  // st_permission_other - consent
                         , '0821239999'  // st_msisdn
-                        , '2'  // st_opt_in - deny
+                        , '2'  // st_opt_in_reg - deny
                     )
                     .check.interaction({
                         state: 'st_permission_denied',
@@ -813,7 +818,7 @@ describe("app", function() {
                         , '3'  // st_not_subscribed - other registration
                         , '1'  // st_permission_other - consent
                         , '0821239999'  // st_msisdn
-                        , '2'  // st_opt_in - deny
+                        , '2'  // st_opt_in_reg - deny
                         , '1'  // st_permission_denied - main menu
                     )
                     .check.interaction({
@@ -1013,6 +1018,526 @@ describe("app", function() {
                         .check.interaction({
                             state: 'st_dob',
                             reply: "Sorry, the format of the date of birth is not correct. Please enter it again, e.g. 27 May 1975 as 27051975:"
+                        })
+                        .run();
+                });
+            });
+        });
+
+        // Change Old Number
+        describe("old number changing", function() {
+            describe("choosing to change old number", function() {
+                it("should go to st_change_old_nr", function() {
+                    return tester
+                        .setup.user.addr('27821234444')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '2'  // st_not_subscribed
+                        )
+                        .check.interaction({
+                            state: 'st_change_old_nr',
+                            reply: "Please enter the old number on which you used to receive messages, e.g. 0736436265:"
+                        })
+                        .run();
+                });
+            });
+            describe("entering poor phone number", function() {
+                it("should loop back", function() {
+                    return tester
+                        .setup.user.addr('27821234444')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '2'  // st_not_subscribed
+                            , '12345'  // st_change_old_nr
+                        )
+                        .check.interaction({
+                            state: 'st_change_old_nr',
+                            reply: "Sorry, the format of the mobile number is not correct. Please enter your old mobile number again, e.g. 0726252020"
+                        })
+                        .run();
+                });
+            });
+            describe("entering proper phone number - non-existent contact", function() {
+                it("should ask to try again", function() {
+                    return tester
+                        .setup.user.addr('27821234444')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '2'  // st_not_subscribed
+                            , '0821236666'  // st_change_old_nr
+                        )
+                        .check.interaction({
+                            state: 'st_change_old_not_found',
+                            reply: [
+                                "The number 0821236666 is not currently subscribed to receive NurseConnect messages. Try again?",
+                                "1. Yes",
+                                "2. No"
+                            ].join('\n')
+                        })
+                        .run();
+                });
+                it("should try again if chosen", function() {
+                    return tester
+                        .setup.user.addr('27821234444')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '2'  // st_not_subscribed
+                            , '0821236666'  // st_change_old_nr
+                            , '1'  // st_change_old_not_found - yes
+                        )
+                        .check.interaction({
+                            state: 'st_change_old_nr',
+                        })
+                        .run();
+                });
+                it("should abort if chosen", function() {
+                    return tester
+                        .setup.user.addr('27821234444')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '2'  // st_not_subscribed
+                            , '0821236666'  // st_change_old_nr
+                            , '2'  // st_change_old_not_found
+                        )
+                        .check.interaction({
+                            state: 'st_permission_denied',
+                        })
+                        .run();
+                });
+            });
+            describe("entering proper phone number - existing contact", function() {
+                it("should reach details changed end state", function() {
+                    return tester
+                        .setup.user.addr('27821234444')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '2'  // st_not_subscribed
+                            , '0821237777'  // st_change_old_nr
+                        )
+                        .check.interaction({
+                            state: 'st_end_detail_changed',
+                            reply: "Thank you. Your NurseConnect details have been changed. To change any other details, please dial *120*550*5# again."
+                        })
+                        .run();
+                });
+                it("should transfer extras", function() {
+                    return tester
+                        .setup.user.addr('27821234444')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '2'  // st_not_subscribed
+                            , '0821237777'  // st_change_old_nr
+                        )
+                        .check(function(api) {
+                            var new_contact = _.find(api.contacts.store, {
+                              msisdn: '+27821234444'
+                            });
+                            assert.equal(Object.keys(new_contact.extra).length, 7);
+                            assert.equal(new_contact.extra.nc_faccode, '123456');
+                            assert.equal(new_contact.extra.nc_facname, 'WCL clinic');
+                            assert.equal(new_contact.extra.nc_is_registered, 'true');
+                            assert.equal(new_contact.extra.nc_working_on, "");
+                            assert.equal(new_contact.extra.nc_id_type, "sa_id");
+                            assert.equal(new_contact.extra.nc_sa_id_no, "5101025009086");
+                            assert.equal(new_contact.extra.nc_dob, "1951-01-02");
+                        })
+                        .check(function(api) {
+                            var old_contact = _.find(api.contacts.store, {
+                              msisdn: '+27821237777'
+                            });
+                            assert.equal(Object.keys(old_contact.extra).length, 0);
+                        })
+                        .run();
+                });
+            });
+        });
+
+        // Change to New Number
+        describe("switch to new number", function() {
+            describe("choosing to switch to new number", function() {
+                it("should go to st_change_num", function() {
+                    return tester
+                        .setup.user.addr('27821237777')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '2'  // st_subscribed - change num
+                        )
+                        .check.interaction({
+                            state: 'st_change_num',
+                            reply: "Please enter the new number on which you want to receive messages, e.g. 0736252020:"
+                        })
+                        .run();
+                });
+                it("should have extras", function() {
+                    return tester
+                        .setup.user.addr('27821237777')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '2'  // st_subscribed - change num
+                        )
+                        .check(function(api) {
+                            var old_contact = _.find(api.contacts.store, {
+                              msisdn: '+27821237777'
+                            });
+                            assert.equal(Object.keys(old_contact.extra).length, 7);
+                            assert.equal(old_contact.extra.nc_faccode, '123456');
+                            assert.equal(old_contact.extra.nc_facname, 'WCL clinic');
+                            assert.equal(old_contact.extra.nc_is_registered, 'true');
+                            assert.equal(old_contact.extra.nc_working_on, "");
+                            assert.equal(old_contact.extra.nc_id_type, "sa_id");
+                            assert.equal(old_contact.extra.nc_sa_id_no, "5101025009086");
+                            assert.equal(old_contact.extra.nc_dob, "1951-01-02");
+                        })
+                        .check(function(api) {
+                            var opted_out_contact = _.find(api.contacts.store, {
+                              msisdn: '+27821239999'
+                            });
+                            assert.equal(Object.keys(opted_out_contact.extra).length, 1);
+                            assert.equal(opted_out_contact.extra.nc_opt_out_reason, "job_change");
+                        })
+                        .run();
+                });
+            });
+            describe("entering new unused number", function() {
+                it("should go to st_end_detail_changed", function() {
+                    return tester
+                        .setup.user.addr('27821237777')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '2'  // st_subscribed - change num
+                            , '0821238888'  // st_change_num
+                        )
+                        .check.interaction({
+                            state: 'st_end_detail_changed',
+                        })
+                        .run();
+                });
+                it("should transfer extras", function() {
+                    return tester
+                        .setup.user.addr('27821237777')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '2'  // st_subscribed - change num
+                            , '0821238888'  // st_change_num
+                        )
+                        .check(function(api) {
+                            var new_contact = _.find(api.contacts.store, {
+                              msisdn: '+27821238888'
+                            });
+                            assert.equal(Object.keys(new_contact.extra).length, 7);
+                            assert.equal(new_contact.extra.nc_faccode, '123456');
+                            assert.equal(new_contact.extra.nc_facname, 'WCL clinic');
+                            assert.equal(new_contact.extra.nc_is_registered, 'true');
+                            assert.equal(new_contact.extra.nc_working_on, "");
+                            assert.equal(new_contact.extra.nc_id_type, "sa_id");
+                            assert.equal(new_contact.extra.nc_sa_id_no, "5101025009086");
+                            assert.equal(new_contact.extra.nc_dob, "1951-01-02");
+                        })
+                        .check(function(api) {
+                            var old_contact = _.find(api.contacts.store, {
+                              msisdn: '+27821237777'
+                            });
+                            assert.equal(Object.keys(old_contact.extra).length, 0);
+                        })
+                        .run();
+                });
+            });
+            describe("entering opted out number", function() {
+                it("should go to st_opt_in_change", function() {
+                    return tester
+                        .setup.user.addr('27821237777')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '2'  // st_subscribed - change num
+                            , '0821239999'  // st_change_num
+                        )
+                        .check.interaction({
+                            state: 'st_opt_in_change',
+                            reply: [
+                                "This number opted out of NurseConnect messages before. Please confirm that you want to receive messages again on this number?",
+                                "1. Yes",
+                                "2. No"
+                            ].join('\n')
+                        })
+                        .run();
+                });
+                it("should transfer extras on opt-in", function() {
+                    return tester
+                        .setup.user.addr('27821237777')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '2'  // st_subscribed - change num
+                            , '0821239999'  // st_change_num
+                            , '1'  // st_opt_in_change - yes
+                        )
+                        .check(function(api) {
+                            var new_contact = _.find(api.contacts.store, {
+                              msisdn: '+27821239999'
+                            });
+                            assert.equal(Object.keys(new_contact.extra).length, 7);
+                            assert.equal(new_contact.extra.nc_faccode, '123456');
+                            assert.equal(new_contact.extra.nc_facname, 'WCL clinic');
+                            assert.equal(new_contact.extra.nc_is_registered, 'true');
+                            assert.equal(new_contact.extra.nc_working_on, "");
+                            assert.equal(new_contact.extra.nc_id_type, "sa_id");
+                            assert.equal(new_contact.extra.nc_sa_id_no, "5101025009086");
+                            assert.equal(new_contact.extra.nc_dob, "1951-01-02");
+                        })
+                        .check(function(api) {
+                            var old_contact = _.find(api.contacts.store, {
+                              msisdn: '+27821237777'
+                            });
+                            assert.equal(Object.keys(old_contact.extra).length, 0);
+                        })
+                        .run();
+                });
+            });
+        });
+
+        // Change Details
+        describe("changing details", function() {
+            describe("change faccode", function() {
+                it("should ask for new faccode", function() {
+                    return tester
+                        .setup.user.addr('27821237777')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '3'  // st_subscribed - change faccode
+                        )
+                        .check.interaction({
+                            state: 'st_change_faccode',
+                            reply: "Please enter the 6-digit facility code for your new facility, e.g. 456789:"
+                        })
+                        .run();
+                });
+                it("should have extras", function() {
+                    return tester
+                        .setup.user.addr('27821237777')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '3'  // st_subscribed - change faccode
+                        )
+                        .check(function(api) {
+                            var contact = _.find(api.contacts.store, {
+                              msisdn: '+27821237777'
+                            });
+                            assert.equal(Object.keys(contact.extra).length, 7);
+                            assert.equal(contact.extra.nc_faccode, "123456");
+                            assert.equal(contact.extra.nc_facname, "WCL clinic");
+                        })
+                        .run();
+                });
+                it("should reach details changed end state", function() {
+                    return tester
+                        .setup.user.addr('27821237777')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '3'  // st_subscribed - change faccode
+                            , '234567'  // st_change_faccode - olt clinic
+                        )
+                        .check.interaction({
+                            state: 'st_end_detail_changed',
+                            reply: "Thank you. Your NurseConnect details have been changed. To change any other details, please dial *120*550*5# again."
+                        })
+                        .run();
+                });
+                it("should save extras", function() {
+                    return tester
+                        .setup.user.addr('27821237777')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '3'  // st_subscribed - change faccode
+                            , '234567'  // st_change_faccode - olt clinic
+                        )
+                        .check(function(api) {
+                            var contact = _.find(api.contacts.store, {
+                              msisdn: '+27821237777'
+                            });
+                            assert.equal(Object.keys(contact.extra).length, 7);
+                            assert.equal(contact.extra.nc_faccode, "234567");
+                            assert.equal(contact.extra.nc_facname, "OLT clinic");
+                        })
+                        .run();
+                });
+            });
+
+            describe("change sanc", function() {
+                it("should ask for sanc", function() {
+                    return tester
+                        .setup.user.addr('27821237777')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '4'  // st_subscribed - change sanc
+                        )
+                        .check.interaction({
+                            state: 'st_change_sanc',
+                            reply: "Please enter your 8-digit SANC registration number, e.g. 34567899:"
+                        })
+                        .run();
+                });
+                it("should have extras", function() {
+                    return tester
+                        .setup.user.addr('27821237777')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '4'  // st_subscribed - change sanc
+                        )
+                        .check(function(api) {
+                            var contact = _.find(api.contacts.store, {
+                              msisdn: '+27821237777'
+                            });
+                            assert.equal(Object.keys(contact.extra).length, 7);
+                            assert.equal(contact.extra.nc_sanc, undefined);
+                        })
+                        .run();
+                });
+                it("should loop back if non-numeric char", function() {
+                    return tester
+                        .setup.user.addr('27821237777')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '4'  // st_subscribed - change sanc
+                            , '3456789A'  // st_change_sanc
+                        )
+                        .check.interaction({
+                            state: 'st_change_sanc',
+                            reply: "Sorry, the format of the SANC registration number is not correct. Please enter it again, e.g. 34567899:"
+                        })
+                        .run();
+                });
+                it("should loop back if not 8 chars", function() {
+                    return tester
+                        .setup.user.addr('27821237777')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '4'  // st_subscribed - change sanc
+                            , '3456789'  // st_change_sanc
+                        )
+                        .check.interaction({
+                            state: 'st_change_sanc',
+                            reply: "Sorry, the format of the SANC registration number is not correct. Please enter it again, e.g. 34567899:"
+                        })
+                        .run();
+                });
+                it("should reach details changed end state", function() {
+                    return tester
+                        .setup.user.addr('27821237777')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '4'  // st_subscribed - change sanc
+                            , '34567890'  // st_change_sanc
+                        )
+                        .check.interaction({
+                            state: 'st_end_detail_changed',
+                            reply: "Thank you. Your NurseConnect details have been changed. To change any other details, please dial *120*550*5# again."
+                        })
+                        .run();
+                });
+                it("should save extras", function() {
+                    return tester
+                        .setup.user.addr('27821237777')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '4'  // st_subscribed - change sanc
+                            , '34567890'  // st_change_sanc
+                        )
+                        .check(function(api) {
+                            var contact = _.find(api.contacts.store, {
+                              msisdn: '+27821237777'
+                            });
+                            assert.equal(Object.keys(contact.extra).length, 8);
+                            assert.equal(contact.extra.nc_sanc, "34567890");
+                        })
+                        .run();
+                });
+            });
+
+            describe("change persal", function() {
+                it("should ask for persal", function() {
+                    return tester
+                        .setup.user.addr('27821237777')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '5'  // st_subscribed - change persal
+                        )
+                        .check.interaction({
+                            state: 'st_change_persal',
+                            reply: "Please enter your 8-digit Persal employee number, e.g. 11118888:"
+                        })
+                        .run();
+                });
+                it("should have extras", function() {
+                    return tester
+                        .setup.user.addr('27821237777')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '5'  // st_subscribed - change persal
+                        )
+                        .check(function(api) {
+                            var contact = _.find(api.contacts.store, {
+                              msisdn: '+27821237777'
+                            });
+                            assert.equal(Object.keys(contact.extra).length, 7);
+                            assert.equal(contact.extra.nc_persal, undefined);
+                        })
+                        .run();
+                });
+                it("should loop back if non-numeric char", function() {
+                    return tester
+                        .setup.user.addr('27821237777')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '5'  // st_subscribed - change persal
+                            , '3456789A'  // st_change_persal
+                        )
+                        .check.interaction({
+                            state: 'st_change_persal',
+                            reply: "Sorry, the format of the Persal employee number is not correct. Please enter it again, e.g. 11118888:"
+                        })
+                        .run();
+                });
+                it("should loop back if not 8 chars", function() {
+                    return tester
+                        .setup.user.addr('27821237777')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '5'  // st_subscribed - change persal
+                            , '3456789'  // st_change_persal
+                        )
+                        .check.interaction({
+                            state: 'st_change_persal',
+                            reply: "Sorry, the format of the Persal employee number is not correct. Please enter it again, e.g. 11118888:"
+                        })
+                        .run();
+                });
+                it("should reach details changed end state", function() {
+                    return tester
+                        .setup.user.addr('27821237777')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '5'  // st_subscribed - change persal
+                            , '11114444'  // st_change_persal
+                        )
+                        .check.interaction({
+                            state: 'st_end_detail_changed',
+                            reply: "Thank you. Your NurseConnect details have been changed. To change any other details, please dial *120*550*5# again."
+                        })
+                        .run();
+                });
+                it("should save extras", function() {
+                    return tester
+                        .setup.user.addr('27821237777')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '5'  // st_subscribed - change persal
+                            , '11114444'  // st_change_persal
+                        )
+                        .check(function(api) {
+                            var contact = _.find(api.contacts.store, {
+                              msisdn: '+27821237777'
+                            });
+                            assert.equal(Object.keys(contact.extra).length, 8);
+                            assert.equal(contact.extra.nc_persal, "11114444");
                         })
                         .run();
                 });

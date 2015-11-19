@@ -1308,7 +1308,7 @@ module.exports = function() {
     },
 
 // POST Vumi NurseReg
-    // Vumi registration post - sa_id (self reg)
+    // Vumi nursereg post - sa_id (self reg)
     {
         "request": {
             "method": "POST",
@@ -1322,7 +1322,9 @@ module.exports = function() {
                 "faccode": "123456",
                 "id_type": "sa_id",
                 "id_no": "5101025009086",
-                "dob": "1951-01-02"
+                "dob": "1951-01-02",
+                "sanc_reg_no": null,
+                "persal_no": null
             }
         },
         "response": {
@@ -1333,12 +1335,14 @@ module.exports = function() {
                 "faccode": "123456",
                 "id_type": "sa_id",
                 "id_no": "5101025009086",
-                "dob": "1951-01-02"
+                "dob": "1951-01-02",
+                "sanc_reg_no": null,
+                "persal_no": null
             }
         }
     },
 
-    // Vumi registration post - passport (other reg)
+    // Vumi nursereg post - passport (other reg)
     {
         "request": {
             "method": "POST",
@@ -1353,7 +1357,9 @@ module.exports = function() {
                 "id_type": "passport",
                 "id_no": "Cub1234",
                 "dob": "1976-03-07",
-                "passport_origin": "cu"
+                "passport_origin": "cu",
+                "sanc_reg_no": null,
+                "persal_no": null
             }
         },
         "response": {
@@ -1365,7 +1371,265 @@ module.exports = function() {
                 "id_type": "passport",
                 "id_no": "Cub1234",
                 "dob": "1976-03-07",
-                "passport_origin": "cu"
+                "passport_origin": "cu",
+                "sanc_reg_no": null,
+                "persal_no": null
+            }
+        }
+    },
+
+    // Vumi nursereg post - change detail faccode
+    {
+        "request": {
+            "method": "POST",
+            'headers': {
+                'Authorization': ['Token test_token']
+            },
+            "url": "http://ndoh-control/api/v2/nurseregs/",
+            "data": {
+                "cmsisdn": "+27821237777",
+                "dmsisdn": "+27821237777",
+                "faccode": "234567",
+                "id_type": "sa_id",
+                "id_no": "5101025009086",
+                "dob": "1951-01-02",
+                "sanc_reg_no": null,
+                "persal_no": null
+            }
+        },
+        "response": {
+            "code": 201,
+            "data": {
+                "cmsisdn": "+27821237777",
+                "dmsisdn": "+27821237777",
+                "faccode": "234567",
+                "id_type": "sa_id",
+                "id_no": "5101025009086",
+                "dob": "1951-01-02",
+                "sanc_reg_no": null,
+                "persal_no": null
+            }
+        }
+    },
+
+    // Vumi nursereg post - change detail sanc
+    {
+        "request": {
+            "method": "POST",
+            'headers': {
+                'Authorization': ['Token test_token']
+            },
+            "url": "http://ndoh-control/api/v2/nurseregs/",
+            "data": {
+                "cmsisdn": "+27821237777",
+                "dmsisdn": "+27821237777",
+                "faccode": "123456",
+                "id_type": "sa_id",
+                "id_no": "5101025009086",
+                "dob": "1951-01-02",
+                "sanc_reg_no": "34567890",
+                "persal_no": null
+            }
+        },
+        "response": {
+            "code": 201,
+            "data": {
+                "cmsisdn": "+27821237777",
+                "dmsisdn": "+27821237777",
+                "faccode": "123456",
+                "id_type": "sa_id",
+                "id_no": "5101025009086",
+                "dob": "1951-01-02",
+                "sanc_reg_no": "34567890",
+                "persal_no": null
+            }
+        }
+    },
+
+    // Vumi nursereg post - change detail persal
+    {
+        "request": {
+            "method": "POST",
+            'headers': {
+                'Authorization': ['Token test_token']
+            },
+            "url": "http://ndoh-control/api/v2/nurseregs/",
+            "data": {
+                "cmsisdn": "+27821237777",
+                "dmsisdn": "+27821237777",
+                "faccode": "123456",
+                "id_type": "sa_id",
+                "id_no": "5101025009086",
+                "dob": "1951-01-02",
+                "sanc_reg_no": null,
+                "persal_no": "11114444"
+            }
+        },
+        "response": {
+            "code": 201,
+            "data": {
+                "cmsisdn": "+27821237777",
+                "dmsisdn": "+27821237777",
+                "faccode": "123456",
+                "id_type": "sa_id",
+                "id_no": "5101025009086",
+                "dob": "1951-01-02",
+                "sanc_reg_no": null,
+                "persal_no": "11114444"
+            }
+        }
+    },
+
+    // Vumi nursereg post - change old phone number
+    {
+        "request": {
+            "method": "POST",
+            'headers': {
+                'Authorization': ['Token test_token']
+            },
+            "url": "http://ndoh-control/api/v2/nurseregs/",
+            "data": {
+                "cmsisdn": "+27821234444",
+                "dmsisdn": "+27821234444",
+                "rmsisdn": "+27821237777",
+                "faccode": "123456",
+                "id_type": "sa_id",
+                "id_no": "5101025009086",
+                "dob": "1951-01-02",
+                "sanc_reg_no": null,
+                "persal_no": null
+            }
+        },
+        "response": {
+            "code": 201,
+            "data": {
+                "cmsisdn": "+27821234444",
+                "dmsisdn": "+27821234444",
+                "rmsisdn": "+27821237777",
+                "faccode": "123456",
+                "id_type": "sa_id",
+                "id_no": "5101025009086",
+                "dob": "1951-01-02",
+                "sanc_reg_no": null,
+                "persal_no": null
+            }
+        }
+    },
+
+    // Vumi nursereg post - switch to new number 0821238888
+    {
+        "request": {
+            "method": "POST",
+            'headers': {
+                'Authorization': ['Token test_token']
+            },
+            "url": "http://ndoh-control/api/v2/nurseregs/",
+            "data": {
+                "cmsisdn": "+27821238888",
+                "dmsisdn": "+27821237777",
+                "rmsisdn": "+27821237777",
+                "faccode": "123456",
+                "id_type": "sa_id",
+                "id_no": "5101025009086",
+                "dob": "1951-01-02",
+                "sanc_reg_no": null,
+                "persal_no": null
+            }
+        },
+        "response": {
+            "code": 201,
+            "data": {
+                "cmsisdn": "+27821238888",
+                "dmsisdn": "+27821237777",
+                "rmsisdn": "+27821237777",
+                "faccode": "123456",
+                "id_type": "sa_id",
+                "id_no": "5101025009086",
+                "dob": "1951-01-02",
+                "sanc_reg_no": null,
+                "persal_no": null
+            }
+        }
+    },
+
+    // Vumi nursereg post - switch to new number 0821239999
+    {
+        "request": {
+            "method": "POST",
+            'headers': {
+                'Authorization': ['Token test_token']
+            },
+            "url": "http://ndoh-control/api/v2/nurseregs/",
+            "data": {
+                "cmsisdn": "+27821239999",
+                "dmsisdn": "+27821237777",
+                "rmsisdn": "+27821237777",
+                "faccode": "123456",
+                "id_type": "sa_id",
+                "id_no": "5101025009086",
+                "dob": "1951-01-02",
+                "sanc_reg_no": null,
+                "persal_no": null
+            }
+        },
+        "response": {
+            "code": 201,
+            "data": {
+                "cmsisdn": "+27821239999",
+                "dmsisdn": "+27821237777",
+                "rmsisdn": "+27821237777",
+                "faccode": "123456",
+                "id_type": "sa_id",
+                "id_no": "5101025009086",
+                "dob": "1951-01-02",
+                "sanc_reg_no": null,
+                "persal_no": null
+            }
+        }
+    },
+
+// GET Vumi Subscription - NurseReg
+    // Nursereg subscription for 27821237777
+    {
+        'request': {
+            'method': 'GET',
+            'params': {
+                'to_addr': '+27821237777'
+            },
+            'headers': {
+                'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
+                'Content-Type': ['application/json']
+            },
+            'url': 'http://ndoh-control/api/v1/subscription/',
+        },
+        'response': {
+            "code": 200,
+            "meta": {
+                "limit": 20,
+                "next": null,
+                "offset": 0,
+                "previous": null,
+                "total_count": 2
+            },
+            "data": {
+                "objects": [
+                    {
+                        "active": true,
+                        "completed": false,
+                        "contact_key": "e5b0888cdb4347158ea5cd2f2147d28f",
+                        "created_at": "2014-08-05T11:22:34.838969",
+                        "id": 1,
+                        "lang": "en",
+                        "message_set": "/api/v1/message_set/3/",
+                        "next_sequence_number": 1,
+                        "process_status": 0,
+                        "resource_uri": "/api/v1/subscription/1/",
+                        "schedule": "/api/v1/periodic_task/1/",
+                        "to_addr": "+27001",
+                        "updated_at": "2014-08-05T11:22:34.838996",
+                        "user_account": "1aa0dea2f82945a48cc258c61d756f16"
+                    }
+                ]
             }
         }
     },

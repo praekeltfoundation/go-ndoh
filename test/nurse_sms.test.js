@@ -114,7 +114,7 @@ describe("app", function() {
         describe("test Metrics and KVs", function() {
 
             describe("when a new unique user sends message in", function() {
-                it("should increment the no. of unique users metric by 1", function() {
+                it("should fire no metrics", function() {
                     return tester
                         .setup(function(api) {
                             api.contacts.add({
@@ -129,9 +129,7 @@ describe("app", function() {
                         .inputs('start')
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_nurse_sms_ms;
-                            assert.equal(Object.keys(metrics).length, 2);
-                            assert.deepEqual(metrics['test.nurse_sms.sum.unique_users'].values, [1]);
-                            assert.deepEqual(metrics['test.sum.unique_users'].values, [1]);
+                            assert.equal(Object.keys(metrics).length, 0);
                         }).run();
                 });
             });
@@ -155,7 +153,7 @@ describe("app", function() {
                         .inputs('STOP')
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_nurse_sms_ms;
-                            assert.equal(Object.keys(metrics).length, 6);
+                            assert.equal(Object.keys(metrics).length, 4);
                             // should inc all opt-outs metric
                             assert.deepEqual(metrics['test.sum.optouts'].values, [1]);
                             // should NOT inc loss optouts metric

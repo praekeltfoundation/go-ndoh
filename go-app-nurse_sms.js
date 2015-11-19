@@ -1307,7 +1307,6 @@ go.app = function() {
     var vumigo = require('vumigo_v02');
     var App = vumigo.App;
     var EndState = vumigo.states.EndState;
-    var Q = require('q');
 
     var GoNDOH = App.extend(function(self) {
         App.call(self, 'states_start');
@@ -1319,19 +1318,6 @@ go.app = function() {
             self.store_name = [self.env, self.im.config.name].join('.');
 
             go.utils.attach_session_length_helper(self.im);
-
-            self.im.user.on('user:new', function(e) {
-                return Q.all([
-                    go.utils.incr_kv(self.im, [self.store_name, 'unique_users'].join('.')),
-                    self.im.metrics.fire.inc([self.metric_prefix, 'sum', 'unique_users'].join('.')),
-                    self.im.metrics.fire.inc([self.env, 'sum', 'unique_users'].join('.'))
-                ]);
-            });
-
-            self.im.on('state:enter', function(e) {
-                self.contact.extra.last_stage = e.state.name;
-                return self.im.contacts.save(self.contact);
-            });
 
             return self.im.contacts
                 .for_user()
@@ -1354,8 +1340,6 @@ go.app = function() {
                         return self.states.create("states_opt_out_enter");
                     case "START":
                         return self.states.create("states_opt_in_enter");
-                    case "BABY":
-                        return self.states.create("states_baby_enter");
                     default: // Logs a support ticket
                         return self.states.create("states_default_enter");
                 }
@@ -1399,38 +1383,6 @@ go.app = function() {
         self.states.add('states_opt_in', function(name) {
             return new EndState(name, {
                 text: $('Thank you. You will now receive messages from us again. ' +
-                        'If you have any medical concerns please visit your nearest clinic'),
-
-                next: 'states_start'
-            });
-        });
-
-        self.states.add('states_baby_enter', function(name) {
-            var opts = go.utils.subscription_type_and_rate(self.contact, self.im);
-            self.contact.extra.subscription_type = opts.sub_type.toString();
-            self.contact.extra.subscription_rate = opts.sub_rate.toString();
-            self.contact.extra.subscription_seq_start = opts.sub_seq_start.toString();
-
-            return go.utils
-                .subscription_unsubscribe_all(self.contact, self.im)
-                .then(function() {
-                    return Q
-                        .all([
-                            go.utils.post_subscription(self.contact,
-                                self.im, self.metric_prefix, self.env, opts),
-                            self.im.metrics.fire.inc([self.env, 'sum',
-                                'baby_sms'].join('.'), {amount: 1}),
-                            self.im.contacts.save(self.contact)
-                        ])
-                        .then(function() {
-                            return self.states.create('states_baby');
-                        });
-                });
-        });
-
-        self.states.add('states_baby', function(name) {
-            return new EndState(name, {
-                text: $('Thank you. You will now receive messages related to newborn babies. ' +
                         'If you have any medical concerns please visit your nearest clinic'),
 
                 next: 'states_start'

@@ -15,19 +15,6 @@ go.app = function() {
 
             go.utils.attach_session_length_helper(self.im);
 
-            self.im.user.on('user:new', function(e) {
-                return Q.all([
-                    go.utils.incr_kv(self.im, [self.store_name, 'unique_users'].join('.')),
-                    self.im.metrics.fire.inc([self.metric_prefix, 'sum', 'unique_users'].join('.')),
-                    self.im.metrics.fire.inc([self.env, 'sum', 'unique_users'].join('.'))
-                ]);
-            });
-
-            self.im.on('state:enter', function(e) {
-                self.contact.extra.last_stage = e.state.name;
-                return self.im.contacts.save(self.contact);
-            });
-
             return self.im.contacts
                 .for_user()
                 .then(function(user_contact) {

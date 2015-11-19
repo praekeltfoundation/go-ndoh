@@ -36,6 +36,7 @@ describe("app", function() {
                         "sms": {"delivery_class": "sms"}
                     },
                     channel: "longcode",
+                    nurse_ussd_channel: "nurse_ussd_channel",
                     jembi: {
                         username: 'foo',
                         password: 'bar',
@@ -265,6 +266,29 @@ describe("app", function() {
                     .check(function(api) {
                         var contact = _.find(api.contacts.store, { msisdn: '+27001' });
                         assert.equal(contact.extra.nc_opt_out_reason, '');
+                    })
+                    .run();
+            });
+        });
+
+        describe("when the user sends a different message", function() {
+            it("should tell them how to opt out", function() {
+                return tester
+                    .setup(function(api) {
+                        api.contacts.add({
+                            msisdn: '+27001',
+                            extra : {},
+                            key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
+                        });
+                    })
+                    .setup.user.addr('27001')
+                    .inputs('help')
+                    .check.interaction({
+                        state: 'st_unrecognised',
+                        reply:
+                            'We do not recognise the message you sent us. Reply STOP ' +
+                            'to unsubscribe or dial nurse_ussd_channel for more options.'
                     })
                     .run();
             });

@@ -1174,7 +1174,7 @@ describe("app", function() {
         });
 
         // Change to New Number
-        describe.only("switch to new number", function() {
+        describe("switch to new number", function() {
             describe("choosing to switch to new number", function() {
                 it("should go to st_change_num", function() {
                     return tester

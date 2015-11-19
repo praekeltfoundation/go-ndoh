@@ -935,7 +935,7 @@ describe("app", function() {
                         })
                         .check(function(api) {
                             var optouts = api.optout.optout_store;
-                            assert.equal(optouts.length, 1);
+                            assert.equal(optouts.length, 3);
                         })
                         .run();
                 });
@@ -966,7 +966,7 @@ describe("app", function() {
                         })
                         .check(function(api) {
                             var optouts = api.optout.optout_store;
-                            assert.equal(optouts.length, 2);
+                            assert.equal(optouts.length, 4);
                         })
                         .run();
                 });

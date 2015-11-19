@@ -1021,7 +1021,7 @@ go.utils = {
                         // (through SMSing STOP) but is now dialing in to opt-out line and
                         // supplying a reason for their optout, opt them out again
                         if (opted_out === false || (prior_opt_out_reason === 'unknown'
-                          && im.config.name.substring(0,6) === "optout")) {
+                          && im.config.name.substring(0,10) === "nurse_ussd")) {
                             var queue2 = [];
 
                             // Start Queue 2
@@ -1080,10 +1080,7 @@ go.utils = {
                             // End Queue 2
 
                             return Q
-                                .all(queue2.map(Q.try))
-                                .then(function() {
-                                    return go.utils.adjust_percentage_optouts(im, env);
-                                });
+                                .all(queue2.map(Q.try));
                         } else {
                             return Q();
                         }
@@ -1488,7 +1485,7 @@ go.app = function() {
                     new Choice('st_change_faccode', $('Change facility code')),
                     new Choice('st_change_sanc', $('Change SANC no.')),
                     new Choice('st_change_persal', $('Change Persal no.')),
-                    new Choice('st_optout', $('Stop SMS')),
+                    new Choice('isl_check_optout_optout', $('Stop SMS')),
                 ],
                 next: function(choice) {
                     return choice.value;
@@ -1736,6 +1733,75 @@ go.app = function() {
                 return self.states.create('st_end_detail_changed');
             });
         });
+
+        self.add('isl_check_optout_optout', function(name) {
+            return go.utils
+                .opted_out(self.im, self.contact)
+                .then(function(opted_out) {
+                    return self.states.create(
+                        'st_optout', {opted_out: opted_out}
+                    );
+                });
+        });
+
+        self.add('st_optout', function(name, opts) {
+            var question = opts.opted_out === false
+                ? $("Please tell us why you no longer want messages:")
+                : $("You have opted out before. Please tell us why:");
+            return new ChoiceState(name, {
+                question: question,
+                choices: [
+                    new Choice('job_change', $('Not a nurse or midwife')),
+                    new Choice('number_owner_change', $('New user of number')),
+                    new Choice('not_useful', $("Messages not useful")),
+                    new Choice('other', $("Other")),
+                    new Choice('main_menu', $("Main menu"))
+                ],
+                next: function(choice) {
+                    if (choice.value === 'main_menu') {
+                        return 'isl_route';
+                    } else {
+                        return go.utils
+                            .nurse_optout(
+                                self.im, self.contact,
+                                optout_reason=choice.value,
+                                api_optout=true,
+                                unsub_all=true,
+                                jembi_optout=false,  // TODO #211 set true
+                                self.metric_prefix,
+                                self.env
+                            )
+                            .then(function() {
+                                return 'st_end_detail_changed';
+                            });
+                    }
+                }
+            });
+        });
+
+
+        // self.add('st_optout', function(name) {
+        //     var question = $("Please tell us why you no longer want messages:");
+        //     // $("You have opted out before. Please tell us why:")
+        //     return new ChoiceState(name, {
+        //         question: question,
+        //         choices: [
+        //             new Choice('job_change', $('Not a nurse or midwife')),
+        //             new Choice('number_owner_change', $('New user of number')),
+        //             new Choice('not_useful', $("Messages not useful")),
+        //             new Choice('other', $("Other")),
+        //             new Choice('main_menu', $("Main menu"))
+        //         ],
+        //         next: function(choice) {
+        //             if (choice.value === 'main_menu') {
+        //                 return 'isl_route';
+        //             } else {
+
+        //                 return 'st_end_detail_changed';
+        //             }
+        //         }
+        //     });
+        // });
 
 
     // REGISTRATION STATES

@@ -8,7 +8,9 @@ var DummyOptoutResource = DummyResource.extend(function(self) {
     /* opt-out stubbery */
     self.optout_store = [
         'msisdn:+27831112222',  // momconnect
-        'msisdn:+27821239999'  // nurseconnect
+        'msisdn:+27821239999',  // nurseconnect 1
+        'msisdn:+27821233333',  // nurseconnect 2
+        'msisdn:+27821230000',  // nurseconnect 3
     ];
 
 

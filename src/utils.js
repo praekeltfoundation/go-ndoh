@@ -1018,7 +1018,7 @@ go.utils = {
                         // (through SMSing STOP) but is now dialing in to opt-out line and
                         // supplying a reason for their optout, opt them out again
                         if (opted_out === false || (prior_opt_out_reason === 'unknown'
-                          && im.config.name.substring(0,6) === "optout")) {
+                          && im.config.name.substring(0,10) === "nurse_ussd")) {
                             var queue2 = [];
 
                             // Start Queue 2
@@ -1077,10 +1077,7 @@ go.utils = {
                             // End Queue 2
 
                             return Q
-                                .all(queue2.map(Q.try))
-                                .then(function() {
-                                    return go.utils.adjust_percentage_optouts(im, env);
-                                });
+                                .all(queue2.map(Q.try));
                         } else {
                             return Q();
                         }

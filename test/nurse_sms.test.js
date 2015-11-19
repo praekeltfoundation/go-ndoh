@@ -155,7 +155,7 @@ describe("app", function() {
                         .inputs('STOP')
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_nurse_sms_ms;
-                            assert.equal(Object.keys(metrics).length, 9);
+                            assert.equal(Object.keys(metrics).length, 6);
                             // should inc all opt-outs metric
                             assert.deepEqual(metrics['test.sum.optouts'].values, [1]);
                             // should NOT inc loss optouts metric

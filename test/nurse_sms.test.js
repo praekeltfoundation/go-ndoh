@@ -68,9 +68,7 @@ describe("app", function() {
                         api.kv.store['session_length_helper.' + api.config.app.name + '.foodacom'] = 42;
                         api.contacts.add({
                             msisdn: '+27001',
-                            extra : {
-                                language_choice: 'en'
-                            },
+                            extra : {},
                             key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                             user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
                         });
@@ -117,9 +115,7 @@ describe("app", function() {
                         .setup(function(api) {
                             api.contacts.add({
                                 msisdn: '+27001',
-                                extra : {
-                                    language_choice: 'en'
-                                },
+                                extra : {},
                                 key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                                 user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
                             });
@@ -139,9 +135,7 @@ describe("app", function() {
                             api.contacts.add({
                                 msisdn: '+27001',
                                 extra : {
-                                    language_choice: 'en',
-                                    id_type: 'none',
-                                    is_registered_by: 'chw'
+                                    nc_id_type: 'sa_id',
                                 },
                                 key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                                 user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
@@ -164,9 +158,7 @@ describe("app", function() {
                     .setup(function(api) {
                         api.contacts.add({
                             msisdn: '+27001',
-                            extra : {
-                                language_choice: 'en'
-                            },
+                            extra : {},
                             key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                             user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
                         });
@@ -190,8 +182,7 @@ describe("app", function() {
                         api.contacts.add({
                             msisdn: '+27001',
                             extra : {
-                                language_choice: 'en',
-                                id_type: 'none'
+                                nc_id_type: 'sa_id'
                             },
                             key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                             user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
@@ -219,8 +210,7 @@ describe("app", function() {
                         api.contacts.add({
                             msisdn: '+27001',
                             extra : {
-                                language_choice: 'en',
-                                id_type: 'none'
+                                nc_id_type: 'sa_id'
                             },
                             key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                             user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
@@ -248,7 +238,6 @@ describe("app", function() {
                         api.contacts.add({
                             msisdn: '+27001',
                             extra : {
-                                language_choice: 'en',
                                 nc_opt_out_reason: 'unknown'
                             },
                             key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",

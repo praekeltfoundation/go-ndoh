@@ -1046,33 +1046,6 @@ go.utils = {
                                     return go.utils.jembi_optout_send_json(contact, contact,
                                       'optout', im, metric_prefix);
                                 });
-
-                                // fire sum of all opt-outs metric
-                                queue2.push(function() {
-                                    return im.metrics.fire.inc([env, 'sum', 'optouts'].join('.'),
-                                      {amount: 1});
-                                });
-
-                                // fire loss / non-loss metric
-                                var loss_causes = ['miscarriage', 'babyloss', 'stillbirth'];
-                                if (_.contains(loss_causes, contact.extra.nc_opt_out_reason)) {
-                                    queue2.push(function() {
-                                        return im.metrics.fire.inc([env, 'sum', 'optout_cause',
-                                          'loss'].join('.'), {amount: 1});
-                                    });
-                                } else {
-                                    queue2.push(function() {
-                                        return im.metrics.fire.inc([env, 'sum', 'optout_cause',
-                                          'non_loss'].join('.'), {amount: 1});
-                                    });
-                                }
-
-                                // fire cause metric
-                                queue2.push(function() {
-                                    return im.metrics.fire.inc([env, 'sum', 'optout_cause',
-                                      optout_reason].join('.'), {amount: 1});
-                                });
-
                             }
                             // End Queue 2
 

@@ -36,6 +36,7 @@ describe("app", function() {
                         "sms": {"delivery_class": "sms"}
                     },
                     channel: "longcode",
+                    nurse_ussd_channel: "nurse_ussd_channel",
                     jembi: {
                         username: 'foo',
                         password: 'bar',
@@ -50,9 +51,6 @@ describe("app", function() {
                     snappybouncer: {
                         conversation: 'dummyconversation'
                     }
-                })
-                .setup(function(api) {
-                    api.kv.store['test.nurse_sms.unique_users'] = 0;
                 })
                 .setup(function(api) {
                     api.metrics.stores = {'test_nurse_sms_ms': {}};
@@ -70,9 +68,7 @@ describe("app", function() {
                         api.kv.store['session_length_helper.' + api.config.app.name + '.foodacom'] = 42;
                         api.contacts.add({
                             msisdn: '+27001',
-                            extra : {
-                                language_choice: 'en'
-                            },
+                            extra : {},
                             key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                             user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
                         });
@@ -114,14 +110,12 @@ describe("app", function() {
         describe("test Metrics and KVs", function() {
 
             describe("when a new unique user sends message in", function() {
-                it("should increment the no. of unique users metric by 1", function() {
+                it("should fire no metrics", function() {
                     return tester
                         .setup(function(api) {
                             api.contacts.add({
                                 msisdn: '+27001',
-                                extra : {
-                                    language_choice: 'en'
-                                },
+                                extra : {},
                                 key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                                 user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
                             });
@@ -129,23 +123,19 @@ describe("app", function() {
                         .inputs('start')
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_nurse_sms_ms;
-                            assert.equal(Object.keys(metrics).length, 2);
-                            assert.deepEqual(metrics['test.nurse_sms.sum.unique_users'].values, [1]);
-                            assert.deepEqual(metrics['test.sum.unique_users'].values, [1]);
+                            assert.equal(Object.keys(metrics).length, 0);
                         }).run();
                 });
             });
 
             describe("when the user sends a STOP message", function() {
-                it("should fire multiple metrics", function() {
+                it("should fire no metrics", function() {
                     return tester
                         .setup(function(api) {
                             api.contacts.add({
                                 msisdn: '+27001',
                                 extra : {
-                                    language_choice: 'en',
-                                    id_type: 'none',
-                                    is_registered_by: 'chw'
+                                    nc_id_type: 'sa_id',
                                 },
                                 key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                                 user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
@@ -155,26 +145,34 @@ describe("app", function() {
                         .inputs('STOP')
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_nurse_sms_ms;
-                            assert.equal(Object.keys(metrics).length, 6);
-                            // should inc all opt-outs metric
-                            assert.deepEqual(metrics['test.sum.optouts'].values, [1]);
-                            // should NOT inc loss optouts metric
-                            assert.deepEqual(metrics['test.sum.optout_cause.non_loss'].values, [1]);
-                            // should inc cause optouts metric
-                            assert.deepEqual(metrics['test.sum.optout_cause.unknown'].values, [1]);
-
-                            var kv_store = api.kv.store;
-                            // should inc kv store for all optouts
-                            assert.equal(kv_store['test_nurse_sms_ms.test.sum.optouts'], 1);
-                            // should inc kv store for non-loss optouts
-                            assert.equal(kv_store['test_nurse_sms_ms.test.sum.optout_cause.non_loss'], 1);
-                            // should inc kv store cause optouts
-                            assert.equal(kv_store['test_nurse_sms_ms.test.sum.optout_cause.unknown'], 1);
+                            assert.equal(Object.keys(metrics).length, 0);
                         })
                         .run();
                 });
             });
+        });
 
+        describe("when the user sends a message containing a USSD code", function() {
+            it("should tell them to dial the number, not sms it", function() {
+                return tester
+                    .setup(function(api) {
+                        api.contacts.add({
+                            msisdn: '+27001',
+                            extra : {},
+                            key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
+                        });
+                    })
+                    .setup.user.addr('27001')
+                    .inputs('*134*12345# rate')
+                    .check.interaction({
+                        state: 'states_dial_not_sms',
+                        reply:
+                            "Please use your handset's keypad to dial the number that you " +
+                            "received, rather than sending it to us in an sms."
+                    })
+                    .run();
+            });
         });
 
         describe("when the user sends a STOP message", function() {
@@ -184,8 +182,7 @@ describe("app", function() {
                         api.contacts.add({
                             msisdn: '+27001',
                             extra : {
-                                language_choice: 'en',
-                                id_type: 'none'
+                                nc_id_type: 'sa_id'
                             },
                             key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                             user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
@@ -213,8 +210,7 @@ describe("app", function() {
                         api.contacts.add({
                             msisdn: '+27001',
                             extra : {
-                                language_choice: 'en',
-                                id_type: 'none'
+                                nc_id_type: 'sa_id'
                             },
                             key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                             user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
@@ -242,7 +238,6 @@ describe("app", function() {
                         api.contacts.add({
                             msisdn: '+27001',
                             extra : {
-                                language_choice: 'en',
                                 nc_opt_out_reason: 'unknown'
                             },
                             key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
@@ -260,6 +255,29 @@ describe("app", function() {
                     .check(function(api) {
                         var contact = _.find(api.contacts.store, { msisdn: '+27001' });
                         assert.equal(contact.extra.nc_opt_out_reason, '');
+                    })
+                    .run();
+            });
+        });
+
+        describe("when the user sends a different message", function() {
+            it("should tell them how to opt out", function() {
+                return tester
+                    .setup(function(api) {
+                        api.contacts.add({
+                            msisdn: '+27001',
+                            extra : {},
+                            key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
+                        });
+                    })
+                    .setup.user.addr('27001')
+                    .inputs('help')
+                    .check.interaction({
+                        state: 'st_unrecognised',
+                        reply:
+                            'We do not recognise the message you sent us. Reply STOP ' +
+                            'to unsubscribe or dial nurse_ussd_channel for more options.'
                     })
                     .run();
             });

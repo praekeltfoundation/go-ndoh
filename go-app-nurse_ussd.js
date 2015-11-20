@@ -1375,6 +1375,9 @@ go.app = function() {
             var no_redirects = [
                 'st_subscribed',
                 'st_not_subscribed',
+                'st_end_detail_changed',
+                'st_end_reg',
+                'st_block_active_subs',
             ];
             return self.im.msg.session_event === 'new'
                 && self.im.user.state.name

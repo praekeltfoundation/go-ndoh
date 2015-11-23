@@ -109,6 +109,7 @@ describe("app", function() {
                     api.contacts.add({
                         msisdn: '+27821233333',
                         extra: {
+                            nc_last_reg_id: '3',
                             nc_opt_out_reason: 'unknown',
                             nc_is_registered: 'true'
                         },
@@ -119,6 +120,7 @@ describe("app", function() {
                     api.contacts.add({
                         msisdn: '+27821230000',
                         extra: {
+                            nc_last_reg_id: '0',
                             nc_opt_out_reason: 'not_useful',
                             nc_is_registered: 'true'
                         },
@@ -1727,7 +1729,7 @@ describe("app", function() {
                                 var contact = _.find(api.contacts.store, {
                                   msisdn: '+27821233333'
                                 });
-                                assert.equal(Object.keys(contact.extra).length, 3);
+                                assert.equal(Object.keys(contact.extra).length, 4);
                                 assert.equal(contact.extra.nc_opt_out_reason, 'unknown');
                                 assert.equal(contact.extra.nc_is_registered, 'true');
                             })
@@ -1761,7 +1763,7 @@ describe("app", function() {
                                 var contact = _.find(api.contacts.store, {
                                   msisdn: '+27821233333'
                                 });
-                                assert.equal(Object.keys(contact.extra).length, 3);
+                                assert.equal(Object.keys(contact.extra).length, 4);
                                 assert.equal(contact.extra.nc_opt_out_reason, 'other');
                                 assert.equal(contact.extra.nc_is_registered, 'true');
                             })
@@ -1833,7 +1835,7 @@ describe("app", function() {
                                 var contact = _.find(api.contacts.store, {
                                   msisdn: '+27821230000'
                                 });
-                                assert.equal(Object.keys(contact.extra).length, 3);
+                                assert.equal(Object.keys(contact.extra).length, 4);
                                 assert.equal(contact.extra.nc_opt_out_reason, 'not_useful');
                                 assert.equal(contact.extra.nc_is_registered, 'true');
                             })
@@ -1868,7 +1870,7 @@ describe("app", function() {
                                 var contact = _.find(api.contacts.store, {
                                   msisdn: '+27821230000'
                                 });
-                                assert.equal(Object.keys(contact.extra).length, 3);
+                                assert.equal(Object.keys(contact.extra).length, 4);
                                 assert.equal(contact.extra.nc_opt_out_reason, 'other');
                                 assert.equal(contact.extra.nc_is_registered, 'true');
                             })

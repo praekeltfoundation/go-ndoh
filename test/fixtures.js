@@ -1788,6 +1788,241 @@ module.exports = function() {
         }
     },
 
+// GET Last Nursereg - Nurse
+    // Optout for 27821237777
+    {
+        "request": {
+            "method": "GET",
+            "headers": {
+                "Authorization": ['Token test_token']
+            },
+            "url": "http://ndoh-control/api/v2/nurseregistrations/7/",
+        },
+        "response": {
+            "code": 200,
+            "data": {
+                "id": 7,
+                "cmsisdn": "+27821237777",
+                "dmsisdn": "+27821237777",
+                "rmsisdn": null,
+                "faccode": "123456",
+                "id_type": "sa_id",
+                "id_no": "8009151234001",
+                "passport_origin": null,
+                "dob": "1980-09-15",
+                "nurse_source": 2,
+                "persal_no": null,
+                "opted_out": false,
+                "optout_reason": null,
+                "optout_count": 0,
+                "sanc_reg_no": null
+            }
+        }
+    },
+    // Optout for 27821233333
+    {
+        "request": {
+            "method": "GET",
+            "headers": {
+                "Authorization": ['Token test_token']
+            },
+            "url": "http://ndoh-control/api/v2/nurseregistrations/3/",
+        },
+        "response": {
+            "code": 200,
+            "data": {
+                "id": 3,
+                "cmsisdn": "+27821233333",
+                "dmsisdn": "+27821233333",
+                "rmsisdn": null,
+                "faccode": "123456",
+                "id_type": "sa_id",
+                "id_no": "8009151234001",
+                "passport_origin": null,
+                "dob": "1980-09-15",
+                "nurse_source": 2,
+                "persal_no": null,
+                "opted_out": true,
+                "optout_reason": "unknown",
+                "optout_count": 3,
+                "sanc_reg_no": null
+            }
+        }
+    },
+    // Optout for 27001 (sms)
+    {
+        "request": {
+            "method": "GET",
+            "headers": {
+                "Authorization": ['Token test_token']
+            },
+            "url": "http://ndoh-control/api/v2/nurseregistrations/99/",
+        },
+        "response": {
+            "code": 200,
+            "data": {
+                "id": 99,
+                "cmsisdn": "+27001",
+                "dmsisdn": "+27001",
+                "rmsisdn": null,
+                "faccode": "123456",
+                "id_type": "sa_id",
+                "id_no": "8009151234001",
+                "passport_origin": null,
+                "dob": "1980-09-15",
+                "nurse_source": 2,
+                "persal_no": null,
+                "opted_out": false,
+                "optout_reason": null,
+                "optout_count": 0,
+                "sanc_reg_no": null
+            }
+        }
+    },
+
+// PATCH Last Nursereg
+    // Optout for 27821237777
+    {
+        "request": {
+            "method": "PATCH",
+            "headers": {
+                "Authorization": ["Token test_token"]
+            },
+            "url": "http://ndoh-control/api/v2/nurseregistrations/7/",
+            "data": {
+                "id": 7,
+                "cmsisdn": "+27821237777",
+                "dmsisdn": "+27821237777",
+                "rmsisdn": null,
+                "faccode": "123456",
+                "id_type": "sa_id",
+                "id_no": "8009151234001",
+                "passport_origin": null,
+                "dob": "1980-09-15",
+                "nurse_source": 2,
+                "persal_no": null,
+                "opted_out": true,
+                "optout_reason": "job_change",
+                "optout_count": 1,
+                "sanc_reg_no": null
+            }
+        },
+        "response": {
+            "code": 200,
+            "data": {
+                "id": 7,
+                "cmsisdn": "+27821237777",
+                "dmsisdn": "+27821237777",
+                "rmsisdn": null,
+                "faccode": "123456",
+                "id_type": "sa_id",
+                "id_no": "8009151234001",
+                "passport_origin": null,
+                "dob": "1980-09-15",
+                "nurse_source": 2,
+                "persal_no": null,
+                "opted_out": true,
+                "optout_reason": "job_change",
+                "optout_count": 1,
+                "sanc_reg_no": null
+            }
+        }
+    },
+    // Optout for 27821233333
+    {
+        "request": {
+            "method": "PATCH",
+            "headers": {
+                "Authorization": ["Token test_token"]
+            },
+            "url": "http://ndoh-control/api/v2/nurseregistrations/3/",
+            "data": {
+                "id": 3,
+                "cmsisdn": "+27821233333",
+                "dmsisdn": "+27821233333",
+                "rmsisdn": null,
+                "faccode": "123456",
+                "id_type": "sa_id",
+                "id_no": "8009151234001",
+                "passport_origin": null,
+                "dob": "1980-09-15",
+                "nurse_source": 2,
+                "persal_no": null,
+                "opted_out": true,
+                "optout_reason": "other",
+                "optout_count": 4,
+                "sanc_reg_no": null
+            }
+        },
+        "response": {
+            "code": 200,
+            "data": {
+                "id": 3,
+                "cmsisdn": "+27821233333",
+                "dmsisdn": "+27821233333",
+                "rmsisdn": null,
+                "faccode": "123456",
+                "id_type": "sa_id",
+                "id_no": "8009151234001",
+                "passport_origin": null,
+                "dob": "1980-09-15",
+                "nurse_source": 2,
+                "persal_no": null,
+                "opted_out": true,
+                "optout_reason": "other",
+                "optout_count": 4,
+                "sanc_reg_no": null
+            }
+        }
+    },
+    // Optout for 27001 (sms)
+    {
+        "request": {
+            "method": "PATCH",
+            "headers": {
+                "Authorization": ['Token test_token']
+            },
+            "url": "http://ndoh-control/api/v2/nurseregistrations/99/",
+            "data": {
+                "id": 99,
+                "cmsisdn": "+27001",
+                "dmsisdn": "+27001",
+                "rmsisdn": null,
+                "faccode": "123456",
+                "id_type": "sa_id",
+                "id_no": "8009151234001",
+                "passport_origin": null,
+                "dob": "1980-09-15",
+                "nurse_source": 2,
+                "persal_no": null,
+                "opted_out": true,
+                "optout_reason": "unknown",
+                "optout_count": 1,
+                "sanc_reg_no": null
+            }
+        },
+        "response": {
+            "code": 200,
+            "data": {
+                "id": 99,
+                "cmsisdn": "+27001",
+                "dmsisdn": "+27001",
+                "rmsisdn": null,
+                "faccode": "123456",
+                "id_type": "sa_id",
+                "id_no": "8009151234001",
+                "passport_origin": null,
+                "dob": "1980-09-15",
+                "nurse_source": 2,
+                "persal_no": null,
+                "opted_out": true,
+                "optout_reason": "unknown",
+                "optout_count": 1,
+                "sanc_reg_no": null
+            }
+        }
+    },
+
 // POST Snappy Ticket
     // Snappy ticket post - with clinic_code
     {

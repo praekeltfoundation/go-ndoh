@@ -84,6 +84,7 @@ describe("app", function() {
                     api.contacts.add({
                         msisdn: '+27821237777',
                         extra: {
+                            nc_last_reg_id: "7",
                             nc_is_registered: 'true',
                             nc_faccode: '123456',
                             nc_facname: 'WCL clinic',
@@ -1153,8 +1154,9 @@ describe("app", function() {
                             var new_contact = _.find(api.contacts.store, {
                               msisdn: '+27821234444'
                             });
-                            assert.equal(Object.keys(new_contact.extra).length, 7);
+                            assert.equal(Object.keys(new_contact.extra).length, 8);
                             assert.equal(new_contact.extra.nc_faccode, '123456');
+                            assert.equal(new_contact.extra.nc_last_reg_id, '7');
                             assert.equal(new_contact.extra.nc_facname, 'WCL clinic');
                             assert.equal(new_contact.extra.nc_is_registered, 'true');
                             assert.equal(new_contact.extra.nc_working_on, "");
@@ -1200,7 +1202,8 @@ describe("app", function() {
                             var old_contact = _.find(api.contacts.store, {
                               msisdn: '+27821237777'
                             });
-                            assert.equal(Object.keys(old_contact.extra).length, 7);
+                            assert.equal(Object.keys(old_contact.extra).length, 8);
+                            assert.equal(old_contact.extra.nc_last_reg_id, '7');
                             assert.equal(old_contact.extra.nc_faccode, '123456');
                             assert.equal(old_contact.extra.nc_facname, 'WCL clinic');
                             assert.equal(old_contact.extra.nc_is_registered, 'true');
@@ -1245,7 +1248,8 @@ describe("app", function() {
                             var new_contact = _.find(api.contacts.store, {
                               msisdn: '+27821238888'
                             });
-                            assert.equal(Object.keys(new_contact.extra).length, 7);
+                            assert.equal(Object.keys(new_contact.extra).length, 8);
+                            assert.equal(new_contact.extra.nc_last_reg_id, '7');
                             assert.equal(new_contact.extra.nc_faccode, '123456');
                             assert.equal(new_contact.extra.nc_facname, 'WCL clinic');
                             assert.equal(new_contact.extra.nc_is_registered, 'true');
@@ -1295,7 +1299,8 @@ describe("app", function() {
                             var new_contact = _.find(api.contacts.store, {
                               msisdn: '+27821239999'
                             });
-                            assert.equal(Object.keys(new_contact.extra).length, 7);
+                            assert.equal(Object.keys(new_contact.extra).length, 8);
+                            assert.equal(new_contact.extra.nc_last_reg_id, '7');
                             assert.equal(new_contact.extra.nc_faccode, '123456');
                             assert.equal(new_contact.extra.nc_facname, 'WCL clinic');
                             assert.equal(new_contact.extra.nc_is_registered, 'true');
@@ -1359,7 +1364,7 @@ describe("app", function() {
                             var contact = _.find(api.contacts.store, {
                               msisdn: '+27821237777'
                             });
-                            assert.equal(Object.keys(contact.extra).length, 7);
+                            assert.equal(Object.keys(contact.extra).length, 8);
                             assert.equal(contact.extra.nc_faccode, "123456");
                             assert.equal(contact.extra.nc_facname, "WCL clinic");
                         })
@@ -1392,7 +1397,7 @@ describe("app", function() {
                             var contact = _.find(api.contacts.store, {
                               msisdn: '+27821237777'
                             });
-                            assert.equal(Object.keys(contact.extra).length, 7);
+                            assert.equal(Object.keys(contact.extra).length, 8);
                             assert.equal(contact.extra.nc_faccode, "234567");
                             assert.equal(contact.extra.nc_facname, "OLT clinic");
                         })
@@ -1425,7 +1430,7 @@ describe("app", function() {
                             var contact = _.find(api.contacts.store, {
                               msisdn: '+27821237777'
                             });
-                            assert.equal(Object.keys(contact.extra).length, 7);
+                            assert.equal(Object.keys(contact.extra).length, 8);
                             assert.equal(contact.extra.nc_sanc, undefined);
                         })
                         .run();
@@ -1484,7 +1489,7 @@ describe("app", function() {
                             var contact = _.find(api.contacts.store, {
                               msisdn: '+27821237777'
                             });
-                            assert.equal(Object.keys(contact.extra).length, 8);
+                            assert.equal(Object.keys(contact.extra).length, 9);
                             assert.equal(contact.extra.nc_sanc, "34567890");
                         })
                         .run();
@@ -1516,7 +1521,7 @@ describe("app", function() {
                             var contact = _.find(api.contacts.store, {
                               msisdn: '+27821237777'
                             });
-                            assert.equal(Object.keys(contact.extra).length, 7);
+                            assert.equal(Object.keys(contact.extra).length, 8);
                             assert.equal(contact.extra.nc_persal, undefined);
                         })
                         .run();
@@ -1575,7 +1580,7 @@ describe("app", function() {
                             var contact = _.find(api.contacts.store, {
                               msisdn: '+27821237777'
                             });
-                            assert.equal(Object.keys(contact.extra).length, 8);
+                            assert.equal(Object.keys(contact.extra).length, 9);
                             assert.equal(contact.extra.nc_persal, "11114444");
                         })
                         .run();
@@ -1618,7 +1623,7 @@ describe("app", function() {
                                 var contact = _.find(api.contacts.store, {
                                   msisdn: '+27821237777'
                                 });
-                                assert.equal(Object.keys(contact.extra).length, 7);
+                                assert.equal(Object.keys(contact.extra).length, 8);
                                 assert.equal(contact.extra.nc_opt_out_reason, undefined);
                             })
                             .run();
@@ -1651,7 +1656,7 @@ describe("app", function() {
                                 var contact = _.find(api.contacts.store, {
                                   msisdn: '+27821237777'
                                 });
-                                assert.equal(Object.keys(contact.extra).length, 8);
+                                assert.equal(Object.keys(contact.extra).length, 9);
                                 assert.equal(contact.extra.nc_opt_out_reason, 'job_change');
                             })
                             .run();

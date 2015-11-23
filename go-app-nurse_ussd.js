@@ -741,6 +741,28 @@ go.utils = {
         });
     },
 
+    get_nursereg_by_id: function(nursereg_id, im) {
+        return go.utils
+            .control_v2_api_call("get", null, null,
+                'nurseregistrations/' + nursereg_id + '/', im)
+            .then(function(get_response) {
+                return get_response.data;
+            });
+    },
+
+    patch_last_reg: function(contact, im, optout_reason) {
+        return go.utils
+            .get_nursereg_by_id(contact.extra.nc_last_reg_id, im)
+            .then(function(nursereg) {
+                nursereg.opted_out = true;
+                nursereg.optout_count += 1;
+                nursereg.optout_reason = optout_reason;
+                return go.utils.control_v2_api_call("patch", null, nursereg,
+                    'nurseregistrations/' + contact.extra.nc_last_reg_id + '/',
+                    im);
+            });
+    },
+
     subscription_count_active: function(contact, im) {
         // This function is used in the public line to determine routing
         // depending on whether users have an active subscription
@@ -995,7 +1017,7 @@ go.utils = {
     },
 
     nurse_optout: function(im, contact, optout_reason, api_optout, unsub_all, jembi_optout,
-                      metric_prefix, env) {
+                      patch_last_reg, metric_prefix, env) {
         var queue1 = [];
         var prior_opt_out_reason;
 
@@ -1048,6 +1070,13 @@ go.utils = {
                                 queue2.push(function() {
                                     return go.utils.jembi_optout_send_json(contact, contact,
                                       'optout', im, metric_prefix);
+                                });
+                            }
+
+                            if (patch_last_reg === true) {
+                                // patch last registration to show opted out
+                                queue2.push(function() {
+                                    return go.utils.patch_last_reg(contact, im, optout_reason);
                                 });
                             }
                             // End Queue 2
@@ -1770,6 +1799,7 @@ go.app = function() {
                                 api_optout=true,
                                 unsub_all=true,
                                 jembi_optout=false,  // TODO #211 set true
+                                patch_last_reg=true,
                                 self.metric_prefix,
                                 self.env
                             )

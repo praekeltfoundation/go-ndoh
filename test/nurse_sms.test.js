@@ -48,6 +48,10 @@ describe("app", function() {
                         api_key: 'test_key',
                         url: 'http://ndoh-control/api/v1/'
                     },
+                    control_v2: {
+                        url: 'http://ndoh-control/api/v2/',
+                        api_token: 'test_token'
+                    },
                     snappybouncer: {
                         conversation: 'dummyconversation'
                     }
@@ -136,6 +140,7 @@ describe("app", function() {
                                 msisdn: '+27001',
                                 extra : {
                                     nc_id_type: 'sa_id',
+                                    nc_last_reg_id: '99',
                                 },
                                 key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                                 user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
@@ -182,7 +187,8 @@ describe("app", function() {
                         api.contacts.add({
                             msisdn: '+27001',
                             extra : {
-                                nc_id_type: 'sa_id'
+                                nc_id_type: 'sa_id',
+                                nc_last_reg_id: '99',
                             },
                             key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                             user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
@@ -210,7 +216,8 @@ describe("app", function() {
                         api.contacts.add({
                             msisdn: '+27001',
                             extra : {
-                                nc_id_type: 'sa_id'
+                                nc_id_type: 'sa_id',
+                                nc_last_reg_id: '99',
                             },
                             key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                             user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"

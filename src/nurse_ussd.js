@@ -492,6 +492,7 @@ go.app = function() {
                                 api_optout=true,
                                 unsub_all=true,
                                 jembi_optout=false,  // TODO #211 set true
+                                patch_last_reg=true,
                                 self.metric_prefix,
                                 self.env
                             )

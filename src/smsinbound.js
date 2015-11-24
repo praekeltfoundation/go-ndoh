@@ -42,8 +42,6 @@ go.app = function() {
                     case "STOP": case "END": case "CANCEL": case "UNSUBSCRIBE":
                     case "QUIT": case "BLOCK":
                         return self.states.create("states_opt_out_enter");
-                    // case "BLOCK":
-                    //     return self.states.create("states_opt_out_enter");
                     case "START":
                         return self.states.create("states_opt_in_enter");
                     case "BABY":

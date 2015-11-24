@@ -39,9 +39,8 @@ go.app = function() {
             } else {
                 // get the first word, remove non-alphanumerics, capitalise
                 switch (self.im.msg.content.split(" ")[0].replace(/\W/g, '').toUpperCase()) {
-                    case "STOP":
-                        return self.states.create("states_opt_out_enter");
-                    case "BLOCK":
+                    case "STOP": case "END": case "CANCEL": case "UNSUBSCRIBE":
+                    case "QUIT": case "BLOCK":
                         return self.states.create("states_opt_out_enter");
                     case "START":
                         return self.states.create("states_opt_in_enter");

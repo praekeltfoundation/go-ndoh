@@ -413,8 +413,8 @@ describe("app", function() {
             });
         });
 
-        describe("when the user sends a STOP message", function() {
-            it("should set their opt out status", function() {
+        describe("when the user sends an optout message", function() {
+            it("STOP - should set their opt out status", function() {
                 return tester
                     .setup(function(api) {
                         api.contacts.add({
@@ -441,10 +441,115 @@ describe("app", function() {
                     })
                     .run();
             });
-        });
-
-        describe("when the user sends a BLOCK message", function() {
-            it("should set their opt out status", function() {
+            it("END - should set their opt out status", function() {
+                return tester
+                    .setup(function(api) {
+                        api.contacts.add({
+                            msisdn: '+27001',
+                            extra : {
+                                language_choice: 'en',
+                                id_type: 'none'
+                            },
+                            key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
+                        });
+                    })
+                    .setup.user.addr('27001')
+                    .inputs('END')
+                    .check.interaction({
+                        state: 'states_opt_out',
+                        reply:
+                            'Thank you. You will no longer receive messages from us. ' +
+                            'If you have any medical concerns please visit your nearest clinic'
+                    })
+                    .check(function(api) {
+                        var contact = _.find(api.contacts.store, { msisdn: '+27001' });
+                        assert.equal(contact.extra.opt_out_reason, 'unknown');
+                    })
+                    .run();
+            });
+            it("CANCEL - should set their opt out status", function() {
+                return tester
+                    .setup(function(api) {
+                        api.contacts.add({
+                            msisdn: '+27001',
+                            extra : {
+                                language_choice: 'en',
+                                id_type: 'none'
+                            },
+                            key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
+                        });
+                    })
+                    .setup.user.addr('27001')
+                    .inputs('CANCEL')
+                    .check.interaction({
+                        state: 'states_opt_out',
+                        reply:
+                            'Thank you. You will no longer receive messages from us. ' +
+                            'If you have any medical concerns please visit your nearest clinic'
+                    })
+                    .check(function(api) {
+                        var contact = _.find(api.contacts.store, { msisdn: '+27001' });
+                        assert.equal(contact.extra.opt_out_reason, 'unknown');
+                    })
+                    .run();
+            });
+            it("UNSUBSCRIBE - should set their opt out status", function() {
+                return tester
+                    .setup(function(api) {
+                        api.contacts.add({
+                            msisdn: '+27001',
+                            extra : {
+                                language_choice: 'en',
+                                id_type: 'none'
+                            },
+                            key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
+                        });
+                    })
+                    .setup.user.addr('27001')
+                    .inputs('UNSUBSCRIBE')
+                    .check.interaction({
+                        state: 'states_opt_out',
+                        reply:
+                            'Thank you. You will no longer receive messages from us. ' +
+                            'If you have any medical concerns please visit your nearest clinic'
+                    })
+                    .check(function(api) {
+                        var contact = _.find(api.contacts.store, { msisdn: '+27001' });
+                        assert.equal(contact.extra.opt_out_reason, 'unknown');
+                    })
+                    .run();
+            });
+            it("QUIT - should set their opt out status", function() {
+                return tester
+                    .setup(function(api) {
+                        api.contacts.add({
+                            msisdn: '+27001',
+                            extra : {
+                                language_choice: 'en',
+                                id_type: 'none'
+                            },
+                            key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
+                        });
+                    })
+                    .setup.user.addr('27001')
+                    .inputs('QUIT')
+                    .check.interaction({
+                        state: 'states_opt_out',
+                        reply:
+                            'Thank you. You will no longer receive messages from us. ' +
+                            'If you have any medical concerns please visit your nearest clinic'
+                    })
+                    .check(function(api) {
+                        var contact = _.find(api.contacts.store, { msisdn: '+27001' });
+                        assert.equal(contact.extra.opt_out_reason, 'unknown');
+                    })
+                    .run();
+            });
+            it("BLOCK - should set their opt out status", function() {
                 return tester
                     .setup(function(api) {
                         api.contacts.add({

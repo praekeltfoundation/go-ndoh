@@ -223,14 +223,18 @@ go.utils = {
       var types = {
         "optout": 4,
         "babyloss": 5,
-        "servicerating": 6
+        "servicerating": 6,
+        "nurse_optout": 8
       };
       return types[type];
     },
 
     get_swt: function(im) {
-        if (im.config.name.substring(0,10) === "smsinbound" ||
-            im.config.name.substring(0,9) === "nurse_sms") {
+        if (im.config.name.substring(0,9) === "nurse_sms") {
+            return 4;  // swt = 4 for nurse sms optout
+        } else if (im.config.name.substring(0,10) === "nurse_ussd") {
+            return 3;  // swt = 3 for nurse ussd optout
+        } else if (im.config.name.substring(0,10) === "smsinbound") {
             return 2;  // swt = 2 for sms optout
         } else {
             return 1;  // swt = 1 for ussd optout
@@ -436,9 +440,23 @@ go.utils = {
         return formatter();
     },
 
+    get_nurse_id: function(contact) {
+        var formatter = {
+            'sa_id': function () {
+                return contact.extra.nc_sa_id_no + '^^^ZAF^NI';
+            },
+            'passport': function () {
+                return contact.extra.nc_passport_num + '^^^' + contact.extra.nc_passport_country.toUpperCase() + '^PPN';
+            }
+        }[contact.extra.nc_id_type];
+        return formatter();
+    },
+
     get_dob: function(contact) {
         if (!_.isUndefined(contact.extra.dob)) {
             return moment(contact.extra.dob, 'YYYY-MM-DD').format('YYYYMMDD');
+        } else if (!_.isUndefined(contact.extra.nc_dob)) {
+            return moment(contact.extra.nc_dob, 'YYYY-MM-DD').format('YYYYMMDD');
         } else {
             return null;
         }
@@ -451,7 +469,9 @@ go.utils = {
             "babyloss": 3,
             "not_useful": 4,
             "other": 5,
-            "unknown": 6
+            "unknown": 6,
+            "job_change": 7,
+            "number_owner_change": 8
         };
         return optoutreason_map[contact.extra.opt_out_reason] || 6;
     },
@@ -475,6 +495,20 @@ go.utils = {
         return JSON_template;
     },
 
+    get_nurse_optoutreason: function(contact) {
+        var optoutreason_map = {
+            "miscarriage": 1,
+            "stillbirth": 2,
+            "babyloss": 3,
+            "not_useful": 4,
+            "other": 5,
+            "unknown": 6,
+            "job_change": 7,
+            "number_owner_change": 8
+        };
+        return optoutreason_map[contact.extra.nc_opt_out_reason] || 6;
+    },
+
     jembi_optout_send_json: function(contact, user, type, im, metric_prefix) {
         var built_json = go.utils.build_jembi_json(im, contact, user, type);
         return go.utils
@@ -483,6 +517,28 @@ go.utils = {
                 var metric_name = [metric_prefix, "sum", "optout_to_jembi"].join('.');
                 return go.utils.json_success_fail_metric(im, metric_name, json_result);
         });
+    },
+
+    build_nurse_jembi_json: function(im, contact, user, type) {
+        var JSON_template = {
+            "mha": 1,
+            "swt": go.utils.get_swt(im),
+            "dmsisdn": user.msisdn,
+            "cmsisdn": contact.msisdn,
+            "type": go.utils.get_subscription_type(type),
+            "encdate": go.utils.get_timestamp(),
+            "faccode": contact.extra.nc_faccode || null,
+            "dob": go.utils.get_dob(contact) || null,
+            "id": go.utils.get_nurse_id(contact),
+            "optoutreason": go.utils.get_nurse_optoutreason(contact)
+        };
+        return JSON_template;
+    },
+
+    jembi_nurse_optout_send_json: function(contact, user, type, im, metric_prefix) {
+        var built_json = go.utils.build_nurse_jembi_json(im, contact, user, type);
+        return go.utils
+            .jembi_json_api_call('post', null, built_json, 'nc/optout', im);
     },
 
     jembi_babyloss_send_json: function(contact, user, type, im, metric_prefix) {
@@ -1068,8 +1124,8 @@ go.utils = {
                             if (jembi_optout === true) {
                                 // send optout to jembi
                                 queue2.push(function() {
-                                    return go.utils.jembi_optout_send_json(contact, contact,
-                                      'optout', im, metric_prefix);
+                                    return go.utils.jembi_nurse_optout_send_json(contact, contact,
+                                      'nurse_optout', im, metric_prefix);
                                 });
                             }
 
@@ -1360,8 +1416,7 @@ go.app = function() {
         self.states.add('states_opt_out_enter', function(name) {
             return go.utils
                 .nurse_optout(self.im, self.contact, optout_reason='unknown', api_optout=true,
-                    unsub_all=true, jembi_optout=false, last_reg_patch=true, self.metric_prefix, self.env)
-                // TODO #211 jembi_optout=true
+                    unsub_all=true, jembi_optout=true, last_reg_patch=true, self.metric_prefix, self.env)
                 .then(function() {
                     return self.states.create('states_opt_out');
                 });

@@ -110,8 +110,14 @@ describe("app", function() {
                         msisdn: '+27821233333',
                         extra: {
                             nc_last_reg_id: '3',
-                            nc_opt_out_reason: 'unknown',
-                            nc_is_registered: 'true'
+                            nc_opt_out_reason: 'other',
+                            nc_is_registered: 'true',
+                            nc_faccode: '123456',
+                            nc_facname: 'WCL clinic',
+                            nc_id_type: 'passport',
+                            nc_passport_country: 'bw',
+                            nc_passport_num: '33333',
+                            nc_dob: '1976-03-04'
                         },
                     });
                 })
@@ -1633,7 +1639,7 @@ describe("app", function() {
                 });
 
                 describe("should reach st_end_detail_changed", function() {
-                    it("should thank them ", function() {
+                    it("should thank them", function() {
                         return tester
                             .setup.user.addr('27821237777')
                             .inputs(
@@ -1696,7 +1702,7 @@ describe("app", function() {
                 });
             });
 
-            describe("registered user - opted out, reason unknown", function() {
+            describe("registered user - opted out, reason other", function() {
                 describe("should reach st_optout", function() {
                     it("should ask prior optout reason", function() {
                         return tester
@@ -1729,8 +1735,8 @@ describe("app", function() {
                                 var contact = _.find(api.contacts.store, {
                                   msisdn: '+27821233333'
                                 });
-                                assert.equal(Object.keys(contact.extra).length, 4);
-                                assert.equal(contact.extra.nc_opt_out_reason, 'unknown');
+                                assert.equal(Object.keys(contact.extra).length, 10);
+                                assert.equal(contact.extra.nc_opt_out_reason, 'other');
                                 assert.equal(contact.extra.nc_is_registered, 'true');
                             })
                             .run();
@@ -1763,7 +1769,7 @@ describe("app", function() {
                                 var contact = _.find(api.contacts.store, {
                                   msisdn: '+27821233333'
                                 });
-                                assert.equal(Object.keys(contact.extra).length, 4);
+                                assert.equal(Object.keys(contact.extra).length, 10);
                                 assert.equal(contact.extra.nc_opt_out_reason, 'other');
                                 assert.equal(contact.extra.nc_is_registered, 'true');
                             })

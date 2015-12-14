@@ -535,7 +535,7 @@ go.utils = {
     jembi_nurse_optout_send_json: function(contact, user, type, im, metric_prefix) {
         var built_json = go.utils.build_nurse_jembi_json(im, contact, user, type);
         return go.utils
-            .jembi_json_api_call('post', null, built_json, 'optout', im);
+            .jembi_json_api_call('post', null, built_json, 'nc/optout', im);
     },
 
     jembi_babyloss_send_json: function(contact, user, type, im, metric_prefix) {

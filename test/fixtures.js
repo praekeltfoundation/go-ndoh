@@ -2032,7 +2032,7 @@ module.exports = function() {
                 'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
                 'Content-Type': ['application/json']
             },
-            'url': 'http://test/v2/json/optout',
+            'url': 'http://test/v2/json/nc/optout',
             'data': {
                 "mha": 1,
                 "swt": 3,
@@ -2062,7 +2062,7 @@ module.exports = function() {
                 'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
                 'Content-Type': ['application/json']
             },
-            'url': 'http://test/v2/json/optout',
+            'url': 'http://test/v2/json/nc/optout',
             'data': {
                 "mha": 1,
                 "swt": 3,
@@ -2092,7 +2092,7 @@ module.exports = function() {
                 'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
                 'Content-Type': ['application/json']
             },
-            'url': 'http://test/v2/json/optout',
+            'url': 'http://test/v2/json/nc/optout',
             'data': {
                 "mha": 1,
                 "swt": 4,

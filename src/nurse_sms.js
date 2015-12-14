@@ -53,8 +53,7 @@ go.app = function() {
         self.states.add('states_opt_out_enter', function(name) {
             return go.utils
                 .nurse_optout(self.im, self.contact, optout_reason='unknown', api_optout=true,
-                    unsub_all=true, jembi_optout=false, last_reg_patch=true, self.metric_prefix, self.env)
-                // TODO #211 jembi_optout=true
+                    unsub_all=true, jembi_optout=true, last_reg_patch=true, self.metric_prefix, self.env)
                 .then(function() {
                     return self.states.create('states_opt_out');
                 });

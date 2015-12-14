@@ -2023,6 +2023,97 @@ module.exports = function() {
         }
     },
 
+// POST Nurse Optouts to Jembi
+    // Optout for 27821237777
+    {
+        'request': {
+            'method': 'POST',
+            'headers': {
+                'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
+                'Content-Type': ['application/json']
+            },
+            'url': 'http://test/v2/json/optout',
+            'data': {
+                "mha": 1,
+                "swt": 3,
+                "dmsisdn": "+27821237777",
+                "cmsisdn": "+27821237777",
+                "type": 8,
+                "id": "5101025009086^^^ZAF^NI",
+                "faccode": "123456",
+                "dob": "19510102",
+                "optoutreason": 7,
+                "encdate": "20130819144811"
+            },
+        },
+        'response': {
+            "code": 200,
+            "data": {
+                "success": "true"
+            }
+        }
+    },
+
+    // Optout for 27821233333
+    {
+        'request': {
+            'method': 'POST',
+            'headers': {
+                'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
+                'Content-Type': ['application/json']
+            },
+            'url': 'http://test/v2/json/optout',
+            'data': {
+                "mha": 1,
+                "swt": 3,
+                "dmsisdn": "+27821233333",
+                "cmsisdn": "+27821233333",
+                "type": 8,
+                "id": "5101025009086^^^ZAF^NI",
+                "faccode": "123456",
+                "dob": "19760304",
+                "optoutreason": 5,
+                "encdate": "20130819144811"
+            },
+        },
+        'response': {
+            "code": 200,
+            "data": {
+                "success": "true"
+            }
+        }
+    },
+
+    // Optout for 27001
+    {
+        'request': {
+            'method': 'POST',
+            'headers': {
+                'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
+                'Content-Type': ['application/json']
+            },
+            'url': 'http://test/v2/json/optout',
+            'data': {
+                "mha": 1,
+                "swt": 4,
+                "dmsisdn": "+27001",
+                "cmsisdn": "+27001",
+                "type": 8,
+                "id": "7103035001001^^^ZAF^NI",
+                "faccode": null,
+                "dob": null,
+                "optoutreason": 6,
+                "encdate": "20130819144811"
+            },
+        },
+        'response': {
+            "code": 200,
+            "data": {
+                "success": "true"
+            }
+        }
+    },
+
 // POST Snappy Ticket
     // Snappy ticket post - with clinic_code
     {

@@ -140,6 +140,7 @@ describe("app", function() {
                                 msisdn: '+27001',
                                 extra : {
                                     nc_id_type: 'sa_id',
+                                    nc_sa_id_no: '7103035001001',
                                     nc_last_reg_id: '99',
                                 },
                                 key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
@@ -188,6 +189,7 @@ describe("app", function() {
                             msisdn: '+27001',
                             extra : {
                                 nc_id_type: 'sa_id',
+                                nc_sa_id_no: '7103035001001',
                                 nc_last_reg_id: '99',
                             },
                             key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
@@ -217,6 +219,7 @@ describe("app", function() {
                             msisdn: '+27001',
                             extra : {
                                 nc_id_type: 'sa_id',
+                                nc_sa_id_no: '7103035001001',
                                 nc_last_reg_id: '99',
                             },
                             key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",

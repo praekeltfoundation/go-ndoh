@@ -243,7 +243,7 @@ describe("app", function() {
                 });
             });
             describe("registered user", function() {
-                it.skip("should give 6 options", function() {
+                it.only("should give 6 options", function() {
                     return tester
                         .setup.user.addr('27821237777')
                         .setup.char_limit(140)  // limit first state chars
@@ -430,27 +430,25 @@ describe("app", function() {
                 });
             });
         });
-     
 
-     //----------------------------------------------
 
-        describe("when a user wants to change their type of identification",function(){
-            it("Should display 2 options",function(){
+        describe("when a user wants to change their type of identification", function() {
+            it("Should display 2 options", function() {
                 return tester
-                        .setup.user.addr('27821237777')
-                        .inputs(
-                                {session_event:'new'}, // dial in
-                                '4' // user subscribed , selects change id no
-                        )
-                        .check.interaction({
-                            state:'st_change_id_no',
-                            reply:[
-                                   'Please select <your/their> type of identification:',
-                                   '1. RSA ID',
-                                   '2. Passport'
-                                  ].join('\n')
-                        })                        
-                        .run();
+                    .setup.user.addr('27821237777')
+                    .inputs(
+                        {session_event:'new'}, // dial in
+                        '4' // user subscribed , selects change id no
+                    )
+                    .check.interaction({
+                        state:'st_change_id_no',
+                        reply: [
+                            'Please select your type of identification:',
+                            '1. RSA ID',
+                            '2. Passport'
+                        ].join('\n')
+                    })
+                    .run();
             });
         });
 
@@ -466,7 +464,7 @@ describe("app", function() {
                         .check.interaction({
                             state:'st_id_no',
                             reply:'Please enter <your/their> 13-digit ID number:'
-                        })                       
+                        })
                         .run();
             });
         });
@@ -490,7 +488,7 @@ describe("app", function() {
                                    '5. Lesotho',
                                    '6. Cuba',
                                    '7. Other'].join('\n')
-                        })                       
+                        })
                         .run();
             });
             it("Should ask for their passport no",function(){

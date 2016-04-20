@@ -175,14 +175,14 @@ go.app = function() {
     // INITIAL STATES
 
         self.add('st_subscribed', function(name) {
-           
+
             return new ChoiceState(name, {
                 question: $("Welcome to NurseConnect"),
                 choices: [
                     new Choice('st_subscribe_other', $('Subscribe a friend')),
                     new Choice('st_change_num', $('Change your no.')),
                     new Choice('st_change_faccode', $('Change facility code')),
-                    new Choice('st_change_id_no', $('Change ID no.')), 
+                    new Choice('st_change_id_no', $('Change ID no.')),
                     new Choice('st_change_sanc', $('Change SANC no.')),
                     new Choice('st_change_persal', $('Change Persal no.')),
                     new Choice('isl_check_optout_optout', $('Stop SMS')),
@@ -192,7 +192,7 @@ go.app = function() {
                 }
             });
         });
-        
+
         self.add('st_not_subscribed', function(name) {
             return new ChoiceState(name, {
                 question: $("Welcome to NurseConnect. Do you want to:"),
@@ -259,19 +259,22 @@ go.app = function() {
                 }
             });
         });
-        
-        self.add('st_change_id_no',function(name){
-            
-           return new ChoiceState(name, {
-                question: "Please select <your/their> type of identification:",
-                choices:[ new Choice('st_id_no',$('RSA ID')),
-                         new Choice('st_passport',$('Passport'))
-                        ],
-                next: function(choice){
-                   return choice.value;
+
+        self.add('st_change_id_no', function(name) {
+            var owner = self.user.extra.nc_working_on === "" ? 'your' : 'their';
+            return new ChoiceState(name, {
+                question: $("Please select {{owner}} type of identification:")
+                    .context({owner: owner}),
+                choices: [
+                    new Choice('st_id_no', $('RSA ID')),
+                    new Choice('st_passport', $('Passport'))
+                ],
+                next: function(choice) {
+                    return choice.value;
                 }
-           });
+            });
         });
+
         self.add('st_id_no',function(name){
             var question = $("Please enter <your/their> 13-digit ID number:");
             var error = $("Sorry, the format of the ID number is not correct. Please enter it again, e.g. 11118888:");
@@ -291,7 +294,7 @@ go.app = function() {
                 }
             });
         });
-       
+
        self.add('st_passport',function(name){
             return new ChoiceState(name,{
                 question:$('What is the country of origin of the passport'),
@@ -318,7 +321,7 @@ go.app = function() {
                     }
                 },
                 next:'st_passport_dob'
-                
+
             });
         });
 
@@ -326,7 +329,7 @@ go.app = function() {
             return new FreeText(name,{
                 question:$('please enter the pthe date of birth e.g. 27 May 1975 as 27051975:'),
                 next:function(content){
-                     //date validation 
+                     //date validation
                      if (!go.utils.is_valid_date(content, 'DDMMYYYY')) {
                         return error;
                     }

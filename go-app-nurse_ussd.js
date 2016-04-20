@@ -1538,13 +1538,14 @@ go.app = function() {
     // INITIAL STATES
 
         self.add('st_subscribed', function(name) {
+           
             return new ChoiceState(name, {
                 question: $("Welcome to NurseConnect"),
                 choices: [
                     new Choice('st_subscribe_other', $('Subscribe a friend')),
                     new Choice('st_change_num', $('Change your no.')),
                     new Choice('st_change_faccode', $('Change facility code')),
-                    new Choice('st_change_id_no', $('Change ID no')), // ?
+                    new Choice('st_change_id_no', $('Change ID no.')), 
                     new Choice('st_change_sanc', $('Change SANC no.')),
                     new Choice('st_change_persal', $('Change Persal no.')),
                     new Choice('isl_check_optout_optout', $('Stop SMS')),
@@ -1623,23 +1624,24 @@ go.app = function() {
         });
         
         self.add('st_change_id_no',function(name){
+            
            return new ChoiceState(name, {
                 question: "Please select <your/their> type of identification:",
-                choice:[ new Choice('st_id_no',$('RSA ID')),
+                choices:[ new Choice('st_id_no',$('RSA ID')),
                          new Choice('st_passport',$('Passport'))
                         ],
-                next: function(content){
+                next: function(choice){
                    return choice.value;
                 }
            });
         });
-        /*self.add('st_id_no',function(name){
+        self.add('st_id_no',function(name){
             var question = $("Please enter <your/their> 13-digit ID number:");
             var error = $("Sorry, the format of the ID number is not correct. Please enter it again, e.g. 11118888:");
             return new FreeText(name,{
                 question:question,
                 check: function(content){
-                    if(go.utils.check_valid_number(content) || content.length !==13){
+                    if(!go.utils.validate_id_sa(content) ){
                         return error;
                     }
                     else{
@@ -1648,11 +1650,62 @@ go.app = function() {
                 },
                 next:function(content){
                     // dont know what to do with id for now
-                    return 'end_change_id'
+                    return 'end_change_id';
                 }
-            })
-        })
-        self.add('st_pass')*/
+            });
+        });
+       
+       self.add('st_passport',function(name){
+            return new ChoiceState(name,{
+                question:$('What is the country of origin of the passport'),
+                choices: [
+                    new Choice('na', $('Namibia')),
+                    new Choice('bw', $('Botswana')),
+                    new Choice('mz', $('Mozambique')),
+                    new Choice('sz', $('Swaziland')),
+                    new Choice('ls', $('Lesotho')),
+                    new Choice('cu', $('Cuba')),
+                    new Choice('other', $('Other')),
+                ],
+                next:'st_passport_no'
+            });
+       });
+
+        self.add('st_passport_no',function(name){
+            return new FreeText(name,{
+                question:$('Please enter the passport number:'),
+                check:function(content){
+                    if (!go.utils.is_alpha_numeric_only(content)
+                        || content.length <= 4) {
+                        return error;
+                    }
+                },
+                next:'st_passport_dob'
+                
+            });
+        });
+
+        self.add('st_passport_dob',function(name){
+            return new FreeText(name,{
+                question:$('please enter the pthe date of birth e.g. 27 May 1975 as 27051975:'),
+                next:function(content){
+                     //date validation 
+                     if (!go.utils.is_valid_date(content, 'DDMMYYYY')) {
+                        return error;
+                    }
+                    return 'end_change_id';
+                }
+            });
+        });
+
+        self.add('end_change_id',function(name){
+            return new EndState(name,{
+                text:$('Thank You. Your NurseConnect details have been changed. To change any other details please dial *134*550# again'),
+                next:'isl_route'
+            });
+        });
+
+
         self.add('st_change_persal', function(name) {
             var question = $("Please enter your 8-digit Persal employee number, e.g. 11118888:");
             var error = $("Sorry, the format of the Persal employee number is not correct. Please enter it again, e.g. 11118888:");

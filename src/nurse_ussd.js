@@ -181,6 +181,7 @@ go.app = function() {
                     new Choice('st_subscribe_other', $('Subscribe a friend')),
                     new Choice('st_change_num', $('Change your no.')),
                     new Choice('st_change_faccode', $('Change facility code')),
+                    new Choice('st_change_id_no', $('Change ID no')), // ?
                     new Choice('st_change_sanc', $('Change SANC no.')),
                     new Choice('st_change_persal', $('Change Persal no.')),
                     new Choice('isl_check_optout_optout', $('Stop SMS')),
@@ -190,7 +191,7 @@ go.app = function() {
                 }
             });
         });
-
+        
         self.add('st_not_subscribed', function(name) {
             return new ChoiceState(name, {
                 question: $("Welcome to NurseConnect. Do you want to:"),
@@ -257,7 +258,38 @@ go.app = function() {
                 }
             });
         });
-
+        
+        self.add('st_change_id_no',function(name){
+           return new ChoiceState(name, {
+                question: "Please select <your/their> type of identification:",
+                choice:[ new Choice('st_id_no',$('RSA ID')),
+                         new Choice('st_passport',$('Passport'))
+                        ],
+                next: function(content){
+                   return choice.value;
+                }
+           });
+        });
+        /*self.add('st_id_no',function(name){
+            var question = $("Please enter <your/their> 13-digit ID number:");
+            var error = $("Sorry, the format of the ID number is not correct. Please enter it again, e.g. 11118888:");
+            return new FreeText(name,{
+                question:question,
+                check: function(content){
+                    if(go.utils.check_valid_number(content) || content.length !==13){
+                        return error;
+                    }
+                    else{
+                        return null;
+                    }
+                },
+                next:function(content){
+                    // dont know what to do with id for now
+                    return 'end_change_id'
+                }
+            })
+        })
+        self.add('st_pass')*/
         self.add('st_change_persal', function(name) {
             var question = $("Please enter your 8-digit Persal employee number, e.g. 11118888:");
             var error = $("Sorry, the format of the Persal employee number is not correct. Please enter it again, e.g. 11118888:");

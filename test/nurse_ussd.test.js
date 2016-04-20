@@ -257,9 +257,11 @@ describe("app", function() {
                                 '1. Subscribe a friend',
                                 '2. Change your no.',
                                 '3. Change facility code',
-                                '4. Change SANC no.',
-                                '5. Change Persal no.',
-                                '6. Stop SMS'
+                                '4. Change ID no.',
+                                '5. Change SANC no.',
+                                '6. Change Persal no.',
+                                '7. Stop SMS'
+
                             ].join('\n')
                         })
                         .run();
@@ -428,6 +430,85 @@ describe("app", function() {
                 });
             });
         });
+     
+
+     //----------------------------------------------
+
+        describe("when a user wants to change their type of identification",function(){
+            it.only("Should display 2 options",function(){
+                return tester
+                        .setup.user.addr('27821237777')
+                        .inputs(
+                                {session_event:'new'}, // dial in
+                                '4' // user subscribed , selects change id no
+                        )
+                        .check.interaction({
+                            state:'st_id_type',
+                            reply:[
+                                   'Please select <your/their> type of identification:',
+                                   'RSA ID',
+                                   'Passport'
+                                  ].join('\n')
+                        })                        
+                        .run();
+            })
+        })
+        describe("when a user wants to change their ID no",function(){
+            it("Should ask for their ID no",function(){
+                return tester
+                        .setup.user.addr('27821237777')
+                        .inputs(
+                                {session_event:'new'}, // dial in
+                                '4' , // user subscribed , selects change id no
+                                '1' //selects RSA ID
+                        )
+                        .check.interaction({
+                            state:'st_sa_id',
+                            reply:'Please enter <your/their> 13-digit ID number:'
+                        })                        
+                        .run();
+            })
+        })
+        describe("when a user wants to change their passport no",function(){
+            it("Should ask for the origin of their passport",function(){
+                return tester
+                        .setup.user.addr('27821237777')
+                        .inputs(
+                                {session_event:'new'}, // dial in
+                                '4' , // user subscribed , selects change id no
+                                '2' //selects Passport
+                        )
+                        .check.interaction({
+                            state:'st_passport_country',
+                            reply:['What is the country of origin of the passport? ',
+                                   '1. Namibia',
+                                   '2. Botswana',
+                                   '3. Mozambique',
+                                   '4. Swaziland',
+                                   '5. Lesotho',
+                                   '6. Cuba',
+                                   '7. Other'].join('\n')
+                        })                        
+                        .run();
+            })
+            it("Should ask for their passport no",function(){
+                return tester
+                        .setup.user.addr('27821237777')
+                        .inputs(
+                                {session_event:'new'},
+                                '4',
+                                '2',
+                                '1'
+                        )
+                        .check.interaction({
+                            state:'st_passport_num',
+                            reply:'Please enter the passport number:'
+                        })
+                        .run();
+            })
+        })
+
+
 
         // Unique User Metrics
         describe("when a new unique user logs on", function() {

@@ -270,7 +270,7 @@ describe("app", function() {
                         .setup.char_limit(140)  // limit first state chars
                         .inputs(
                             {session_event: 'new'}  // dial in
-                            ,'6'  // st_subscribed - more options
+                            , '6'  // st_subscribed - more options
                         )
                         .check.interaction({
                             state: 'st_subscribed',
@@ -289,8 +289,8 @@ describe("app", function() {
                         .setup.char_limit(140)  // limit first state chars
                         .inputs(
                             {session_event: 'new'}  // dial in
-                            ,'6'  // st_subscribed - more options
-                            ,'3'  // st_subscribed - back to first set of options
+                            , '6'  // st_subscribed - more options
+                            , '3'  // st_subscribed - back to first set of options
                         )
                         .check.interaction({
                             state: 'st_subscribed',
@@ -476,8 +476,8 @@ describe("app", function() {
                 return tester
                     .setup.user.addr('27821237777')
                     .inputs(
-                        {session_event: 'new'},  // dial in
-                        '4'  // st_subscribed - change id
+                        {session_event: 'new'}  // dial in
+                        , '4'  // st_subscribed - change id
                     )
                     .check.interaction({
                         state: 'st_change_id_no',
@@ -492,7 +492,7 @@ describe("app", function() {
         });
 
         describe("when a user wants to change their ID no", function() {
-            it("Should ask for their ID no",function(){
+            it("Should ask for their ID no", function() {
                 return tester
                     .setup.user.addr('27821237777')
                     .inputs(
@@ -517,7 +517,7 @@ describe("app", function() {
                             , '2'  // st_change_id_no - Passport
                     )
                     .check.interaction({
-                        state:'st_passport',
+                        state: 'st_passport',
                         reply: [
                             'What is the country of origin of the passport',
                             '1. Namibia',
@@ -535,10 +535,10 @@ describe("app", function() {
                 return tester
                     .setup.user.addr('27821237777')
                     .inputs(
-                            {session_event: 'new'},
-                            '4',
-                            '2',
-                            '1'
+                            {session_event: 'new'}
+                            , '4'
+                            , '2'
+                            , '1'
                     )
                     .check.interaction({
                         state: 'st_passport_no',

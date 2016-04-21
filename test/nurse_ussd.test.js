@@ -519,7 +519,7 @@ describe("app", function() {
                     .check.interaction({
                         state: 'st_passport',
                         reply: [
-                            'What is the country of origin of the passport',
+                            'What is the country of origin of the passport?',
                             '1. Namibia',
                             '2. Botswana',
                             '3. Mozambique',

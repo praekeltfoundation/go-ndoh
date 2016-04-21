@@ -1662,7 +1662,7 @@ go.app = function() {
 
         self.add('st_passport', function(name) {
             return new ChoiceState(name, {
-                question: $('What is the country of origin of the passport'),
+                question: $('What is the country of origin of the passport?'),
                 choices: [
                     new Choice('na', $('Namibia')),
                     new Choice('bw', $('Botswana')),

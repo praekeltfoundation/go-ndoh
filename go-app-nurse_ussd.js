@@ -1369,6 +1369,7 @@ go.app = function() {
     var App = vumigo.App;
     var Choice = vumigo.states.Choice;
     var ChoiceState = vumigo.states.ChoiceState;
+    var PaginatedChoiceState = vumigo.states.PaginatedChoiceState;
     var EndState = vumigo.states.EndState;
     var FreeText = vumigo.states.FreeText;
 
@@ -1538,24 +1539,29 @@ go.app = function() {
     // INITIAL STATES
 
         self.add('st_subscribed', function(name) {
-           
-            return new ChoiceState(name, {
+
+            return new PaginatedChoiceState(name, {
+
                 question: $("Welcome to NurseConnect"),
                 choices: [
                     new Choice('st_subscribe_other', $('Subscribe a friend')),
                     new Choice('st_change_num', $('Change your no.')),
                     new Choice('st_change_faccode', $('Change facility code')),
-                    new Choice('st_change_id_no', $('Change ID no.')), 
+                    new Choice('st_change_id_no', $('Change ID no.')),
                     new Choice('st_change_sanc', $('Change SANC no.')),
                     new Choice('st_change_persal', $('Change Persal no.')),
                     new Choice('isl_check_optout_optout', $('Stop SMS')),
                 ],
+                characters_per_page: 140,
+                options_per_page: 4,
+                more:$('more'),
+                back:$('back'),
                 next: function(choice) {
                     return choice.value;
                 }
             });
         });
-        
+
         self.add('st_not_subscribed', function(name) {
             return new ChoiceState(name, {
                 question: $("Welcome to NurseConnect. Do you want to:"),
@@ -1622,21 +1628,27 @@ go.app = function() {
                 }
             });
         });
-        
+
         self.add('st_change_id_no',function(name){
-            
-           return new ChoiceState(name, {
-                question: "Please select <your/their> type of identification:",
-                choices:[ new Choice('st_id_no',$('RSA ID')),
-                         new Choice('st_passport',$('Passport'))
+            var owner = self.user.extra.nc_working_on === "" ? 'your' : 'their';
+            var question = $("Please select {{owner}} type of identification:")
+                           .context({owner:owner});
+            return new ChoiceState(name, {
+                question: question,
+                choices:[
+                    new Choice('st_id_no',$('RSA ID')),
+                    new Choice('st_passport',$('Passport'))
                         ],
                 next: function(choice){
                    return choice.value;
                 }
            });
         });
-        self.add('st_id_no',function(name){
-            var question = $("Please enter <your/their> 13-digit ID number:");
+
+        self.add('st_id_no', function(name) {
+            var owner = self.user.extra.nc_working_on === "" ? 'your' : 'their';
+            var question = $("Please enter {{owner}} 13-digit ID number:")
+                            .context({owner:owner});
             var error = $("Sorry, the format of the ID number is not correct. Please enter it again, e.g. 11118888:");
             return new FreeText(name,{
                 question:question,
@@ -1649,13 +1661,12 @@ go.app = function() {
                     }
                 },
                 next:function(content){
-                    // dont know what to do with id for now
                     return 'end_change_id';
                 }
             });
         });
-       
-       self.add('st_passport',function(name){
+
+        self.add('st_passport', function(name) {
             return new ChoiceState(name,{
                 question:$('What is the country of origin of the passport'),
                 choices: [
@@ -1669,7 +1680,7 @@ go.app = function() {
                 ],
                 next:'st_passport_no'
             });
-       });
+        });
 
         self.add('st_passport_no',function(name){
             return new FreeText(name,{
@@ -1681,15 +1692,15 @@ go.app = function() {
                     }
                 },
                 next:'st_passport_dob'
-                
+
             });
         });
 
-        self.add('st_passport_dob',function(name){
+        self.add('st_passport_dob', function(name) {
             return new FreeText(name,{
                 question:$('please enter the pthe date of birth e.g. 27 May 1975 as 27051975:'),
                 next:function(content){
-                     //date validation 
+                     //date validation
                      if (!go.utils.is_valid_date(content, 'DDMMYYYY')) {
                         return error;
                     }
@@ -1698,7 +1709,7 @@ go.app = function() {
             });
         });
 
-        self.add('end_change_id',function(name){
+        self.add('end_change_id', function(name) {
             return new EndState(name,{
                 text:$('Thank You. Your NurseConnect details have been changed. To change any other details please dial *134*550# again'),
                 next:'isl_route'

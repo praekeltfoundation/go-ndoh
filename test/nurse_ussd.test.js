@@ -243,7 +243,7 @@ describe("app", function() {
                 });
             });
             describe("registered user", function() {
-                it("should give 4 options", function() {
+                it("should give 5 options", function() {
                     return tester
                         .setup.user.addr('27821237777')
                         .setup.char_limit(140)  // limit first state chars
@@ -263,7 +263,7 @@ describe("app", function() {
                         })
                         .run();
                 });
-                it("should give 3 options when user selects more", function() {
+                it("should give 4 options when user selects more", function() {
                     return tester
                         .setup.user.addr('27821237777')
                         .setup.char_limit(140)  // limit first state chars
@@ -283,7 +283,7 @@ describe("app", function() {
                         })
                         .run();
                 });
-                it("should give the first 4 options when user selects back", function() {
+                it("should give the first 5 options when user selects back", function() {
                     return tester
                         .setup.user.addr('27821237777')
                         .setup.char_limit(140)  // limit first state chars
@@ -469,17 +469,18 @@ describe("app", function() {
                 });
             });
         });
-        describe("when a user wants to change their type of identification",function(){
-            it("Should display 2 options",function(){
+
+        describe("when a user wants to change their type of identification", function() {
+            it("Should display 2 options", function() {
                 return tester
                     .setup.user.addr('27821237777')
                     .inputs(
-                            {session_event:'new'}, // dial in
-                            '4' // user subscribed , selects change id no
+                        {session_event:'new'}, // dial in
+                        '4' // user subscribed , selects change id no
                     )
                     .check.interaction({
                         state:'st_change_id_no',
-                        reply:[
+                        reply: [
                             'Please select your type of identification:',
                             '1. RSA ID',
                             '2. Passport'
@@ -488,7 +489,8 @@ describe("app", function() {
                     .run();
             });
         });
-        describe("when a user wants to change their ID no",function(){
+
+        describe("when a user wants to change their ID no", function() {
             it("Should ask for their ID no",function(){
                 return tester
                     .setup.user.addr('27821237777')

@@ -1539,9 +1539,7 @@ go.app = function() {
     // INITIAL STATES
 
         self.add('st_subscribed', function(name) {
-
             return new PaginatedChoiceState(name, {
-
                 question: $("Welcome to NurseConnect"),
                 choices: [
                     new Choice('st_subscribe_other', $('Subscribe a friend')),
@@ -1629,29 +1627,28 @@ go.app = function() {
             });
         });
 
-        self.add('st_change_id_no',function(name){
+        self.add('st_change_id_no', function(name) {
             var owner = self.user.extra.nc_working_on === "" ? 'your' : 'their';
-            var question = $("Please select {{owner}} type of identification:")
-                           .context({owner:owner});
             return new ChoiceState(name, {
-                question: question,
-                choices:[
-                    new Choice('st_id_no',$('RSA ID')),
-                    new Choice('st_passport',$('Passport'))
-                        ],
-                next: function(choice){
-                   return choice.value;
+                question: $("Please select {{owner}} type of identification:")
+                    .context({owner: owner}),
+                choices: [
+                    new Choice('st_id_no', $('RSA ID')),
+                    new Choice('st_passport', $('Passport'))
+                ],
+                next: function(choice) {
+                    return choice.value;
+
                 }
-           });
+            });
         });
 
         self.add('st_id_no', function(name) {
             var owner = self.user.extra.nc_working_on === "" ? 'your' : 'their';
-            var question = $("Please enter {{owner}} 13-digit ID number:")
-                            .context({owner:owner});
             var error = $("Sorry, the format of the ID number is not correct. Please enter it again, e.g. 11118888:");
             return new FreeText(name,{
-                question:question,
+                question:$("Please enter {{owner}} 13-digit ID number:")
+                    .context({owner:owner}),
                 check: function(content){
                     if(!go.utils.validate_id_sa(content) ){
                         return error;

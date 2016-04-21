@@ -1551,9 +1551,9 @@ go.app = function() {
                     new Choice('isl_check_optout_optout', $('Stop SMS')),
                 ],
                 characters_per_page: 140,
-                options_per_page: 4,
-                more:$('more'),
-                back:$('back'),
+                options_per_page: null,
+                more: $('More'),
+                back: $('Back'),
                 next: function(choice) {
                     return choice.value;
                 }
@@ -1638,7 +1638,6 @@ go.app = function() {
                 ],
                 next: function(choice) {
                     return choice.value;
-
                 }
             });
         });
@@ -1647,25 +1646,24 @@ go.app = function() {
             var owner = self.user.extra.nc_working_on === "" ? 'your' : 'their';
             var error = $("Sorry, the format of the ID number is not correct. Please enter it again, e.g. 11118888:");
             return new FreeText(name,{
-                question:$("Please enter {{owner}} 13-digit ID number:")
+                question: $("Please enter {{owner}} 13-digit ID number:")
                     .context({owner:owner}),
-                check: function(content){
-                    if(!go.utils.validate_id_sa(content) ){
+                check: function(content) {
+                    if(!go.utils.validate_id_sa(content)){
                         return error;
-                    }
-                    else{
+                    }else{
                         return null;
                     }
                 },
-                next:function(content){
+                next: function(content) {
                     return 'end_change_id';
                 }
             });
         });
 
         self.add('st_passport', function(name) {
-            return new ChoiceState(name,{
-                question:$('What is the country of origin of the passport'),
+            return new ChoiceState(name, {
+                question: $('What is the country of origin of the passport'),
                 choices: [
                     new Choice('na', $('Namibia')),
                     new Choice('bw', $('Botswana')),
@@ -1675,28 +1673,27 @@ go.app = function() {
                     new Choice('cu', $('Cuba')),
                     new Choice('other', $('Other')),
                 ],
-                next:'st_passport_no'
+                next: 'st_passport_no'
             });
         });
 
-        self.add('st_passport_no',function(name){
-            return new FreeText(name,{
-                question:$('Please enter the passport number:'),
-                check:function(content){
+        self.add('st_passport_no', function(name) {
+            return new FreeText(name, {
+                question: $('Please enter the passport number:'),
+                check: function(content) {
                     if (!go.utils.is_alpha_numeric_only(content)
                         || content.length <= 4) {
                         return error;
                     }
                 },
-                next:'st_passport_dob'
-
+                next: 'st_passport_dob'
             });
         });
 
         self.add('st_passport_dob', function(name) {
-            return new FreeText(name,{
-                question:$('please enter the pthe date of birth e.g. 27 May 1975 as 27051975:'),
-                next:function(content){
+            return new FreeText(name, {
+                question: $('please enter the pthe date of birth e.g. 27 May 1975 as 27051975:'),
+                next: function(content) {
                      //date validation
                      if (!go.utils.is_valid_date(content, 'DDMMYYYY')) {
                         return error;
@@ -1707,9 +1704,9 @@ go.app = function() {
         });
 
         self.add('end_change_id', function(name) {
-            return new EndState(name,{
-                text:$('Thank You. Your NurseConnect details have been changed. To change any other details please dial *134*550# again'),
-                next:'isl_route'
+            return new EndState(name, {
+                text: $('Thank You. Your NurseConnect details have been changed. To change any other details please dial *134*550# again'),
+                next: 'isl_route'
             });
         });
 

@@ -1629,9 +1629,10 @@ go.app = function() {
 
         self.add('st_change_id_no', function(name) {
             var owner = self.user.extra.nc_working_on === "" ? 'your' : 'their';
+            var question =$("Please select {{owner}} type of identification:")
+                    .context({owner: owner});
             return new ChoiceState(name, {
-                question: $("Please select {{owner}} type of identification:")
-                    .context({owner: owner}),
+                question: question,
                 choices: [
                     new Choice('st_id_no', $('RSA ID')),
                     new Choice('st_passport', $('Passport'))
@@ -1644,20 +1645,18 @@ go.app = function() {
 
         self.add('st_id_no', function(name) {
             var owner = self.user.extra.nc_working_on === "" ? 'your' : 'their';
-            var error = $("Sorry, the format of the ID number is not correct. Please enter it again, e.g. 11118888:");
-            return new FreeText(name,{
-                question: $("Please enter {{owner}} 13-digit ID number:")
-                    .context({owner:owner}),
+            var error = $("Sorry, the format of the ID number is not correct. Please enter {{owner}} RSA ID number again, e.g. 7602095060082")
+                .context({owner: owner});
+            var question = $("Please enter {{owner}} 13-digit RSA ID number:")
+                .context({owner: owner});
+            return new FreeText(name, {
+                question: question,
                 check: function(content) {
-                    if(!go.utils.validate_id_sa(content)){
+                    if (!go.utils.validate_id_sa(content)) {
                         return error;
-                    }else{
-                        return null;
                     }
                 },
-                next: function(content) {
-                    return 'end_change_id';
-                }
+                next: 'end_change_id'
             });
         });
 
@@ -1678,11 +1677,12 @@ go.app = function() {
         });
 
         self.add('st_passport_no', function(name) {
+            var error = $("Sorry, the format of the passport number is not correct. Please enter the passport number again.");
+            var question = $("Please enter the passport number:");
             return new FreeText(name, {
-                question: $('Please enter the passport number:'),
+                question: question,
                 check: function(content) {
-                    if (!go.utils.is_alpha_numeric_only(content)
-                        || content.length <= 4) {
+                    if (!go.utils.is_alpha_numeric_only(content) || content.length <= 4) {
                         return error;
                     }
                 },
@@ -1691,15 +1691,16 @@ go.app = function() {
         });
 
         self.add('st_passport_dob', function(name) {
+            var error = $("Sorry, the format of the date of birth is not correct. Please enter it again, e.g. 27 May 1975 as 27051975:");
+            var question = $("Please enter the date of birth, e.g. 27 May 1975 as 27051975:");
             return new FreeText(name, {
-                question: $('please enter the pthe date of birth e.g. 27 May 1975 as 27051975:'),
-                next: function(content) {
-                     //date validation
-                     if (!go.utils.is_valid_date(content, 'DDMMYYYY')) {
+                question: question,
+                check: function(content) {
+                    if (!go.utils.is_valid_date(content, 'DDMMYYYY')) {
                         return error;
                     }
-                    return 'end_change_id';
-                }
+                },
+                next: 'end_change_id'
             });
         });
 
@@ -1709,7 +1710,6 @@ go.app = function() {
                 next: 'isl_route'
             });
         });
-
 
         self.add('st_change_persal', function(name) {
             var question = $("Please enter your 8-digit Persal employee number, e.g. 11118888:");

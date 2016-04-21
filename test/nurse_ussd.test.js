@@ -264,13 +264,13 @@ describe("app", function() {
                         })
                         .run();
                 });
-                it("should give 4 options when user selects more", function() {
+                it("should give 2 options when user selects more", function() {
                     return tester
                         .setup.user.addr('27821237777')
                         .setup.char_limit(140)  // limit first state chars
                         .inputs(
-                            {session_event: 'new'},  // dial in
-                            '6'  // st_subscribed - more options
+                            {session_event: 'new'}  // dial in
+                            ,'6'  // st_subscribed - more options
                         )
                         .check.interaction({
                             state: 'st_subscribed',
@@ -283,14 +283,14 @@ describe("app", function() {
                         })
                         .run();
                 });
-                it("should give the first 6 options when user selects back", function() {
+                it("should give the first 5 options when user selects back", function() {
                     return tester
                         .setup.user.addr('27821237777')
                         .setup.char_limit(140)  // limit first state chars
                         .inputs(
-                            {session_event: 'new'},  // dial in
-                            '6',  // st_subscribed - more options
-                            '3'  // st_subscribed - back to first set of options
+                            {session_event: 'new'}  // dial in
+                            ,'6'  // st_subscribed - more options
+                            ,'3'  // st_subscribed - back to first set of options
                         )
                         .check.interaction({
                             state: 'st_subscribed',
@@ -476,11 +476,11 @@ describe("app", function() {
                 return tester
                     .setup.user.addr('27821237777')
                     .inputs(
-                        {session_event:'new'},  // dial in
+                        {session_event: 'new'},  // dial in
                         '4'  // st_subscribed - change id
                     )
                     .check.interaction({
-                        state:'st_change_id_no',
+                        state: 'st_change_id_no',
                         reply: [
                             'Please select your type of identification:',
                             '1. RSA ID',
@@ -496,13 +496,13 @@ describe("app", function() {
                 return tester
                     .setup.user.addr('27821237777')
                     .inputs(
-                            {session_event:'new'}  // dial in
+                            {session_event: 'new'}  // dial in
                             , '4'  // st_subscribed - change id
                             , '1'  // st_change_id_no - RSA ID
                     )
                     .check.interaction({
-                        state:'st_id_no',
-                        reply:'Please enter your 13-digit ID number:'
+                        state: 'st_id_no',
+                        reply: 'Please enter your 13-digit RSA ID number:'
                     })
                     .run();
             });
@@ -512,13 +512,13 @@ describe("app", function() {
                 return tester
                     .setup.user.addr('27821237777')
                     .inputs(
-                            {session_event:'new'}  // dial in
+                            {session_event: 'new'}  // dial in
                             , '4'  // st_subscribed - change id
                             , '2'  // st_change_id_no - Passport
                     )
                     .check.interaction({
                         state:'st_passport',
-                        reply:[
+                        reply: [
                             'What is the country of origin of the passport',
                             '1. Namibia',
                             '2. Botswana',
@@ -535,14 +535,14 @@ describe("app", function() {
                 return tester
                     .setup.user.addr('27821237777')
                     .inputs(
-                            {session_event:'new'},
+                            {session_event: 'new'},
                             '4',
                             '2',
                             '1'
                     )
                     .check.interaction({
-                        state:'st_passport_no',
-                        reply:'Please enter the passport number:'
+                        state: 'st_passport_no',
+                        reply: 'Please enter the passport number:'
                     })
                     .run();
             });

@@ -1466,6 +1466,76 @@ module.exports = function() {
         }
     },
 
+    // Vumi nursereg post - change detail id - ID
+    {
+        "request": {
+            "method": "POST",
+            'headers': {
+                'Authorization': ['Token test_token']
+            },
+            "url": "http://ndoh-control/api/v2/nurseregs/",
+            "data": {
+                "cmsisdn": "+27821237777",
+                "dmsisdn": "+27821237777",
+                "faccode": "123456",
+                "id_type": "sa_id",
+                "dob": "1990-01-01",
+                "sanc_reg_no": null,
+                "persal_no": null,
+                "id_no": "9001016265166"
+            }
+        },
+        "response": {
+            "code": 201,
+            "data": {
+                "cmsisdn": "+27821237777",
+                "dmsisdn": "+27821237777",
+                "faccode": "123456",
+                "id_type": "sa_id",
+                "dob": "1990-01-01",
+                "sanc_reg_no": null,
+                "persal_no": null,
+                "id_no": "9001016265166"
+            }
+        }
+    },
+
+    // Vumi nursereg post - change detail id - Passport
+    {
+        "request": {
+            "method": "POST",
+            'headers': {
+                'Authorization': ['Token test_token']
+            },
+            "url": "http://ndoh-control/api/v2/nurseregs/",
+            "data": {
+                "cmsisdn": "+27821237777",
+                "dmsisdn": "+27821237777",
+                "faccode": "123456",
+                "id_type": "passport",
+                "dob": "1976-03-07",
+                "sanc_reg_no": null,
+                "persal_no": null,
+                "id_no": "Nam1234",
+                "passport_origin": "na"
+            }
+        },
+        "response": {
+            "code": 201,
+            "data": {
+                "cmsisdn": "+27821237777",
+                "dmsisdn": "+27821237777",
+                "faccode": "123456",
+                "id_type": "passport",
+                "dob": "1976-03-07",
+                "sanc_reg_no": null,
+                "persal_no": null,
+                "id_no": "Nam1234",
+                "passport_origin": "na"
+            }
+        }
+    },
+
     // Vumi nursereg post - change old phone number
     {
         "request": {

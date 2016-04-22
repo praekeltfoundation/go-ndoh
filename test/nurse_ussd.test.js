@@ -1630,6 +1630,21 @@ describe("app", function() {
                         })
                         .run();
                 });
+                it("should have extras", function() {
+                    return tester
+                        .setup.user.addr('27821237777')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '4'  // st_subscribed - change id
+                        )
+                        .check(function(api) {
+                            var contact = _.find(api.contacts.store, {
+                              msisdn: '+27821237777'
+                            });
+                            assert.equal(Object.keys(contact.extra).length, 8);
+                        })
+                        .run();
+                });
                 describe("change ID no", function() {
                     it("should ask for their ID no", function() {
                         return tester
@@ -1652,11 +1667,31 @@ describe("app", function() {
                                 {session_event: 'new'}  // dial in
                                 , '4'  // st_subscribed - change id
                                 , '1'  // st_change_id_no - RSA ID
-                                , '5101025009086 '  // st_id_no
+                                , '9001016265166 '  // st_id_no
                             )
                             .check.interaction({
                                 state: 'st_end_detail_changed',
                                 reply: 'Thank you. Your NurseConnect details have been changed. To change any other details, please dial *120*550*5# again.'
+                            })
+                            .run();
+                    });
+                    it("should save extras", function() {
+                        return tester
+                            .setup.user.addr('27821237777')
+                            .inputs(
+                                {session_event: 'new'}  // dial in
+                                , '4'  // st_subscribed - change id
+                                , '1'  // st_change_id_no - RSA ID
+                                , '9001016265166 '  // st_id_no
+                            )
+                            .check(function(api) {
+                                var contact = _.find(api.contacts.store, {
+                                  msisdn: '+27821237777'
+                                });
+                                assert.equal(Object.keys(contact.extra).length, 8);
+                                assert.equal(contact.extra.nc_id_type, 'sa_id');
+                                assert.equal(contact.extra.nc_sa_id_no, '9001016265166');
+                                assert.equal(contact.extra.nc_dob, '1990-01-01');
                             })
                             .run();
                     });
@@ -1730,6 +1765,29 @@ describe("app", function() {
                             .check.interaction({
                                 state: 'st_end_detail_changed',
                                 reply: 'Thank you. Your NurseConnect details have been changed. To change any other details, please dial *120*550*5# again.'
+                            })
+                            .run();
+                    });
+                    it("should save extras", function() {
+                        return tester
+                            .setup.user.addr('27821237777')
+                            .inputs(
+                                {session_event: 'new'}
+                                , '4'  // st_subscribed - change id
+                                , '2'  // st_change_id_no - passport
+                                , '1'  // st_passport - namibia
+                                , 'Nam1234'  // st_passport_no
+                                , '07031976'  // st_dob - 7 March 1976
+                            )
+                            .check(function(api) {
+                                var contact = _.find(api.contacts.store, {
+                                  msisdn: '+27821237777'
+                                });
+                                assert.equal(Object.keys(contact.extra).length, 10);
+                                assert.equal(contact.extra.nc_id_type, 'passport');
+                                assert.equal(contact.extra.nc_passport_country, 'na');
+                                assert.equal(contact.extra.nc_passport_num, 'Nam1234');
+                                assert.equal(contact.extra.nc_dob, '1976-03-07');
                             })
                             .run();
                     });

@@ -1365,7 +1365,7 @@ go.app = function() {
     var vumigo = require('vumigo_v02');
     var _ = require('lodash');
     var Q = require('q');
-    //var moment = require('moment');
+    var moment = require('moment');
     var App = vumigo.App;
     var Choice = vumigo.states.Choice;
     var ChoiceState = vumigo.states.ChoiceState;
@@ -1656,7 +1656,16 @@ go.app = function() {
                         return error;
                     }
                 },
-                next: 'st_end_detail_changed'
+                next: function(content) {
+                    self.contact.extra.nc_id_type = 'sa_id';
+                    self.contact.extra.nc_sa_id_no = content;
+                    self.contact.extra.nc_dob = go.utils.extract_id_dob(content);
+                    return self.im.contacts
+                        .save(self.contact)
+                        .then(function() {
+                            return 'isl_post_change_detail';
+                        });
+                }
             });
         });
 
@@ -1700,7 +1709,18 @@ go.app = function() {
                         return error;
                     }
                 },
-                next: 'st_end_detail_changed'
+                next: function(content) {
+                    self.contact.extra.nc_id_type = 'passport';
+                    self.contact.extra.nc_passport_country = self.im.user.answers.st_passport;
+                    self.contact.extra.nc_passport_num = self.im.user.answers.st_passport_no;
+                    self.contact.extra.nc_dob = moment(self.im.user.answers.st_passport_dob, 'DDMMYYYY'
+                        ).format('YYYY-MM-DD');
+                    return self.im.contacts
+                        .save(self.contact)
+                        .then(function() {
+                            return 'isl_post_change_detail';
+                        });
+                }
             });
         });
 

@@ -1656,7 +1656,7 @@ go.app = function() {
                         return error;
                     }
                 },
-                next: 'end_change_id'
+                next: 'st_end_detail_changed'
             });
         });
 
@@ -1700,14 +1700,7 @@ go.app = function() {
                         return error;
                     }
                 },
-                next: 'end_change_id'
-            });
-        });
-
-        self.add('end_change_id', function(name) {
-            return new EndState(name, {
-                text: $('Thank You. Your NurseConnect details have been changed. To change any other details please dial *134*550# again'),
-                next: 'isl_route'
+                next: 'st_end_detail_changed'
             });
         });
 

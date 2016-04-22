@@ -1272,6 +1272,90 @@ describe("app", function() {
             });
         });
 
+        // ID Validation
+        describe("id number entry", function() {
+            describe("invalid id", function() {
+                it("should loop back", function() {
+                    return tester
+                        .setup.user.state('st_id_no')
+                        .input('12345A')
+                        .check.interaction({
+                            state: 'st_id_no',
+                            reply: "Sorry, the format of the ID number is not correct. Please enter their RSA ID number again, e.g. 7602095060082"
+                        })
+                        .run();
+                });
+            });
+        });
+
+        // Passport Validation
+        describe("passport number entry", function() {
+            describe("invalid passport number - non alphanumeric", function() {
+                it("should loop back", function() {
+                    return tester
+                        .setup.user.state('st_passport_no')
+                        .input('AA-1234')
+                        .check.interaction({
+                            state: 'st_passport_no',
+                            reply: "Sorry, the format of the passport number is not correct. Please enter the passport number again."
+                        })
+                        .run();
+                });
+            });
+            describe("invalid passport number - too short", function() {
+                it("should loop back", function() {
+                    return tester
+                        .setup.user.state('st_passport_no')
+                        .input('1234')
+                        .check.interaction({
+                            state: 'st_passport_no',
+                            reply: "Sorry, the format of the passport number is not correct. Please enter the passport number again."
+                        })
+                        .run();
+                });
+            });
+        });
+
+        // DOB Validation
+        describe("dob entry", function() {
+            describe("invalid dob chars", function() {
+                it("should loop back", function() {
+                    return tester
+                        .setup.user.state('st_passport_dob')
+                        .input('01-01-1980')
+                        .check.interaction({
+                            state: 'st_passport_dob',
+                            reply: "Sorry, the format of the date of birth is not correct. Please enter it again, e.g. 27 May 1975 as 27051975:"
+                        })
+                        .run();
+                });
+            });
+            describe("not real date", function() {
+                it("should loop back", function() {
+                    return tester
+                        .setup.user.state('st_passport_dob')
+                        .input('29021981    ')
+                        .check.interaction({
+                            state: 'st_passport_dob',
+                            reply: "Sorry, the format of the date of birth is not correct. Please enter it again, e.g. 27 May 1975 as 27051975:"
+                        })
+                        .run();
+                });
+            });
+            describe("inverted date", function() {
+                it("should loop back", function() {
+                    return tester
+                        .setup.user.state('st_passport_dob')
+                        .input('19800101')
+                        .check.interaction({
+                            state: 'st_passport_dob',
+                            reply: "Sorry, the format of the date of birth is not correct. Please enter it again, e.g. 27 May 1975 as 27051975:"
+                        })
+                        .run();
+                });
+            });
+        });
+
         // Change Details
         describe("changing details", function() {
             describe("change faccode", function() {

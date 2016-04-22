@@ -1716,22 +1716,6 @@ describe("app", function() {
                             })
                             .run();
                     });
-                    it("should ask for their date of birth", function() {
-                        return tester
-                            .setup.user.addr('27821237777')
-                            .inputs(
-                                {session_event: 'new'}
-                                , '4'  // st_subscribed - change id
-                                , '2'  // st_change_id_no - passport
-                                , '1'  // st_passport - namibia
-                                , 'Nam1234'  // st_passport_no
-                            )
-                            .check.interaction({
-                                state: 'st_passport_dob',
-                                reply: 'Please enter the date of birth, e.g. 27 May 1975 as 27051975:'
-                            })
-                            .run();
-                    });
                     it("should tell them their details have been changed", function() {
                         return tester
                             .setup.user.addr('27821237777')

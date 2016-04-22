@@ -1528,7 +1528,7 @@ describe("app", function() {
                 });
             });
 
-            describe("when a user wants to change their identification", function() {
+            describe("change identification", function() {
                 it("should display 2 options", function() {
                     return tester
                         .setup.user.addr('27821237777')
@@ -1546,7 +1546,7 @@ describe("app", function() {
                         })
                         .run();
                 });
-                describe("when a user wants to change their ID no", function() {
+                describe("change ID no", function() {
                     it("should ask for their ID no", function() {
                         return tester
                             .setup.user.addr('27821237777')
@@ -1558,6 +1558,21 @@ describe("app", function() {
                             .check.interaction({
                                 state: 'st_id_no',
                                 reply: 'Please enter your 13-digit RSA ID number:'
+                            })
+                            .run();
+                    });
+                    it("should tell them their details have been changed", function() {
+                        return tester
+                            .setup.user.addr('27821237777')
+                            .inputs(
+                                {session_event: 'new'}  // dial in
+                                , '4'  // st_subscribed - change id
+                                , '1'  // st_change_id_no - RSA ID
+                                , '5101025009086 '  // st_id_no
+                            )
+                            .check.interaction({
+                                state: 'st_end_detail_changed',
+                                reply: 'Thank you. Your NurseConnect details have been changed. To change any other details, please dial *120*550*5# again.'
                             })
                             .run();
                     });
@@ -1598,6 +1613,55 @@ describe("app", function() {
                             .check.interaction({
                                 state: 'st_passport_no',
                                 reply: 'Please enter the passport number:'
+                            })
+                            .run();
+                    });
+                    it("should ask for their date of birth", function() {
+                        return tester
+                            .setup.user.addr('27821237777')
+                            .inputs(
+                                {session_event: 'new'}
+                                , '4'  // st_subscribed - change id
+                                , '2'  // st_change_id_no - passport
+                                , '1'  // st_passport - namibia
+                                , 'Nam1234'  // st_passport_no
+                            )
+                            .check.interaction({
+                                state: 'st_passport_dob',
+                                reply: 'Please enter the date of birth, e.g. 27 May 1975 as 27051975:'
+                            })
+                            .run();
+                    });
+                    it("should ask for their date of birth", function() {
+                        return tester
+                            .setup.user.addr('27821237777')
+                            .inputs(
+                                {session_event: 'new'}
+                                , '4'  // st_subscribed - change id
+                                , '2'  // st_change_id_no - passport
+                                , '1'  // st_passport - namibia
+                                , 'Nam1234'  // st_passport_no
+                            )
+                            .check.interaction({
+                                state: 'st_passport_dob',
+                                reply: 'Please enter the date of birth, e.g. 27 May 1975 as 27051975:'
+                            })
+                            .run();
+                    });
+                    it("should tell them their details have been changed", function() {
+                        return tester
+                            .setup.user.addr('27821237777')
+                            .inputs(
+                                {session_event: 'new'}
+                                , '4'  // st_subscribed - change id
+                                , '2'  // st_change_id_no - passport
+                                , '1'  // st_passport - namibia
+                                , 'Nam1234'  // st_passport_no
+                                , '07031976'  // st_dob - 7 March 1976
+                            )
+                            .check.interaction({
+                                state: 'st_end_detail_changed',
+                                reply: 'Thank you. Your NurseConnect details have been changed. To change any other details, please dial *120*550*5# again.'
                             })
                             .run();
                     });

@@ -306,7 +306,7 @@ describe("app", function() {
                         })
                         .run();
                 });
-            })
+            });
         });
 
         // Timeout Testing
@@ -488,7 +488,7 @@ describe("app", function() {
             });
         });
 
-        // Self Registration Flow (SA ID)
+        // Self Registration Flow
         describe("self registration completion", function() {
             it("should reach end state", function() {
                 return tester
@@ -525,6 +525,7 @@ describe("app", function() {
                         assert.equal(contact.extra.nc_faccode, '123456');
                         assert.equal(contact.extra.nc_facname, 'WCL clinic');
                         assert.equal(contact.extra.nc_is_registered, 'true');
+                        assert.equal(contact.extra.nc_working_on, "");
                     })
                     .run();
             });
@@ -570,7 +571,7 @@ describe("app", function() {
                 });
         });
 
-        // Other Registration Flow (Passport)
+        // Other Registration Flow
         describe("other registration completion", function() {
             it("should reach end state", function() {
                 return tester
@@ -1527,8 +1528,8 @@ describe("app", function() {
                 });
             });
 
-            describe("when a user wants to change their type of identification", function() {
-                it("Should display 2 options", function() {
+            describe("when a user wants to change their identification", function() {
+                it("should display 2 options", function() {
                     return tester
                         .setup.user.addr('27821237777')
                         .inputs(
@@ -1546,13 +1547,13 @@ describe("app", function() {
                         .run();
                 });
                 describe("when a user wants to change their ID no", function() {
-                    it("Should ask for their ID no", function() {
+                    it("should ask for their ID no", function() {
                         return tester
                             .setup.user.addr('27821237777')
                             .inputs(
-                                    {session_event: 'new'}  // dial in
-                                    , '4'  // st_subscribed - change id
-                                    , '1'  // st_change_id_no - RSA ID
+                                {session_event: 'new'}  // dial in
+                                , '4'  // st_subscribed - change id
+                                , '1'  // st_change_id_no - RSA ID
                             )
                             .check.interaction({
                                 state: 'st_id_no',
@@ -1562,13 +1563,13 @@ describe("app", function() {
                     });
                 });
                 describe("when a user wants to change their passport no", function() {
-                    it("Should ask for the origin of their passport", function() {
+                    it("should ask for the origin of their passport", function() {
                         return tester
                             .setup.user.addr('27821237777')
                             .inputs(
-                                    {session_event: 'new'}  // dial in
-                                    , '4'  // st_subscribed - change id
-                                    , '2'  // st_change_id_no - Passport
+                                {session_event: 'new'}  // dial in
+                                , '4'  // st_subscribed - change id
+                                , '2'  // st_change_id_no - passport
                             )
                             .check.interaction({
                                 state: 'st_passport',
@@ -1585,14 +1586,14 @@ describe("app", function() {
                             })
                             .run();
                     });
-                    it("Should ask for their passport no", function() {
+                    it("should ask for their passport no", function() {
                         return tester
                             .setup.user.addr('27821237777')
                             .inputs(
-                                    {session_event: 'new'}
-                                    , '4'
-                                    , '2'
-                                    , '1'
+                                {session_event: 'new'}
+                                , '4'  // st_subscribed - change id
+                                , '2'  // st_change_id_no - passport
+                                , '1'  // st_passport - namibia
                             )
                             .check.interaction({
                                 state: 'st_passport_no',

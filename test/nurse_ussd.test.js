@@ -471,83 +471,6 @@ describe("app", function() {
             });
         });
 
-        describe("when a user wants to change their type of identification", function() {
-            it("Should display 2 options", function() {
-                return tester
-                    .setup.user.addr('27821237777')
-                    .inputs(
-                        {session_event: 'new'}  // dial in
-                        , '4'  // st_subscribed - change id
-                    )
-                    .check.interaction({
-                        state: 'st_change_id_no',
-                        reply: [
-                            'Please select your type of identification:',
-                            '1. RSA ID',
-                            '2. Passport'
-                        ].join('\n')
-                    })
-                    .run();
-            });
-        });
-
-        describe("when a user wants to change their ID no", function() {
-            it("Should ask for their ID no", function() {
-                return tester
-                    .setup.user.addr('27821237777')
-                    .inputs(
-                            {session_event: 'new'}  // dial in
-                            , '4'  // st_subscribed - change id
-                            , '1'  // st_change_id_no - RSA ID
-                    )
-                    .check.interaction({
-                        state: 'st_id_no',
-                        reply: 'Please enter your 13-digit RSA ID number:'
-                    })
-                    .run();
-            });
-        });
-        describe("when a user wants to change their passport no", function() {
-            it("Should ask for the origin of their passport", function() {
-                return tester
-                    .setup.user.addr('27821237777')
-                    .inputs(
-                            {session_event: 'new'}  // dial in
-                            , '4'  // st_subscribed - change id
-                            , '2'  // st_change_id_no - Passport
-                    )
-                    .check.interaction({
-                        state: 'st_passport',
-                        reply: [
-                            'What is the country of origin of the passport?',
-                            '1. Namibia',
-                            '2. Botswana',
-                            '3. Mozambique',
-                            '4. Swaziland',
-                            '5. Lesotho',
-                            '6. Cuba',
-                            '7. Other'
-                        ].join('\n')
-                    })
-                    .run();
-            });
-            it("Should ask for their passport no", function() {
-                return tester
-                    .setup.user.addr('27821237777')
-                    .inputs(
-                            {session_event: 'new'}
-                            , '4'
-                            , '2'
-                            , '1'
-                    )
-                    .check.interaction({
-                        state: 'st_passport_no',
-                        reply: 'Please enter the passport number:'
-                    })
-                    .run();
-            });
-        });
-
         // Unique User Metrics
         describe("when a new unique user logs on", function() {
             it("should increment the no. of unique users metric by 1", function() {
@@ -576,8 +499,6 @@ describe("app", function() {
                         , '1'  // st_permission_self - consent
                         , '123456'  // st_faccode
                         , '1'  // st_facname - confirm
-                        , '1'  // st_id_type - sa_id
-                        , '5101025009086'  // st_sa_id
                     )
                     .check.interaction({
                         state: 'st_end_reg',
@@ -595,21 +516,15 @@ describe("app", function() {
                         , '1'  // st_permission_self - consent
                         , '123456'  // st_faccode
                         , '1'  // st_facname - confirm
-                        , '1'  // st_id_type - sa_id
-                        , '5101025009086 '  // st_sa_id
                     )
                     .check(function(api) {
                         var contact = _.find(api.contacts.store, {
                           msisdn: '+27821234444'
                         });
-                        assert.equal(Object.keys(contact.extra).length, 7);
+                        assert.equal(Object.keys(contact.extra).length, 4);
                         assert.equal(contact.extra.nc_faccode, '123456');
                         assert.equal(contact.extra.nc_facname, 'WCL clinic');
                         assert.equal(contact.extra.nc_is_registered, 'true');
-                        assert.equal(contact.extra.nc_working_on, "");
-                        assert.equal(contact.extra.nc_id_type, "sa_id");
-                        assert.equal(contact.extra.nc_sa_id_no, "5101025009086");
-                        assert.equal(contact.extra.nc_dob, "1951-01-02");
                     })
                     .run();
             });
@@ -622,8 +537,6 @@ describe("app", function() {
                         , '1'  // st_permission_self - consent
                         , '123456'  // st_faccode
                         , '1'  // st_facname - confirm
-                        , '1'  // st_id_type - sa_id
-                        , '5101025009086'  // st_sa_id
                     )
                     .check(function(api) {
                         var metrics = api.metrics.stores.test_metric_store;
@@ -640,8 +553,6 @@ describe("app", function() {
                         , '1'  // st_permission_self - consent
                         , '123456'  // st_faccode
                         , '1'  // st_facname - confirm
-                        , '1'  // st_id_type - sa_id
-                        , '5101025009086'  // st_sa_id
                     )
                     .check(function(api) {
                         var smses = _.where(api.outbound.store, {
@@ -671,10 +582,6 @@ describe("app", function() {
                         , '0821235555'  // st_msisdn
                         , '123456'  // st_faccode
                         , '1'  // st_facname - confirm
-                        , '2'  // st_id_type - passport
-                        , '6'  // st_passport_country - cuba
-                        , 'Cub1234'  // st_passport_num
-                        , '07031976'  // st_dob - 7 March 1976
                     )
                     .check.interaction({
                         state: 'st_end_reg',
@@ -692,10 +599,6 @@ describe("app", function() {
                         , '0821235555'  // st_msisdn
                         , '123456'  // st_faccode
                         , '1'  // st_facname - confirm
-                        , '2'  // st_id_type - passport
-                        , '6'  // st_passport_country - cuba
-                        , 'Cub1234'  // st_passport_num
-                        , '07031976'  // st_dob - 7 March 1976
                     )
                     .check(function(api) {
                         var user = _.find(api.contacts.store, {
@@ -709,15 +612,11 @@ describe("app", function() {
                         var contact = _.find(api.contacts.store, {
                           msisdn: '+27821235555'
                         });
-                        assert.equal(Object.keys(contact.extra).length, 8);
+                        assert.equal(Object.keys(contact.extra).length, 4);
                         assert.equal(contact.extra.nc_faccode, '123456');
                         assert.equal(contact.extra.nc_facname, 'WCL clinic');
                         assert.equal(contact.extra.nc_is_registered, 'true');
                         assert.equal(contact.extra.nc_registered_by, '+27821234444');
-                        assert.equal(contact.extra.nc_id_type, 'passport');
-                        assert.equal(contact.extra.nc_passport_country, 'cu');
-                        assert.equal(contact.extra.nc_passport_num, 'Cub1234');
-                        assert.equal(contact.extra.nc_dob, '1976-03-07');
                     })
                     .run();
             });
@@ -731,10 +630,6 @@ describe("app", function() {
                         , '0821235555'  // st_msisdn
                         , '123456'  // st_faccode
                         , '1'  // st_facname - confirm
-                        , '2'  // st_id_type - passport
-                        , '6'  // st_passport_country - cuba
-                        , 'Cub1234'  // st_passport_num
-                        , '07031976'  // st_dob - 7 March 1976
                     )
                     .check(function(api) {
                         var metrics = api.metrics.stores.test_metric_store;
@@ -752,10 +647,6 @@ describe("app", function() {
                         , '0821235555'  // st_msisdn
                         , '123456'  // st_faccode
                         , '1'  // st_facname - confirm
-                        , '2'  // st_id_type - passport
-                        , '6'  // st_passport_country - cuba
-                        , 'Cub1234'  // st_passport_num
-                        , '07031976'  // st_dob - 7 March 1976
                     )
                     .check(function(api) {
                         var smses = _.where(api.outbound.store, {
@@ -1083,90 +974,6 @@ describe("app", function() {
                         .check.interaction({
                             state: 'st_faccode',
                             reply: "Sorry, that code is not recognized. Please enter the 6-digit facility code again, e. 535970:"
-                        })
-                        .run();
-                });
-            });
-        });
-
-        // ID Validation
-        describe("id number entry", function() {
-            describe("invalid id", function() {
-                it("should loop back", function() {
-                    return tester
-                        .setup.user.state('st_sa_id')
-                        .input('12345A')
-                        .check.interaction({
-                            state: 'st_sa_id',
-                            reply: "Sorry, the format of the ID number is not correct. Please enter their RSA ID number again, e.g. 7602095060082"
-                        })
-                        .run();
-                });
-            });
-        });
-
-        // Passport Validation
-        describe("passport number entry", function() {
-            describe("invalid passport number - non alphanumeric", function() {
-                it("should loop back", function() {
-                    return tester
-                        .setup.user.state('st_passport_num')
-                        .input('AA-1234')
-                        .check.interaction({
-                            state: 'st_passport_num',
-                            reply: "Sorry, the format of the passport number is not correct. Please enter the passport number again."
-                        })
-                        .run();
-                });
-            });
-            describe("invalid passport number - too short", function() {
-                it("should loop back", function() {
-                    return tester
-                        .setup.user.state('st_passport_num')
-                        .input('1234')
-                        .check.interaction({
-                            state: 'st_passport_num',
-                            reply: "Sorry, the format of the passport number is not correct. Please enter the passport number again."
-                        })
-                        .run();
-                });
-            });
-        });
-
-        // DOB Validation
-        describe("dob entry", function() {
-            describe("invalid dob chars", function() {
-                it("should loop back", function() {
-                    return tester
-                        .setup.user.state('st_dob')
-                        .input('01-01-1980')
-                        .check.interaction({
-                            state: 'st_dob',
-                            reply: "Sorry, the format of the date of birth is not correct. Please enter it again, e.g. 27 May 1975 as 27051975:"
-                        })
-                        .run();
-                });
-            });
-            describe("not real date", function() {
-                it("should loop back", function() {
-                    return tester
-                        .setup.user.state('st_dob')
-                        .input('29021981    ')
-                        .check.interaction({
-                            state: 'st_dob',
-                            reply: "Sorry, the format of the date of birth is not correct. Please enter it again, e.g. 27 May 1975 as 27051975:"
-                        })
-                        .run();
-                });
-            });
-            describe("inverted date", function() {
-                it("should loop back", function() {
-                    return tester
-                        .setup.user.state('st_dob')
-                        .input('19800101')
-                        .check.interaction({
-                            state: 'st_dob',
-                            reply: "Sorry, the format of the date of birth is not correct. Please enter it again, e.g. 27 May 1975 as 27051975:"
                         })
                         .run();
                 });
@@ -1719,7 +1526,84 @@ describe("app", function() {
                         .run();
                 });
             });
+
+            describe("when a user wants to change their type of identification", function() {
+                it("Should display 2 options", function() {
+                    return tester
+                        .setup.user.addr('27821237777')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '4'  // st_subscribed - change id
+                        )
+                        .check.interaction({
+                            state: 'st_change_id_no',
+                            reply: [
+                                'Please select your type of identification:',
+                                '1. RSA ID',
+                                '2. Passport'
+                            ].join('\n')
+                        })
+                        .run();
+                });
+                describe("when a user wants to change their ID no", function() {
+                    it("Should ask for their ID no", function() {
+                        return tester
+                            .setup.user.addr('27821237777')
+                            .inputs(
+                                    {session_event: 'new'}  // dial in
+                                    , '4'  // st_subscribed - change id
+                                    , '1'  // st_change_id_no - RSA ID
+                            )
+                            .check.interaction({
+                                state: 'st_id_no',
+                                reply: 'Please enter your 13-digit RSA ID number:'
+                            })
+                            .run();
+                    });
+                });
+                describe("when a user wants to change their passport no", function() {
+                    it("Should ask for the origin of their passport", function() {
+                        return tester
+                            .setup.user.addr('27821237777')
+                            .inputs(
+                                    {session_event: 'new'}  // dial in
+                                    , '4'  // st_subscribed - change id
+                                    , '2'  // st_change_id_no - Passport
+                            )
+                            .check.interaction({
+                                state: 'st_passport',
+                                reply: [
+                                    'What is the country of origin of the passport?',
+                                    '1. Namibia',
+                                    '2. Botswana',
+                                    '3. Mozambique',
+                                    '4. Swaziland',
+                                    '5. Lesotho',
+                                    '6. Cuba',
+                                    '7. Other'
+                                ].join('\n')
+                            })
+                            .run();
+                    });
+                    it("Should ask for their passport no", function() {
+                        return tester
+                            .setup.user.addr('27821237777')
+                            .inputs(
+                                    {session_event: 'new'}
+                                    , '4'
+                                    , '2'
+                                    , '1'
+                            )
+                            .check.interaction({
+                                state: 'st_passport_no',
+                                reply: 'Please enter the passport number:'
+                            })
+                            .run();
+                    });
+                });
+            });
         });
+
 
         // Optout
         describe("opting out", function() {

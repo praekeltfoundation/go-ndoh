@@ -529,7 +529,7 @@ describe("app", function() {
                     })
                     .run();
             });
-            it("should fire no metrics", function() {
+            it("should fire metrics", function() {
                 return tester
                     .setup.user.addr('27821234444')
                     .inputs(
@@ -541,7 +541,8 @@ describe("app", function() {
                     )
                     .check(function(api) {
                         var metrics = api.metrics.stores.test_metric_store;
-                        assert.equal(Object.keys(metrics).length, 0);
+                        assert.equal(Object.keys(metrics).length, 1);
+                        assert.deepEqual(metrics['test.nurse_ussd.registrations.sum'].values, [1]);
                     })
                     .run();
             });
@@ -621,7 +622,7 @@ describe("app", function() {
                     })
                     .run();
             });
-            it("should fire no metrics", function() {
+            it("should fire metrics", function() {
                 return tester
                     .setup.user.addr('27821234444')
                     .inputs(
@@ -634,7 +635,8 @@ describe("app", function() {
                     )
                     .check(function(api) {
                         var metrics = api.metrics.stores.test_metric_store;
-                        assert.equal(Object.keys(metrics).length, 0);
+                        assert.equal(Object.keys(metrics).length, 1);
+                        assert.deepEqual(metrics['test.nurse_ussd.registrations.sum'].values, [1]);
                     })
                     .run();
             });
@@ -1794,7 +1796,6 @@ describe("app", function() {
                 });
             });
         });
-
 
         // Optout
         describe("opting out", function() {

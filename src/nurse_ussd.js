@@ -783,6 +783,8 @@ go.app = function() {
                     self.im.contacts.save(self.contact),
                     self.send_registration_thanks(),
                     go.utils.post_nursereg(self.im, self.contact, self.user.msisdn, null),
+                    self.im.metrics.fire.sum(
+                        ([self.metric_prefix, "registrations", "sum"].join('.')), 1)
                 ])
                 .then(function() {
                     return self.states.create('st_end_reg');

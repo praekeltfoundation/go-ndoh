@@ -1320,9 +1320,6 @@ module.exports = function() {
                 "cmsisdn": "+27821234444",
                 "dmsisdn": "+27821234444",
                 "faccode": "123456",
-                "id_type": "sa_id",
-                "id_no": "5101025009086",
-                "dob": "1951-01-02",
                 "sanc_reg_no": null,
                 "persal_no": null
             }
@@ -1333,9 +1330,6 @@ module.exports = function() {
                 "cmsisdn": "+27821234444",
                 "dmsisdn": "+27821234444",
                 "faccode": "123456",
-                "id_type": "sa_id",
-                "id_no": "5101025009086",
-                "dob": "1951-01-02",
                 "sanc_reg_no": null,
                 "persal_no": null
             }
@@ -1354,10 +1348,6 @@ module.exports = function() {
                 "cmsisdn": "+27821235555",
                 "dmsisdn": "+27821234444",
                 "faccode": "123456",
-                "id_type": "passport",
-                "id_no": "Cub1234",
-                "dob": "1976-03-07",
-                "passport_origin": "cu",
                 "sanc_reg_no": null,
                 "persal_no": null
             }
@@ -1368,10 +1358,6 @@ module.exports = function() {
                 "cmsisdn": "+27821235555",
                 "dmsisdn": "+27821234444",
                 "faccode": "123456",
-                "id_type": "passport",
-                "id_no": "Cub1234",
-                "dob": "1976-03-07",
-                "passport_origin": "cu",
                 "sanc_reg_no": null,
                 "persal_no": null
             }
@@ -1476,6 +1462,76 @@ module.exports = function() {
                 "dob": "1951-01-02",
                 "sanc_reg_no": null,
                 "persal_no": "11114444"
+            }
+        }
+    },
+
+    // Vumi nursereg post - change detail id - ID
+    {
+        "request": {
+            "method": "POST",
+            'headers': {
+                'Authorization': ['Token test_token']
+            },
+            "url": "http://ndoh-control/api/v2/nurseregs/",
+            "data": {
+                "cmsisdn": "+27821237777",
+                "dmsisdn": "+27821237777",
+                "faccode": "123456",
+                "id_type": "sa_id",
+                "dob": "1990-01-01",
+                "sanc_reg_no": null,
+                "persal_no": null,
+                "id_no": "9001016265166"
+            }
+        },
+        "response": {
+            "code": 201,
+            "data": {
+                "cmsisdn": "+27821237777",
+                "dmsisdn": "+27821237777",
+                "faccode": "123456",
+                "id_type": "sa_id",
+                "dob": "1990-01-01",
+                "sanc_reg_no": null,
+                "persal_no": null,
+                "id_no": "9001016265166"
+            }
+        }
+    },
+
+    // Vumi nursereg post - change detail id - Passport
+    {
+        "request": {
+            "method": "POST",
+            'headers': {
+                'Authorization': ['Token test_token']
+            },
+            "url": "http://ndoh-control/api/v2/nurseregs/",
+            "data": {
+                "cmsisdn": "+27821237777",
+                "dmsisdn": "+27821237777",
+                "faccode": "123456",
+                "id_type": "passport",
+                "dob": "1976-03-07",
+                "sanc_reg_no": null,
+                "persal_no": null,
+                "id_no": "Nam1234",
+                "passport_origin": "na"
+            }
+        },
+        "response": {
+            "code": 201,
+            "data": {
+                "cmsisdn": "+27821237777",
+                "dmsisdn": "+27821237777",
+                "faccode": "123456",
+                "id_type": "passport",
+                "dob": "1976-03-07",
+                "sanc_reg_no": null,
+                "persal_no": null,
+                "id_no": "Nam1234",
+                "passport_origin": "na"
             }
         }
     },

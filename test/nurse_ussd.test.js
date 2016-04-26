@@ -243,7 +243,7 @@ describe("app", function() {
                 });
             });
             describe("registered user", function() {
-                it("should give 6 options", function() {
+                it("should give 5 options", function() {
                     return tester
                         .setup.user.addr('27821237777')
                         .setup.char_limit(140)  // limit first state chars
@@ -257,9 +257,51 @@ describe("app", function() {
                                 '1. Subscribe a friend',
                                 '2. Change your no.',
                                 '3. Change facility code',
-                                '4. Change SANC no.',
-                                '5. Change Persal no.',
-                                '6. Stop SMS'
+                                '4. Change ID no.',
+                                '5. Change SANC no.',
+                                '6. More'
+                            ].join('\n')
+                        })
+                        .run();
+                });
+                it("should give 2 options when user selects more", function() {
+                    return tester
+                        .setup.user.addr('27821237777')
+                        .setup.char_limit(140)  // limit first state chars
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '6'  // st_subscribed - more options
+                        )
+                        .check.interaction({
+                            state: 'st_subscribed',
+                            reply: [
+                                "Welcome to NurseConnect",
+                                "1. Change Persal no.",
+                                "2. Stop SMS",
+                                "3. Back"
+                            ].join('\n')
+                        })
+                        .run();
+                });
+                it("should give the first 5 options when user selects back", function() {
+                    return tester
+                        .setup.user.addr('27821237777')
+                        .setup.char_limit(140)  // limit first state chars
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '6'  // st_subscribed - more options
+                            , '3'  // st_subscribed - back to first set of options
+                        )
+                        .check.interaction({
+                            state: 'st_subscribed',
+                            reply: [
+                                "Welcome to NurseConnect",
+                                '1. Subscribe a friend',
+                                '2. Change your no.',
+                                '3. Change facility code',
+                                '4. Change ID no.',
+                                '5. Change SANC no.',
+                                '6. More'
                             ].join('\n')
                         })
                         .run();
@@ -446,7 +488,7 @@ describe("app", function() {
             });
         });
 
-        // Self Registration Flow (SA ID)
+        // Self Registration Flow
         describe("self registration completion", function() {
             it("should reach end state", function() {
                 return tester
@@ -457,8 +499,6 @@ describe("app", function() {
                         , '1'  // st_permission_self - consent
                         , '123456'  // st_faccode
                         , '1'  // st_facname - confirm
-                        , '1'  // st_id_type - sa_id
-                        , '5101025009086'  // st_sa_id
                     )
                     .check.interaction({
                         state: 'st_end_reg',
@@ -476,21 +516,16 @@ describe("app", function() {
                         , '1'  // st_permission_self - consent
                         , '123456'  // st_faccode
                         , '1'  // st_facname - confirm
-                        , '1'  // st_id_type - sa_id
-                        , '5101025009086 '  // st_sa_id
                     )
                     .check(function(api) {
                         var contact = _.find(api.contacts.store, {
                           msisdn: '+27821234444'
                         });
-                        assert.equal(Object.keys(contact.extra).length, 7);
+                        assert.equal(Object.keys(contact.extra).length, 4);
                         assert.equal(contact.extra.nc_faccode, '123456');
                         assert.equal(contact.extra.nc_facname, 'WCL clinic');
                         assert.equal(contact.extra.nc_is_registered, 'true');
                         assert.equal(contact.extra.nc_working_on, "");
-                        assert.equal(contact.extra.nc_id_type, "sa_id");
-                        assert.equal(contact.extra.nc_sa_id_no, "5101025009086");
-                        assert.equal(contact.extra.nc_dob, "1951-01-02");
                     })
                     .run();
             });
@@ -503,8 +538,6 @@ describe("app", function() {
                         , '1'  // st_permission_self - consent
                         , '123456'  // st_faccode
                         , '1'  // st_facname - confirm
-                        , '1'  // st_id_type - sa_id
-                        , '5101025009086'  // st_sa_id
                     )
                     .check(function(api) {
                         var metrics = api.metrics.stores.test_metric_store;
@@ -521,8 +554,6 @@ describe("app", function() {
                         , '1'  // st_permission_self - consent
                         , '123456'  // st_faccode
                         , '1'  // st_facname - confirm
-                        , '1'  // st_id_type - sa_id
-                        , '5101025009086'  // st_sa_id
                     )
                     .check(function(api) {
                         var smses = _.where(api.outbound.store, {
@@ -540,7 +571,7 @@ describe("app", function() {
                 });
         });
 
-        // Other Registration Flow (Passport)
+        // Other Registration Flow
         describe("other registration completion", function() {
             it("should reach end state", function() {
                 return tester
@@ -552,10 +583,6 @@ describe("app", function() {
                         , '0821235555'  // st_msisdn
                         , '123456'  // st_faccode
                         , '1'  // st_facname - confirm
-                        , '2'  // st_id_type - passport
-                        , '6'  // st_passport_country - cuba
-                        , 'Cub1234'  // st_passport_num
-                        , '07031976'  // st_dob - 7 March 1976
                     )
                     .check.interaction({
                         state: 'st_end_reg',
@@ -573,10 +600,6 @@ describe("app", function() {
                         , '0821235555'  // st_msisdn
                         , '123456'  // st_faccode
                         , '1'  // st_facname - confirm
-                        , '2'  // st_id_type - passport
-                        , '6'  // st_passport_country - cuba
-                        , 'Cub1234'  // st_passport_num
-                        , '07031976'  // st_dob - 7 March 1976
                     )
                     .check(function(api) {
                         var user = _.find(api.contacts.store, {
@@ -590,15 +613,11 @@ describe("app", function() {
                         var contact = _.find(api.contacts.store, {
                           msisdn: '+27821235555'
                         });
-                        assert.equal(Object.keys(contact.extra).length, 8);
+                        assert.equal(Object.keys(contact.extra).length, 4);
                         assert.equal(contact.extra.nc_faccode, '123456');
                         assert.equal(contact.extra.nc_facname, 'WCL clinic');
                         assert.equal(contact.extra.nc_is_registered, 'true');
                         assert.equal(contact.extra.nc_registered_by, '+27821234444');
-                        assert.equal(contact.extra.nc_id_type, 'passport');
-                        assert.equal(contact.extra.nc_passport_country, 'cu');
-                        assert.equal(contact.extra.nc_passport_num, 'Cub1234');
-                        assert.equal(contact.extra.nc_dob, '1976-03-07');
                     })
                     .run();
             });
@@ -612,10 +631,6 @@ describe("app", function() {
                         , '0821235555'  // st_msisdn
                         , '123456'  // st_faccode
                         , '1'  // st_facname - confirm
-                        , '2'  // st_id_type - passport
-                        , '6'  // st_passport_country - cuba
-                        , 'Cub1234'  // st_passport_num
-                        , '07031976'  // st_dob - 7 March 1976
                     )
                     .check(function(api) {
                         var metrics = api.metrics.stores.test_metric_store;
@@ -633,10 +648,6 @@ describe("app", function() {
                         , '0821235555'  // st_msisdn
                         , '123456'  // st_faccode
                         , '1'  // st_facname - confirm
-                        , '2'  // st_id_type - passport
-                        , '6'  // st_passport_country - cuba
-                        , 'Cub1234'  // st_passport_num
-                        , '07031976'  // st_dob - 7 March 1976
                     )
                     .check(function(api) {
                         var smses = _.where(api.outbound.store, {
@@ -970,90 +981,6 @@ describe("app", function() {
             });
         });
 
-        // ID Validation
-        describe("id number entry", function() {
-            describe("invalid id", function() {
-                it("should loop back", function() {
-                    return tester
-                        .setup.user.state('st_sa_id')
-                        .input('12345A')
-                        .check.interaction({
-                            state: 'st_sa_id',
-                            reply: "Sorry, the format of the ID number is not correct. Please enter their RSA ID number again, e.g. 7602095060082"
-                        })
-                        .run();
-                });
-            });
-        });
-
-        // Passport Validation
-        describe("passport number entry", function() {
-            describe("invalid passport number - non alphanumeric", function() {
-                it("should loop back", function() {
-                    return tester
-                        .setup.user.state('st_passport_num')
-                        .input('AA-1234')
-                        .check.interaction({
-                            state: 'st_passport_num',
-                            reply: "Sorry, the format of the passport number is not correct. Please enter the passport number again."
-                        })
-                        .run();
-                });
-            });
-            describe("invalid passport number - too short", function() {
-                it("should loop back", function() {
-                    return tester
-                        .setup.user.state('st_passport_num')
-                        .input('1234')
-                        .check.interaction({
-                            state: 'st_passport_num',
-                            reply: "Sorry, the format of the passport number is not correct. Please enter the passport number again."
-                        })
-                        .run();
-                });
-            });
-        });
-
-        // DOB Validation
-        describe("dob entry", function() {
-            describe("invalid dob chars", function() {
-                it("should loop back", function() {
-                    return tester
-                        .setup.user.state('st_dob')
-                        .input('01-01-1980')
-                        .check.interaction({
-                            state: 'st_dob',
-                            reply: "Sorry, the format of the date of birth is not correct. Please enter it again, e.g. 27 May 1975 as 27051975:"
-                        })
-                        .run();
-                });
-            });
-            describe("not real date", function() {
-                it("should loop back", function() {
-                    return tester
-                        .setup.user.state('st_dob')
-                        .input('29021981    ')
-                        .check.interaction({
-                            state: 'st_dob',
-                            reply: "Sorry, the format of the date of birth is not correct. Please enter it again, e.g. 27 May 1975 as 27051975:"
-                        })
-                        .run();
-                });
-            });
-            describe("inverted date", function() {
-                it("should loop back", function() {
-                    return tester
-                        .setup.user.state('st_dob')
-                        .input('19800101')
-                        .check.interaction({
-                            state: 'st_dob',
-                            reply: "Sorry, the format of the date of birth is not correct. Please enter it again, e.g. 27 May 1975 as 27051975:"
-                        })
-                        .run();
-                });
-            });
-        });
-
         // Change Old Number
         describe("old number changing", function() {
             describe("choosing to change old number", function() {
@@ -1345,6 +1272,90 @@ describe("app", function() {
             });
         });
 
+        // ID Validation
+        describe("id number entry", function() {
+            describe("invalid id", function() {
+                it("should loop back", function() {
+                    return tester
+                        .setup.user.state('st_id_no')
+                        .input('12345A')
+                        .check.interaction({
+                            state: 'st_id_no',
+                            reply: "Sorry, the format of the ID number is not correct. Please enter their RSA ID number again, e.g. 7602095060082"
+                        })
+                        .run();
+                });
+            });
+        });
+
+        // Passport Validation
+        describe("passport number entry", function() {
+            describe("invalid passport number - non alphanumeric", function() {
+                it("should loop back", function() {
+                    return tester
+                        .setup.user.state('st_passport_no')
+                        .input('AA-1234')
+                        .check.interaction({
+                            state: 'st_passport_no',
+                            reply: "Sorry, the format of the passport number is not correct. Please enter the passport number again."
+                        })
+                        .run();
+                });
+            });
+            describe("invalid passport number - too short", function() {
+                it("should loop back", function() {
+                    return tester
+                        .setup.user.state('st_passport_no')
+                        .input('1234')
+                        .check.interaction({
+                            state: 'st_passport_no',
+                            reply: "Sorry, the format of the passport number is not correct. Please enter the passport number again."
+                        })
+                        .run();
+                });
+            });
+        });
+
+        // DOB Validation
+        describe("dob entry", function() {
+            describe("invalid dob chars", function() {
+                it("should loop back", function() {
+                    return tester
+                        .setup.user.state('st_passport_dob')
+                        .input('01-01-1980')
+                        .check.interaction({
+                            state: 'st_passport_dob',
+                            reply: "Sorry, the format of the date of birth is not correct. Please enter it again, e.g. 27 May 1975 as 27051975:"
+                        })
+                        .run();
+                });
+            });
+            describe("not real date", function() {
+                it("should loop back", function() {
+                    return tester
+                        .setup.user.state('st_passport_dob')
+                        .input('29021981    ')
+                        .check.interaction({
+                            state: 'st_passport_dob',
+                            reply: "Sorry, the format of the date of birth is not correct. Please enter it again, e.g. 27 May 1975 as 27051975:"
+                        })
+                        .run();
+                });
+            });
+            describe("inverted date", function() {
+                it("should loop back", function() {
+                    return tester
+                        .setup.user.state('st_passport_dob')
+                        .input('19800101')
+                        .check.interaction({
+                            state: 'st_passport_dob',
+                            reply: "Sorry, the format of the date of birth is not correct. Please enter it again, e.g. 27 May 1975 as 27051975:"
+                        })
+                        .run();
+                });
+            });
+        });
+
         // Change Details
         describe("changing details", function() {
             describe("change faccode", function() {
@@ -1419,7 +1430,7 @@ describe("app", function() {
                         .setup.user.addr('27821237777')
                         .inputs(
                             {session_event: 'new'}  // dial in
-                            , '4'  // st_subscribed - change sanc
+                            , '5' // st_subscribed - change sanc
                         )
                         .check.interaction({
                             state: 'st_change_sanc',
@@ -1432,7 +1443,7 @@ describe("app", function() {
                         .setup.user.addr('27821237777')
                         .inputs(
                             {session_event: 'new'}  // dial in
-                            , '4'  // st_subscribed - change sanc
+                            , '5' // st_subscribed - change sanc
                         )
                         .check(function(api) {
                             var contact = _.find(api.contacts.store, {
@@ -1448,7 +1459,7 @@ describe("app", function() {
                         .setup.user.addr('27821237777')
                         .inputs(
                             {session_event: 'new'}  // dial in
-                            , '4'  // st_subscribed - change sanc
+                            , '5' // st_subscribed - change sanc
                             , '3456789A'  // st_change_sanc
                         )
                         .check.interaction({
@@ -1462,7 +1473,7 @@ describe("app", function() {
                         .setup.user.addr('27821237777')
                         .inputs(
                             {session_event: 'new'}  // dial in
-                            , '4'  // st_subscribed - change sanc
+                            , '5' // st_subscribed - change sanc
                             , '3456789'  // st_change_sanc
                         )
                         .check.interaction({
@@ -1476,7 +1487,7 @@ describe("app", function() {
                         .setup.user.addr('27821237777')
                         .inputs(
                             {session_event: 'new'}  // dial in
-                            , '4'  // st_subscribed - change sanc
+                            , '5' // st_subscribed - change sanc
                             , '34567890'  // st_change_sanc
                         )
                         .check.interaction({
@@ -1490,7 +1501,7 @@ describe("app", function() {
                         .setup.user.addr('27821237777')
                         .inputs(
                             {session_event: 'new'}  // dial in
-                            , '4'  // st_subscribed - change sanc
+                            , '5' // st_subscribed - change sanc
                             , '34567890'  // st_change_sanc
                         )
                         .check(function(api) {
@@ -1510,7 +1521,8 @@ describe("app", function() {
                         .setup.user.addr('27821237777')
                         .inputs(
                             {session_event: 'new'}  // dial in
-                            , '5'  // st_subscribed - change persal
+                            , '6'  // st_subscribed - more options
+                            , '1'  // st_subscribed - change persal
                         )
                         .check.interaction({
                             state: 'st_change_persal',
@@ -1523,7 +1535,8 @@ describe("app", function() {
                         .setup.user.addr('27821237777')
                         .inputs(
                             {session_event: 'new'}  // dial in
-                            , '5'  // st_subscribed - change persal
+                            , '6'  // st_subscribed - more options
+                            , '1'  // st_subscribed - change persal
                         )
                         .check(function(api) {
                             var contact = _.find(api.contacts.store, {
@@ -1539,7 +1552,8 @@ describe("app", function() {
                         .setup.user.addr('27821237777')
                         .inputs(
                             {session_event: 'new'}  // dial in
-                            , '5'  // st_subscribed - change persal
+                            , '6'  // st_subscribed - more options
+                            , '1'  // st_subscribed - change persal
                             , '3456789A'  // st_change_persal
                         )
                         .check.interaction({
@@ -1553,7 +1567,8 @@ describe("app", function() {
                         .setup.user.addr('27821237777')
                         .inputs(
                             {session_event: 'new'}  // dial in
-                            , '5'  // st_subscribed - change persal
+                            , '6'  // st_subscribed - more options
+                            , '1' // st_subscribed - change persal
                             , '3456789'  // st_change_persal
                         )
                         .check.interaction({
@@ -1567,7 +1582,8 @@ describe("app", function() {
                         .setup.user.addr('27821237777')
                         .inputs(
                             {session_event: 'new'}  // dial in
-                            , '5'  // st_subscribed - change persal
+                            , '6'  // st_subscribed - more options
+                            , '1'  // st_subscribed - change persal
                             , '11114444'  // st_change_persal
                         )
                         .check.interaction({
@@ -1581,7 +1597,8 @@ describe("app", function() {
                         .setup.user.addr('27821237777')
                         .inputs(
                             {session_event: 'new'}  // dial in
-                            , '5'  // st_subscribed - change persal
+                            , '6'  // st_subscribed - more options
+                            , '1'  // st_subscribed - change persal
                             , '11114444'  // st_change_persal
                         )
                         .check(function(api) {
@@ -1594,7 +1611,190 @@ describe("app", function() {
                         .run();
                 });
             });
+
+            describe("change identification", function() {
+                it("should display 2 options", function() {
+                    return tester
+                        .setup.user.addr('27821237777')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '4'  // st_subscribed - change id
+                        )
+                        .check.interaction({
+                            state: 'st_change_id_no',
+                            reply: [
+                                'Please select your type of identification:',
+                                '1. RSA ID',
+                                '2. Passport'
+                            ].join('\n')
+                        })
+                        .run();
+                });
+                it("should have extras", function() {
+                    return tester
+                        .setup.user.addr('27821237777')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '4'  // st_subscribed - change id
+                        )
+                        .check(function(api) {
+                            var contact = _.find(api.contacts.store, {
+                              msisdn: '+27821237777'
+                            });
+                            assert.equal(Object.keys(contact.extra).length, 8);
+                        })
+                        .run();
+                });
+                describe("change ID no", function() {
+                    it("should ask for their ID no", function() {
+                        return tester
+                            .setup.user.addr('27821237777')
+                            .inputs(
+                                {session_event: 'new'}  // dial in
+                                , '4'  // st_subscribed - change id
+                                , '1'  // st_change_id_no - RSA ID
+                            )
+                            .check.interaction({
+                                state: 'st_id_no',
+                                reply: 'Please enter your 13-digit RSA ID number:'
+                            })
+                            .run();
+                    });
+                    it("should tell them their details have been changed", function() {
+                        return tester
+                            .setup.user.addr('27821237777')
+                            .inputs(
+                                {session_event: 'new'}  // dial in
+                                , '4'  // st_subscribed - change id
+                                , '1'  // st_change_id_no - RSA ID
+                                , '9001016265166 '  // st_id_no
+                            )
+                            .check.interaction({
+                                state: 'st_end_detail_changed',
+                                reply: 'Thank you. Your NurseConnect details have been changed. To change any other details, please dial *120*550*5# again.'
+                            })
+                            .run();
+                    });
+                    it("should save extras", function() {
+                        return tester
+                            .setup.user.addr('27821237777')
+                            .inputs(
+                                {session_event: 'new'}  // dial in
+                                , '4'  // st_subscribed - change id
+                                , '1'  // st_change_id_no - RSA ID
+                                , '9001016265166 '  // st_id_no
+                            )
+                            .check(function(api) {
+                                var contact = _.find(api.contacts.store, {
+                                  msisdn: '+27821237777'
+                                });
+                                assert.equal(Object.keys(contact.extra).length, 8);
+                                assert.equal(contact.extra.nc_id_type, 'sa_id');
+                                assert.equal(contact.extra.nc_sa_id_no, '9001016265166');
+                                assert.equal(contact.extra.nc_dob, '1990-01-01');
+                            })
+                            .run();
+                    });
+                });
+                describe("when a user wants to change their passport no", function() {
+                    it("should ask for the origin of their passport", function() {
+                        return tester
+                            .setup.user.addr('27821237777')
+                            .inputs(
+                                {session_event: 'new'}  // dial in
+                                , '4'  // st_subscribed - change id
+                                , '2'  // st_change_id_no - passport
+                            )
+                            .check.interaction({
+                                state: 'st_passport',
+                                reply: [
+                                    'What is the country of origin of the passport?',
+                                    '1. Namibia',
+                                    '2. Botswana',
+                                    '3. Mozambique',
+                                    '4. Swaziland',
+                                    '5. Lesotho',
+                                    '6. Cuba',
+                                    '7. Other'
+                                ].join('\n')
+                            })
+                            .run();
+                    });
+                    it("should ask for their passport no", function() {
+                        return tester
+                            .setup.user.addr('27821237777')
+                            .inputs(
+                                {session_event: 'new'}
+                                , '4'  // st_subscribed - change id
+                                , '2'  // st_change_id_no - passport
+                                , '1'  // st_passport - namibia
+                            )
+                            .check.interaction({
+                                state: 'st_passport_no',
+                                reply: 'Please enter the passport number:'
+                            })
+                            .run();
+                    });
+                    it("should ask for their date of birth", function() {
+                        return tester
+                            .setup.user.addr('27821237777')
+                            .inputs(
+                                {session_event: 'new'}
+                                , '4'  // st_subscribed - change id
+                                , '2'  // st_change_id_no - passport
+                                , '1'  // st_passport - namibia
+                                , 'Nam1234'  // st_passport_no
+                            )
+                            .check.interaction({
+                                state: 'st_passport_dob',
+                                reply: 'Please enter the date of birth, e.g. 27 May 1975 as 27051975:'
+                            })
+                            .run();
+                    });
+                    it("should tell them their details have been changed", function() {
+                        return tester
+                            .setup.user.addr('27821237777')
+                            .inputs(
+                                {session_event: 'new'}
+                                , '4'  // st_subscribed - change id
+                                , '2'  // st_change_id_no - passport
+                                , '1'  // st_passport - namibia
+                                , 'Nam1234'  // st_passport_no
+                                , '07031976'  // st_dob - 7 March 1976
+                            )
+                            .check.interaction({
+                                state: 'st_end_detail_changed',
+                                reply: 'Thank you. Your NurseConnect details have been changed. To change any other details, please dial *120*550*5# again.'
+                            })
+                            .run();
+                    });
+                    it("should save extras", function() {
+                        return tester
+                            .setup.user.addr('27821237777')
+                            .inputs(
+                                {session_event: 'new'}
+                                , '4'  // st_subscribed - change id
+                                , '2'  // st_change_id_no - passport
+                                , '1'  // st_passport - namibia
+                                , 'Nam1234'  // st_passport_no
+                                , '07031976'  // st_dob - 7 March 1976
+                            )
+                            .check(function(api) {
+                                var contact = _.find(api.contacts.store, {
+                                  msisdn: '+27821237777'
+                                });
+                                assert.equal(Object.keys(contact.extra).length, 10);
+                                assert.equal(contact.extra.nc_id_type, 'passport');
+                                assert.equal(contact.extra.nc_passport_country, 'na');
+                                assert.equal(contact.extra.nc_passport_num, 'Nam1234');
+                                assert.equal(contact.extra.nc_dob, '1976-03-07');
+                            })
+                            .run();
+                    });
+                });
+            });
         });
+
 
         // Optout
         describe("opting out", function() {
@@ -1605,7 +1805,8 @@ describe("app", function() {
                             .setup.user.addr('27821237777')
                             .inputs(
                                 {session_event: 'new'}  // dial in
-                                , '6'  // st_subscribed - opt out
+                                , '6'  // st_subscribed - more options
+                                , '2'  // st_subscribed - opt out
                             )
                             .check.interaction({
                                 state: 'st_optout',
@@ -1625,7 +1826,8 @@ describe("app", function() {
                             .setup.user.addr('27821237777')
                             .inputs(
                                 {session_event: 'new'}  // dial in
-                                , '6'  // st_subscribed - opt out
+                                , '6'  // st_subscribed - more options
+                                , '2'  // st_subscribed - opt out
                             )
                             .check(function(api) {
                                 var contact = _.find(api.contacts.store, {
@@ -1644,7 +1846,8 @@ describe("app", function() {
                             .setup.user.addr('27821237777')
                             .inputs(
                                 {session_event: 'new'}  // dial in
-                                , '6'  // st_subscribed - opt out
+                                , '6'  // st_subscribed - more options
+                                , '2'  // st_subscribed - opt out
                                 , '1'  // st_optout - not a nurse
                             )
                             .check.interaction({
@@ -1657,7 +1860,8 @@ describe("app", function() {
                             .setup.user.addr('27821237777')
                             .inputs(
                                 {session_event: 'new'}  // dial in
-                                , '6'  // st_subscribed - opt out
+                                , '6'  // st_subscribed - more options
+                                , '2'  // st_subscribed - opt out
                                 , '1'  // st_optout - not a nurse
                             )
                             .check(function(api) {
@@ -1674,7 +1878,8 @@ describe("app", function() {
                             .setup.user.addr('27821237777')
                             .inputs(
                                 {session_event: 'new'}  // dial in
-                                , '6'  // st_subscribed - opt out
+                                , '6'  // st_subscribed - more options
+                                , '2'  // st_subscribed - opt out
                                 , '1'  // st_optout - not a nurse
                             )
                             .check(function(api) {
@@ -1691,7 +1896,8 @@ describe("app", function() {
                             .setup.user.addr('27821237777')
                             .inputs(
                                 {session_event: 'new'}  // dial in
-                                , '6'  // st_subscribed - opt out
+                                , '6'  // st_subscribed - more options
+                                , '2'  // st_subscribed - opt out
                                 , '5'  // st_optout - main menu
                             )
                             .check.interaction({
@@ -1709,7 +1915,8 @@ describe("app", function() {
                             .setup.user.addr('27821233333')
                             .inputs(
                                 {session_event: 'new'}  // dial in
-                                , '6'  // st_subscribed - opt out
+                                , '6'  // st_subscribed - more options
+                                , '2'  // st_subscribed - opt out
                             )
                             .check.interaction({
                                 state: 'st_optout',
@@ -1729,7 +1936,8 @@ describe("app", function() {
                             .setup.user.addr('27821233333')
                             .inputs(
                                 {session_event: 'new'}  // dial in
-                                , '6'  // st_subscribed - opt out
+                                , '6'  // st_subscribed - more options
+                                , '2'  // st_subscribed - opt out
                             )
                             .check(function(api) {
                                 var contact = _.find(api.contacts.store, {
@@ -1749,7 +1957,8 @@ describe("app", function() {
                             .setup.user.addr('27821233333')
                             .inputs(
                                 {session_event: 'new'}  // dial in
-                                , '6'  // st_subscribed - opt out
+                                , '6'  // st_subscribed - more options
+                                , '2'  // st_subscribed - opt out
                                 , '4'  // st_optout - other
                             )
                             .check.interaction({
@@ -1762,7 +1971,8 @@ describe("app", function() {
                             .setup.user.addr('27821233333')
                             .inputs(
                                 {session_event: 'new'}  // dial in
-                                , '6'  // st_subscribed - opt out
+                                , '6'  // st_subscribed - more options
+                                , '2'  // st_subscribed - opt out
                                 , '4'  // st_optout - other
                             )
                             .check(function(api) {
@@ -1780,7 +1990,8 @@ describe("app", function() {
                             .setup.user.addr('27821233333')
                             .inputs(
                                 {session_event: 'new'}  // dial in
-                                , '6'  // st_subscribed - opt out
+                                , '6'  // st_subscribed - more options
+                                , '2'  // st_subscribed - opt out
                                 , '4'  // st_optout - other
                             )
                             .check(function(api) {
@@ -1797,7 +2008,8 @@ describe("app", function() {
                             .setup.user.addr('27821233333')
                             .inputs(
                                 {session_event: 'new'}  // dial in
-                                , '6'  // st_subscribed - opt out
+                                , '6'  // st_subscribed - more options
+                                , '2'  // st_subscribed - opt out
                                 , '5'  // st_optout - main menu
                             )
                             .check.interaction({
@@ -1815,7 +2027,8 @@ describe("app", function() {
                             .setup.user.addr('27821230000')
                             .inputs(
                                 {session_event: 'new'}  // dial in
-                                , '6'  // st_subscribed - opt out
+                                , '6'  // st_subscribed - more options
+                                , '2'  // st_subscribed - opt out
                             )
                             .check.interaction({
                                 state: 'st_optout',
@@ -1835,7 +2048,8 @@ describe("app", function() {
                             .setup.user.addr('27821230000')
                             .inputs(
                                 {session_event: 'new'}  // dial in
-                                , '6'  // st_subscribed - opt out
+                                , '6'  // st_subscribed - more options
+                                , '2'  // st_subscribed - opt out
                             )
                             .check(function(api) {
                                 var contact = _.find(api.contacts.store, {
@@ -1856,7 +2070,8 @@ describe("app", function() {
                             .setup.user.addr('27821230000')
                             .inputs(
                                 {session_event: 'new'}  // dial in
-                                , '6'  // st_subscribed - opt out
+                                , '6'  // st_subscribed - more options
+                                , '2'  // st_subscribed - opt out
                                 , '4'  // st_optout - other
                             )
                             .check.interaction({
@@ -1869,7 +2084,8 @@ describe("app", function() {
                             .setup.user.addr('27821230000')
                             .inputs(
                                 {session_event: 'new'}  // dial in
-                                , '6'  // st_subscribed - opt out
+                                , '6'  // st_subscribed - more options
+                                , '2'  // st_subscribed - opt out
                                 , '4'  // st_optout - other
                             )
                             .check(function(api) {

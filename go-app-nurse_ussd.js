@@ -1369,6 +1369,7 @@ go.app = function() {
     var App = vumigo.App;
     var Choice = vumigo.states.Choice;
     var ChoiceState = vumigo.states.ChoiceState;
+    var PaginatedChoiceState = vumigo.states.PaginatedChoiceState;
     var EndState = vumigo.states.EndState;
     var FreeText = vumigo.states.FreeText;
 
@@ -1538,16 +1539,21 @@ go.app = function() {
     // INITIAL STATES
 
         self.add('st_subscribed', function(name) {
-            return new ChoiceState(name, {
+            return new PaginatedChoiceState(name, {
                 question: $("Welcome to NurseConnect"),
                 choices: [
                     new Choice('st_subscribe_other', $('Subscribe a friend')),
                     new Choice('st_change_num', $('Change your no.')),
                     new Choice('st_change_faccode', $('Change facility code')),
+                    new Choice('st_change_id_no', $('Change ID no.')),
                     new Choice('st_change_sanc', $('Change SANC no.')),
                     new Choice('st_change_persal', $('Change Persal no.')),
                     new Choice('isl_check_optout_optout', $('Stop SMS')),
                 ],
+                characters_per_page: 140,
+                options_per_page: null,
+                more: $('More'),
+                back: $('Back'),
                 next: function(choice) {
                     return choice.value;
                 }
@@ -1612,6 +1618,103 @@ go.app = function() {
                 },
                 next: function(content) {
                     self.contact.extra.nc_sanc = content;
+                    return self.im.contacts
+                        .save(self.contact)
+                        .then(function() {
+                            return 'isl_post_change_detail';
+                        });
+                }
+            });
+        });
+
+        self.add('st_change_id_no', function(name) {
+            var owner = self.user.extra.nc_working_on === "" ? 'your' : 'their';
+            var question =$("Please select {{owner}} type of identification:")
+                    .context({owner: owner});
+            return new ChoiceState(name, {
+                question: question,
+                choices: [
+                    new Choice('st_id_no', $('RSA ID')),
+                    new Choice('st_passport', $('Passport'))
+                ],
+                next: function(choice) {
+                    return choice.value;
+                }
+            });
+        });
+
+        self.add('st_id_no', function(name) {
+            var owner = self.user.extra.nc_working_on === "" ? 'your' : 'their';
+            var error = $("Sorry, the format of the ID number is not correct. Please enter {{owner}} RSA ID number again, e.g. 7602095060082")
+                .context({owner: owner});
+            var question = $("Please enter {{owner}} 13-digit RSA ID number:")
+                .context({owner: owner});
+            return new FreeText(name, {
+                question: question,
+                check: function(content) {
+                    if (!go.utils.validate_id_sa(content)) {
+                        return error;
+                    }
+                },
+                next: function(content) {
+                    self.contact.extra.nc_id_type = 'sa_id';
+                    self.contact.extra.nc_sa_id_no = content;
+                    self.contact.extra.nc_dob = go.utils.extract_id_dob(content);
+                    return self.im.contacts
+                        .save(self.contact)
+                        .then(function() {
+                            return 'isl_post_change_detail';
+                        });
+                }
+            });
+        });
+
+        self.add('st_passport', function(name) {
+            return new ChoiceState(name, {
+                question: $('What is the country of origin of the passport?'),
+                choices: [
+                    new Choice('na', $('Namibia')),
+                    new Choice('bw', $('Botswana')),
+                    new Choice('mz', $('Mozambique')),
+                    new Choice('sz', $('Swaziland')),
+                    new Choice('ls', $('Lesotho')),
+                    new Choice('cu', $('Cuba')),
+                    new Choice('other', $('Other')),
+                ],
+                next: 'st_passport_no'
+            });
+        });
+
+        self.add('st_passport_no', function(name) {
+            var error = $("Sorry, the format of the passport number is not correct. Please enter the passport number again.");
+            var question = $("Please enter the passport number:");
+            return new FreeText(name, {
+                question: question,
+                check: function(content) {
+                    if (!go.utils.is_alpha_numeric_only(content) || content.length <= 4) {
+                        return error;
+                    }
+                },
+                next: 'st_passport_dob'
+            });
+        });
+
+        self.add('st_passport_dob', function(name) {
+            var error = $("Sorry, the format of the date of birth is not correct. Please enter it again, e.g. 27 May 1975 as 27051975:");
+            var question = $("Please enter the date of birth, e.g. 27 May 1975 as 27051975:");
+            return new FreeText(name, {
+                question: question,
+                check: function(content) {
+                    if (!go.utils.is_valid_date(content, 'DDMMYYYY')) {
+                        return error;
+                    }
+                },
+                next: function(content) {
+                    self.contact.extra.nc_id_type = 'passport';
+                    self.contact.extra.nc_passport_country = self.im.user.answers.st_passport;
+                    self.contact.extra.nc_passport_num = self.im.user.answers.st_passport_no;
+                    self.contact.extra.nc_dob = moment(self.im.user.answers.st_passport_dob, 'DDMMYYYY'
+                        ).format('YYYY-MM-DD');
                     return self.im.contacts
                         .save(self.contact)
                         .then(function() {
@@ -2015,7 +2118,7 @@ go.app = function() {
                         facname: self.contact.extra.nc_facname
                     }),
                 choices: [
-                    new Choice('st_id_type', $('Confirm')),
+                    new Choice('isl_save_nursereg', $('Confirm')),
                     new Choice('st_faccode', $('Not the right facility')),
                 ],
                 next: function(choice) {
@@ -2024,101 +2127,9 @@ go.app = function() {
             });
         });
 
-        self.add('st_id_type', function(name) {
-            var owner = self.user.extra.nc_working_on === "" ? 'your' : 'their';
-            return new ChoiceState(name, {
-                question: $("Please select {{owner}} type of identification:")
-                    .context({owner: owner}),
-                choices: [
-                    new Choice('st_sa_id', $('RSA ID')),
-                    new Choice('st_passport_country', $('Passport')),
-                ],
-                next: function(choice) {
-                    return choice.value;
-                }
-            });
-        });
-
-        self.add('st_sa_id', function(name) {
-            var owner = self.user.extra.nc_working_on === "" ? 'your' : 'their';
-            var error = $("Sorry, the format of the ID number is not correct. Please enter {{owner}} RSA ID number again, e.g. 7602095060082")
-                .context({owner: owner});
-            var question = $("Please enter {{owner}} 13-digit RSA ID number:")
-                .context({owner: owner});
-            return new FreeText(name, {
-                question: question,
-                check: function(content) {
-                    if (!go.utils.validate_id_sa(content)) {
-                        return error;
-                    }
-                },
-                next: 'isl_save_nursereg'
-            });
-        });
-
-        self.add('st_passport_country', function(name) {
-            return new ChoiceState(name, {
-                question: $("What is the country of origin of the passport?"),
-                choices: [
-                    new Choice('na', $('Namibia')),
-                    new Choice('bw', $('Botswana')),
-                    new Choice('mz', $('Mozambique')),
-                    new Choice('sz', $('Swaziland')),
-                    new Choice('ls', $('Lesotho')),
-                    new Choice('cu', $('Cuba')),
-                    new Choice('other', $('Other')),
-                ],
-                next: function(choice) {
-                    return 'st_passport_num';
-                }
-            });
-        });
-
-        self.add('st_passport_num', function(name) {
-            var error = $("Sorry, the format of the passport number is not correct. Please enter the passport number again.");
-            var question = $("Please enter the passport number:");
-            return new FreeText(name, {
-                question: question,
-                check: function(content) {
-                    if (!go.utils.is_alpha_numeric_only(content)
-                        || content.length <= 4) {
-                        return error;
-                    }
-                },
-                next: 'st_dob'
-            });
-        });
-
-        self.add('st_dob', function(name) {
-            var error = $("Sorry, the format of the date of birth is not correct. Please enter it again, e.g. 27 May 1975 as 27051975:");
-            var question = $("Please enter the date of birth, e.g. 27 May 1975 as 27051975:");
-            return new FreeText(name, {
-                question: question,
-                check: function(content) {
-                    if (!go.utils.is_valid_date(content, 'DDMMYYYY')) {
-                        return error;
-                    }
-                },
-                next: 'isl_save_nursereg'
-            });
-        });
-
         self.add('isl_save_nursereg', function(name) {
             // Save useful contact extras
             self.contact.extra.nc_is_registered = 'true';
-
-            if (self.im.user.answers.st_id_type === 'st_sa_id') {  // rsa id
-                self.contact.extra.nc_id_type = 'sa_id';
-                self.contact.extra.nc_sa_id_no = self.im.user.answers.st_sa_id;
-                self.contact.extra.nc_dob = go.utils.extract_id_dob(
-                    self.im.user.answers.st_sa_id);
-            } else {  // passport
-                self.contact.extra.nc_id_type = 'passport';
-                self.contact.extra.nc_passport_country = self.im.user.answers.st_passport_country;
-                self.contact.extra.nc_passport_num = self.im.user.answers.st_passport_num;
-                self.contact.extra.nc_dob = moment(self.im.user.answers.st_dob, 'DDMMYYYY'
-                    ).format('YYYY-MM-DD');
-            }
 
             if (self.user.extra.nc_working_on !== "") {
                 self.contact.extra.nc_registered_by = self.user.msisdn;

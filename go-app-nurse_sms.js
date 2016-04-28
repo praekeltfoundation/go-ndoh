@@ -1398,6 +1398,7 @@ go.SessionLengthHelper = function () {
 
 go.app = function() {
     var vumigo = require('vumigo_v02');
+    var Q = require('q');
     var App = vumigo.App;
     var EndState = vumigo.states.EndState;
 
@@ -1421,22 +1422,30 @@ go.app = function() {
 
 
         self.states.add('states_start', function() {
-            // check if message contains a ussd code
-            if (self.im.msg.content.indexOf('*120*') > -1 || self.im.msg.content.indexOf('*134*') > -1) {
-                return self.states.create("states_dial_not_sms");
-            } else {
-                // get the first word, remove non-alphanumerics, capitalise
-                switch (self.im.msg.content.split(" ")[0].replace(/\W/g, '').toUpperCase()) {
-                    case "STOP":
-                        return self.states.create("states_opt_out_enter");
-                    case "BLOCK":
-                        return self.states.create("states_opt_out_enter");
-                    case "START":
-                        return self.states.create("states_opt_in_enter");
-                    default:
-                        return self.states.create("st_unrecognised");
+            // fire inbound message count metric
+            return Q.all([
+                self.im.metrics.fire.sum(
+                    ([self.metric_prefix, "inbound_sms", "sum"].join('.')), 1),
+                self.im.metrics.fire.inc(
+                    ([self.metric_prefix, "inbound_sms", "last"].join('.')), {amount: 1})
+            ]).then(function() {
+                // check if message contains a ussd code
+                if (self.im.msg.content.indexOf('*120*') > -1 || self.im.msg.content.indexOf('*134*') > -1) {
+                    return self.states.create("states_dial_not_sms");
+                } else {
+                    // get the first word, remove non-alphanumerics, capitalise
+                    switch (self.im.msg.content.split(" ")[0].replace(/\W/g, '').toUpperCase()) {
+                        case "STOP":
+                            return self.states.create("states_opt_out_enter");
+                        case "BLOCK":
+                            return self.states.create("states_opt_out_enter");
+                        case "START":
+                            return self.states.create("states_opt_in_enter");
+                        default:
+                            return self.states.create("st_unrecognised");
+                    }
                 }
-            }
+            });
         });
 
         self.states.add('states_dial_not_sms', function(name) {

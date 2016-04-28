@@ -40,6 +40,11 @@ NurseConnect Metrics
 * nurse_sms.optouts.last (LAST metric total optouts)
 * nurseconnect.optouts.sum (SUM metric total optouts)
 * nurseconnect.optouts.last (LAST metric total optouts)
+* nurseconnect.optouts.<reason>.sum (SUM metric optouts for reason)
+* nurseconnect.optouts.<reason>.last (Last metric optouts for reason)
+
+* nurse_sms.inbound.sum (SUM total inbound messages)
+* nurse_sms.inbound.last (LAST total inbound messages)
 
 MomConnect Metrics
 

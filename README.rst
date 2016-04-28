@@ -28,6 +28,14 @@ Idea is:
 Metrics produced:
 Note all metrics are prepended by their <env>, e.g. 'qa.'
 
+
+NurseConnect Metrics
+
+* nurse_ussd.registrations.sum
+
+
+MomConnect Metrics
+
 * sum.unique_users
 * sum.subscriptions
 

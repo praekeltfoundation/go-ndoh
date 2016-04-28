@@ -1128,10 +1128,12 @@ go.utils = {
                                       'nurse_optout', im, metric_prefix);
                                 });
 
+                                // Add Metrics
                                 // fire total source opt-outs metric (last)
                                 queue2.push(function() {
                                     return im.metrics.fire.inc(
-                                        [metric_prefix, 'optouts', 'last'].join('.'), {amount: 1});
+                                        [metric_prefix, 'optouts', 'last'].join('.'),
+                                        {amount: 1});
                                 });
                                 // fire total source opt-outs metric (sum)
                                 queue2.push(function() {
@@ -1141,12 +1143,25 @@ go.utils = {
                                 // fire total opt-outs metric (last)
                                 queue2.push(function() {
                                     return im.metrics.fire.inc(
-                                        [env, 'nurseconnect', 'optouts', 'last'].join('.'), {amount: 1});
+                                        [env, 'nurseconnect', 'optouts', 'last'].join('.'),
+                                        {amount: 1});
                                 });
                                 // fire total opt-outs metric (sum)
                                 queue2.push(function() {
                                     return im.metrics.fire.sum(
                                         [env, 'nurseconnect', 'optouts', 'sum'].join('.'), 1);
+                                });
+                                // fire opt-out reason metrics (last)
+                                queue2.push(function() {
+                                    return im.metrics.fire.inc(
+                                        [env, 'nurseconnect', 'optouts', optout_reason, 'last']
+                                        .join('.'), {amount: 1});
+                                });
+                                // fire opt-out reason metrics (sum)
+                                queue2.push(function() {
+                                    return im.metrics.fire.inc(
+                                        [env, 'nurseconnect', 'optouts', optout_reason, 'sum']
+                                        .join('.'), 1);
                                 });
 
                             }

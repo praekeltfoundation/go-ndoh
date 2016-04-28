@@ -1904,11 +1904,13 @@ describe("app", function() {
                             )
                             .check(function(api) {
                                 var metrics = api.metrics.stores.test_metric_store;
-                                assert.equal(Object.keys(metrics).length, 4);
+                                assert.equal(Object.keys(metrics).length, 6);
                                 assert.deepEqual(metrics['test.nurse_ussd.optouts.last'].values, [1]);
                                 assert.deepEqual(metrics['test.nurse_ussd.optouts.sum'].values, [1]);
                                 assert.deepEqual(metrics['test.nurseconnect.optouts.last'].values, [1]);
                                 assert.deepEqual(metrics['test.nurseconnect.optouts.sum'].values, [1]);
+                                assert.deepEqual(metrics['test.nurseconnect.optouts.job_change.last'].values, [1]);
+                                assert.deepEqual(metrics['test.nurseconnect.optouts.job_change.sum'].values, [1]);
                             })
                             .run();
                     });
@@ -2195,11 +2197,13 @@ describe("app", function() {
                             )
                             .check(function(api) {
                                 var metrics = api.metrics.stores.test_metric_store;
-                                assert.equal(Object.keys(metrics).length, 4);
+                                assert.equal(Object.keys(metrics).length, 6);
                                 assert.deepEqual(metrics['test.nurse_ussd.optouts.last'].values, [1]);
                                 assert.deepEqual(metrics['test.nurse_ussd.optouts.sum'].values, [1]);
                                 assert.deepEqual(metrics['test.nurseconnect.optouts.last'].values, [1]);
                                 assert.deepEqual(metrics['test.nurseconnect.optouts.sum'].values, [1]);
+                                assert.deepEqual(metrics['test.nurseconnect.optouts.job_change.last'].values, [1]);
+                                assert.deepEqual(metrics['test.nurseconnect.optouts.job_change.sum'].values, [1]);
                             })
                             .run();
                     });

@@ -36,7 +36,10 @@ NurseConnect Metrics
 
 * nurse_ussd.optouts.sum (SUM metric total optouts)
 * nurse_ussd.optouts.last (LAST metric total optouts)
-
+* nurse_sms.optouts.sum (SUM metric total optouts)
+* nurse_sms.optouts.last (LAST metric total optouts)
+* nurseconnect.optouts.sum (SUM metric total optouts)
+* nurseconnect.optouts.last (LAST metric total optouts)
 
 MomConnect Metrics
 

@@ -1125,15 +1125,25 @@ go.utils = {
                                       'nurse_optout', im, metric_prefix);
                                 });
 
-                                // fire total opt-outs metric (last)
+                                // fire total source opt-outs metric (last)
                                 queue2.push(function() {
                                     return im.metrics.fire.inc(
                                         [metric_prefix, 'optouts', 'last'].join('.'), {amount: 1});
                                 });
-                                // fire total opt-outs metric (sum)
+                                // fire total source opt-outs metric (sum)
                                 queue2.push(function() {
                                     return im.metrics.fire.sum(
                                         [metric_prefix, 'optouts', 'sum'].join('.'), 1);
+                                });
+                                // fire total opt-outs metric (last)
+                                queue2.push(function() {
+                                    return im.metrics.fire.inc(
+                                        [env, 'nurseconnect', 'optouts', 'last'].join('.'), {amount: 1});
+                                });
+                                // fire total opt-outs metric (sum)
+                                queue2.push(function() {
+                                    return im.metrics.fire.sum(
+                                        [env, 'nurseconnect', 'optouts', 'sum'].join('.'), 1);
                                 });
 
                             }

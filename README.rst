@@ -31,7 +31,8 @@ Note all metrics are prepended by their <env>, e.g. 'qa.'
 
 NurseConnect Metrics
 
-* nurse_ussd.registrations.sum
+* nurse_ussd.registrations.sum (SUM metric total registrations)
+* nurse_ussd.registrations.last (LAST metric total registrations)
 
 
 MomConnect Metrics

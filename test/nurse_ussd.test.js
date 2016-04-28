@@ -541,8 +541,9 @@ describe("app", function() {
                     )
                     .check(function(api) {
                         var metrics = api.metrics.stores.test_metric_store;
-                        assert.equal(Object.keys(metrics).length, 1);
+                        assert.equal(Object.keys(metrics).length, 2);
                         assert.deepEqual(metrics['test.nurse_ussd.registrations.sum'].values, [1]);
+                        assert.deepEqual(metrics['test.nurse_ussd.registrations.last'].values, [1]);
                     })
                     .run();
             });
@@ -635,8 +636,9 @@ describe("app", function() {
                     )
                     .check(function(api) {
                         var metrics = api.metrics.stores.test_metric_store;
-                        assert.equal(Object.keys(metrics).length, 1);
+                        assert.equal(Object.keys(metrics).length, 2);
                         assert.deepEqual(metrics['test.nurse_ussd.registrations.sum'].values, [1]);
+                        assert.deepEqual(metrics['test.nurse_ussd.registrations.last'].values, [1]);
                     })
                     .run();
             });

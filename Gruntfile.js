@@ -230,10 +230,10 @@ module.exports = function (grunt) {
             },
             test_nurse_sms: {
                 src: ['<%= paths.test.nurse_sms %>']
-            // },
+            },
             // test_session_length_helper: {
             //     src: ['<%= paths.test.session_length_helper %>']
-            }
+            // },
         }
     });
 

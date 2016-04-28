@@ -151,7 +151,9 @@ describe("app", function() {
                         .inputs('STOP')
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_nurse_sms_ms;
-                            assert.equal(Object.keys(metrics).length, 0);
+                            assert.equal(Object.keys(metrics).length, 2);
+                            assert.deepEqual(metrics['test.nurse_sms.optouts.last'].values, [1]);
+                            assert.deepEqual(metrics['test.nurse_sms.optouts.sum'].values, [1]);
                         })
                         .run();
                 });

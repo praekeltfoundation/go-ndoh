@@ -1127,6 +1127,18 @@ go.utils = {
                                     return go.utils.jembi_nurse_optout_send_json(contact, contact,
                                       'nurse_optout', im, metric_prefix);
                                 });
+
+                                // fire total opt-outs metric (last)
+                                queue2.push(function() {
+                                    return im.metrics.fire.inc(
+                                        [metric_prefix, 'optouts', 'last'].join('.'), {amount: 1});
+                                });
+                                // fire total opt-outs metric (sum)
+                                queue2.push(function() {
+                                    return im.metrics.fire.sum(
+                                        [metric_prefix, 'optouts', 'sum'].join('.'), 1);
+                                });
+
                             }
 
                             if (patch_last_reg === true) {
@@ -1136,9 +1148,7 @@ go.utils = {
                                 });
                             }
                             // End Queue 2
-
-                            return Q
-                                .all(queue2.map(Q.try));
+                            return Q.all(queue2.map(Q.try));
                         } else {
                             return Q();
                         }

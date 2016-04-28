@@ -1772,6 +1772,50 @@ module.exports = function() {
             }
         }
     },
+    // Nursereg subscription for 27821233333
+    {
+        'request': {
+            'method': 'GET',
+            'params': {
+                'to_addr': '+27821240000'
+            },
+            'headers': {
+                'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
+                'Content-Type': ['application/json']
+            },
+            'url': 'http://ndoh-control/api/v1/subscription/',
+        },
+        'response': {
+            "code": 200,
+            "meta": {
+                "limit": 20,
+                "next": null,
+                "offset": 0,
+                "previous": null,
+                "total_count": 2
+            },
+            "data": {
+                "objects": [
+                    {
+                        "active": false,
+                        "completed": false,
+                        "contact_key": "e5b0888cdb4347158ea5cd2f2147d28f",
+                        "created_at": "2014-08-05T11:22:34.838969",
+                        "id": 2,
+                        "lang": "en",
+                        "message_set": "/api/v1/message_set/11/",
+                        "next_sequence_number": 7,
+                        "process_status": 0,
+                        "resource_uri": "/api/v1/subscription/2/",
+                        "schedule": "/api/v1/periodic_task/1/",
+                        "to_addr": "+27821240000",
+                        "updated_at": "2014-08-05T11:22:34.838996",
+                        "user_account": "1aa0dea2f82945a48cc258c61d756f16"
+                    }
+                ]
+            }
+        }
+    },
     // Nursereg subscription for 27821238888
     {
         'request': {
@@ -1890,6 +1934,36 @@ module.exports = function() {
                 "id": 3,
                 "cmsisdn": "+27821233333",
                 "dmsisdn": "+27821233333",
+                "rmsisdn": null,
+                "faccode": "123456",
+                "id_type": "sa_id",
+                "id_no": "8009151234001",
+                "passport_origin": null,
+                "dob": "1980-09-15",
+                "nurse_source": 2,
+                "persal_no": null,
+                "opted_out": true,
+                "optout_reason": "unknown",
+                "optout_count": 3,
+                "sanc_reg_no": null
+            }
+        }
+    },
+    // Optout for 27821240000
+    {
+        "request": {
+            "method": "GET",
+            "headers": {
+                "Authorization": ['Token test_token']
+            },
+            "url": "http://ndoh-control/api/v2/nurseregistrations/4/",
+        },
+        "response": {
+            "code": 200,
+            "data": {
+                "id": 4,
+                "cmsisdn": "+27821240000",
+                "dmsisdn": "+27821240000",
                 "rmsisdn": null,
                 "faccode": "123456",
                 "id_type": "sa_id",
@@ -2031,6 +2105,53 @@ module.exports = function() {
             }
         }
     },
+    // Optout for 27821240000
+    {
+        "request": {
+            "method": "PATCH",
+            "headers": {
+                "Authorization": ["Token test_token"]
+            },
+            "url": "http://ndoh-control/api/v2/nurseregistrations/4/",
+            "data": {
+                "id": 4,
+                "cmsisdn": "+27821240000",
+                "dmsisdn": "+27821240000",
+                "rmsisdn": null,
+                "faccode": "123456",
+                "id_type": "sa_id",
+                "id_no": "8009151234001",
+                "passport_origin": null,
+                "dob": "1980-09-15",
+                "nurse_source": 2,
+                "persal_no": null,
+                "opted_out": true,
+                "optout_reason": "other",
+                "optout_count": 4,
+                "sanc_reg_no": null
+            }
+        },
+        "response": {
+            "code": 200,
+            "data": {
+                "id": 3,
+                "cmsisdn": "+27821240000",
+                "dmsisdn": "+27821240000",
+                "rmsisdn": null,
+                "faccode": "123456",
+                "id_type": "sa_id",
+                "id_no": "8009151234001",
+                "passport_origin": null,
+                "dob": "1980-09-15",
+                "nurse_source": 2,
+                "persal_no": null,
+                "opted_out": true,
+                "optout_reason": "other",
+                "optout_count": 4,
+                "sanc_reg_no": null
+            }
+        }
+    },
     // Optout for 27001 (sms)
     {
         "request": {
@@ -2126,6 +2247,36 @@ module.exports = function() {
                 "cmsisdn": "+27821233333",
                 "type": 8,
                 "id": "5101025009086^^^ZAF^NI",
+                "faccode": "123456",
+                "dob": "19760304",
+                "optoutreason": 5,
+                "encdate": "20130819144811"
+            },
+        },
+        'response': {
+            "code": 200,
+            "data": {
+                "success": "true"
+            }
+        }
+    },
+
+    // Optout for 27821240000
+    {
+        'request': {
+            'method': 'POST',
+            'headers': {
+                'Authorization': ['Basic ' + new Buffer('test:test').toString('base64')],
+                'Content-Type': ['application/json']
+            },
+            'url': 'http://test/v2/json/nc/optout',
+            'data': {
+                "mha": 1,
+                "swt": 3,
+                "dmsisdn": "+27821240000",
+                "cmsisdn": "+27821240000",
+                "type": 8,
+                "id": "44444^^^BW^PPN",
                 "faccode": "123456",
                 "dob": "19760304",
                 "optoutreason": 5,

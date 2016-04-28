@@ -132,6 +132,23 @@ describe("app", function() {
                         },
                     });
                 })
+                .setup(function(api) {
+                    // opted_out user 4
+                    api.contacts.add({
+                        msisdn: '+27821240000',
+                        extra: {
+                            nc_last_reg_id: '4',
+                            nc_opt_out_reason: 'unknown',
+                            nc_is_registered: 'true',
+                            nc_faccode: '123456',
+                            nc_facname: 'WCL clinic',
+                            nc_id_type: 'passport',
+                            nc_passport_country: 'bw',
+                            nc_passport_num: '44444',
+                            nc_dob: '1976-03-04'
+                        },
+                    });
+                })
                 ;
         });
 
@@ -1876,7 +1893,7 @@ describe("app", function() {
                             })
                             .run();
                     });
-                    it("should fire no metrics", function() {
+                    it("should fire metrics", function() {
                         return tester
                             .setup.user.addr('27821237777')
                             .inputs(
@@ -1887,7 +1904,9 @@ describe("app", function() {
                             )
                             .check(function(api) {
                                 var metrics = api.metrics.stores.test_metric_store;
-                                assert.equal(Object.keys(metrics).length, 0);
+                                assert.equal(Object.keys(metrics).length, 2);
+                                assert.deepEqual(metrics['test.nurse_ussd.optouts.last'].values, [1]);
+                                assert.deepEqual(metrics['test.nurse_ussd.optouts.sum'].values, [1]);
                             })
                             .run();
                     });
@@ -2103,6 +2122,105 @@ describe("app", function() {
                     });
                 });
             });
+
+            describe("registered user - opted out, reason unknown", function() {
+                describe("should reach st_optout", function() {
+                    it("should ask prior optout reason", function() {
+                        return tester
+                            .setup.user.addr('27821240000')
+                            .inputs(
+                                {session_event: 'new'}  // dial in
+                                , '6'  // st_subscribed - more options
+                                , '2'  // st_subscribed - opt out
+                            )
+                            .check.interaction({
+                                state: 'st_optout',
+                                reply: [
+                                    "You have opted out before. Please tell us why:",
+                                    "1. Not a nurse or midwife",
+                                    "2. New user of number",
+                                    "3. Messages not useful",
+                                    "4. Other",
+                                    "5. Main menu"
+                                ].join("\n")
+                            })
+                            .run();
+                    });
+                    it("should have extras", function() {
+                        return tester
+                            .setup.user.addr('27821240000')
+                            .inputs(
+                                {session_event: 'new'}  // dial in
+                                , '6'  // st_subscribed - more options
+                                , '2'  // st_subscribed - opt out
+                            )
+                            .check(function(api) {
+                                var contact = _.find(api.contacts.store, {
+                                  msisdn: '+27821240000'
+                                });
+                                assert.equal(Object.keys(contact.extra).length, 10);
+                                assert.equal(contact.extra.nc_opt_out_reason, 'unknown');
+                                assert.equal(contact.extra.nc_is_registered, 'true');
+                            })
+                            .run();
+                    });
+                });
+
+                describe("should reach st_end_detail_changed", function() {
+                // should happen without fixtures - only updates extra
+                    it("should thank them", function() {
+                        return tester
+                            .setup.user.addr('27821240000')
+                            .inputs(
+                                {session_event: 'new'}  // dial in
+                                , '6'  // st_subscribed - more options
+                                , '2'  // st_subscribed - opt out
+                                , '4'  // st_optout - other
+                            )
+                            .check.interaction({
+                                state: 'st_end_detail_changed'
+                            })
+                            .run();
+                    });
+                    it("should fire metrics", function() {
+                        return tester
+                            .setup.user.addr('27821237777')
+                            .inputs(
+                                {session_event: 'new'}  // dial in
+                                , '6'  // st_subscribed - more options
+                                , '2'  // st_subscribed - opt out
+                                , '1'  // st_optout - not a nurse
+                            )
+                            .check(function(api) {
+                                var metrics = api.metrics.stores.test_metric_store;
+                                assert.equal(Object.keys(metrics).length, 2);
+                                assert.deepEqual(metrics['test.nurse_ussd.optouts.last'].values, [1]);
+                                assert.deepEqual(metrics['test.nurse_ussd.optouts.sum'].values, [1]);
+                            })
+                            .run();
+                    });
+                    it("should save extras", function() {
+                        return tester
+                            .setup.user.addr('27821240000')
+                            .inputs(
+                                {session_event: 'new'}  // dial in
+                                , '6'  // st_subscribed - more options
+                                , '2'  // st_subscribed - opt out
+                                , '4'  // st_optout - other
+                            )
+                            .check(function(api) {
+                                var contact = _.find(api.contacts.store, {
+                                  msisdn: '+27821240000'
+                                });
+                                assert.equal(Object.keys(contact.extra).length, 10);
+                                assert.equal(contact.extra.nc_opt_out_reason, 'other');
+                                assert.equal(contact.extra.nc_is_registered, 'true');
+                            })
+                            .run();
+                    });
+                });
+            });
+
         });
 
     });

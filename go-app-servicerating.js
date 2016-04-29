@@ -449,7 +449,12 @@ go.utils = {
                 return contact.extra.nc_passport_num + '^^^' + contact.extra.nc_passport_country.toUpperCase() + '^PPN';
             }
         }[contact.extra.nc_id_type];
-        return formatter();
+
+        if (_.isUndefined(contact.extra.nc_id_type) || contact.extra.nc_id_type === null) {
+            return contact.msisdn.replace('+', '') + '^^^ZAF^TEL';
+        } else {
+            return formatter();
+        }
     },
 
     get_dob: function(contact) {
@@ -729,15 +734,26 @@ go.utils = {
             sanc_reg_no: contact.extra.nc_sanc || null,
             persal_no: contact.extra.nc_persal || null
         };
+
         if (contact.extra.nc_id_type === 'sa_id') {
+            payload.id_type = 'sa_id';
             payload.id_no = contact.extra.nc_sa_id_no;
-        } else {
+            payload.dob = contact.extra.nc_dob;
+        } else if (contact.extra.nc_id_type === 'passport') {
+            payload.id_type = 'passport';
             payload.id_no = contact.extra.nc_passport_num;
             payload.passport_origin = contact.extra.nc_passport_country;
+            payload.dob = contact.extra.nc_dob;
+        } else {
+            payload.id_type = null;
+            payload.id_no = null;
+            payload.dob = null;
         }
+
         if (rmsisdn) {
             payload.rmsisdn = rmsisdn;
         }
+
         return go.utils
             .control_v2_api_call("post", null, payload, 'nurseregs/', im);
     },

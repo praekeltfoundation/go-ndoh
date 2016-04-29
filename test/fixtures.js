@@ -1321,7 +1321,10 @@ module.exports = function() {
                 "dmsisdn": "+27821234444",
                 "faccode": "123456",
                 "sanc_reg_no": null,
-                "persal_no": null
+                "persal_no": null,
+                "id_type": null,
+                "id_no": null,
+                "dob": null
             }
         },
         "response": {
@@ -1331,7 +1334,10 @@ module.exports = function() {
                 "dmsisdn": "+27821234444",
                 "faccode": "123456",
                 "sanc_reg_no": null,
-                "persal_no": null
+                "persal_no": null,
+                "id_type": null,
+                "id_no": null,
+                "dob": null
             }
         }
     },
@@ -1349,7 +1355,10 @@ module.exports = function() {
                 "dmsisdn": "+27821234444",
                 "faccode": "123456",
                 "sanc_reg_no": null,
-                "persal_no": null
+                "persal_no": null,
+                "id_type": null,
+                "id_no": null,
+                "dob": null
             }
         },
         "response": {
@@ -1359,7 +1368,10 @@ module.exports = function() {
                 "dmsisdn": "+27821234444",
                 "faccode": "123456",
                 "sanc_reg_no": null,
-                "persal_no": null
+                "persal_no": null,
+                "id_type": null,
+                "id_no": null,
+                "dob": null
             }
         }
     },

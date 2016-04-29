@@ -1127,6 +1127,43 @@ go.utils = {
                                     return go.utils.jembi_nurse_optout_send_json(contact, contact,
                                       'nurse_optout', im, metric_prefix);
                                 });
+
+                                // Add Metrics
+                                // fire total source opt-outs metric (last)
+                                queue2.push(function() {
+                                    return im.metrics.fire.inc(
+                                        [metric_prefix, 'optouts', 'last'].join('.'),
+                                        {amount: 1});
+                                });
+                                // fire total source opt-outs metric (sum)
+                                queue2.push(function() {
+                                    return im.metrics.fire.sum(
+                                        [metric_prefix, 'optouts', 'sum'].join('.'), 1);
+                                });
+                                // fire total opt-outs metric (last)
+                                queue2.push(function() {
+                                    return im.metrics.fire.inc(
+                                        [env, 'nurseconnect', 'optouts', 'last'].join('.'),
+                                        {amount: 1});
+                                });
+                                // fire total opt-outs metric (sum)
+                                queue2.push(function() {
+                                    return im.metrics.fire.sum(
+                                        [env, 'nurseconnect', 'optouts', 'sum'].join('.'), 1);
+                                });
+                                // fire opt-out reason metrics (last)
+                                queue2.push(function() {
+                                    return im.metrics.fire.inc(
+                                        [env, 'nurseconnect', 'optouts', optout_reason, 'last']
+                                        .join('.'), {amount: 1});
+                                });
+                                // fire opt-out reason metrics (sum)
+                                queue2.push(function() {
+                                    return im.metrics.fire.inc(
+                                        [env, 'nurseconnect', 'optouts', optout_reason, 'sum']
+                                        .join('.'), 1);
+                                });
+
                             }
 
                             if (patch_last_reg === true) {
@@ -1136,9 +1173,7 @@ go.utils = {
                                 });
                             }
                             // End Queue 2
-
-                            return Q
-                                .all(queue2.map(Q.try));
+                            return Q.all(queue2.map(Q.try));
                         } else {
                             return Q();
                         }
@@ -1391,7 +1426,7 @@ go.app = function() {
 
                 return Q.all([
                     self.im.contacts.save(self.user),
-                    self.im.metrics.fire.inc([self.env, 'sum.sessions'].join('.'), 1)
+                    self.im.metrics.fire.inc([self.env, 'sum.sessions'].join('.'), {amount: 1})
                 ]);
             });
 

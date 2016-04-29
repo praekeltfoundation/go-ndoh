@@ -28,6 +28,26 @@ Idea is:
 Metrics produced:
 Note all metrics are prepended by their <env>, e.g. 'qa.'
 
+
+NurseConnect Metrics
+
+* nurse_ussd.registrations.sum (SUM metric total registrations)
+* nurse_ussd.registrations.last (LAST metric total registrations)
+
+* nurse_ussd.optouts.sum (SUM metric total optouts)
+* nurse_ussd.optouts.last (LAST metric total optouts)
+* nurse_sms.optouts.sum (SUM metric total optouts)
+* nurse_sms.optouts.last (LAST metric total optouts)
+* nurseconnect.optouts.sum (SUM metric total optouts)
+* nurseconnect.optouts.last (LAST metric total optouts)
+* nurseconnect.optouts.<reason>.sum (SUM metric optouts for reason)
+* nurseconnect.optouts.<reason>.last (Last metric optouts for reason)
+
+* nurse_sms.inbound.sum (SUM total inbound messages)
+* nurse_sms.inbound.last (LAST total inbound messages)
+
+MomConnect Metrics
+
 * sum.unique_users
 * sum.subscriptions
 

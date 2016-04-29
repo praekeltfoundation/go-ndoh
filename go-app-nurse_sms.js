@@ -1127,6 +1127,43 @@ go.utils = {
                                     return go.utils.jembi_nurse_optout_send_json(contact, contact,
                                       'nurse_optout', im, metric_prefix);
                                 });
+
+                                // Add Metrics
+                                // fire total source opt-outs metric (last)
+                                queue2.push(function() {
+                                    return im.metrics.fire.inc(
+                                        [metric_prefix, 'optouts', 'last'].join('.'),
+                                        {amount: 1});
+                                });
+                                // fire total source opt-outs metric (sum)
+                                queue2.push(function() {
+                                    return im.metrics.fire.sum(
+                                        [metric_prefix, 'optouts', 'sum'].join('.'), 1);
+                                });
+                                // fire total opt-outs metric (last)
+                                queue2.push(function() {
+                                    return im.metrics.fire.inc(
+                                        [env, 'nurseconnect', 'optouts', 'last'].join('.'),
+                                        {amount: 1});
+                                });
+                                // fire total opt-outs metric (sum)
+                                queue2.push(function() {
+                                    return im.metrics.fire.sum(
+                                        [env, 'nurseconnect', 'optouts', 'sum'].join('.'), 1);
+                                });
+                                // fire opt-out reason metrics (last)
+                                queue2.push(function() {
+                                    return im.metrics.fire.inc(
+                                        [env, 'nurseconnect', 'optouts', optout_reason, 'last']
+                                        .join('.'), {amount: 1});
+                                });
+                                // fire opt-out reason metrics (sum)
+                                queue2.push(function() {
+                                    return im.metrics.fire.inc(
+                                        [env, 'nurseconnect', 'optouts', optout_reason, 'sum']
+                                        .join('.'), 1);
+                                });
+
                             }
 
                             if (patch_last_reg === true) {
@@ -1136,9 +1173,7 @@ go.utils = {
                                 });
                             }
                             // End Queue 2
-
-                            return Q
-                                .all(queue2.map(Q.try));
+                            return Q.all(queue2.map(Q.try));
                         } else {
                             return Q();
                         }
@@ -1363,6 +1398,7 @@ go.SessionLengthHelper = function () {
 
 go.app = function() {
     var vumigo = require('vumigo_v02');
+    var Q = require('q');
     var App = vumigo.App;
     var EndState = vumigo.states.EndState;
 
@@ -1386,22 +1422,30 @@ go.app = function() {
 
 
         self.states.add('states_start', function() {
-            // check if message contains a ussd code
-            if (self.im.msg.content.indexOf('*120*') > -1 || self.im.msg.content.indexOf('*134*') > -1) {
-                return self.states.create("states_dial_not_sms");
-            } else {
-                // get the first word, remove non-alphanumerics, capitalise
-                switch (self.im.msg.content.split(" ")[0].replace(/\W/g, '').toUpperCase()) {
-                    case "STOP":
-                        return self.states.create("states_opt_out_enter");
-                    case "BLOCK":
-                        return self.states.create("states_opt_out_enter");
-                    case "START":
-                        return self.states.create("states_opt_in_enter");
-                    default:
-                        return self.states.create("st_unrecognised");
+            // fire inbound message count metric
+            return Q.all([
+                self.im.metrics.fire.sum(
+                    ([self.metric_prefix, "inbound_sms", "sum"].join('.')), 1),
+                self.im.metrics.fire.inc(
+                    ([self.metric_prefix, "inbound_sms", "last"].join('.')), {amount: 1})
+            ]).then(function() {
+                // check if message contains a ussd code
+                if (self.im.msg.content.indexOf('*120*') > -1 || self.im.msg.content.indexOf('*134*') > -1) {
+                    return self.states.create("states_dial_not_sms");
+                } else {
+                    // get the first word, remove non-alphanumerics, capitalise
+                    switch (self.im.msg.content.split(" ")[0].replace(/\W/g, '').toUpperCase()) {
+                        case "STOP":
+                            return self.states.create("states_opt_out_enter");
+                        case "BLOCK":
+                            return self.states.create("states_opt_out_enter");
+                        case "START":
+                            return self.states.create("states_opt_in_enter");
+                        default:
+                            return self.states.create("st_unrecognised");
+                    }
                 }
-            }
+            });
         });
 
         self.states.add('states_dial_not_sms', function(name) {

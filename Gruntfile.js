@@ -233,7 +233,7 @@ module.exports = function (grunt) {
             },
             test_session_length_helper: {
                 src: ['<%= paths.test.session_length_helper %>']
-            }
+            },
         }
     });
 

@@ -114,7 +114,7 @@ describe("app", function() {
         describe("test Metrics and KVs", function() {
 
             describe("when a new unique user sends message in", function() {
-                it("should fire no metrics", function() {
+                it("should fire metrics", function() {
                     return tester
                         .setup(function(api) {
                             api.contacts.add({
@@ -127,7 +127,9 @@ describe("app", function() {
                         .inputs('start')
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_nurse_sms_ms;
-                            assert.equal(Object.keys(metrics).length, 0);
+                            assert.equal(Object.keys(metrics).length, 2);
+                            assert.deepEqual(metrics['test.nurse_sms.inbound_sms.last'].values, [1]);
+                            assert.deepEqual(metrics['test.nurse_sms.inbound_sms.sum'].values, [1]);
                         }).run();
                 });
             });
@@ -151,7 +153,15 @@ describe("app", function() {
                         .inputs('STOP')
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_nurse_sms_ms;
-                            assert.equal(Object.keys(metrics).length, 0);
+                            assert.equal(Object.keys(metrics).length, 8);
+                            assert.deepEqual(metrics['test.nurse_sms.optouts.last'].values, [1]);
+                            assert.deepEqual(metrics['test.nurse_sms.optouts.sum'].values, [1]);
+                            assert.deepEqual(metrics['test.nurseconnect.optouts.last'].values, [1]);
+                            assert.deepEqual(metrics['test.nurseconnect.optouts.sum'].values, [1]);
+                            assert.deepEqual(metrics['test.nurseconnect.optouts.unknown.last'].values, [1]);
+                            assert.deepEqual(metrics['test.nurseconnect.optouts.unknown.sum'].values, [1]);
+                            assert.deepEqual(metrics['test.nurse_sms.inbound_sms.last'].values, [1]);
+                            assert.deepEqual(metrics['test.nurse_sms.inbound_sms.sum'].values, [1]);
                         })
                         .run();
                 });

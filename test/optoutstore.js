@@ -11,6 +11,7 @@ var DummyOptoutResource = DummyResource.extend(function(self) {
         'msisdn:+27821239999',  // nurseconnect 1
         'msisdn:+27821233333',  // nurseconnect 2
         'msisdn:+27821230000',  // nurseconnect 3
+        'msisdn:+27821240000',  // nurseconnect 4
     ];
 
 

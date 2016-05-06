@@ -221,7 +221,7 @@ go.app = function() {
                 question: question,
                 check: function(content) {
                     return go.utils
-                        .validate_clinic_code(self.im, content)
+                        .validate_nc_clinic_code(self.im, content)
                         .then(function(facname) {
                             if (!facname) {
                                 return error;
@@ -727,7 +727,7 @@ go.app = function() {
                 question: question,
                 check: function(content) {
                     return go.utils
-                        .validate_clinic_code(self.im, content)
+                        .validate_nc_clinic_code(self.im, content)
                         .then(function(facname) {
                             if (!facname) {
                                 return error;

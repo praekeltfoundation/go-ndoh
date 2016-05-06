@@ -383,6 +383,35 @@ go.utils = {
         }
     },
 
+    jembi_nc_clinic_validate: function (im, clinic_code) {
+        var params = {
+            'criteria': 'value:' + clinic_code
+        };
+        return go.utils
+            .jembi_json_api_call('get', params, null, 'NCfacilityCheck', im);
+    },
+
+    validate_nc_clinic_code: function(im, clinic_code) {
+        if (!go.utils.check_valid_number(clinic_code) ||
+            clinic_code.length !== 6) {
+            return Q()
+                .then(function() {
+                    return false;
+                });
+        } else {
+            return go.utils
+                .jembi_nc_clinic_validate(im, clinic_code)
+                .then(function(json_result) {
+                    var rows = JSON.parse(json_result.data).rows;
+                    if (rows.length === 0) {
+                        return false;
+                    } else {
+                        return rows[0][2];
+                    }
+                });
+        }
+    },
+
     is_alpha_numeric_only: function(input) {
         alpha_numeric = new RegExp('^[A-Za-z0-9]+$');
         return alpha_numeric.test(input);

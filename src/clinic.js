@@ -268,9 +268,10 @@ go.app = function() {
 
                 next: function(choice) {
                     if (choice.value === 'yes') {
-                        self.user.extra.consent = 'true';
+                        self.contact.extra.consent = 'true';
+
                         return self.im.contacts
-                            .save(self.user)
+                            .save(self.contact)
                             .then(function() {
                                 return 'states_clinic_code';
                             });

@@ -977,6 +977,7 @@ module.exports = function() {
                 "mom_id_no": "5101025009086",
                 "mom_dob": "1951-01-02",
                 "clinic_code": "123456",
+                "consent": "true",
                 "authority": "clinic"
             }
         },
@@ -992,6 +993,7 @@ module.exports = function() {
                 "mom_id_no": "5101025009086",
                 "mom_dob": "1951-01-02",
                 "clinic_code": "123456",
+                "consent": "true",
                 "authority": "clinic"
             }
         }
@@ -1014,6 +1016,7 @@ module.exports = function() {
                 "mom_id_no":"5101025009086",
                 "mom_dob":"1951-01-02",
                 "clinic_code":"123456",
+                "consent": "true",
                 "authority":"clinic"
             }
         },
@@ -1029,6 +1032,7 @@ module.exports = function() {
                 "mom_id_no":"5101025009086",
                 "mom_dob":"1951-01-02",
                 "clinic_code":"123456",
+                "consent": "true",
                 "authority":"clinic"
             }
         }
@@ -1051,6 +1055,7 @@ module.exports = function() {
                 "mom_id_no":null,
                 "mom_dob":"1951-01-02",
                 "clinic_code":"123456",
+                "consent": null,
                 "authority":"clinic"
             }
         },
@@ -1066,7 +1071,86 @@ module.exports = function() {
                 "mom_id_no":null,
                 "mom_dob":"1951-01-02",
                 "clinic_code":"123456",
+                "consent": null,
                 "authority":"clinic"
+            }
+        }
+    },
+    // Vumi registration post - clinic 4
+    {
+        "request": {
+            "method": "POST",
+            'headers': {
+                'Authorization': ['Token test_token']
+            },
+            "url": "http://ndoh-control/api/v2/registrations/",
+            "data": {
+                "hcw_msisdn":"+270001",
+                "mom_msisdn":"+27821234567",
+                "mom_id_type":"sa_id",
+                "mom_passport_origin":null,
+                "mom_lang":"en",
+                "mom_edd":"2014-05-30",
+                "mom_id_no":"5101025009086",
+                "mom_dob":"1951-01-02",
+                "clinic_code":"123456",
+                "consent": null,
+                "authority":"clinic"
+            }
+        },
+        "response": {
+            "code": 201,
+            "data": {
+                "hcw_msisdn":"+270001",
+                "mom_msisdn":"+27821234567",
+                "mom_id_type":"sa_id",
+                "mom_passport_origin":null,
+                "mom_lang":"en",
+                "mom_edd":"2014-05-30",
+                "mom_id_no":"5101025009086",
+                "mom_dob":"1951-01-02",
+                "clinic_code":"123456",
+                "consent": null,
+                "authority":"clinic"
+            }
+        }
+    },
+    // Vumi registration post - clinic 5
+    {
+        "request": {
+            "method": "POST",
+            'headers': {
+                'Authorization': ['Token test_token']
+            },
+            "url": "http://ndoh-control/api/v2/registrations/",
+            "data": {
+                "hcw_msisdn": null,
+                "mom_msisdn": "+27821234567",
+                "mom_id_type": "sa_id",
+                "mom_passport_origin":null,
+                "mom_lang": "en",
+                "mom_edd": "2014-05-30",
+                "mom_id_no": "5101025009086",
+                "mom_dob": "1951-01-02",
+                "clinic_code": "123456",
+                "consent": null,
+                "authority": "clinic"
+            }
+        },
+        "response": {
+            "code": 201,
+            "data": {
+                "hcw_msisdn": null,
+                "mom_msisdn": "+27821234567",
+                "mom_id_type": "sa_id",
+                "mom_passport_origin":null,
+                "mom_lang": "en",
+                "mom_edd": "2014-05-30",
+                "mom_id_no": "5101025009086",
+                "mom_dob": "1951-01-02",
+                "clinic_code": "123456",
+                "consent": null,
+                "authority": "clinic"
             }
         }
     },
@@ -1088,6 +1172,7 @@ module.exports = function() {
                 "mom_id_no":"5101015009088",
                 "mom_dob":"1951-01-01",
                 "clinic_code":null,
+                "consent": null,
                 "authority":"personal"
             }
         },
@@ -1103,6 +1188,7 @@ module.exports = function() {
                 "mom_id_no":"5101015009088",
                 "mom_dob":"1951-01-01",
                 "clinic_code":null,
+                "consent": null,
                 "authority":"personal"
             }
         }
@@ -1125,6 +1211,7 @@ module.exports = function() {
                 "mom_id_no":"5002285000007",
                 "mom_dob":"1950-02-28",
                 "clinic_code":null,
+                "consent": null,
                 "authority":"personal"
             }
         },
@@ -1140,6 +1227,7 @@ module.exports = function() {
                 "mom_id_no":"5002285000007",
                 "mom_dob":"1950-02-28",
                 "clinic_code":null,
+                "consent": null,
                 "authority":"personal"
             }
         }
@@ -1162,6 +1250,7 @@ module.exports = function() {
                 "mom_id_no":"5101025009086",
                 "mom_dob":"1951-01-02",
                 "clinic_code":null,
+                "consent": null,
                 "authority":"personal"
             }
         },
@@ -1177,6 +1266,7 @@ module.exports = function() {
                 "mom_id_no":"5101025009086",
                 "mom_dob":"1951-01-02",
                 "clinic_code":null,
+                "consent": null,
                 "authority":"personal"
             }
         }
@@ -1199,6 +1289,7 @@ module.exports = function() {
                 "mom_id_no":"2012315678097",
                 "mom_dob":"2020-12-31",
                 "clinic_code":null,
+                "consent": null,
                 "authority":"personal"
             }
         },
@@ -1214,6 +1305,7 @@ module.exports = function() {
                 "mom_id_no":"2012315678097",
                 "mom_dob":"2020-12-31",
                 "clinic_code":null,
+                "consent": null,
                 "authority":"personal"
             }
         }
@@ -1236,6 +1328,7 @@ module.exports = function() {
                 "mom_id_no":"12345",
                 "mom_dob":null,
                 "clinic_code":null,
+                "consent": null,
                 "authority":"personal"
             }
         },
@@ -1251,6 +1344,7 @@ module.exports = function() {
                 "mom_id_no":"12345",
                 "mom_dob":null,
                 "clinic_code":null,
+                "consent": null,
                 "authority":"personal"
             }
         }
@@ -1273,6 +1367,7 @@ module.exports = function() {
                 "mom_id_no":"12345",
                 "mom_dob":"1981-01-01",
                 "clinic_code":null,
+                "consent": null,
                 "authority":"personal"
             }
         },
@@ -1288,6 +1383,7 @@ module.exports = function() {
                 "mom_id_no":"12345",
                 "mom_dob":"1981-01-01",
                 "clinic_code":null,
+                "consent": null,
                 "authority":"personal"
             }
         }
@@ -1310,6 +1406,7 @@ module.exports = function() {
                 "mom_id_no":null,
                 "mom_dob":null,
                 "clinic_code":null,
+                "consent": null,
                 "authority":"personal"
             }
         },
@@ -1325,6 +1422,7 @@ module.exports = function() {
                 "mom_id_no":null,
                 "mom_dob":null,
                 "clinic_code":null,
+                "consent": null,
                 "authority":"personal"
             }
         }
@@ -1347,6 +1445,7 @@ module.exports = function() {
                 "mom_id_no":"12345",
                 "mom_dob":null,
                 "clinic_code":null,
+                "consent": null,
                 "authority":"chw"
             }
         },
@@ -1362,6 +1461,7 @@ module.exports = function() {
                 "mom_id_no":"12345",
                 "mom_dob":null,
                 "clinic_code":null,
+                "consent": null,
                 "authority":"chw"
             }
         }
@@ -1384,6 +1484,7 @@ module.exports = function() {
                 "mom_id_no":"5101025009086",
                 "mom_dob":null,
                 "clinic_code":null,
+                "consent": null,
                 "authority":"chw"
             }
         },
@@ -1399,6 +1500,7 @@ module.exports = function() {
                 "mom_id_no":"5101025009086",
                 "mom_dob":null,
                 "clinic_code":null,
+                "consent": null,
                 "authority":"chw"
             }
         }
@@ -1421,6 +1523,7 @@ module.exports = function() {
                 "mom_id_no":"5101025009086",
                 "mom_dob":"1951-01-02",
                 "clinic_code":null,
+                "consent": null,
                 "authority":"chw"
             }
         },
@@ -1436,6 +1539,45 @@ module.exports = function() {
                 "mom_id_no":"5101025009086",
                 "mom_dob":"1951-01-02",
                 "clinic_code":null,
+                "consent": null,
+                "authority":"chw"
+            }
+        }
+    },
+    {
+        "request": {
+            "method": "POST",
+            'headers': {
+                'Authorization': ['Token test_token']
+            },
+            "url": "http://ndoh-control/api/v2/registrations/",
+            "data": {
+                "hcw_msisdn":"+27001",
+                "mom_msisdn":"+27821234567",
+                "mom_id_type":"passport",
+                "mom_passport_origin":"zw",
+                "mom_lang":"en",
+                "mom_edd":null,
+                "mom_id_no":"12345",
+                "mom_dob":null,
+                "clinic_code":null,
+                "consent": "true",
+                "authority":"chw"
+            }
+        },
+        "response": {
+            "code": 201,
+            "data": {
+                "hcw_msisdn":"+27001",
+                "mom_msisdn":"+27821234567",
+                "mom_id_type":"passport",
+                "mom_passport_origin":"zw",
+                "mom_lang":"en",
+                "mom_edd":null,
+                "mom_id_no":"12345",
+                "mom_dob":null,
+                "clinic_code":null,
+                "consent": "true",
                 "authority":"chw"
             }
         }

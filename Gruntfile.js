@@ -210,7 +210,7 @@ module.exports = function (grunt) {
             test_clinic: {
                 src: ['<%= paths.test.clinic %>']
             },
-            /*test_chw: {
+            test_chw: {
                 src: ['<%= paths.test.chw %>']
             },
             test_personal: {
@@ -233,7 +233,7 @@ module.exports = function (grunt) {
             },
             test_session_length_helper: {
                 src: ['<%= paths.test.session_length_helper %>']
-            },*/
+            },
         }
     });
 

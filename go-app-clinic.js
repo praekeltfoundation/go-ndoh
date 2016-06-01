@@ -743,6 +743,7 @@ go.utils = {
             mom_edd: go.utils.get_edd(im, contact),  // 'YYYY-MM-DD' | null
             mom_id_no: go.utils.get_identification_no(contact),
             mom_dob: contact.extra.dob || null,  // 'YYYY-MM-DD' | null
+            consent: contact.extra.consent || null, // 'true' | null
             clinic_code: contact.extra.clinic_code || null,
             authority: reg_type,  // 'clinic' | 'chw' | 'personal'
         };
@@ -1711,9 +1712,10 @@ go.app = function() {
 
                 next: function(choice) {
                     if (choice.value === 'yes') {
-                        self.user.extra.consent = 'true';
+                        self.contact.extra.consent = 'true';
+
                         return self.im.contacts
-                            .save(self.user)
+                            .save(self.contact)
                             .then(function() {
                                 return 'states_clinic_code';
                             });

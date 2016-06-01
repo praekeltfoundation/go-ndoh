@@ -240,7 +240,7 @@ describe("app", function() {
                         {session_event: 'start'},
                         '2',        // states_start - no
                         '0821234567', // states_mobile_no - +27821234567
-                        '1',        // state_consent - yes
+                        '1',        // states_consent - yes
                         '123456',    // states_clinic_code - 123456
                         '2',        // states_due_date_month - 05
                         '30',       // states_due_date_day - 30
@@ -258,6 +258,7 @@ describe("app", function() {
                           msisdn: '+27821234567'
                         });
                         // complete
+                        assert.equal(contact.extra.consent, 'true');
                         assert.equal(contact.extra.clinic_code, '123456');
                         assert.equal(contact.extra.due_date_month, '05');
                         assert.equal(contact.extra.due_date_day, '30');
@@ -1017,7 +1018,7 @@ describe("app", function() {
                         })
                         .check(function(api) {
                             var contact = api.contacts.store[0];
-                            assert.equal(contact.extra.consent, 'true');
+                            //assert.equal(contact.extra.consent, 'true');
                             assert.equal(contact.extra.working_on, "+27821234567");
                             assert.equal(contact.extra.is_registered, undefined);
                             assert.equal(contact.extra.last_stage, 'states_consent');

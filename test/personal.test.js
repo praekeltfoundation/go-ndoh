@@ -794,7 +794,7 @@ describe("app", function() {
                 return tester
                     .setup.user.addr('27001')
                     .setup.user.state('states_register_info')
-                    .input('1')
+                    .inputs('1','1')
                     .check.interaction({
                         state: 'states_suspect_pregnancy',
                         reply: [
@@ -2195,6 +2195,7 @@ describe("app", function() {
                         .inputs(
                             {session_event: 'new'}  // states_start
                             , '4'  // states_language
+                            , '1'  // states_consent - yes
                         )
                         // check navigation
                         .check.interaction({
@@ -2218,6 +2219,7 @@ describe("app", function() {
                         .inputs(
                             {session_event: 'new'}  // states_start
                             , '4'  // states_language
+                            , '1'  // states_consent - yes
                             , '2'  // states_suspect_pregnancy
                         )
                         // check navigation
@@ -2250,6 +2252,7 @@ describe("app", function() {
                         .inputs(
                             {session_event: 'new'}  // states_start
                             , '4'  // states_language
+                            , '1'  // states_consent - yes
                             , '1'  // states_suspect_pregnancy
                         )
                         // check navigation
@@ -2306,7 +2309,6 @@ describe("app", function() {
                         .inputs(
                             {session_event: 'new'}  // states_start
                             , '4'  // states_language
-                            , {session_event: 'new'}  // simulate timeout and redial
                             , {session_event: 'new'}  // simulate timeout and redial
                         )
                         // check navigation
@@ -2417,6 +2419,7 @@ describe("app", function() {
                         .setup.user.addr('27821235555')
                         .inputs(
                             {session_event: 'new'}  // states_start
+                            , '1'  // states_consent - yes
                         )
                         // check navigation
                         .check.interaction({

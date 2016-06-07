@@ -1574,6 +1574,7 @@ go.app = function() {
                 // UPDATE if registration states change
                 var registration_states = [
                     'states_language',
+                    'states_consent',
                     'states_register_info',
                     'states_suspect_pregnancy',
                     'states_id_type',
@@ -1620,7 +1621,7 @@ go.app = function() {
                                 if (count === 0) {
                                     // if no active subscriptions, register user
                                     if (!self.im.config.faq_enabled) {
-                                        return self.states.create('states_suspect_pregnancy', opts);
+                                        return self.states.create('states_consent', opts);
                                     } else {
                                         return self.states.create('states_register_info', opts);
                                     }
@@ -1799,7 +1800,7 @@ go.app = function() {
                         })
                         .then(function() {
                             if (!self.im.config.faq_enabled){
-                                return 'states_suspect_pregnancy';
+                                return 'states_consent';
                             } else {
                                 return 'states_register_info';
                             }
@@ -1839,13 +1840,38 @@ go.app = function() {
 
                 next: function(choice) {
                     return {
-                        register: 'states_suspect_pregnancy',
+                        register: 'states_consent',
                         info: 'states_faq_topics'
                     } [choice.value];
                 }
             });
         });
 
+        self.add('states_consent', function(name) {
+            return new ChoiceState(name, {
+                question: $('To register we need to collect, store & use your' +
+                            ' info. You may get messages on public holidays &' +
+                            'weekends. Do you consent?'),
+                choices: [
+                    new Choice('yes', $('Yes')),
+                    new Choice('no', $('No')),
+                ],
+
+                next: function(choice) {
+                    if (choice.value === 'yes') {
+                        self.contact.extra.consent = 'true';
+
+                        return self.im.contacts
+                            .save(self.contact)
+                            .then(function() {
+                                return 'states_suspect_pregnancy';
+                            });
+                    } else {
+                        return 'states_stay_out';
+                    }
+                }
+            });
+        });
 
         self.add('states_suspect_pregnancy', function(name) {
             return new ChoiceState(name, {

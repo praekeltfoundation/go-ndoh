@@ -579,6 +579,28 @@ describe("app", function() {
         describe("when the no. is the pregnant woman's no.", function() {
 
             describe("if not previously opted out", function() {
+                it("should ask for consent", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27001',
+                            });
+                        })
+                        .setup.user.addr('27001')
+                        .setup.user.state('states_start')
+                        .inputs('1')
+                        .check.interaction({
+                            state: 'states_consent',
+                            reply: [(
+                                'We need to collect, store & use her info. ' +
+                                'She may get messages on public holidays & ' +
+                                'weekends. Does she consent?'),
+                                '1. Yes',
+                                '2. No'
+                            ].join('\n')
+                        })
+                        .run();
+                });
                 it("should ask for the id type", function() {
                     return tester
                         .setup(function(api) {
@@ -597,6 +619,26 @@ describe("app", function() {
                                 '1. SA ID',
                                 '2. Passport',
                                 '3. None'
+                            ].join('\n')
+                        })
+                        .run();
+                });
+                it("should tell them they cannot complete registration", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27001',
+                            });
+                        })
+                        .setup.user.addr('27001')
+                        .setup.user.state('states_start')
+                        .inputs('1', '2')
+                        .check.interaction({
+                            state: 'states_stay_out',
+                            reply: [(
+                                'You have chosen not to receive MomConnect SMSs ' +
+                                'and so cannot complete registration.'),
+                                '1. Main Menu'
                             ].join('\n')
                         })
                         .run();
@@ -629,6 +671,32 @@ describe("app", function() {
             });
 
             describe("if the user confirms opting back in", function() {
+                it("should ask for consent", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27831112222',
+                            });
+                        })
+                        .setup.user.addr('27831112222')
+                        .setup.user.state('states_opt_in')
+                        .inputs('1')
+                        .check.interaction({
+                            state: 'states_consent',
+                            reply: [(
+                                'We need to collect, store & use her info. ' +
+                                'She may get messages on public holidays & ' +
+                                'weekends. Does she consent?'),
+                                '1. Yes',
+                                '2. No'
+                            ].join('\n')
+                        })
+                        .check(function(api) {
+                            var optouts = api.optout.optout_store;
+                            assert.equal(optouts.length, 4);
+                        })
+                        .run();
+                });
                 it("should ask for the id type", function() {
                     return tester
                         .setup(function(api) {
@@ -652,6 +720,26 @@ describe("app", function() {
                         .check(function(api) {
                             var optouts = api.optout.optout_store;
                             assert.equal(optouts.length, 4);
+                        })
+                        .run();
+                });
+                it("should tell them they cannot complete registration", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27831112222',
+                            });
+                        })
+                        .setup.user.addr('27831112222')
+                        .setup.user.state('states_opt_in')
+                        .inputs('1', '2')
+                        .check.interaction({
+                            state: 'states_stay_out',
+                            reply: [(
+                                'You have chosen not to receive MomConnect SMSs ' +
+                                'and so cannot complete registration.'),
+                                '1. Main Menu'
+                            ].join('\n')
                         })
                         .run();
                 });
@@ -750,6 +838,27 @@ describe("app", function() {
         describe("after entering the pregnant woman's number", function() {
 
             describe("if the number has not opted out before", function() {
+                it("should ask for consent", function() {
+                    return tester
+                        .setup.user.addr('270001')
+                        .setup.user.state('states_mobile_no')
+                        .inputs('0821234567')
+                        .check.interaction({
+                            state: 'states_consent',
+                            reply: [(
+                                'We need to collect, store & use her info. ' +
+                                'She may get messages on public holidays & ' +
+                                'weekends. Does she consent?'),
+                                '1. Yes',
+                                '2. No'
+                            ].join('\n')
+                        })
+                        .check(function(api) {
+                            var contact = api.contacts.store[0];
+                            assert.equal(contact.extra.working_on, "+27821234567");
+                        })
+                        .run();
+                });
                 it("should ask for the id type", function() {
                     return tester
                         .setup.user.addr('270001')
@@ -768,6 +877,21 @@ describe("app", function() {
                         .check(function(api) {
                             var contact = api.contacts.store[0];
                             assert.equal(contact.extra.working_on, "+27821234567");
+                        })
+                        .run();
+                });
+                it("should tell them they cannot complete registration", function() {
+                    return tester
+                        .setup.user.addr('270001')
+                        .setup.user.state('states_mobile_no')
+                        .inputs('0821234567', '2')
+                        .check.interaction({
+                            state: 'states_stay_out',
+                            reply: [(
+                                'You have chosen not to receive MomConnect SMSs ' +
+                                'and so cannot complete registration.'),
+                                '1. Main Menu'
+                            ].join('\n')
                         })
                         .run();
                 });
@@ -808,6 +932,40 @@ describe("app", function() {
             });
 
             describe("if the user confirms opting back in", function() {
+                it("should ask for consent", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27001',
+                                extra : {
+                                    working_on: '+27831112222'
+                                }
+                            });
+                        })
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27831112222',
+                            });
+                        })
+                        .setup.user.addr('27001')
+                        .setup.user.state('states_opt_in')
+                        .inputs('1')
+                        .check.interaction({
+                            state: 'states_consent',
+                            reply: [(
+                                'We need to collect, store & use her info. ' +
+                                'She may get messages on public holidays & ' +
+                                'weekends. Does she consent?'),
+                                '1. Yes',
+                                '2. No'
+                            ].join('\n')
+                        })
+                        .check(function(api) {
+                            var optouts = api.optout.optout_store;
+                            assert.equal(optouts.length, 4);
+                        })
+                        .run();
+                });
                 it("should ask for the id type", function() {
                     return tester
                         .setup(function(api) {
@@ -839,6 +997,26 @@ describe("app", function() {
                         .check(function(api) {
                             var optouts = api.optout.optout_store;
                             assert.equal(optouts.length, 4);
+                        })
+                        .run();
+                });
+                it("should tell them they cannot complete registration", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27831112222',
+                            });
+                        })
+                        .setup.user.addr('27001')
+                        .setup.user.state('states_opt_in')
+                        .inputs('1', '2')
+                        .check.interaction({
+                            state: 'states_stay_out',
+                            reply: [(
+                                'You have chosen not to receive MomConnect SMSs ' +
+                                'and so cannot complete registration.'),
+                                '1. Main Menu'
+                            ].join('\n')
                         })
                         .run();
                 });

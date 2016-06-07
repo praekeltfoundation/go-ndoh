@@ -1427,6 +1427,44 @@ module.exports = function() {
             }
         }
     },
+    {
+        "request": {
+            "method": "POST",
+            'headers': {
+                'Authorization': ['Token test_token']
+            },
+            "url": "http://ndoh-control/api/v2/registrations/",
+            "data": {
+                "hcw_msisdn":null,
+                "mom_msisdn":"+27001",
+                "mom_id_type":"none",
+                "mom_passport_origin":null,
+                "mom_lang":"en",
+                "mom_edd":null,
+                "mom_id_no":null,
+                "mom_dob":null,
+                "clinic_code":null,
+                "consent": "true",
+                "authority":"personal"
+            }
+        },
+        "response": {
+            "code": 201,
+            "data": {
+                "hcw_msisdn":null,
+                "mom_msisdn":"+27001",
+                "mom_id_type":"none",
+                "mom_passport_origin":null,
+                "mom_lang":"en",
+                "mom_edd":null,
+                "mom_id_no":null,
+                "mom_dob":null,
+                "clinic_code":null,
+                "consent": "true",
+                "authority":"personal"
+            }
+        }
+    },
     // Vumi registration post - chw 1
     {
         "request": {

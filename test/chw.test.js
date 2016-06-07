@@ -588,7 +588,7 @@ describe("app", function() {
                         })
                         .setup.user.addr('27001')
                         .setup.user.state('states_start')
-                        .input('1')
+                        .inputs('1','1')
                         .check.interaction({
                             state: 'states_id_type',
                             reply: [
@@ -638,7 +638,7 @@ describe("app", function() {
                         })
                         .setup.user.addr('27831112222')
                         .setup.user.state('states_opt_in')
-                        .input('1')
+                        .inputs('1','1')
                         .check.interaction({
                             state: 'states_id_type',
                             reply: [
@@ -754,7 +754,7 @@ describe("app", function() {
                     return tester
                         .setup.user.addr('270001')
                         .setup.user.state('states_mobile_no')
-                        .input('0821234567')
+                        .inputs('0821234567','1')
                         .check.interaction({
                             state: 'states_id_type',
                             reply: [
@@ -825,7 +825,7 @@ describe("app", function() {
                         })
                         .setup.user.addr('27001')
                         .setup.user.state('states_opt_in')
-                        .input('1')
+                        .inputs('1','1')
                         .check.interaction({
                             state: 'states_id_type',
                             reply: [
@@ -921,7 +921,7 @@ describe("app", function() {
                 it("should set id type, ask for their id number", function() {
                     return tester
                         .setup.user.addr('270001')
-                        .inputs('start', '1', '1')
+                        .inputs('start', '1', '1', '1')
                         .check.interaction({
                             state: 'states_sa_id',
                             reply: (
@@ -962,7 +962,7 @@ describe("app", function() {
                                 }
                             });
                         })
-                        .inputs('start', '2', '0821234567', '1')
+                        .inputs('start', '2', '0821234567', '1', '1')
                         .check.interaction({
                             state: 'states_sa_id',
                             reply: (

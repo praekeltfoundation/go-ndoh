@@ -488,18 +488,14 @@ go.app = function() {
 
         self.add('states_end_not_pregnant', function(name) {
             return new EndState(name, {
-                text: $('We are sorry but this service is only for ' +
-                    'pregnant mothers. If you have other health concerns ' +
-                    'please visit your nearest clinic.'),
+                text: $('You have chosen not to receive MomConnect SMSs'),
                 next: 'states_start'
             });
         });
 
         self.add('states_id_type', function(name) {
             return new ChoiceState(name, {
-                question: $('We need some info to message you. This ' +
-                    'is private and will only be used to help you at a ' +
-                    'clinic. What kind of ID do you have?'),
+                question: $('What kind of ID do you have?'),
 
                 choices: [
                     new Choice('sa_id', $('SA ID')),

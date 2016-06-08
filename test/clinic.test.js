@@ -1017,11 +1017,31 @@ describe("app", function() {
                                 'where this pregnancy is being registered:')
                         })
                         .check(function(api) {
-                            var contact = api.contacts.store[0];
-                            //assert.equal(contact.extra.consent, 'true');
+                            var contact = _.find(api.contacts.store, {
+                              msisdn: '+270001'
+                            });
                             assert.equal(contact.extra.working_on, "+27821234567");
                             assert.equal(contact.extra.is_registered, undefined);
                             assert.equal(contact.extra.last_stage, 'states_consent');
+                            contact = _.find(api.contacts.store, {
+                              msisdn: '+27821234567'
+                            });
+                            assert.equal(contact.extra.consent, 'true');
+                        })
+                        .run();
+                });
+                it("should tell them they cannot complete registration", function() {
+                    return tester
+                        .setup.user.addr('27001')
+                        .setup.user.state('states_mobile_no')
+                        .inputs('0821234567', '2')
+                        .check.interaction({
+                            state: 'states_stay_out',
+                            reply: [(
+                                'You have chosen not to receive MomConnect SMSs ' +
+                                'and so cannot complete registration.'),
+                                '1. Main Menu'
+                            ].join('\n')
                         })
                         .run();
                 });

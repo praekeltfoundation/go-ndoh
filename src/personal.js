@@ -407,7 +407,7 @@ go.app = function() {
             return new ChoiceState(name, {
                 question: $('To register we need to collect, store & use your' +
                             ' info. You may get messages on public holidays &' +
-                            'weekends. Do you consent?'),
+                            ' weekends. Do you consent?'),
                 choices: [
                     new Choice('yes', $('Yes')),
                     new Choice('no', $('No')),

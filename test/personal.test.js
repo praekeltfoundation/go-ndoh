@@ -790,6 +790,23 @@ describe("app", function() {
         });
 
         describe("when the user selects to register", function() {
+            it("should ask for consent", function() {
+                return tester
+                    .setup.user.addr('27001')
+                    .setup.user.state('states_register_info')
+                    .inputs('1')
+                    .check.interaction({
+                        state: 'states_consent',
+                        reply: [
+                            'To register we need to collect, store & use ' +
+                            'your info. You may get messages on public ' +
+                            'holidays & weekends. Do you consent?',
+                            '1. Yes',
+                            '2. No'
+                        ].join('\n')
+                    })
+                    .run();
+            });
             it("should ask if they suspect pregnancy", function() {
                 return tester
                     .setup.user.addr('27001')
@@ -803,6 +820,21 @@ describe("app", function() {
                             'that you are pregnant?',
                             '1. Yes',
                             '2. No'
+                        ].join('\n')
+                    })
+                    .run();
+            });
+            it("should tell them they cannot complete registration", function() {
+                return tester
+                    .setup.user.addr('27001')
+                    .setup.user.state('states_register_info')
+                    .inputs('1','2')
+                    .check.interaction({
+                        state: 'states_stay_out',
+                        reply: [
+                            'You have chosen not to receive MomConnect SMSs ' +
+                            'and so cannot complete registration.',
+                            '1. Main Menu'
                         ].join('\n')
                     })
                     .run();
@@ -2189,6 +2221,26 @@ describe("app", function() {
             });
 
             describe("when the user selects english as language", function() {
+                it("should ask for consent", function() {
+                    return tester
+                        .setup.user.addr('27001')
+                        .inputs(
+                            {session_event: 'new'}  // states_start
+                            , '4'  // states_language
+                        )
+                        // check navigation
+                        .check.interaction({
+                            state: 'states_consent',
+                            reply: [
+                                'To register we need to collect, store & use ' +
+                                'your info. You may get messages on public ' +
+                                'holidays & weekends. Do you consent?',
+                                '1. Yes',
+                                '2. No'
+                            ].join('\n')
+                        })
+                        .run();
+                });
                 it("should ask if they suspect pregnancy", function() {
                     return tester
                         .setup.user.addr('27001')
@@ -2206,6 +2258,24 @@ describe("app", function() {
                                 'that you are pregnant?',
                                 '1. Yes',
                                 '2. No'
+                            ].join('\n')
+                        })
+                        .run();
+                });
+                it("should tell them they cannot complete registration", function() {
+                    return tester
+                        .setup.user.addr('27001')
+                        .inputs(
+                            {session_event: 'new'}  // states_start
+                            , '4'  // states_language
+                            , '2'  // states_consent - no
+                        )
+                        .check.interaction({
+                            state: 'states_stay_out',
+                            reply: [
+                                'You have chosen not to receive MomConnect SMSs ' +
+                                'and so cannot complete registration.',
+                                '1. Main Menu'
                             ].join('\n')
                         })
                         .run();
@@ -2264,6 +2334,7 @@ describe("app", function() {
                         .check(function(api) {
                             var contact = api.contacts.store[0];
                             assert.equal(contact.extra.language_choice, 'en');
+                            assert.equal(contact.extra.consent, 'true');
                         })
                         // check session ends
                         .check.reply.ends_session()
@@ -2404,6 +2475,37 @@ describe("app", function() {
             });
 
             describe("when the user has no active subscriptions", function() {
+                it("should ask for consent", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27821235555',
+                                extra : {
+                                    language_choice: 'xh',
+                                    is_registered: 'true',
+                                    is_registered_by: 'clinic'
+                                },
+                            });
+                        })
+                        .setup.user.addr('27821235555')
+                        .inputs(
+                            {session_event: 'new'}  // states_start
+                        )
+                        // check navigation
+                        .check.interaction({
+                            state: 'states_consent',
+                            reply: [
+                                'To register we need to collect, store & use ' +
+                                'your info. You may get messages on public ' +
+                                'holidays & weekends. Do you consent?',
+                                '1. Yes',
+                                '2. No'
+                            ].join('\n')
+                        })
+                        // check language gets set
+                        .check.user.properties({lang: 'xh'})
+                        .run();
+                });
                 it("should ask in their language if they want to register or get info", function() {
                     return tester
                         .setup(function(api) {
@@ -2434,6 +2536,33 @@ describe("app", function() {
                         })
                         // check language gets set
                         .check.user.properties({lang: 'xh'})
+                        .run();
+                });
+                it("should tell them they cannot complete registration", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27821235555',
+                                extra : {
+                                    language_choice: 'xh',
+                                    is_registered: 'true',
+                                    is_registered_by: 'clinic'
+                                },
+                            });
+                        })
+                        .setup.user.addr('27821235555')
+                        .inputs(
+                            {session_event: 'new'}  // states_start
+                            , '2'  // states_consent - no
+                        )
+                        .check.interaction({
+                            state: 'states_stay_out',
+                            reply: [
+                                'You have chosen not to receive MomConnect SMSs ' +
+                                'and so cannot complete registration.',
+                                '1. Main Menu'
+                            ].join('\n')
+                        })
                         .run();
                 });
             });

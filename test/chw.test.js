@@ -621,6 +621,10 @@ describe("app", function() {
                                 '3. None'
                             ].join('\n')
                         })
+                        .check(function(api) {
+                            var contact = api.contacts.store[0];
+                            assert.equal(contact.extra.consent, 'true');
+                        })
                         .run();
                 });
                 it("should tell them they cannot complete registration", function() {
@@ -720,6 +724,8 @@ describe("app", function() {
                         .check(function(api) {
                             var optouts = api.optout.optout_store;
                             assert.equal(optouts.length, 4);
+                            var contact = api.contacts.store[0];
+                            assert.equal(contact.extra.consent, 'true');
                         })
                         .run();
                 });
@@ -875,8 +881,10 @@ describe("app", function() {
                             ].join('\n')
                         })
                         .check(function(api) {
-                            var contact = api.contacts.store[0];
+                            var contact = api.contacts.store[0]; // chw
                             assert.equal(contact.extra.working_on, "+27821234567");
+                            contact = api.contacts.store[1]; // pregnant mother
+                            assert.equal(contact.extra.consent, 'true');
                         })
                         .run();
                 });
@@ -997,6 +1005,10 @@ describe("app", function() {
                         .check(function(api) {
                             var optouts = api.optout.optout_store;
                             assert.equal(optouts.length, 4);
+                            var contact = _.find(api.contacts.store, {
+                              msisdn: '+27831112222'
+                            });
+                            assert.equal(contact.extra.consent, 'true');
                         })
                         .run();
                 });

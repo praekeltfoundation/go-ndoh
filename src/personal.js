@@ -177,7 +177,7 @@ go.app = function() {
                                 if (count === 0) {
                                     // if no active subscriptions, register user
                                     if (!self.im.config.faq_enabled) {
-                                        return self.states.create('states_consent', opts);
+                                        return self.states.create('states_suspect_pregnancy', opts);
                                     } else {
                                         return self.states.create('states_register_info', opts);
                                     }
@@ -356,7 +356,7 @@ go.app = function() {
                         })
                         .then(function() {
                             if (!self.im.config.faq_enabled){
-                                return 'states_consent';
+                                return 'states_suspect_pregnancy';
                             } else {
                                 return 'states_register_info';
                             }
@@ -396,7 +396,7 @@ go.app = function() {
 
                 next: function(choice) {
                     return {
-                        register: 'states_consent',
+                        register: 'states_suspect_pregnancy',
                         info: 'states_faq_topics'
                     } [choice.value];
                 }
@@ -420,7 +420,19 @@ go.app = function() {
                         return self.im.contacts
                             .save(self.contact)
                             .then(function() {
-                                return 'states_suspect_pregnancy';
+                                return go.utils
+                                    .opted_out(self.im, self.contact)
+                                    .then(function(opted_out) {
+                                        if (opted_out) {
+                                            return 'states_opt_in';
+                                        } else {
+                                            if (self.im.config.detailed_data_collection){
+                                                return 'states_id_type';
+                                            } else {
+                                                return 'save_subscription_data';
+                                            }
+                                        }
+                                    });
                             });
                     } else {
                         return 'states_stay_out';
@@ -450,19 +462,7 @@ go.app = function() {
                         .save(self.contact)
                         .then(function() {
                             if (choice.value === 'yes') {
-                                return go.utils
-                                    .opted_out(self.im, self.contact)
-                                    .then(function(opted_out) {
-                                        if (opted_out) {
-                                            return 'states_opt_in';
-                                        } else {
-                                            if (self.im.config.detailed_data_collection){
-                                                return 'states_id_type';
-                                            } else {
-                                                return 'save_subscription_data';
-                                            }
-                                        }
-                                    });
+                                return 'states_consent';
                             } else {
                                 return 'states_end_not_pregnant';
                             }

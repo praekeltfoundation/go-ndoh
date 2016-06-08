@@ -796,11 +796,11 @@ describe("app", function() {
                     .setup.user.state('states_register_info')
                     .inputs('1')
                     .check.interaction({
-                        state: 'states_consent',
+                        state: 'states_suspect_pregnancy',
                         reply: [
-                            'To register we need to collect, store & use ' +
-                            'your info. You may get messages on public ' +
-                            'holidays & weekends. Do you consent?',
+                            'MomConnect sends free support SMSs to ' +
+                            'pregnant mothers. Are you or do you suspect ' +
+                            'that you are pregnant?',
                             '1. Yes',
                             '2. No'
                         ].join('\n')
@@ -813,11 +813,11 @@ describe("app", function() {
                     .setup.user.state('states_register_info')
                     .inputs('1','1')
                     .check.interaction({
-                        state: 'states_suspect_pregnancy',
+                        state: 'states_consent',
                         reply: [
-                            'MomConnect sends free support SMSs to ' +
-                            'pregnant mothers. Are you or do you suspect ' +
-                            'that you are pregnant?',
+                            'To register we need to collect, store & use ' +
+                            'your info. You may get messages on public ' +
+                            'holidays & weekends. Do you consent?',
                             '1. Yes',
                             '2. No'
                         ].join('\n')
@@ -828,7 +828,7 @@ describe("app", function() {
                 return tester
                     .setup.user.addr('27001')
                     .setup.user.state('states_register_info')
-                    .inputs('1','2')
+                    .inputs('1','1','2')
                     .check.interaction({
                         state: 'states_stay_out',
                         reply: [
@@ -895,7 +895,7 @@ describe("app", function() {
                     return tester
                         .setup.user.addr('27001')
                         .setup.user.state('states_suspect_pregnancy')
-                        .input('1')
+                        .inputs('1','1')
                         .check.interaction({
                             state: 'states_id_type',
                             reply: [
@@ -908,6 +908,7 @@ describe("app", function() {
                         .check(function(api) {
                             var contact = api.contacts.store[0];
                             assert.equal(contact.extra.suspect_pregnancy, 'yes');
+                            assert.equal(contact.extra.consent, 'true');
                         })
                         .run();
                 });
@@ -923,7 +924,7 @@ describe("app", function() {
                         })
                         .setup.user.addr('27831112222')
                         .setup.user.state('states_suspect_pregnancy')
-                        .input('1')
+                        .inputs('1','1')
                         .check.interaction({
                             state: 'states_opt_in',
                             reply: [(
@@ -933,6 +934,11 @@ describe("app", function() {
                                 '1. Yes',
                                 '2. No'
                             ].join('\n')
+                        })
+                        .check(function(api) {
+                            var contact = api.contacts.store[0];
+                            assert.equal(contact.extra.suspect_pregnancy, 'yes');
+                            assert.equal(contact.extra.consent, 'true');
                         })
                         .run();
                 });
@@ -2228,11 +2234,11 @@ describe("app", function() {
                         )
                         // check navigation
                         .check.interaction({
-                            state: 'states_consent',
+                            state: 'states_suspect_pregnancy',
                             reply: [
-                                'To register we need to collect, store & use ' +
-                                'your info. You may get messages on public ' +
-                                'holidays & weekends. Do you consent?',
+                                'MomConnect sends free support SMSs to ' +
+                                'pregnant mothers. Are you or do you suspect ' +
+                                'that you are pregnant?',
                                 '1. Yes',
                                 '2. No'
                             ].join('\n')
@@ -2245,15 +2251,15 @@ describe("app", function() {
                         .inputs(
                             {session_event: 'new'}  // states_start
                             , '4'  // states_language
-                            , '1'  // states_consent - yes
+                            , '1'  // states_suspect_pregnancy - yes
                         )
                         // check navigation
                         .check.interaction({
-                            state: 'states_suspect_pregnancy',
+                            state: 'states_consent',
                             reply: [
-                                'MomConnect sends free support SMSs to ' +
-                                'pregnant mothers. Are you or do you suspect ' +
-                                'that you are pregnant?',
+                                'To register we need to collect, store & use ' +
+                                'your info. You may get messages on public ' +
+                                'holidays & weekends. Do you consent?',
                                 '1. Yes',
                                 '2. No'
                             ].join('\n')
@@ -2266,6 +2272,7 @@ describe("app", function() {
                         .inputs(
                             {session_event: 'new'}  // states_start
                             , '4'  // states_language
+                            , '1'  // states_suspect_pregnancy
                             , '2'  // states_consent - no
                         )
                         .check.interaction({
@@ -2286,7 +2293,6 @@ describe("app", function() {
                         .inputs(
                             {session_event: 'new'}  // states_start
                             , '4'  // states_language
-                            , '1'  // states_consent - yes
                             , '2'  // states_suspect_pregnancy
                         )
                         // check navigation
@@ -2490,11 +2496,11 @@ describe("app", function() {
                         )
                         // check navigation
                         .check.interaction({
-                            state: 'states_consent',
+                            state: 'states_suspect_pregnancy',
                             reply: [
-                                'To register we need to collect, store & use ' +
-                                'your info. You may get messages on public ' +
-                                'holidays & weekends. Do you consent?',
+                                'MomConnect sends free support SMSs to ' +
+                                'pregnant mothers. Are you or do you suspect ' +
+                                'that you are pregnant?',
                                 '1. Yes',
                                 '2. No'
                             ].join('\n')
@@ -2518,15 +2524,15 @@ describe("app", function() {
                         .setup.user.addr('27821235555')
                         .inputs(
                             {session_event: 'new'}  // states_start
-                            , '1'  // states_consent - yes
+                            , '1'  // states_suspect_pregnancy - yes
                         )
                         // check navigation
                         .check.interaction({
-                            state: 'states_suspect_pregnancy',
+                            state: 'states_consent',
                             reply: [
-                                'MomConnect sends free support SMSs to ' +
-                                'pregnant mothers. Are you or do you suspect ' +
-                                'that you are pregnant?',
+                                'To register we need to collect, store & use ' +
+                                'your info. You may get messages on public ' +
+                                'holidays & weekends. Do you consent?',
                                 '1. Yes',
                                 '2. No'
                             ].join('\n')
@@ -2550,6 +2556,7 @@ describe("app", function() {
                         .setup.user.addr('27821235555')
                         .inputs(
                             {session_event: 'new'}  // states_start
+                            , '1'  // states_suspect_pregnancy
                             , '2'  // states_consent - no
                         )
                         .check.interaction({

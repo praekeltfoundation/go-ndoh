@@ -640,8 +640,7 @@ describe("app", function() {
                         .check.interaction({
                             state: 'states_stay_out',
                             reply: [(
-                                'You have chosen not to receive MomConnect SMSs ' +
-                                'and so cannot complete registration.'),
+                                'You have chosen not to receive MomConnect SMSs'),
                                 '1. Main Menu'
                             ].join('\n')
                         })
@@ -742,8 +741,7 @@ describe("app", function() {
                         .check.interaction({
                             state: 'states_stay_out',
                             reply: [(
-                                'You have chosen not to receive MomConnect SMSs ' +
-                                'and so cannot complete registration.'),
+                                'You have chosen not to receive MomConnect SMSs'),
                                 '1. Main Menu'
                             ].join('\n')
                         })
@@ -765,8 +763,7 @@ describe("app", function() {
                         .check.interaction({
                             state: 'states_stay_out',
                             reply: [(
-                                'You have chosen not to receive MomConnect SMSs ' +
-                                'and so cannot complete registration.'),
+                                'You have chosen not to receive MomConnect SMSs'),
                                 '1. Main Menu'
                             ].join('\n')
                         })
@@ -896,8 +893,7 @@ describe("app", function() {
                         .check.interaction({
                             state: 'states_stay_out',
                             reply: [(
-                                'You have chosen not to receive MomConnect SMSs ' +
-                                'and so cannot complete registration.'),
+                                'You have chosen not to receive MomConnect SMSs'),
                                 '1. Main Menu'
                             ].join('\n')
                         })
@@ -1025,8 +1021,7 @@ describe("app", function() {
                         .check.interaction({
                             state: 'states_stay_out',
                             reply: [(
-                                'You have chosen not to receive MomConnect SMSs ' +
-                                'and so cannot complete registration.'),
+                                'You have chosen not to receive MomConnect SMSs'),
                                 '1. Main Menu'
                             ].join('\n')
                         })
@@ -1056,8 +1051,7 @@ describe("app", function() {
                         .check.interaction({
                             state: 'states_stay_out',
                             reply: [(
-                                'You have chosen not to receive MomConnect SMSs ' +
-                                'and so cannot complete registration.'),
+                                'You have chosen not to receive MomConnect SMSs'),
                                 '1. Main Menu'
                             ].join('\n')
                         })

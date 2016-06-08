@@ -1659,8 +1659,7 @@ go.app = function() {
 
         self.add('states_stay_out', function(name) {
             return new ChoiceState(name, {
-                question: $('You have chosen not to receive MomConnect SMSs ' +
-                            'and so cannot complete registration.'),
+                question: $('You have chosen not to receive MomConnect SMSs'),
 
                 choices: [
                     new Choice('main_menu', $('Main Menu'))

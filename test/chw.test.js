@@ -627,7 +627,7 @@ describe("app", function() {
                         })
                         .run();
                 });
-                it("should tell them they cannot complete registration", function() {
+                it("should tell them they cannot register", function() {
                     return tester
                         .setup(function(api) {
                             api.contacts.add({
@@ -638,11 +638,9 @@ describe("app", function() {
                         .setup.user.state('states_start')
                         .inputs('1', '2')
                         .check.interaction({
-                            state: 'states_stay_out',
-                            reply: [(
-                                'You have chosen not to receive MomConnect SMSs'),
-                                '1. Main Menu'
-                            ].join('\n')
+                            state: 'states_consent_refused',
+                            reply: 'Unfortunately without her consent, she ' +
+                                    'cannot register to MomConnect.'
                         })
                         .run();
                 });
@@ -728,7 +726,7 @@ describe("app", function() {
                         })
                         .run();
                 });
-                it("should tell them they cannot complete registration", function() {
+                it("should tell them they cannot register", function() {
                     return tester
                         .setup(function(api) {
                             api.contacts.add({
@@ -739,11 +737,9 @@ describe("app", function() {
                         .setup.user.state('states_opt_in')
                         .inputs('1', '2')
                         .check.interaction({
-                            state: 'states_stay_out',
-                            reply: [(
-                                'You have chosen not to receive MomConnect SMSs'),
-                                '1. Main Menu'
-                            ].join('\n')
+                            state: 'states_consent_refused',
+                            reply: 'Unfortunately without her consent, she ' +
+                                    'cannot register to MomConnect.'
                         })
                         .run();
                 });
@@ -885,17 +881,15 @@ describe("app", function() {
                         })
                         .run();
                 });
-                it("should tell them they cannot complete registration", function() {
+                it("should tell them they cannot register", function() {
                     return tester
                         .setup.user.addr('270001')
                         .setup.user.state('states_mobile_no')
                         .inputs('0821234567', '2')
                         .check.interaction({
-                            state: 'states_stay_out',
-                            reply: [(
-                                'You have chosen not to receive MomConnect SMSs'),
-                                '1. Main Menu'
-                            ].join('\n')
+                            state: 'states_consent_refused',
+                            reply: 'Unfortunately without her consent, she ' +
+                                    'cannot register to MomConnect.'
                         })
                         .run();
                 });
@@ -1019,11 +1013,9 @@ describe("app", function() {
                         .setup.user.state('states_opt_in')
                         .inputs('1', '2')
                         .check.interaction({
-                            state: 'states_stay_out',
-                            reply: [(
-                                'You have chosen not to receive MomConnect SMSs'),
-                                '1. Main Menu'
-                            ].join('\n')
+                            state: 'states_consent_refused',
+                            reply: 'Unfortunately without her consent, she ' +
+                                    'cannot register to MomConnect.'
                         })
                         .run();
                 });

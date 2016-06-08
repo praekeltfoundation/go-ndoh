@@ -824,17 +824,15 @@ describe("app", function() {
                     })
                     .run();
             });
-            it("should tell them they cannot complete registration", function() {
+            it("should tell them they cannot register", function() {
                 return tester
                     .setup.user.addr('27001')
                     .setup.user.state('states_register_info')
                     .inputs('1','1','2')
                     .check.interaction({
-                        state: 'states_stay_out',
-                        reply: [
-                            'You have chosen not to receive MomConnect SMSs',
-                            '1. Main Menu'
-                        ].join('\n')
+                        state: 'states_consent_refused',
+                        reply: 'Unfortunately without your consent, you ' +
+                                'cannot register to MomConnect.'
                     })
                     .run();
             });
@@ -2266,7 +2264,7 @@ describe("app", function() {
                         })
                         .run();
                 });
-                it("should tell them they cannot complete registration", function() {
+                it("should tell them they cannot register", function() {
                     return tester
                         .setup.user.addr('27001')
                         .inputs(
@@ -2276,11 +2274,9 @@ describe("app", function() {
                             , '2'  // states_consent - no
                         )
                         .check.interaction({
-                            state: 'states_stay_out',
-                            reply: [
-                                'You have chosen not to receive MomConnect SMSs',
-                                '1. Main Menu'
-                            ].join('\n')
+                            state: 'states_consent_refused',
+                            reply: 'Unfortunately without your consent, you ' +
+                                    'cannot register to MomConnect.'
                         })
                         .run();
                 });
@@ -2541,7 +2537,7 @@ describe("app", function() {
                         .check.user.properties({lang: 'xh'})
                         .run();
                 });
-                it("should tell them they cannot complete registration", function() {
+                it("should tell them they cannot register", function() {
                     return tester
                         .setup(function(api) {
                             api.contacts.add({
@@ -2560,11 +2556,9 @@ describe("app", function() {
                             , '2'  // states_consent - no
                         )
                         .check.interaction({
-                            state: 'states_stay_out',
-                            reply: [
-                                'You have chosen not to receive MomConnect SMSs',
-                                '1. Main Menu'
-                            ].join('\n')
+                            state: 'states_consent_refused',
+                            reply: 'Unfortunately without your consent, you ' +
+                                    'cannot register to MomConnect.'
                         })
                         .run();
                 });

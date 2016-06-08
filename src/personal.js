@@ -435,9 +435,17 @@ go.app = function() {
                                     });
                             });
                     } else {
-                        return 'states_stay_out';
+                        return 'states_consent_refused';
                     }
                 }
+            });
+        });
+
+        self.add('states_consent_refused', function(name) {
+            return new EndState(name, {
+                text: 'Unfortunately without your consent, you cannot register' +
+                        ' to MomConnect.',
+                next: 'states_start'
             });
         });
 

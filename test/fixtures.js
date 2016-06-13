@@ -1055,7 +1055,7 @@ module.exports = function() {
                 "mom_id_no":null,
                 "mom_dob":"1951-01-02",
                 "clinic_code":"123456",
-                "consent": null,
+                "consent": true,
                 "authority":"clinic"
             }
         },
@@ -1071,7 +1071,7 @@ module.exports = function() {
                 "mom_id_no":null,
                 "mom_dob":"1951-01-02",
                 "clinic_code":"123456",
-                "consent": null,
+                "consent": true,
                 "authority":"clinic"
             }
         }
@@ -1093,8 +1093,8 @@ module.exports = function() {
                 "mom_edd":"2014-05-30",
                 "mom_id_no":"5101025009086",
                 "mom_dob":"1951-01-02",
+                "consent": true,
                 "clinic_code":"123456",
-                "consent": null,
                 "authority":"clinic"
             }
         },
@@ -1109,8 +1109,8 @@ module.exports = function() {
                 "mom_edd":"2014-05-30",
                 "mom_id_no":"5101025009086",
                 "mom_dob":"1951-01-02",
+                "consent": true,
                 "clinic_code":"123456",
-                "consent": null,
                 "authority":"clinic"
             }
         }
@@ -1124,17 +1124,17 @@ module.exports = function() {
             },
             "url": "http://ndoh-control/api/v2/registrations/",
             "data": {
-                "hcw_msisdn": null,
-                "mom_msisdn": "+27821234567",
-                "mom_id_type": "sa_id",
-                "mom_passport_origin":null,
-                "mom_lang": "en",
-                "mom_edd": "2014-05-30",
-                "mom_id_no": "5101025009086",
-                "mom_dob": "1951-01-02",
-                "clinic_code": "123456",
-                "consent": null,
-                "authority": "clinic"
+              	"hcw_msisdn": null,
+              	"mom_msisdn": "+27821234567",
+              	"mom_id_type": "sa_id",
+              	"mom_passport_origin": null,
+              	"mom_lang": "en",
+              	"mom_edd": "2014-05-30",
+              	"mom_id_no": "5101025009086",
+              	"mom_dob": "1951-01-02",
+              	"consent": true,
+              	"clinic_code": "123456",
+              	"authority": "clinic"
             }
         },
         "response": {
@@ -1148,8 +1148,8 @@ module.exports = function() {
                 "mom_edd": "2014-05-30",
                 "mom_id_no": "5101025009086",
                 "mom_dob": "1951-01-02",
+                "consent": true,
                 "clinic_code": "123456",
-                "consent": null,
                 "authority": "clinic"
             }
         }
@@ -1172,7 +1172,7 @@ module.exports = function() {
                 "mom_id_no":"5101015009088",
                 "mom_dob":"1951-01-01",
                 "clinic_code":null,
-                "consent": null,
+                "consent": true,
                 "authority":"personal"
             }
         },
@@ -1188,7 +1188,7 @@ module.exports = function() {
                 "mom_id_no":"5101015009088",
                 "mom_dob":"1951-01-01",
                 "clinic_code":null,
-                "consent": null,
+                "consent": true,
                 "authority":"personal"
             }
         }
@@ -1211,7 +1211,7 @@ module.exports = function() {
                 "mom_id_no":"5002285000007",
                 "mom_dob":"1950-02-28",
                 "clinic_code":null,
-                "consent": null,
+                "consent": true,
                 "authority":"personal"
             }
         },
@@ -1227,7 +1227,7 @@ module.exports = function() {
                 "mom_id_no":"5002285000007",
                 "mom_dob":"1950-02-28",
                 "clinic_code":null,
-                "consent": null,
+                "consent": true,
                 "authority":"personal"
             }
         }
@@ -1250,7 +1250,7 @@ module.exports = function() {
                 "mom_id_no":"5101025009086",
                 "mom_dob":"1951-01-02",
                 "clinic_code":null,
-                "consent": null,
+                "consent": true,
                 "authority":"personal"
             }
         },
@@ -1266,7 +1266,7 @@ module.exports = function() {
                 "mom_id_no":"5101025009086",
                 "mom_dob":"1951-01-02",
                 "clinic_code":null,
-                "consent": null,
+                "consent": true,
                 "authority":"personal"
             }
         }
@@ -1289,7 +1289,7 @@ module.exports = function() {
                 "mom_id_no":"2012315678097",
                 "mom_dob":"2020-12-31",
                 "clinic_code":null,
-                "consent": null,
+                "consent": true,
                 "authority":"personal"
             }
         },
@@ -1305,7 +1305,7 @@ module.exports = function() {
                 "mom_id_no":"2012315678097",
                 "mom_dob":"2020-12-31",
                 "clinic_code":null,
-                "consent": null,
+                "consent": true,
                 "authority":"personal"
             }
         }
@@ -1328,7 +1328,7 @@ module.exports = function() {
                 "mom_id_no":"12345",
                 "mom_dob":null,
                 "clinic_code":null,
-                "consent": null,
+                "consent": true,
                 "authority":"personal"
             }
         },
@@ -1344,7 +1344,7 @@ module.exports = function() {
                 "mom_id_no":"12345",
                 "mom_dob":null,
                 "clinic_code":null,
-                "consent": null,
+                "consent": true,
                 "authority":"personal"
             }
         }
@@ -1367,7 +1367,7 @@ module.exports = function() {
                 "mom_id_no":"12345",
                 "mom_dob":"1981-01-01",
                 "clinic_code":null,
-                "consent": null,
+                "consent": true,
                 "authority":"personal"
             }
         },
@@ -1383,7 +1383,7 @@ module.exports = function() {
                 "mom_id_no":"12345",
                 "mom_dob":"1981-01-01",
                 "clinic_code":null,
-                "consent": null,
+                "consent": true,
                 "authority":"personal"
             }
         }
@@ -1406,7 +1406,7 @@ module.exports = function() {
                 "mom_id_no":null,
                 "mom_dob":null,
                 "clinic_code":null,
-                "consent": null,
+                "consent": true,
                 "authority":"personal"
             }
         },
@@ -1422,7 +1422,7 @@ module.exports = function() {
                 "mom_id_no":null,
                 "mom_dob":null,
                 "clinic_code":null,
-                "consent": null,
+                "consent": true,
                 "authority":"personal"
             }
         }
@@ -1483,7 +1483,7 @@ module.exports = function() {
                 "mom_id_no":"12345",
                 "mom_dob":null,
                 "clinic_code":null,
-                "consent": null,
+                "consent": true,
                 "authority":"chw"
             }
         },
@@ -1499,7 +1499,7 @@ module.exports = function() {
                 "mom_id_no":"12345",
                 "mom_dob":null,
                 "clinic_code":null,
-                "consent": null,
+                "consent": true,
                 "authority":"chw"
             }
         }
@@ -1522,7 +1522,7 @@ module.exports = function() {
                 "mom_id_no":"5101025009086",
                 "mom_dob":null,
                 "clinic_code":null,
-                "consent": null,
+                "consent": true,
                 "authority":"chw"
             }
         },
@@ -1538,7 +1538,7 @@ module.exports = function() {
                 "mom_id_no":"5101025009086",
                 "mom_dob":null,
                 "clinic_code":null,
-                "consent": null,
+                "consent": true,
                 "authority":"chw"
             }
         }
@@ -1561,7 +1561,7 @@ module.exports = function() {
                 "mom_id_no":"5101025009086",
                 "mom_dob":"1951-01-02",
                 "clinic_code":null,
-                "consent": null,
+                "consent": true,
                 "authority":"chw"
             }
         },
@@ -1577,7 +1577,7 @@ module.exports = function() {
                 "mom_id_no":"5101025009086",
                 "mom_dob":"1951-01-02",
                 "clinic_code":null,
-                "consent": null,
+                "consent": true,
                 "authority":"chw"
             }
         }

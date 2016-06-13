@@ -1952,7 +1952,8 @@ describe("app", function() {
                                     birth_day: '02',
                                     dob: '1951-01-02',
                                     due_date_month: '05',
-                                    due_date_day: '30'
+                                    due_date_day: '30',
+                                    consent: 'true'
                                 },
                                 key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                                 user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
@@ -2013,7 +2014,8 @@ describe("app", function() {
                                     ussd_sessions: '5',
                                     due_date_month: '05',
                                     due_date_day: '30',
-                                    is_registered_by: 'personal'
+                                    is_registered_by: 'personal',
+                                    consent: 'true'
                                 },
                                 key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                                 user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
@@ -2075,7 +2077,8 @@ describe("app", function() {
                                     ussd_sessions: '5',
                                     due_date_month: '05',
                                     due_date_day: '30',
-                                    is_registered_by: 'personal'
+                                    is_registered_by: 'personal',
+                                    consent: 'true'
                                 },
                                 key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                                 user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
@@ -2129,7 +2132,8 @@ describe("app", function() {
                                     dob: '1951-01-02',
                                     ussd_sessions: '5',
                                     due_date_month: '05',
-                                    due_date_day: '30'
+                                    due_date_day: '30',
+                                    consent: 'true'
                                 },
                                 key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                                 user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
@@ -2163,7 +2167,8 @@ describe("app", function() {
                                     dob: '1951-01-02',
                                     ussd_sessions: '5',
                                     due_date_month: '05',
-                                    due_date_day: '30'
+                                    due_date_day: '30',
+                                    consent: 'true'
                                 },
                                 key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                                 user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
@@ -2211,7 +2216,8 @@ describe("app", function() {
                                     birth_day: '02',
                                     dob: '1951-01-02',
                                     due_date_month: '05',
-                                    due_date_day: '30'
+                                    due_date_day: '30',
+                                    consent: 'true'
                                 },
                                 key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                                 user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
@@ -2253,6 +2259,7 @@ describe("app", function() {
                                     birth_month: '01',
                                     birth_day: '02',
                                     dob: '1951-01-02',
+                                    consent: 'true'
                                 },
                                 key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                                 user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"

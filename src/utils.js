@@ -740,6 +740,7 @@ go.utils = {
             mom_edd: go.utils.get_edd(im, contact),  // 'YYYY-MM-DD' | null
             mom_id_no: go.utils.get_identification_no(contact),
             mom_dob: contact.extra.dob || null,  // 'YYYY-MM-DD' | null
+            consent: contact.extra.consent === 'true' || null, // 'true' | null
             clinic_code: contact.extra.clinic_code || null,
             authority: reg_type,  // 'clinic' | 'chw' | 'personal'
         };

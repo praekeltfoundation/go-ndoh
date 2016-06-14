@@ -743,6 +743,7 @@ go.utils = {
             mom_edd: go.utils.get_edd(im, contact),  // 'YYYY-MM-DD' | null
             mom_id_no: go.utils.get_identification_no(contact),
             mom_dob: contact.extra.dob || null,  // 'YYYY-MM-DD' | null
+            consent: contact.extra.consent === 'true' || null, // 'true' | null
             clinic_code: contact.extra.clinic_code || null,
             authority: reg_type,  // 'clinic' | 'chw' | 'personal'
         };
@@ -1612,7 +1613,7 @@ go.app = function() {
                             .then(function(opted_out) {
                                 return {
                                     true: 'states_opt_in',
-                                    false: 'states_id_type',
+                                    false: 'states_consent',
                                 } [opted_out];
                             });
                     } else {
@@ -1638,7 +1639,7 @@ go.app = function() {
                         return go.utils
                             .opt_in(self.im, self.contact)
                             .then(function() {
-                                return 'states_id_type';
+                                return 'states_consent';
                             });
                     } else {
                         if (!_.isUndefined(self.user.extra.working_on)) {
@@ -1658,8 +1659,7 @@ go.app = function() {
 
         self.add('states_stay_out', function(name) {
             return new ChoiceState(name, {
-                question: $('You have chosen not to receive MomConnect SMSs ' +
-                            'and so cannot complete registration.'),
+                question: $('You have chosen not to receive MomConnect SMSs'),
 
                 choices: [
                     new Choice('main_menu', $('Main Menu'))
@@ -1699,11 +1699,45 @@ go.app = function() {
                                 .then(function(opted_out) {
                                     return {
                                         true: 'states_opt_in',
-                                        false: 'states_id_type',
+                                        false: 'states_consent',
                                     } [opted_out];
                                 });
                         });
                 }
+            });
+        });
+
+        self.add('states_consent', function(name) {
+            return new ChoiceState(name, {
+                question: $('We need to collect, store & use her info. She ' +
+                            'may get messages on public holidays & weekends. ' +
+                            'Does she consent?'),
+                choices: [
+                    new Choice('yes', $('Yes')),
+                    new Choice('no', $('No')),
+                ],
+
+                next: function(choice) {
+                    if (choice.value === 'yes') {
+                        self.contact.extra.consent = 'true';
+
+                        return self.im.contacts
+                            .save(self.contact)
+                            .then(function() {
+                                return 'states_id_type';
+                            });
+                    } else {
+                        return 'states_consent_refused';
+                    }
+                }
+            });
+        });
+
+        self.add('states_consent_refused', function(name) {
+            return new EndState(name, {
+                text: 'Unfortunately without her consent, she cannot register' +
+                        ' to MomConnect.',
+                next: 'states_start'
             });
         });
 

@@ -579,6 +579,28 @@ describe("app", function() {
         describe("when the no. is the pregnant woman's no.", function() {
 
             describe("if not previously opted out", function() {
+                it("should ask for consent", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27001',
+                            });
+                        })
+                        .setup.user.addr('27001')
+                        .setup.user.state('states_start')
+                        .inputs('1')
+                        .check.interaction({
+                            state: 'states_consent',
+                            reply: [(
+                                'We need to collect, store & use her info. ' +
+                                'She may get messages on public holidays & ' +
+                                'weekends. Does she consent?'),
+                                '1. Yes',
+                                '2. No'
+                            ].join('\n')
+                        })
+                        .run();
+                });
                 it("should ask for the id type", function() {
                     return tester
                         .setup(function(api) {
@@ -588,7 +610,7 @@ describe("app", function() {
                         })
                         .setup.user.addr('27001')
                         .setup.user.state('states_start')
-                        .input('1')
+                        .inputs('1','1')
                         .check.interaction({
                             state: 'states_id_type',
                             reply: [
@@ -598,6 +620,27 @@ describe("app", function() {
                                 '2. Passport',
                                 '3. None'
                             ].join('\n')
+                        })
+                        .check(function(api) {
+                            var contact = api.contacts.store[0];
+                            assert.equal(contact.extra.consent, 'true');
+                        })
+                        .run();
+                });
+                it("should tell them they cannot register", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27001',
+                            });
+                        })
+                        .setup.user.addr('27001')
+                        .setup.user.state('states_start')
+                        .inputs('1', '2')
+                        .check.interaction({
+                            state: 'states_consent_refused',
+                            reply: 'Unfortunately without her consent, she ' +
+                                    'cannot register to MomConnect.'
                         })
                         .run();
                 });
@@ -629,6 +672,32 @@ describe("app", function() {
             });
 
             describe("if the user confirms opting back in", function() {
+                it("should ask for consent", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27831112222',
+                            });
+                        })
+                        .setup.user.addr('27831112222')
+                        .setup.user.state('states_opt_in')
+                        .inputs('1')
+                        .check.interaction({
+                            state: 'states_consent',
+                            reply: [(
+                                'We need to collect, store & use her info. ' +
+                                'She may get messages on public holidays & ' +
+                                'weekends. Does she consent?'),
+                                '1. Yes',
+                                '2. No'
+                            ].join('\n')
+                        })
+                        .check(function(api) {
+                            var optouts = api.optout.optout_store;
+                            assert.equal(optouts.length, 4);
+                        })
+                        .run();
+                });
                 it("should ask for the id type", function() {
                     return tester
                         .setup(function(api) {
@@ -638,7 +707,7 @@ describe("app", function() {
                         })
                         .setup.user.addr('27831112222')
                         .setup.user.state('states_opt_in')
-                        .input('1')
+                        .inputs('1','1')
                         .check.interaction({
                             state: 'states_id_type',
                             reply: [
@@ -652,6 +721,25 @@ describe("app", function() {
                         .check(function(api) {
                             var optouts = api.optout.optout_store;
                             assert.equal(optouts.length, 4);
+                            var contact = api.contacts.store[0];
+                            assert.equal(contact.extra.consent, 'true');
+                        })
+                        .run();
+                });
+                it("should tell them they cannot register", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27831112222',
+                            });
+                        })
+                        .setup.user.addr('27831112222')
+                        .setup.user.state('states_opt_in')
+                        .inputs('1', '2')
+                        .check.interaction({
+                            state: 'states_consent_refused',
+                            reply: 'Unfortunately without her consent, she ' +
+                                    'cannot register to MomConnect.'
                         })
                         .run();
                 });
@@ -671,8 +759,7 @@ describe("app", function() {
                         .check.interaction({
                             state: 'states_stay_out',
                             reply: [(
-                                'You have chosen not to receive MomConnect SMSs ' +
-                                'and so cannot complete registration.'),
+                                'You have chosen not to receive MomConnect SMSs'),
                                 '1. Main Menu'
                             ].join('\n')
                         })
@@ -750,11 +837,32 @@ describe("app", function() {
         describe("after entering the pregnant woman's number", function() {
 
             describe("if the number has not opted out before", function() {
+                it("should ask for consent", function() {
+                    return tester
+                        .setup.user.addr('270001')
+                        .setup.user.state('states_mobile_no')
+                        .inputs('0821234567')
+                        .check.interaction({
+                            state: 'states_consent',
+                            reply: [(
+                                'We need to collect, store & use her info. ' +
+                                'She may get messages on public holidays & ' +
+                                'weekends. Does she consent?'),
+                                '1. Yes',
+                                '2. No'
+                            ].join('\n')
+                        })
+                        .check(function(api) {
+                            var contact = api.contacts.store[0];
+                            assert.equal(contact.extra.working_on, "+27821234567");
+                        })
+                        .run();
+                });
                 it("should ask for the id type", function() {
                     return tester
                         .setup.user.addr('270001')
                         .setup.user.state('states_mobile_no')
-                        .input('0821234567')
+                        .inputs('0821234567','1')
                         .check.interaction({
                             state: 'states_id_type',
                             reply: [
@@ -766,8 +874,22 @@ describe("app", function() {
                             ].join('\n')
                         })
                         .check(function(api) {
-                            var contact = api.contacts.store[0];
+                            var contact = api.contacts.store[0]; // chw
                             assert.equal(contact.extra.working_on, "+27821234567");
+                            contact = api.contacts.store[1]; // pregnant mother
+                            assert.equal(contact.extra.consent, 'true');
+                        })
+                        .run();
+                });
+                it("should tell them they cannot register", function() {
+                    return tester
+                        .setup.user.addr('270001')
+                        .setup.user.state('states_mobile_no')
+                        .inputs('0821234567', '2')
+                        .check.interaction({
+                            state: 'states_consent_refused',
+                            reply: 'Unfortunately without her consent, she ' +
+                                    'cannot register to MomConnect.'
                         })
                         .run();
                 });
@@ -808,6 +930,40 @@ describe("app", function() {
             });
 
             describe("if the user confirms opting back in", function() {
+                it("should ask for consent", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27001',
+                                extra : {
+                                    working_on: '+27831112222'
+                                }
+                            });
+                        })
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27831112222',
+                            });
+                        })
+                        .setup.user.addr('27001')
+                        .setup.user.state('states_opt_in')
+                        .inputs('1')
+                        .check.interaction({
+                            state: 'states_consent',
+                            reply: [(
+                                'We need to collect, store & use her info. ' +
+                                'She may get messages on public holidays & ' +
+                                'weekends. Does she consent?'),
+                                '1. Yes',
+                                '2. No'
+                            ].join('\n')
+                        })
+                        .check(function(api) {
+                            var optouts = api.optout.optout_store;
+                            assert.equal(optouts.length, 4);
+                        })
+                        .run();
+                });
                 it("should ask for the id type", function() {
                     return tester
                         .setup(function(api) {
@@ -825,7 +981,7 @@ describe("app", function() {
                         })
                         .setup.user.addr('27001')
                         .setup.user.state('states_opt_in')
-                        .input('1')
+                        .inputs('1','1')
                         .check.interaction({
                             state: 'states_id_type',
                             reply: [
@@ -839,6 +995,27 @@ describe("app", function() {
                         .check(function(api) {
                             var optouts = api.optout.optout_store;
                             assert.equal(optouts.length, 4);
+                            var contact = _.find(api.contacts.store, {
+                              msisdn: '+27831112222'
+                            });
+                            assert.equal(contact.extra.consent, 'true');
+                        })
+                        .run();
+                });
+                it("should tell them they cannot complete registration", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27831112222',
+                            });
+                        })
+                        .setup.user.addr('27001')
+                        .setup.user.state('states_opt_in')
+                        .inputs('1', '2')
+                        .check.interaction({
+                            state: 'states_consent_refused',
+                            reply: 'Unfortunately without her consent, she ' +
+                                    'cannot register to MomConnect.'
                         })
                         .run();
                 });
@@ -866,8 +1043,7 @@ describe("app", function() {
                         .check.interaction({
                             state: 'states_stay_out',
                             reply: [(
-                                'You have chosen not to receive MomConnect SMSs ' +
-                                'and so cannot complete registration.'),
+                                'You have chosen not to receive MomConnect SMSs'),
                                 '1. Main Menu'
                             ].join('\n')
                         })
@@ -921,7 +1097,7 @@ describe("app", function() {
                 it("should set id type, ask for their id number", function() {
                     return tester
                         .setup.user.addr('270001')
-                        .inputs('start', '1', '1')
+                        .inputs('start', '1', '1', '1')
                         .check.interaction({
                             state: 'states_sa_id',
                             reply: (
@@ -962,7 +1138,7 @@ describe("app", function() {
                                 }
                             });
                         })
-                        .inputs('start', '2', '0821234567', '1')
+                        .inputs('start', '2', '0821234567', '1', '1')
                         .check.interaction({
                             state: 'states_sa_id',
                             reply: (
@@ -1439,7 +1615,8 @@ describe("app", function() {
                                     language_choice: 'en',
                                     id_type: 'passport',
                                     passport_origin: 'zw',
-                                    passport_no: '12345'
+                                    passport_no: '12345',
+                                    consent: 'true'
                                 },
                                 key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                                 user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
@@ -1501,7 +1678,8 @@ describe("app", function() {
                                     language_choice: 'en',
                                     id_type: 'passport',
                                     passport_origin: 'zw',
-                                    passport_no: '12345'
+                                    passport_no: '12345',
+                                    consent: 'true'
                                 },
                                 key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                                 user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
@@ -1537,7 +1715,8 @@ describe("app", function() {
                                     language_choice: 'en',
                                     id_type: 'passport',
                                     passport_origin: 'zw',
-                                    passport_no: '5101025009086'
+                                    passport_no: '5101025009086',
+                                    consent: 'true'
                                 },
                                 key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                                 user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
@@ -1590,7 +1769,8 @@ describe("app", function() {
                                     language_choice: 'en',
                                     id_type: 'passport',
                                     passport_origin: 'zw',
-                                    passport_no: '5101025009086'
+                                    passport_no: '5101025009086',
+                                    consent: 'true'
                                 },
                                 key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                                 user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
@@ -1616,7 +1796,8 @@ describe("app", function() {
                                     language_choice: 'en',
                                     id_type: 'passport',
                                     passport_origin: 'zw',
-                                    passport_no: '5101025009086'
+                                    passport_no: '5101025009086',
+                                    consent: 'true'
                                 },
                                 key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                                 user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
@@ -1657,6 +1838,7 @@ describe("app", function() {
                                     birth_month: '01',
                                     birth_day: '02',
                                     dob: '1951-01-02',
+                                    consent: 'true'
                                 },
                                 key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                                 user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"

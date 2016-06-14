@@ -192,6 +192,7 @@ describe("app", function() {
                     .inputs(
                         {session_event: 'start'},
                         '1',        // states_start - yes
+                        '1',        // state_consent - yes
                         '123456',    // states_clinic_code - 123456
                         '2',        // states_due_date_month - 05
                         '30',       // states_due_date_day - 30
@@ -209,6 +210,7 @@ describe("app", function() {
                         var contact = _.find(api.contacts.store, {
                           msisdn: '+27821234567'
                         });
+                        assert.equal(contact.extra.consent, 'true');
                         assert.equal(contact.extra.clinic_code, '123456');
                         assert.equal(contact.extra.due_date_month, '05');
                         assert.equal(contact.extra.due_date_day, '30');
@@ -238,6 +240,7 @@ describe("app", function() {
                         {session_event: 'start'},
                         '2',        // states_start - no
                         '0821234567', // states_mobile_no - +27821234567
+                        '1',        // states_consent - yes
                         '123456',    // states_clinic_code - 123456
                         '2',        // states_due_date_month - 05
                         '30',       // states_due_date_day - 30
@@ -255,6 +258,7 @@ describe("app", function() {
                           msisdn: '+27821234567'
                         });
                         // complete
+                        assert.equal(contact.extra.consent, 'true');
                         assert.equal(contact.extra.clinic_code, '123456');
                         assert.equal(contact.extra.due_date_month, '05');
                         assert.equal(contact.extra.due_date_day, '30');
@@ -357,6 +361,7 @@ describe("app", function() {
                         .inputs(
                             {session_event: 'new'}  // dial in
                             , '1'  // states_start
+                            , '1'  // states_consent
                             , '123456'  // states_clinic_code
                         )
                         .check(function(api) {
@@ -377,6 +382,7 @@ describe("app", function() {
                         .inputs(
                             {session_event: 'new'}  // dial in
                             , '1'  // states_start
+                            , '1'  // states_consent
                             , '123456'  // states_clinic_code
                             , {session_event: 'close'}  // states_due_date_month
                         )
@@ -398,6 +404,7 @@ describe("app", function() {
                         .inputs(
                             {session_event: 'new'}  // dial in
                             , '1'  // states_start
+                            , '1'  // states_consent
                             , '123456'  // states_clinic_code
                             , {session_event: 'close'}  // states_due_date_month
                             , {session_event: 'new'}  // redial
@@ -420,6 +427,7 @@ describe("app", function() {
                         .inputs(
                             {session_event: 'new'}  // dial in
                             , '1'  // states_start
+                            , '1'  // states_consent
                             , '123456'  // states_clinic_code
                             , {session_event: 'new'}  // redial
                         )
@@ -441,6 +449,7 @@ describe("app", function() {
                         .inputs(
                             {session_event: 'new'}  // dial in
                             , '1'  // states_start
+                            , '1'  // states_consent
                             , '123456'  // states_clinic_code
                             , {session_event: 'close'}  // states_due_date_month
                             , {session_event: 'new'}  // redial
@@ -464,6 +473,7 @@ describe("app", function() {
                         .inputs(
                             {session_event: 'new'}  // dial in
                             , '1'  // states_start
+                            , '1'  // states_consent
                             , '123456'  // states_clinic_code
                             , {session_event: 'close'}  // states_due_date_month
                             , {session_event: 'new'}  // redial
@@ -487,6 +497,7 @@ describe("app", function() {
                         .inputs(
                             {session_event: 'new'}  // dial in
                             , '1'  // states_start
+                            , '1'  // states_consent
                             , '123456'  // states_clinic_code
                             , {session_event: 'close'}  // states_due_date_month
                             , {session_event: 'new'}  // redial
@@ -724,7 +735,7 @@ describe("app", function() {
         describe("when the no. is the pregnant woman's no.", function() {
 
             describe("if not previously opted out", function() {
-                it("should ask for the clinic code", function() {
+                it("should ask for consent", function() {
                     return tester
                         .setup(function(api) {
                             api.contacts.add({
@@ -735,10 +746,49 @@ describe("app", function() {
                         .setup.user.state('states_start')
                         .input('1')
                         .check.interaction({
+                            state: 'states_consent',
+                            reply: [(
+                                'We need to collect, store & use her info. ' +
+                                'She may get messages on public holidays & ' +
+                                'weekends. Does she consent?'),
+                                '1. Yes',
+                                '2. No'
+                            ].join('\n')
+                        })
+                        .run();
+                });
+                it("should ask for the clinic code if consented", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27001',
+                            });
+                        })
+                        .setup.user.addr('27001')
+                        .setup.user.state('states_start')
+                        .inputs('1', '1')
+                        .check.interaction({
                             state: 'states_clinic_code',
                             reply: (
                                 'Please enter the clinic code for the facility ' +
                                 'where this pregnancy is being registered:')
+                        })
+                        .run();
+                });
+                it("should tell them they cannot register", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27001',
+                            });
+                        })
+                        .setup.user.addr('27001')
+                        .setup.user.state('states_start')
+                        .inputs('1', '2')
+                        .check.interaction({
+                            state: 'states_consent_refused',
+                            reply: 'Unfortunately without her consent, she ' +
+                                    'cannot register to MomConnect.'
                         })
                         .run();
                 });
@@ -770,7 +820,7 @@ describe("app", function() {
             });
 
             describe("if the user confirms opting back in", function() {
-                it("should ask for the clinic code", function() {
+                it("should ask for consent", function() {
                     return tester
                         .setup(function(api) {
                             api.contacts.add({
@@ -781,6 +831,28 @@ describe("app", function() {
                         .setup.user.state('states_opt_in')
                         .input('1')
                         .check.interaction({
+                            state: 'states_consent',
+                            reply: [(
+                                'We need to collect, store & use her info. ' +
+                                'She may get messages on public holidays & ' +
+                                'weekends. Does she consent?'),
+                                '1. Yes',
+                                '2. No'
+                            ].join('\n')
+                        })
+                        .run();
+                });
+                it("should ask for the clinic code", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27831112222',
+                            });
+                        })
+                        .setup.user.addr('27831112222')
+                        .setup.user.state('states_opt_in')
+                        .inputs('1', '1')
+                        .check.interaction({
                             state: 'states_clinic_code',
                             reply: (
                                 'Please enter the clinic code for the facility ' +
@@ -789,6 +861,23 @@ describe("app", function() {
                         .check(function(api) {
                             var optouts = api.optout.optout_store;
                             assert.equal(optouts.length, 4);
+                        })
+                        .run();
+                });
+                it("should tell them they cannot register", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27831112222',
+                            });
+                        })
+                        .setup.user.addr('27831112222')
+                        .setup.user.state('states_opt_in')
+                        .inputs('1', '2')
+                        .check.interaction({
+                            state: 'states_consent_refused',
+                            reply: 'Unfortunately without her consent, she ' +
+                                    'cannot register to MomConnect.'
                         })
                         .run();
                 });
@@ -808,8 +897,7 @@ describe("app", function() {
                         .check.interaction({
                             state: 'states_stay_out',
                             reply: [(
-                                'You have chosen not to receive MomConnect SMSs ' +
-                                'and so cannot complete registration.'),
+                                'You have chosen not to receive MomConnect SMSs'),
                                 '1. Main Menu'
                             ].join('\n')
                         })
@@ -887,11 +975,34 @@ describe("app", function() {
         describe("after entering the pregnant woman's number", function() {
 
             describe("if the number has not opted out before", function() {
-                it("should ask for the clinic code", function() {
+                it("should ask for consent", function() {
                     return tester
                         .setup.user.addr('270001')
                         .setup.user.state('states_mobile_no')
                         .input('0821234567')
+                        .check.interaction({
+                            state: 'states_consent',
+                            reply: [(
+                                'We need to collect, store & use her info. ' +
+                                'She may get messages on public holidays & ' +
+                                'weekends. Does she consent?'),
+                                '1. Yes',
+                                '2. No'
+                            ].join('\n')
+                        })
+                        .check(function(api) {
+                            var contact = api.contacts.store[0];
+                            assert.equal(contact.extra.working_on, "+27821234567");
+                            assert.equal(contact.extra.is_registered, undefined);
+                            assert.equal(contact.extra.last_stage, 'states_consent');
+                        })
+                        .run();
+                });
+                it("should ask for the clinic code", function() {
+                    return tester
+                        .setup.user.addr('270001')
+                        .setup.user.state('states_mobile_no')
+                        .inputs('0821234567', '1')
                         .check.interaction({
                             state: 'states_clinic_code',
                             reply: (
@@ -899,10 +1010,28 @@ describe("app", function() {
                                 'where this pregnancy is being registered:')
                         })
                         .check(function(api) {
-                            var contact = api.contacts.store[0];
+                            var contact = _.find(api.contacts.store, {
+                              msisdn: '+270001'
+                            });
                             assert.equal(contact.extra.working_on, "+27821234567");
                             assert.equal(contact.extra.is_registered, undefined);
-                            assert.equal(contact.extra.last_stage, 'states_clinic_code');
+                            assert.equal(contact.extra.last_stage, 'states_consent');
+                            contact = _.find(api.contacts.store, {
+                              msisdn: '+27821234567'
+                            });
+                            assert.equal(contact.extra.consent, 'true');
+                        })
+                        .run();
+                });
+                it("should tell them they cannot register", function() {
+                    return tester
+                        .setup.user.addr('27001')
+                        .setup.user.state('states_mobile_no')
+                        .inputs('0821234567', '2')
+                        .check.interaction({
+                            state: 'states_consent_refused',
+                            reply: 'Unfortunately without her consent, she ' +
+                                    'cannot register to MomConnect.'
                         })
                         .run();
                 });
@@ -943,7 +1072,7 @@ describe("app", function() {
             });
 
             describe("if the user confirms opting back in", function() {
-                it("should ask for the clinic code", function() {
+                it("should ask for consent", function() {
                     return tester
                         .setup(function(api) {
                             api.contacts.add({
@@ -961,6 +1090,40 @@ describe("app", function() {
                         .setup.user.addr('27001')
                         .setup.user.state('states_opt_in')
                         .input('1')
+                        .check.interaction({
+                            state: 'states_consent',
+                            reply: [(
+                                'We need to collect, store & use her info. ' +
+                                'She may get messages on public holidays & ' +
+                                'weekends. Does she consent?'),
+                                '1. Yes',
+                                '2. No'
+                            ].join('\n')
+                        })
+                        .check(function(api) {
+                            var optouts = api.optout.optout_store;
+                            assert.equal(optouts.length, 4);
+                        })
+                        .run();
+                });
+                it("should ask for the clinic code", function() {
+                    return tester
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27001',
+                                extra : {
+                                    working_on: '+27831112222'
+                                }
+                            });
+                        })
+                        .setup(function(api) {
+                            api.contacts.add({
+                                msisdn: '+27831112222',
+                            });
+                        })
+                        .setup.user.addr('27001')
+                        .setup.user.state('states_opt_in')
+                        .inputs('1', '1')
                         .check.interaction({
                             state: 'states_clinic_code',
                             reply: (
@@ -997,8 +1160,7 @@ describe("app", function() {
                         .check.interaction({
                             state: 'states_stay_out',
                             reply: [(
-                                'You have chosen not to receive MomConnect SMSs ' +
-                                'and so cannot complete registration.'),
+                                'You have chosen not to receive MomConnect SMSs'),
                                 '1. Main Menu'
                             ].join('\n')
                         })
@@ -1068,7 +1230,7 @@ describe("app", function() {
                 it("should save clinic code, ask for the month the baby is due", function() {
                     return tester
                         .setup.user.addr('270001')
-                        .inputs('start', '2', '0821234567', '123456')
+                        .inputs('start', '2', '0821234567', '1', '123456')
                         .check.interaction({
                             state: 'states_due_date_month',
                             reply: [
@@ -1106,7 +1268,7 @@ describe("app", function() {
                 it("should save the clinic code, ask for the month the baby is due", function() {
                     return tester
                         .setup.user.addr('270001')
-                        .inputs('start', '1', '234567')
+                        .inputs('start', '1', '1', '234567')
                         .check.interaction({
                             state: 'states_due_date_month',
                             reply: [
@@ -1127,6 +1289,7 @@ describe("app", function() {
                             var contact = _.find(api.contacts.store, {
                               msisdn: '+270001'
                             });
+                            assert.equal(contact.extra.consent, 'true');
                             assert.equal(contact.extra.clinic_code, '234567');
                             assert.equal(contact.extra.last_stage, 'states_due_date_month');
                         })
@@ -1789,7 +1952,8 @@ describe("app", function() {
                                     birth_day: '02',
                                     dob: '1951-01-02',
                                     due_date_month: '05',
-                                    due_date_day: '30'
+                                    due_date_day: '30',
+                                    consent: 'true'
                                 },
                                 key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                                 user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
@@ -1850,7 +2014,8 @@ describe("app", function() {
                                     ussd_sessions: '5',
                                     due_date_month: '05',
                                     due_date_day: '30',
-                                    is_registered_by: 'personal'
+                                    is_registered_by: 'personal',
+                                    consent: 'true'
                                 },
                                 key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                                 user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
@@ -1912,7 +2077,8 @@ describe("app", function() {
                                     ussd_sessions: '5',
                                     due_date_month: '05',
                                     due_date_day: '30',
-                                    is_registered_by: 'personal'
+                                    is_registered_by: 'personal',
+                                    consent: 'true'
                                 },
                                 key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                                 user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
@@ -1966,7 +2132,8 @@ describe("app", function() {
                                     dob: '1951-01-02',
                                     ussd_sessions: '5',
                                     due_date_month: '05',
-                                    due_date_day: '30'
+                                    due_date_day: '30',
+                                    consent: 'true'
                                 },
                                 key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                                 user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
@@ -2000,7 +2167,8 @@ describe("app", function() {
                                     dob: '1951-01-02',
                                     ussd_sessions: '5',
                                     due_date_month: '05',
-                                    due_date_day: '30'
+                                    due_date_day: '30',
+                                    consent: 'true'
                                 },
                                 key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                                 user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
@@ -2048,7 +2216,8 @@ describe("app", function() {
                                     birth_day: '02',
                                     dob: '1951-01-02',
                                     due_date_month: '05',
-                                    due_date_day: '30'
+                                    due_date_day: '30',
+                                    consent: 'true'
                                 },
                                 key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                                 user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
@@ -2090,6 +2259,7 @@ describe("app", function() {
                                     birth_month: '01',
                                     birth_day: '02',
                                     dob: '1951-01-02',
+                                    consent: 'true'
                                 },
                                 key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                                 user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"

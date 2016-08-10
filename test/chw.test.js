@@ -326,7 +326,9 @@ describe("app", function() {
                 it("should set the last metric value in states_start.no_incomplete to 0", function() {
                     return tester
                         .setup.user.addr('275678')
-                        .start()
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                        )
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
                             assert.deepEqual(metrics['test.chw.states_start.no_incomplete'].values, [1, 0]);
@@ -339,7 +341,9 @@ describe("app", function() {
                 it("should decrease the metric states_start.no_incomplete by 1", function() {
                     return tester
                         .setup.user.lang('en')  // make sure user is not seen as new
-                        .start()
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                        )
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
                             assert.deepEqual(metrics['test.chw.states_start.no_incomplete'].values, [-1]);
@@ -452,7 +456,10 @@ describe("app", function() {
                         })
                         .setup.user.addr('27821234444')
                         .setup.user.state('states_id_type')
-                        .inputs({session_event: 'new'}, '1')
+                        .inputs(
+                            {session_event: 'new'}
+                            , '1'
+                        )
                         .check.interaction({
                             state: 'states_id_type',
                             reply: [
@@ -483,7 +490,10 @@ describe("app", function() {
                         })
                         .setup.user.addr('27821234444')
                         .setup.user.state('states_id_type')
-                        .inputs({session_event: 'new'}, '2')
+                        .inputs(
+                            {session_event: 'new'}
+                            , '2'
+                        )
                         .check.interaction({
                             state: 'states_start',
                             reply: [
@@ -509,7 +519,9 @@ describe("app", function() {
         describe("when a new unique user logs on", function() {
             it("should increment the no. of unique users by 1", function() {
                 return tester
-                    .start()
+                    .inputs(
+                        {session_event: 'new'}  // dial in
+                    )
                     .check(function(api) {
                         var metrics = api.metrics.stores.test_metric_store;
                         assert.deepEqual(metrics['test.chw.sum.unique_users'].values, [1]);
@@ -524,7 +536,9 @@ describe("app", function() {
                 return tester
                     .setup.user.addr('27821234444')
                     .setup.char_limit(160)  // limit first state chars
-                    .start()
+                    .inputs(
+                        {session_event: 'new'}  // dial in
+                    )
                     .check.interaction({
                         state: 'states_start',
                         reply: [
@@ -564,7 +578,9 @@ describe("app", function() {
                         });
                     })
                     .setup.user.addr('270001')
-                    .start()
+                    .inputs(
+                        {session_event: 'new'}  // dial in
+                    )
                     .check(function(api) {
                         var contact = _.find(api.contacts.store, {
                           msisdn: '+270001'

@@ -1784,7 +1784,11 @@ describe("app", function() {
             it("should ask to choose topic", function() {
                 return tester
                     .setup.user.addr('27001')
-                    .inputs(null, '1', '2')
+                    .inputs(
+                        {session_event: 'new'}
+                        , '1'  // states_language - english
+                        , '2'  // states_register_info - info
+                    )
                     .check.interaction({
                         state: 'states_faq_topics',
                         reply: [

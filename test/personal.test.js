@@ -316,7 +316,9 @@ describe("app", function() {
         describe("when a new unique user logs on", function() {
             it("should increment the no. of unique users by 1", function() {
                 return tester
-                    .start()
+                .inputs(
+                    {session_event: 'new'}
+                )
                     .check(function(api) {
                         var metrics = api.metrics.stores.test_metric_store;
                         assert.deepEqual(metrics['test.personal.sum.unique_users'].values, [1]);
@@ -408,7 +410,10 @@ describe("app", function() {
                             'states_register_info': 'register'
                         })
                         .setup.user.state('states_suspect_pregnancy')
-                        .inputs( {session_event: 'new'}, '1')
+                        .inputs(
+                            {session_event: 'new'}
+                            , '1'
+                        )
                         .check.interaction({
                             state: 'states_suspect_pregnancy',
                             reply: [
@@ -467,7 +472,9 @@ describe("app", function() {
                 it("should ask for their preferred language", function() {
                     return tester
                         .setup.user.addr('27001')
-                        .start()
+                        .inputs(
+                            {session_event: 'new'}
+                        )
                         .check.interaction({
                             state: 'states_language',
                             reply: [
@@ -530,7 +537,9 @@ describe("app", function() {
                             });
                         })
                         .setup.user.addr('27001')
-                        .start()
+                        .inputs(
+                            {session_event: 'new'}
+                        )
                         .check.interaction({
                             state: 'states_language',
                             reply: [
@@ -574,7 +583,9 @@ describe("app", function() {
                                 });
                             })
                             .setup.user.addr('27001')
-                            .start()
+                            .inputs(
+                                {session_event: 'new'}
+                            )
                             .check.interaction({
                                 state: 'states_registered_full',
                                 reply: [
@@ -604,7 +615,9 @@ describe("app", function() {
                                 });
                             })
                             .setup.user.addr('27821235555')
-                            .start()
+                            .inputs(
+                                {session_event: 'new'}
+                            )
                             .check.interaction({
                                 state: 'states_register_info',
                                 reply: [
@@ -634,7 +647,9 @@ describe("app", function() {
                             });
                         })
                         .setup.user.addr('27001')
-                        .start()
+                        .inputs(
+                            {session_event: 'new'}
+                        )
                         .check.interaction({
                             state: 'states_registered_not_full',
                             reply: [

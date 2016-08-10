@@ -629,8 +629,8 @@ describe("app", function() {
                         .setup.user.addr('27001')
                         .inputs(
                             {session_event: 'new'}  // dial in
-                            , '1'   // state_start - yes
-                            , '1'   // state_consent - yes
+                            , '1'  // state_start - yes
+                            , '1'  // state_consent - yes
                         )
                         .check.interaction({
                             state: 'states_id_type',
@@ -659,8 +659,8 @@ describe("app", function() {
                         .setup.user.state('states_start')
                         .inputs(
                             {session_event: 'new'}  // dial in
-                            , '1'   // state_start - yes
-                            , '2'   // state_consent - no
+                            , '1'  // state_start - yes
+                            , '2'  // state_consent - no
                         )
                         .check.interaction({
                             state: 'states_consent_refused',
@@ -682,7 +682,7 @@ describe("app", function() {
                         .setup.user.addr('27831112222')
                         .inputs(
                             {session_event: 'new'}  // dial in
-                            , '1'   // state_start - yes
+                            , '1'  // state_start - yes
                         )
                         .check.interaction({
                             state: 'states_opt_in',
@@ -709,8 +709,8 @@ describe("app", function() {
                         .setup.user.addr('27831112222')
                         .inputs(
                             {session_event: 'new'}  // dial in
-                            , '1'   // state_start - yes
-                            , '1'   // state_opt_in - yes
+                            , '1'  // state_start - yes
+                            , '1'  // state_opt_in - yes
                         )
                         .check.interaction({
                             state: 'states_consent',
@@ -738,9 +738,9 @@ describe("app", function() {
                         .setup.user.addr('27831112222')
                         .inputs(
                             {session_event: 'new'}  // dial in
-                            , '1'   // state_start - yes
-                            , '1'   // state_opt_in
-                            , '1'   // state_consent - yes
+                            , '1'  // state_start - yes
+                            , '1'  // state_opt_in
+                            , '1'  // state_consent - yes
                         )
                         .check.interaction({
                             state: 'states_id_type',
@@ -770,9 +770,9 @@ describe("app", function() {
                         .setup.user.addr('27831112222')
                         .inputs(
                             {session_event: 'new'}  // dial in
-                            , '1'   // state_start - yes
-                            , '1'   // state_opt_in
-                            , '2'   // state_consent - no
+                            , '1'  // state_start - yes
+                            , '1'  // state_opt_in
+                            , '2'  // state_consent - no
                         )
                         .check.interaction({
                             state: 'states_consent_refused',
@@ -794,8 +794,8 @@ describe("app", function() {
                         .setup.user.addr('27831112222')
                         .inputs(
                             {session_event: 'new'}  // dial in
-                            , '1'   // state_start - yes
-                            , '2'   // state_opt_in - no
+                            , '1'  // state_start - yes
+                            , '2'  // state_opt_in - no
                         )
                         .check.interaction({
                             state: 'states_stay_out',
@@ -827,8 +827,8 @@ describe("app", function() {
                         .setup.user.addr('27831112222')
                         .inputs(
                             {session_event: 'new'}  // dial in
-                            , '1'   // state_start - yes
-                            , '2'   // state_opt_in - no
+                            , '1'  // state_start - yes
+                            , '2'  // state_opt_in - no
                             , '1'   // states_stay_out - main menu
                         )
                         .check.interaction({
@@ -853,7 +853,7 @@ describe("app", function() {
                 return tester
                     .inputs(
                         {session_event: 'new'}  // dial in
-                        , '2'   // state_start - no
+                        , '2'  // state_start - no
                     )
                     .check.interaction({
                         state: 'states_mobile_no',
@@ -870,7 +870,7 @@ describe("app", function() {
                 return tester
                     .inputs(
                         {session_event: 'new'}  // dial in
-                        , '2'   // state_start - no
+                        , '2'  // state_start - no
                         , '08212345AB'  // states_mobile_no
                     )
                     .check.interaction({
@@ -892,7 +892,7 @@ describe("app", function() {
                         .setup.user.addr('270001')
                         .inputs(
                             {session_event: 'new'}  // dial in
-                            , '2'   // state_start - no
+                            , '2'  // state_start - no
                             , '0821234567'  // states_mobile_no
                         )
                         .check.interaction({
@@ -916,7 +916,7 @@ describe("app", function() {
                         .setup.user.addr('270001')
                         .inputs(
                             {session_event: 'new'}  // dial in
-                            , '2'   // state_start - no
+                            , '2'  // state_start - no
                             , '0821234567'  // states_mobile_no
                             , '1'  // state_consent - yes
                         )
@@ -943,7 +943,7 @@ describe("app", function() {
                         .setup.user.addr('270001')
                         .inputs(
                             {session_event: 'new'}  // dial in
-                            , '2'   // state_start - no
+                            , '2'  // state_start - no
                             , '0821234567'  // states_mobile_no
                             , '2'  // state_consent - no
                         )
@@ -972,7 +972,7 @@ describe("app", function() {
                         .setup.user.addr('27001')
                         .inputs(
                             {session_event: 'new'}  // dial in
-                            , '2'   // state_start - no
+                            , '2'  // state_start - no
                             , '0831112222'  // states_mobile_no
                         )
                         .check.interaction({
@@ -1012,7 +1012,7 @@ describe("app", function() {
                         .setup.user.addr('27001')
                         .inputs(
                             {session_event: 'new'}  // dial in
-                            , '2'   // state_start - no
+                            , '2'  // state_start - no
                             , '0831112222'  // states_mobile_no
                             , '1'  // state_opt_in - yes
                         )
@@ -1050,7 +1050,7 @@ describe("app", function() {
                         .setup.user.addr('27001')
                         .inputs(
                             {session_event: 'new'}  // dial in
-                            , '2'   // state_start - no
+                            , '2'  // state_start - no
                             , '0831112222'  // states_mobile_no
                             , '1'  // state_opt_in - yes
                             , '1'  // state_consent - yes
@@ -1085,7 +1085,7 @@ describe("app", function() {
                         .setup.user.addr('27001')
                         .inputs(
                             {session_event: 'new'}  // dial in
-                            , '2'   // state_start - no
+                            , '2'  // state_start - no
                             , '0831112222'  // states_mobile_no
                             , '1'  // state_opt_in - yes
                             , '2'  // state_consent - no
@@ -1118,7 +1118,7 @@ describe("app", function() {
                         .setup.user.addr('27001')
                         .inputs(
                             {session_event: 'new'}  // dial in
-                            , '2'   // state_start - no
+                            , '2'  // state_start - no
                             , '0831112222'  // states_mobile_no
                             , '2'  // state_opt_in - no
                         )
@@ -1156,7 +1156,7 @@ describe("app", function() {
                         .setup.user.addr('27001')
                         .inputs(
                             {session_event: 'new'}  // dial in
-                            , '2'   // state_start - no
+                            , '2'  // state_start - no
                             , '0831112222'  // states_mobile_no
                             , '2'  // state_opt_in - no
                             , '1'  // states_stay_out - main menu
@@ -1186,7 +1186,7 @@ describe("app", function() {
                         .setup.user.addr('270001')
                         .inputs(
                             {session_event: 'new'}  // dial in
-                            , '1'   // state_start - yes
+                            , '1'  // state_start - yes
                             , '1'  // state_consent - yes
                             , '1'  // states_id_type - sa id
                         )
@@ -1232,7 +1232,7 @@ describe("app", function() {
                         })
                         .inputs(
                             {session_event: 'new'}  // dial in
-                            , '2'   // state_start - no
+                            , '2'  // state_start - no
                             , '0821234567' // states_mobile_no
                             , '1'  // state_consent - yes
                             , '1'  // states_id_type - sa id
@@ -1265,7 +1265,7 @@ describe("app", function() {
                     .setup.user.addr('270001')
                     .inputs(
                         {session_event: 'new'}  // dial in
-                        , '1'   // state_start - yes
+                        , '1'  // state_start - yes
                         , '1'  // state_consent - yes
                         , '1'  // state_id_type - sa id
                         , '5101015009088'  // states_sa_id
@@ -1302,7 +1302,7 @@ describe("app", function() {
                     .setup.user.addr('270001')
                     .inputs(
                         {session_event: 'new'}  // dial in
-                        , '1'   // state_start - yes
+                        , '1'  // state_start - yes
                         , '1'  // state_consent - yes
                         , '1'  // state_id_type - sa id
                         , '2012315678097'  // states_sa_id
@@ -1324,7 +1324,7 @@ describe("app", function() {
                     .setup.user.addr('270001')
                     .inputs(
                         {session_event: 'new'}  // dial in
-                        , '1'   // state_start - yes
+                        , '1'  // state_start - yes
                         , '1'  // state_consent - yes
                         , '1'  // state_id_type - sa id
                         , '5002285000007'  // states_sa_id
@@ -1346,7 +1346,7 @@ describe("app", function() {
                     .setup.user.addr('270001')
                     .inputs(
                         {session_event: 'new'}  // dial in
-                        , '1'   // state_start - yes
+                        , '1'  // state_start - yes
                         , '1'  // state_consent - yes
                         , '1'  // state_id_type - sa id
                         , '1234015009087'  // states_sa_id
@@ -1372,7 +1372,7 @@ describe("app", function() {
                     .setup.user.addr('270001')
                     .inputs(
                         {session_event: 'new'}  // dial in
-                        , '1'   // state_start - yes
+                        , '1'  // state_start - yes
                         , '1'  // state_consent - yes
                         , '2'  // state_id_type - passport
                     )
@@ -1405,7 +1405,7 @@ describe("app", function() {
                     .setup.user.addr('270001')
                     .inputs(
                         {session_event: 'new'}  // dial in
-                        , '1'   // state_start - yes
+                        , '1'  // state_start - yes
                         , '1'  // state_consent - yes
                         , '2'  // state_id_type - passport
                         , '1'  // states_passport_origin
@@ -1430,7 +1430,7 @@ describe("app", function() {
                     .setup.user.addr('270001')
                     .inputs(
                         {session_event: 'new'}  // dial in
-                        , '1'   // state_start - yes
+                        , '1'  // state_start - yes
                         , '1'  // state_consent - yes
                         , '2'  // state_id_type - passport
                         , '1'  // states_passport_origin
@@ -1464,7 +1464,7 @@ describe("app", function() {
                     .setup.user.addr('270001')
                     .inputs(
                         {session_event: 'new'}  // dial in
-                        , '1'   // state_start - yes
+                        , '1'  // state_start - yes
                         , '1'  // state_consent - yes
                         , '2'  // state_id_type - passport
                         , '1'  // states_passport_origin
@@ -1485,7 +1485,7 @@ describe("app", function() {
                     .setup.user.addr('270001')
                     .inputs(
                         {session_event: 'new'}  // dial in
-                        , '1'   // state_start - yes
+                        , '1'  // state_start - yes
                         , '1'  // state_consent - yes
                         , '2'  // state_id_type - passport
                         , '1'  // states_passport_origin
@@ -1506,7 +1506,7 @@ describe("app", function() {
                     .setup.user.addr('270001')
                     .inputs(
                         {session_event: 'new'}  // dial in
-                        , '1'   // state_start - yes
+                        , '1'  // state_start - yes
                         , '1'  // state_consent - yes
                         , '3'  // state_id_type - none
                     )
@@ -1531,7 +1531,7 @@ describe("app", function() {
                     .setup.user.addr('270001')
                     .inputs(
                         {session_event: 'new'}  // dial in
-                        , '1'   // state_start - yes
+                        , '1'  // state_start - yes
                         , '1'  // state_consent - yes
                         , '3'  // state_id_type - none
                         , 'Nineteen Eighty One'  // states_birth_year
@@ -1550,7 +1550,7 @@ describe("app", function() {
                     .setup.user.addr('270001')
                     .inputs(
                         {session_event: 'new'}  // dial in
-                        , '1'   // state_start - yes
+                        , '1'  // state_start - yes
                         , '1'  // state_consent - yes
                         , '3'  // state_id_type - none
                         , '2013'  // states_birth_year
@@ -1571,7 +1571,7 @@ describe("app", function() {
                     .setup.user.addr('270001')
                     .inputs(
                         {session_event: 'new'}  // dial in
-                        , '1'   // state_start - yes
+                        , '1'  // state_start - yes
                         , '1'  // state_consent - yes
                         , '3'  // state_id_type - none
                         , '1981'  // states_birth_year
@@ -1609,7 +1609,7 @@ describe("app", function() {
                     .setup.user.addr('270001')
                     .inputs(
                         {session_event: 'new'}  // dial in
-                        , '1'   // state_start - yes
+                        , '1'  // state_start - yes
                         , '1'  // state_consent - yes
                         , '3'  // state_id_type - none
                         , '1981'  // states_birth_year
@@ -1641,7 +1641,7 @@ describe("app", function() {
                         })
                         .inputs(
                             {session_event: 'new'}  // dial in
-                            , '1'   // state_start - yes
+                            , '1'  // state_start - yes
                             , '1'  // state_consent - yes
                             , '3'  // state_id_type - none
                             , '1981'  // states_birth_year
@@ -1677,7 +1677,7 @@ describe("app", function() {
                         .setup.user.addr('270001')
                         .inputs(
                             {session_event: 'new'}  // dial in
-                            , '1'   // state_start - yes
+                            , '1'  // state_start - yes
                             , '1'  // state_consent - yes
                             , '3'  // state_id_type - none
                             , '1981'  // states_birth_year
@@ -1700,7 +1700,7 @@ describe("app", function() {
                         .setup.user.addr('270001')
                         .inputs(
                             {session_event: 'new'}  // dial in
-                            , '1'   // state_start - yes
+                            , '1'  // state_start - yes
                             , '1'  // state_consent - yes
                             , '3'  // state_id_type - none
                             , '1981'  // states_birth_year
@@ -1723,7 +1723,7 @@ describe("app", function() {
                         .setup.user.addr('270001')
                         .inputs(
                             {session_event: 'new'}  // dial in
-                            , '1'   // state_start - yes
+                            , '1'  // state_start - yes
                             , '1'  // state_consent - yes
                             , '3'  // state_id_type - none
                             , '1981'  // states_birth_year
@@ -1748,7 +1748,7 @@ describe("app", function() {
                         .setup.user.addr('270001')
                         .inputs(
                             {session_event: 'new'}  // dial in
-                            , '1'   // state_start - yes
+                            , '1'  // state_start - yes
                             , '1'  // state_consent - yes
                             , '1'  // state_id_type - sa id
                             , '5101015009088'  // states_sa_id
@@ -1777,7 +1777,7 @@ describe("app", function() {
                         .setup.user.addr('270001')
                         .inputs(
                             {session_event: 'new'}  // dial in
-                            , '1'   // state_start - yes
+                            , '1'  // state_start - yes
                             , '1'  // state_consent - yes
                             , '1'  // state_id_type - sa id
                             , '5101015009088'  // states_sa_id
@@ -1811,7 +1811,7 @@ describe("app", function() {
                         })
                         .inputs(
                             {session_event: 'new'}  // dial in
-                            , '2'   // state_start - no
+                            , '2'  // state_start - no
                             , '0821234567' // states_mobile_no
                             , '1'  // state_consent - yes
                             , '2'  // state_id_type - passport
@@ -1861,7 +1861,7 @@ describe("app", function() {
                         .setup.user.addr('27001')
                         .inputs(
                             {session_event: 'new'}  // dial in
-                            , '2'   // state_start - no
+                            , '2'  // state_start - no
                             , '0821234567' // states_mobile_no
                             , '1'  // state_consent - yes
                             , '2'  // state_id_type - passport

@@ -207,33 +207,33 @@ module.exports = function (grunt) {
             options: {
                 reporter: 'spec'
             },
-            // test_clinic: {
-            //     src: ['<%= paths.test.clinic %>']
-            // },
+            test_clinic: {
+                src: ['<%= paths.test.clinic %>']
+            },
             test_chw: {
                 src: ['<%= paths.test.chw %>']
             },
-            // test_personal: {
-            //     src: ['<%= paths.test.personal %>']
-            // },
-            // test_optout: {
-            //     src: ['<%= paths.test.optout %>']
-            // },
-            // test_smsinbound: {
-            //     src: ['<%= paths.test.smsinbound %>']
-            // },
-            // test_servicerating: {
-            //     src: ['<%= paths.test.servicerating %>']
-            // },
-            // test_nurse_ussd: {
-            //     src: ['<%= paths.test.nurse_ussd %>']
-            // },
-            // test_nurse_sms: {
-            //     src: ['<%= paths.test.nurse_sms %>']
-            // },
-            // test_session_length_helper: {
-            //     src: ['<%= paths.test.session_length_helper %>']
-            // },
+            test_personal: {
+                src: ['<%= paths.test.personal %>']
+            },
+            test_optout: {
+                src: ['<%= paths.test.optout %>']
+            },
+            test_smsinbound: {
+                src: ['<%= paths.test.smsinbound %>']
+            },
+            test_servicerating: {
+                src: ['<%= paths.test.servicerating %>']
+            },
+            test_nurse_ussd: {
+                src: ['<%= paths.test.nurse_ussd %>']
+            },
+            test_nurse_sms: {
+                src: ['<%= paths.test.nurse_sms %>']
+            },
+            test_session_length_helper: {
+                src: ['<%= paths.test.session_length_helper %>']
+            },
         }
     });
 

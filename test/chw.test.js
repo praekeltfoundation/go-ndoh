@@ -603,8 +603,10 @@ describe("app", function() {
                             });
                         })
                         .setup.user.addr('27001')
-                        .setup.user.state('states_start')
-                        .inputs('1')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '1'  // state_start - yes
+                        )
                         .check.interaction({
                             state: 'states_consent',
                             reply: [(
@@ -625,8 +627,11 @@ describe("app", function() {
                             });
                         })
                         .setup.user.addr('27001')
-                        .setup.user.state('states_start')
-                        .inputs('1','1')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '1'   // state_start - yes
+                            , '1'   // state_consent - yes
+                        )
                         .check.interaction({
                             state: 'states_id_type',
                             reply: [
@@ -652,7 +657,11 @@ describe("app", function() {
                         })
                         .setup.user.addr('27001')
                         .setup.user.state('states_start')
-                        .inputs('1', '2')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '1'   // state_start - yes
+                            , '2'   // state_consent - no
+                        )
                         .check.interaction({
                             state: 'states_consent_refused',
                             reply: 'Unfortunately without her consent, she ' +
@@ -671,8 +680,10 @@ describe("app", function() {
                             });
                         })
                         .setup.user.addr('27831112222')
-                        .setup.user.state('states_start')
-                        .input('1')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '1'   // state_start - yes
+                        )
                         .check.interaction({
                             state: 'states_opt_in',
                             reply: [(
@@ -696,8 +707,11 @@ describe("app", function() {
                             });
                         })
                         .setup.user.addr('27831112222')
-                        .setup.user.state('states_opt_in')
-                        .inputs('1')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '1'   // state_start - yes
+                            , '1'   // state_opt_in - yes
+                        )
                         .check.interaction({
                             state: 'states_consent',
                             reply: [(
@@ -722,8 +736,12 @@ describe("app", function() {
                             });
                         })
                         .setup.user.addr('27831112222')
-                        .setup.user.state('states_opt_in')
-                        .inputs('1','1')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '1'   // state_start - yes
+                            , '1'   // state_opt_in
+                            , '1'   // state_consent - yes
+                        )
                         .check.interaction({
                             state: 'states_id_type',
                             reply: [
@@ -750,8 +768,12 @@ describe("app", function() {
                             });
                         })
                         .setup.user.addr('27831112222')
-                        .setup.user.state('states_opt_in')
-                        .inputs('1', '2')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '1'   // state_start - yes
+                            , '1'   // state_opt_in
+                            , '2'   // state_consent - no
+                        )
                         .check.interaction({
                             state: 'states_consent_refused',
                             reply: 'Unfortunately without her consent, she ' +
@@ -770,8 +792,11 @@ describe("app", function() {
                             });
                         })
                         .setup.user.addr('27831112222')
-                        .setup.user.state('states_opt_in')
-                        .input('2')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '1'   // state_start - yes
+                            , '2'   // state_opt_in - no
+                        )
                         .check.interaction({
                             state: 'states_stay_out',
                             reply: [(
@@ -800,8 +825,12 @@ describe("app", function() {
                             });
                         })
                         .setup.user.addr('27831112222')
-                        .setup.user.state('states_stay_out')
-                        .input('1')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '1'   // state_start - yes
+                            , '2'   // state_opt_in - no
+                            , '1'   // states_stay_out - main menu
+                        )
                         .check.interaction({
                             state: 'states_start',
                             reply: [
@@ -822,8 +851,10 @@ describe("app", function() {
         describe("when the no. is not the pregnant woman's no.", function() {
             it("should ask for the pregnant woman's no.", function() {
                 return tester
-                    .setup.user.state('states_start')
-                    .input('2')
+                    .inputs(
+                        {session_event: 'new'}  // dial in
+                        , '2'   // state_start - no
+                    )
                     .check.interaction({
                         state: 'states_mobile_no',
                         reply: (
@@ -837,8 +868,11 @@ describe("app", function() {
         describe("after entering the pregnant woman's number incorrectly", function() {
             it("should ask for the mobile number again", function() {
                 return tester
-                    .setup.user.state('states_mobile_no')
-                    .input('08212345AB')
+                    .inputs(
+                        {session_event: 'new'}  // dial in
+                        , '2'   // state_start - no
+                        , '08212345AB'  // states_mobile_no
+                    )
                     .check.interaction({
                         state: 'states_mobile_no',
                         reply: (
@@ -856,8 +890,11 @@ describe("app", function() {
                 it("should ask for consent", function() {
                     return tester
                         .setup.user.addr('270001')
-                        .setup.user.state('states_mobile_no')
-                        .inputs('0821234567')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '2'   // state_start - no
+                            , '0821234567'  // states_mobile_no
+                        )
                         .check.interaction({
                             state: 'states_consent',
                             reply: [(
@@ -877,8 +914,12 @@ describe("app", function() {
                 it("should ask for the id type", function() {
                     return tester
                         .setup.user.addr('270001')
-                        .setup.user.state('states_mobile_no')
-                        .inputs('0821234567','1')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '2'   // state_start - no
+                            , '0821234567'  // states_mobile_no
+                            , '1'  // state_consent - yes
+                        )
                         .check.interaction({
                             state: 'states_id_type',
                             reply: [
@@ -900,8 +941,12 @@ describe("app", function() {
                 it("should tell them they cannot register", function() {
                     return tester
                         .setup.user.addr('270001')
-                        .setup.user.state('states_mobile_no')
-                        .inputs('0821234567', '2')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '2'   // state_start - no
+                            , '0821234567'  // states_mobile_no
+                            , '2'  // state_consent - no
+                        )
                         .check.interaction({
                             state: 'states_consent_refused',
                             reply: 'Unfortunately without her consent, she ' +
@@ -925,8 +970,11 @@ describe("app", function() {
                             });
                         })
                         .setup.user.addr('27001')
-                        .setup.user.state('states_mobile_no')
-                        .input('0831112222')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '2'   // state_start - no
+                            , '0831112222'  // states_mobile_no
+                        )
                         .check.interaction({
                             state: 'states_opt_in',
                             reply: [(
@@ -962,8 +1010,12 @@ describe("app", function() {
                             });
                         })
                         .setup.user.addr('27001')
-                        .setup.user.state('states_opt_in')
-                        .inputs('1')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '2'   // state_start - no
+                            , '0831112222'  // states_mobile_no
+                            , '1'  // state_opt_in - yes
+                        )
                         .check.interaction({
                             state: 'states_consent',
                             reply: [(
@@ -996,8 +1048,13 @@ describe("app", function() {
                             });
                         })
                         .setup.user.addr('27001')
-                        .setup.user.state('states_opt_in')
-                        .inputs('1','1')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '2'   // state_start - no
+                            , '0831112222'  // states_mobile_no
+                            , '1'  // state_opt_in - yes
+                            , '1'  // state_consent - yes
+                        )
                         .check.interaction({
                             state: 'states_id_type',
                             reply: [
@@ -1026,8 +1083,13 @@ describe("app", function() {
                             });
                         })
                         .setup.user.addr('27001')
-                        .setup.user.state('states_opt_in')
-                        .inputs('1', '2')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '2'   // state_start - no
+                            , '0831112222'  // states_mobile_no
+                            , '1'  // state_opt_in - yes
+                            , '2'  // state_consent - no
+                        )
                         .check.interaction({
                             state: 'states_consent_refused',
                             reply: 'Unfortunately without her consent, she ' +
@@ -1054,8 +1116,12 @@ describe("app", function() {
                             });
                         })
                         .setup.user.addr('27001')
-                        .setup.user.state('states_opt_in')
-                        .input('2')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '2'   // state_start - no
+                            , '0831112222'  // states_mobile_no
+                            , '2'  // state_opt_in - no
+                        )
                         .check.interaction({
                             state: 'states_stay_out',
                             reply: [(
@@ -1088,8 +1154,13 @@ describe("app", function() {
                             });
                         })
                         .setup.user.addr('27001')
-                        .setup.user.state('states_stay_out')
-                        .input('1')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '2'   // state_start - no
+                            , '0831112222'  // states_mobile_no
+                            , '2'  // state_opt_in - no
+                            , '1'  // states_stay_out - main menu
+                        )
                         .check.interaction({
                             state: 'states_start',
                             reply: [
@@ -1113,7 +1184,12 @@ describe("app", function() {
                 it("should set id type, ask for their id number", function() {
                     return tester
                         .setup.user.addr('270001')
-                        .inputs('start', '1', '1', '1')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '1'   // state_start - yes
+                            , '1'  // state_consent - yes
+                            , '1'  // states_id_type - sa id
+                        )
                         .check.interaction({
                             state: 'states_sa_id',
                             reply: (
@@ -1154,7 +1230,13 @@ describe("app", function() {
                                 }
                             });
                         })
-                        .inputs('start', '2', '0821234567', '1', '1')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '2'   // state_start - no
+                            , '0821234567' // states_mobile_no
+                            , '1'  // state_consent - yes
+                            , '1'  // states_id_type - sa id
+                        )
                         .check.interaction({
                             state: 'states_sa_id',
                             reply: (
@@ -1181,8 +1263,13 @@ describe("app", function() {
             it("should save ID, extract DOB, ask for pregnant woman's msg language", function() {
                 return tester
                     .setup.user.addr('270001')
-                    .setup.user.state('states_sa_id')
-                    .input('5101015009088')
+                    .inputs(
+                        {session_event: 'new'}  // dial in
+                        , '1'   // state_start - yes
+                        , '1'  // state_consent - yes
+                        , '1'  // state_id_type - sa id
+                        , '5101015009088'  // states_sa_id
+                    )
                     .check.interaction({
                         state: 'states_language',
                         reply: ['Please select the language that the ' +
@@ -1213,8 +1300,13 @@ describe("app", function() {
             it("should save ID, extract DOB", function() {
                 return tester
                     .setup.user.addr('270001')
-                    .setup.user.state('states_sa_id')
-                    .input('2012315678097')
+                    .inputs(
+                        {session_event: 'new'}  // dial in
+                        , '1'   // state_start - yes
+                        , '1'  // state_consent - yes
+                        , '1'  // state_id_type - sa id
+                        , '2012315678097'  // states_sa_id
+                    )
                     .check(function(api) {
                         var contact = _.find(api.contacts.store, {
                           msisdn: '+270001'
@@ -1230,8 +1322,13 @@ describe("app", function() {
             it("should save ID, extract DOB", function() {
                 return tester
                     .setup.user.addr('270001')
-                    .setup.user.state('states_sa_id')
-                    .input('5002285000007')
+                    .inputs(
+                        {session_event: 'new'}  // dial in
+                        , '1'   // state_start - yes
+                        , '1'  // state_consent - yes
+                        , '1'  // state_id_type - sa id
+                        , '5002285000007'  // states_sa_id
+                    )
                     .check(function(api) {
                         var contact = _.find(api.contacts.store, {
                           msisdn: '+270001'
@@ -1247,8 +1344,13 @@ describe("app", function() {
             it("should not save ID, ask them to try again", function() {
                 return tester
                     .setup.user.addr('270001')
-                    .setup.user.state('states_sa_id')
-                    .input('1234015009087')
+                    .inputs(
+                        {session_event: 'new'}  // dial in
+                        , '1'   // state_start - yes
+                        , '1'  // state_consent - yes
+                        , '1'  // state_id_type - sa id
+                        , '1234015009087'  // states_sa_id
+                    )
                     .check.interaction({
                         state: 'states_sa_id',
                         reply: 'Sorry, the mother\'s ID number did not validate. ' +
@@ -1268,8 +1370,12 @@ describe("app", function() {
             it("should set id type, ask for their country of origin", function() {
                 return tester
                     .setup.user.addr('270001')
-                    .setup.user.state('states_id_type')
-                    .input('2')
+                    .inputs(
+                        {session_event: 'new'}  // dial in
+                        , '1'   // state_start - yes
+                        , '1'  // state_consent - yes
+                        , '2'  // state_id_type - passport
+                    )
                     .check.interaction({
                         state: 'states_passport_origin',
                         reply: ['What is the country of origin of the ' +
@@ -1297,8 +1403,13 @@ describe("app", function() {
             it("should save passport country, ask for their passport number", function() {
                 return tester
                     .setup.user.addr('270001')
-                    .setup.user.state('states_passport_origin')
-                    .input('1')
+                    .inputs(
+                        {session_event: 'new'}  // dial in
+                        , '1'   // state_start - yes
+                        , '1'  // state_consent - yes
+                        , '2'  // state_id_type - passport
+                        , '1'  // states_passport_origin
+                    )
                     .check.interaction({
                         state: 'states_passport_no',
                         reply: 'Please enter the pregnant mother\'s Passport number:'
@@ -1317,8 +1428,14 @@ describe("app", function() {
             it("should save passport no, ask for pregnant woman's msg language", function() {
                 return tester
                     .setup.user.addr('270001')
-                    .setup.user.state('states_passport_no')
-                    .input('12345')
+                    .inputs(
+                        {session_event: 'new'}  // dial in
+                        , '1'   // state_start - yes
+                        , '1'  // state_consent - yes
+                        , '2'  // state_id_type - passport
+                        , '1'  // states_passport_origin
+                        , '12345' // states_passport_no
+                    )
                     .check.interaction({
                         state: 'states_language',
                         reply: ['Please select the language that the ' +
@@ -1345,8 +1462,14 @@ describe("app", function() {
             it("should ask for their passport number again", function() {
                 return tester
                     .setup.user.addr('270001')
-                    .setup.user.state('states_passport_no')
-                    .input('algeria 1234')
+                    .inputs(
+                        {session_event: 'new'}  // dial in
+                        , '1'   // state_start - yes
+                        , '1'  // state_consent - yes
+                        , '2'  // state_id_type - passport
+                        , '1'  // states_passport_origin
+                        , 'algeria 1234' // states_passport_no
+                    )
                     .check.interaction({
                         state: 'states_passport_no',
                         reply: ('There was an error in your entry. Please ' +
@@ -1360,8 +1483,14 @@ describe("app", function() {
             it("should ask for their passport number again", function() {
                 return tester
                     .setup.user.addr('270001')
-                    .setup.user.state('states_passport_no')
-                    .input('1234')
+                    .inputs(
+                        {session_event: 'new'}  // dial in
+                        , '1'   // state_start - yes
+                        , '1'  // state_consent - yes
+                        , '2'  // state_id_type - passport
+                        , '1'  // states_passport_origin
+                        , '1234' // states_passport_no
+                    )
                     .check.interaction({
                         state: 'states_passport_no',
                         reply: ('There was an error in your entry. Please ' +
@@ -1375,8 +1504,12 @@ describe("app", function() {
             it("should set id type, ask for their birth year", function() {
                 return tester
                     .setup.user.addr('270001')
-                    .setup.user.state('states_id_type')
-                    .input('3')
+                    .inputs(
+                        {session_event: 'new'}  // dial in
+                        , '1'   // state_start - yes
+                        , '1'  // state_consent - yes
+                        , '3'  // state_id_type - none
+                    )
                     .check.interaction({
                         state: 'states_birth_year',
                         reply: ('Please enter the year that the pregnant ' +
@@ -1396,8 +1529,13 @@ describe("app", function() {
             it("text error - should ask for their birth year again", function() {
                 return tester
                     .setup.user.addr('270001')
-                    .setup.user.state('states_birth_year')
-                    .input('Nineteen Eighty One')
+                    .inputs(
+                        {session_event: 'new'}  // dial in
+                        , '1'   // state_start - yes
+                        , '1'  // state_consent - yes
+                        , '3'  // state_id_type - none
+                        , 'Nineteen Eighty One'  // states_birth_year
+                    )
                     .check.interaction({
                         state: 'states_birth_year',
                         reply: ('There was an error in your entry. Please ' +
@@ -1410,8 +1548,13 @@ describe("app", function() {
             it("too young - should ask for their birth year again", function() {
                 return tester
                     .setup.user.addr('270001')
-                    .setup.user.state('states_birth_year')
-                    .input('2013')
+                    .inputs(
+                        {session_event: 'new'}  // dial in
+                        , '1'   // state_start - yes
+                        , '1'  // state_consent - yes
+                        , '3'  // state_id_type - none
+                        , '2013'  // states_birth_year
+                    )
                     .check.interaction({
                         state: 'states_birth_year',
                         reply: ('There was an error in your entry. Please ' +
@@ -1426,8 +1569,13 @@ describe("app", function() {
             it("should save birth year, ask for their birth month", function() {
                 return tester
                     .setup.user.addr('270001')
-                    .setup.user.state('states_birth_year')
-                    .input('1981')
+                    .inputs(
+                        {session_event: 'new'}  // dial in
+                        , '1'   // state_start - yes
+                        , '1'  // state_consent - yes
+                        , '3'  // state_id_type - none
+                        , '1981'  // states_birth_year
+                    )
                     .check.interaction({
                         state: 'states_birth_month',
                         reply: ['Please enter the month that you were born.',
@@ -1459,8 +1607,14 @@ describe("app", function() {
             it("should save birth month, ask for their birth day", function() {
                 return tester
                     .setup.user.addr('270001')
-                    .setup.user.state('states_birth_month')
-                    .input('1')
+                    .inputs(
+                        {session_event: 'new'}  // dial in
+                        , '1'   // state_start - yes
+                        , '1'  // state_consent - yes
+                        , '3'  // state_id_type - none
+                        , '1981'  // states_birth_year
+                        , '1'  // states_birth_month
+                    )
                     .check.interaction({
                         state: 'states_birth_day',
                         reply: ('Please enter the day that the mother was ' +
@@ -1485,8 +1639,15 @@ describe("app", function() {
                             'states_birth_year': '1981',
                             'states_birth_month': '01'
                         })
-                        .setup.user.state('states_birth_day')
-                        .input('14')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '1'   // state_start - yes
+                            , '1'  // state_consent - yes
+                            , '3'  // state_id_type - none
+                            , '1981'  // states_birth_year
+                            , '1'  // states_birth_month
+                            , '14'  // states_birth_day
+                        )
                         .check.interaction({
                             state: 'states_language',
                             reply: ['Please select the language that the ' +
@@ -1514,12 +1675,15 @@ describe("app", function() {
                 it("should reprompt for the day", function() {
                     return tester
                         .setup.user.addr('270001')
-                        .setup.user.answers({
-                            'states_birth_year': '1981',
-                            'states_birth_month': '02'
-                        })
-                        .setup.user.state('states_birth_day')
-                        .input('32')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '1'   // state_start - yes
+                            , '1'  // state_consent - yes
+                            , '3'  // state_id_type - none
+                            , '1981'  // states_birth_year
+                            , '2'  // states_birth_month
+                            , '32'  // states_birth_day
+                        )
                         .check.interaction({
                             state: 'states_birth_day',
                             reply: 'There was an error in your entry. Please ' +
@@ -1534,12 +1698,15 @@ describe("app", function() {
                 it("should go to error state, ask them to continue", function() {
                     return tester
                         .setup.user.addr('270001')
-                        .setup.user.answers({
-                            'states_birth_year': '1981',
-                            'states_birth_month': '02'
-                        })
-                        .setup.user.state('states_birth_day')
-                        .input('29')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '1'   // state_start - yes
+                            , '1'  // state_consent - yes
+                            , '3'  // state_id_type - none
+                            , '1981'  // states_birth_year
+                            , '2'  // states_birth_month
+                            , '29'  // states_birth_day
+                        )
                         .check.interaction({
                             state: 'states_invalid_dob',
                             reply: [
@@ -1554,12 +1721,16 @@ describe("app", function() {
                 it("should take them back to birth year if they continue", function() {
                     return tester
                         .setup.user.addr('270001')
-                        .setup.user.answers({
-                            'states_birth_year': '1981',
-                            'states_birth_month': '02'
-                        })
-                        .setup.user.state('states_birth_day')
-                        .inputs('29', '1')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '1'   // state_start - yes
+                            , '1'  // state_consent - yes
+                            , '3'  // state_id_type - none
+                            , '1981'  // states_birth_year
+                            , '2'  // states_birth_month
+                            , '29'  // states_birth_day
+                            , '1'  // states_invalid_dob - continue
+                        )
                         .check.interaction({
                             state: 'states_birth_year',
                             reply: 'Please enter the year that the pregnant ' +
@@ -1575,8 +1746,14 @@ describe("app", function() {
                 it("should display more language options", function() {
                     return tester
                         .setup.user.addr('270001')
-                        .setup.user.state('states_language')
-                        .input('6')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '1'   // state_start - yes
+                            , '1'  // state_consent - yes
+                            , '1'  // state_id_type - sa id
+                            , '5101015009088'  // states_sa_id
+                            , '6'  // states_language - more
+                        )
                         .check.interaction({
                             state: 'states_language',
                             reply: ['Please select the language that the ' +
@@ -1598,8 +1775,15 @@ describe("app", function() {
                 it("should display more language options", function() {
                     return tester
                         .setup.user.addr('270001')
-                        .setup.user.state('states_language')
-                        .inputs('6', '6')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '1'   // state_start - yes
+                            , '1'  // state_consent - yes
+                            , '1'  // state_id_type - sa id
+                            , '5101015009088'  // states_sa_id
+                            , '6'  // states_language - more
+                            , '6'  // states_language - more
+                        )
                         .check.interaction({
                             state: 'states_language',
                             reply: ['Please select the language that the ' +
@@ -1621,25 +1805,20 @@ describe("app", function() {
                             api.contacts.add( {
                                 msisdn: '+27001',
                                 extra : {
-                                    working_on: '+27821234567',
                                     ussd_sessions: '5'
                                 }
                             });
-                            api.contacts.add( {
-                                msisdn: '+27821234567',
-                                extra : {
-                                    language_choice: 'en',
-                                    id_type: 'passport',
-                                    passport_origin: 'zw',
-                                    passport_no: '12345',
-                                    consent: 'true'
-                                },
-                                key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
-                                user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
-                            });
                         })
-                        .setup.user.state('states_language')
-                        .input('4')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '2'   // state_start - no
+                            , '0821234567' // states_mobile_no
+                            , '1'  // state_consent - yes
+                            , '2'  // state_id_type - passport
+                            , '1'  // states_passport_origin - Zimbabwe
+                            , '12345'  // states_passport_no
+                            , '4'  // states_language - english
+                        )
                         .check.interaction({
                             state: 'states_end_success',
                             reply: ('Thank you, registration is complete. The ' +
@@ -1658,8 +1837,8 @@ describe("app", function() {
                             assert.equal(contact_user.extra.ussd_sessions, '0');
                             assert.equal(contact_user.extra.working_on, '');
                             assert.equal(contact_mom.extra.last_state, 'states_end_success');
-                            assert.equal(contact_user.extra.last_state, undefined);
-                            assert.equal(contact_mom.extra.metric_sessions_to_register, '5');
+                            assert.equal(contact_user.extra.last_state, 'states_consent');
+                            assert.equal(contact_mom.extra.metric_sessions_to_register, '6');
                             assert.equal(contact_user.extra.no_registrations, '1');
                             assert.equal(contact_mom.extra.no_registrations, undefined);
                             assert.equal(contact_mom.extra.registered_by, '+27001');
@@ -1670,7 +1849,7 @@ describe("app", function() {
                         })
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
-                            assert.deepEqual(metrics['test.chw.avg.sessions_to_register'].values, [5]);
+                            assert.deepEqual(metrics['test.chw.avg.sessions_to_register'].values, [6]);
                             assert.equal(metrics['test.chw.states:end_success.no_incomplete'], undefined);
                         })
                         .check.reply.ends_session()
@@ -1680,29 +1859,16 @@ describe("app", function() {
                 it("should send them an SMS on completion", function() {
                     return tester
                         .setup.user.addr('27001')
-                        .setup(function(api) {
-                            api.contacts.add( {
-                                msisdn: '+27001',
-                                extra : {
-                                    working_on: '+27821234567',
-                                    ussd_sessions: '5'
-                                }
-                            });
-                            api.contacts.add( {
-                                msisdn: '+27821234567',
-                                extra : {
-                                    language_choice: 'en',
-                                    id_type: 'passport',
-                                    passport_origin: 'zw',
-                                    passport_no: '12345',
-                                    consent: 'true'
-                                },
-                                key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
-                                user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
-                            });
-                        })
-                        .setup.user.state('states_language')
-                        .input('4')
+                        .inputs(
+                            {session_event: 'new'}  // dial in
+                            , '2'   // state_start - no
+                            , '0821234567' // states_mobile_no
+                            , '1'  // state_consent - yes
+                            , '2'  // state_id_type - passport
+                            , '1'  // states_passport_origin - Zimbabwe
+                            , '12345'  // states_passport_no
+                            , '4'  // states_language - english
+                        )
                         .check(function(api) {
                             var smses = _.where(api.outbound.store, {
                                 endpoint: 'sms'

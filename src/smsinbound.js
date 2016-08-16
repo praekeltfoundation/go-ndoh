@@ -44,7 +44,8 @@ go.app = function() {
                         return self.states.create("states_opt_out_enter");
                     case "START":
                         return self.states.create("states_opt_in_enter");
-                    case "BABY":
+                    case "BABY": case "USANA": case "SANA": case "BABA":
+                    case "BABBY": case "LESEA": case "BBY": case "BABYA":
                         return self.states.create("states_baby_enter");
                     default: // Logs a support ticket
                         return self.states.create("states_default_enter");

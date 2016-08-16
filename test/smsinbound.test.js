@@ -640,6 +640,160 @@ describe("app", function() {
                     })
                     .run();
             });
+            it("using 'baby' keyword 'usana'", function() {
+                return tester
+                    .setup(function(api) {
+                        api.contacts.add({
+                            msisdn: '+27001',
+                            extra : {
+                                language_choice: 'en'
+                            },
+                            key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
+                        });
+                    })
+                    .setup.user.addr('27001')
+                    .inputs('usana has been born, bub')
+                    .check.interaction({
+                        state: 'states_baby',
+                        reply:
+                            'Thank you. You will now receive messages related to newborn babies. ' +
+                            'If you have any medical concerns please visit your nearest clinic'
+                    })
+                    .run();
+            });
+            it("using 'baby' keyword 'sana'", function() {
+                return tester
+                    .setup(function(api) {
+                        api.contacts.add({
+                            msisdn: '+27001',
+                            extra : {
+                                language_choice: 'en'
+                            },
+                            key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
+                        });
+                    })
+                    .setup.user.addr('27001')
+                    .inputs('sana has been born, bub')
+                    .check.interaction({
+                        state: 'states_baby',
+                        reply:
+                            'Thank you. You will now receive messages related to newborn babies. ' +
+                            'If you have any medical concerns please visit your nearest clinic'
+                    })
+                    .run();
+            });
+            it("using 'baby' keyword 'baba'", function() {
+                return tester
+                    .setup(function(api) {
+                        api.contacts.add({
+                            msisdn: '+27001',
+                            extra : {
+                                language_choice: 'en'
+                            },
+                            key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
+                        });
+                    })
+                    .setup.user.addr('27001')
+                    .inputs('baba has been born, bub')
+                    .check.interaction({
+                        state: 'states_baby',
+                        reply:
+                            'Thank you. You will now receive messages related to newborn babies. ' +
+                            'If you have any medical concerns please visit your nearest clinic'
+                    })
+                    .run();
+            });
+            it("using 'baby' keyword 'babby'", function() {
+                return tester
+                    .setup(function(api) {
+                        api.contacts.add({
+                            msisdn: '+27001',
+                            extra : {
+                                language_choice: 'en'
+                            },
+                            key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
+                        });
+                    })
+                    .setup.user.addr('27001')
+                    .inputs('babby has been born, bub')
+                    .check.interaction({
+                        state: 'states_baby',
+                        reply:
+                            'Thank you. You will now receive messages related to newborn babies. ' +
+                            'If you have any medical concerns please visit your nearest clinic'
+                    })
+                    .run();
+            });
+            it("using 'baby' keyword 'lesea'", function() {
+                return tester
+                    .setup(function(api) {
+                        api.contacts.add({
+                            msisdn: '+27001',
+                            extra : {
+                                language_choice: 'en'
+                            },
+                            key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
+                        });
+                    })
+                    .setup.user.addr('27001')
+                    .inputs('lesea has been born, bub')
+                    .check.interaction({
+                        state: 'states_baby',
+                        reply:
+                            'Thank you. You will now receive messages related to newborn babies. ' +
+                            'If you have any medical concerns please visit your nearest clinic'
+                    })
+                    .run();
+            });
+            it("using 'baby' keyword 'bby'", function() {
+                return tester
+                    .setup(function(api) {
+                        api.contacts.add({
+                            msisdn: '+27001',
+                            extra : {
+                                language_choice: 'en'
+                            },
+                            key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
+                        });
+                    })
+                    .setup.user.addr('27001')
+                    .inputs('bby has been born, bub')
+                    .check.interaction({
+                        state: 'states_baby',
+                        reply:
+                            'Thank you. You will now receive messages related to newborn babies. ' +
+                            'If you have any medical concerns please visit your nearest clinic'
+                    })
+                    .run();
+            });
+            it("using 'baby' keyword 'babya'", function() {
+                return tester
+                    .setup(function(api) {
+                        api.contacts.add({
+                            msisdn: '+27001',
+                            extra : {
+                                language_choice: 'en'
+                            },
+                            key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
+                        });
+                    })
+                    .setup.user.addr('27001')
+                    .inputs('babya has been born, bub')
+                    .check.interaction({
+                        state: 'states_baby',
+                        reply:
+                            'Thank you. You will now receive messages related to newborn babies. ' +
+                            'If you have any medical concerns please visit your nearest clinic'
+                    })
+                    .run();
+            });
         });
     });
 });

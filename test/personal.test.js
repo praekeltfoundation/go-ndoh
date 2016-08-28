@@ -316,7 +316,9 @@ describe("app", function() {
         describe("when a new unique user logs on", function() {
             it("should increment the no. of unique users by 1", function() {
                 return tester
-                    .start()
+                .inputs(
+                    {session_event: 'new'}
+                )
                     .check(function(api) {
                         var metrics = api.metrics.stores.test_metric_store;
                         assert.deepEqual(metrics['test.personal.sum.unique_users'].values, [1]);
@@ -343,8 +345,9 @@ describe("app", function() {
                             });
                         })
                         .setup.user.addr('27821234444')
-                        .setup.user.state('states_faq_topics')
-                        .inputs('1', null)
+                        .inputs(
+                            {session_event: 'new'}
+                        )
                         .check.interaction({
                             state: 'states_registered_full',
                             reply: [
@@ -362,22 +365,12 @@ describe("app", function() {
             describe("when the user timed out during registration on public", function() {
                 it("should ask it they want to continue registration", function() {
                     return tester
-                        .setup(function(api) {
-                            api.contacts.add({
-                                msisdn: '+27821234444',
-                                extra : {
-                                    language_choice: 'en',
-                                    is_registered: 'false',
-                                },
-                            });
-                        })
                         .setup.user.addr('27821234444')
-                        .setup.user.answers({
-                            'states_language': 'en',
-                            'states_register_info': 'register'
-                        })
-                        .setup.user.state('states_suspect_pregnancy')
-                        .input.session_event('new')
+                        .inputs(
+                            {session_event: 'new'}
+                            , '1'  // states_language - english
+                            , {session_event: 'new'}
+                        )
                         .check.interaction({
                             state: 'states_timed_out',
                             reply: [
@@ -393,22 +386,12 @@ describe("app", function() {
             describe("when the user chooses to continue registration", function() {
                 it("should take them back to state they were on at timeout", function() {
                     return tester
-                        .setup(function(api) {
-                            api.contacts.add({
-                                msisdn: '+27821234444',
-                                extra : {
-                                    language_choice: 'en',
-                                    is_registered: 'false',
-                                },
-                            });
-                        })
                         .setup.user.addr('27821234444')
-                        .setup.user.answers({
-                            'states_language': 'en',
-                            'states_register_info': 'register'
-                        })
-                        .setup.user.state('states_suspect_pregnancy')
-                        .inputs( {session_event: 'new'}, '1')
+                        .inputs(
+                            {session_event: 'new'}
+                            , '1'  // states_language - english
+                            , '1'  // states_register_info - register
+                        )
                         .check.interaction({
                             state: 'states_suspect_pregnancy',
                             reply: [
@@ -427,22 +410,14 @@ describe("app", function() {
                 it("should take them back to states_language", function() {
                     return tester
                         .setup.char_limit(160)  // limit first state chars
-                        .setup(function(api) {
-                            api.contacts.add({
-                                msisdn: '+27821234444',
-                                extra : {
-                                    language_choice: 'en',
-                                    is_registered: 'false',
-                                },
-                            });
-                        })
                         .setup.user.addr('27821234444')
-                        .setup.user.answers({
-                            'states_language': 'en',
-                            'states_register_info': 'register'
-                        })
-                        .setup.user.state('states_suspect_pregnancy')
-                        .inputs( {session_event: 'new'}, '2')
+                        .inputs(
+                            {session_event: 'new'}
+                            , '1'  // states_language - english
+                            , '1'  // states_register_info - register
+                            , {session_event: 'new'}  // timeout
+                            , '2'  // states_suspect_pregnancy - no
+                        )
                         .check.interaction({
                             state: 'states_language',
                             reply: [
@@ -467,7 +442,9 @@ describe("app", function() {
                 it("should ask for their preferred language", function() {
                     return tester
                         .setup.user.addr('27001')
-                        .start()
+                        .inputs(
+                            {session_event: 'new'}
+                        )
                         .check.interaction({
                             state: 'states_language',
                             reply: [
@@ -499,7 +476,7 @@ describe("app", function() {
                         .setup.user.addr('27001')
                         .inputs(
                             {session_event: 'new'}  // states_start
-                            , '7'  // states_language
+                            , '7'  // states_language - more
                         )
                         .check.interaction({
                             state: 'states_language',
@@ -520,17 +497,10 @@ describe("app", function() {
             describe("when the user had partially registered on another line", function() {
                 it("should ask for their preferred language", function() {
                     return tester
-                        .setup(function(api) {
-                            api.contacts.add({
-                                msisdn: '+27001',
-                                extra : {
-                                    language_choice: 'en',
-                                    is_registered: 'false',
-                                },
-                            });
-                        })
                         .setup.user.addr('27001')
-                        .start()
+                        .inputs(
+                            {session_event: 'new'}
+                        )
                         .check.interaction({
                             state: 'states_language',
                             reply: [
@@ -574,7 +544,9 @@ describe("app", function() {
                                 });
                             })
                             .setup.user.addr('27001')
-                            .start()
+                            .inputs(
+                                {session_event: 'new'}
+                            )
                             .check.interaction({
                                 state: 'states_registered_full',
                                 reply: [
@@ -604,7 +576,9 @@ describe("app", function() {
                                 });
                             })
                             .setup.user.addr('27821235555')
-                            .start()
+                            .inputs(
+                                {session_event: 'new'}
+                            )
                             .check.interaction({
                                 state: 'states_register_info',
                                 reply: [
@@ -634,7 +608,9 @@ describe("app", function() {
                             });
                         })
                         .setup.user.addr('27001')
-                        .start()
+                        .inputs(
+                            {session_event: 'new'}
+                        )
                         .check.interaction({
                             state: 'states_registered_not_full',
                             reply: [
@@ -667,7 +643,10 @@ describe("app", function() {
                             });
                         })
                         .setup.user.addr('27001')
-                        .inputs(null, '3')
+                        .inputs(
+                            {session_event: 'new'}
+                            , '3'  // states_registered_full - complaint
+                        )
                         .check.interaction({
                             state: 'states_end_complaint',
                             reply: ('Thank you. We will send you a message ' +
@@ -705,7 +684,10 @@ describe("app", function() {
                             });
                         })
                         .setup.user.addr('27001')
-                        .inputs(null, '2')
+                        .inputs(
+                            {session_event: 'new'}
+                            , '2'  // states_registered_full - compliment
+                        )
                         .check.interaction({
                             state: 'states_end_compliment',
                             reply: ('Thank you. We will send you a message ' +
@@ -734,7 +716,10 @@ describe("app", function() {
             it("should ask if they want to register or get info", function() {
                 return tester
                     .setup.user.addr('27001')
-                    .inputs('start', '4')
+                    .inputs(
+                        {session_event: 'new'}
+                        , '4'  // states_language - english
+                    )
                     .check.interaction({
                         state: 'states_register_info',
                         reply: [
@@ -769,8 +754,10 @@ describe("app", function() {
             it("should ask if they want to register or get info", function() {
                 return tester
                     .setup.user.addr('27001')
-                    .setup.user.state('states_language')
-                    .input('2')
+                    .inputs(
+                        {session_event: 'new'}
+                        , '2'  // states_language - xhosa
+                    )
                     .check.interaction({
                         state: 'states_register_info',
                         reply: [
@@ -793,8 +780,11 @@ describe("app", function() {
             it("should ask for consent", function() {
                 return tester
                     .setup.user.addr('27001')
-                    .setup.user.state('states_register_info')
-                    .inputs('1')
+                    .inputs(
+                        {session_event: 'new'}
+                        , '4'  // states_language - english
+                        , '1'  // states_register_info - register
+                    )
                     .check.interaction({
                         state: 'states_suspect_pregnancy',
                         reply: [
@@ -810,8 +800,12 @@ describe("app", function() {
             it("should ask if they suspect pregnancy", function() {
                 return tester
                     .setup.user.addr('27001')
-                    .setup.user.state('states_register_info')
-                    .inputs('1','1')
+                    .inputs(
+                        {session_event: 'new'}
+                        , '4'  // states_language - english
+                        , '1'  // states_register_info - register
+                        , '1'  // states_suspect_pregnancy - yes
+                    )
                     .check.interaction({
                         state: 'states_consent',
                         reply: [
@@ -827,8 +821,13 @@ describe("app", function() {
             it("should tell them they cannot register", function() {
                 return tester
                     .setup.user.addr('27001')
-                    .setup.user.state('states_register_info')
-                    .inputs('1','1','2')
+                    .inputs(
+                        {session_event: 'new'}
+                        , '4'  // states_language - english
+                        , '1'  // states_register_info - register
+                        , '1'  // states_suspect_pregnancy - yes
+                        , '2'  // states_consent - no
+                    )
                     .check.interaction({
                         state: 'states_consent_refused',
                         reply: 'Unfortunately without your consent, you ' +
@@ -842,8 +841,10 @@ describe("app", function() {
             it("should put them in the language group", function() {
                 return tester
                     .setup.user.addr('27001')
-                    .setup.user.state('states_language')
-                    .input('4')
+                    .inputs(
+                        {session_event: 'new'}
+                        , '4'  // states_language - english
+                    )
                     .check.interaction({
                         state: 'states_register_info',
                         reply: [
@@ -865,8 +866,12 @@ describe("app", function() {
             it("should set pregnancy status, state service is for pregnant moms, exit", function() {
                 return tester
                     .setup.user.addr('27001')
-                    .setup.user.state('states_suspect_pregnancy')
-                    .input('2')
+                    .inputs(
+                        {session_event: 'new'}
+                        , '4'  // states_language - english
+                        , '1'  // states_register_info - register
+                        , '2'  // states_suspect_pregnancy - no
+                    )
                     .check.interaction({
                         state: 'states_end_not_pregnant',
                         reply: ('You have chosen not to receive MomConnect SMSs')
@@ -883,17 +888,17 @@ describe("app", function() {
         // start opt-in flow checks
         describe("if the user suspects pregnancy", function() {
 
-
-
-
-
-
             describe("if the user has not previously opted out", function() {
                 it("should set pregnancy status, ask for their id type", function() {
                     return tester
                         .setup.user.addr('27001')
-                        .setup.user.state('states_suspect_pregnancy')
-                        .inputs('1','1')
+                        .inputs(
+                            {session_event: 'new'}
+                            , '4'  // states_language - english
+                            , '1'  // states_register_info - register
+                            , '1'  // states_suspect_pregnancy - yes
+                            , '1'  // states_consent - yes
+                        )
                         .check.interaction({
                             state: 'states_id_type',
                             reply: [
@@ -915,14 +920,14 @@ describe("app", function() {
             describe("if the user previously opted out", function() {
                 it("should ask to confirm opting back in", function() {
                     return tester
-                        .setup(function(api) {
-                            api.contacts.add({
-                                msisdn: '+27831112222',
-                            });
-                        })
                         .setup.user.addr('27831112222')
-                        .setup.user.state('states_suspect_pregnancy')
-                        .inputs('1','1')
+                        .inputs(
+                            {session_event: 'new'}
+                            , '4'  // states_language - english
+                            , '1'  // states_register_info - register
+                            , '1'  // states_suspect_pregnancy - yes
+                            , '1'  // states_consent - yes
+                        )
                         .check.interaction({
                             state: 'states_opt_in',
                             reply: [(
@@ -945,14 +950,15 @@ describe("app", function() {
             describe("if the user confirms opting back in", function() {
                 it("should ask for the id type", function() {
                     return tester
-                        .setup(function(api) {
-                            api.contacts.add({
-                                msisdn: '+27831112222',
-                            });
-                        })
                         .setup.user.addr('27831112222')
-                        .setup.user.state('states_opt_in')
-                        .input('1')
+                        .inputs(
+                            {session_event: 'new'}
+                            , '4'  // states_language - english
+                            , '1'  // states_register_info - register
+                            , '1'  // states_suspect_pregnancy - yes
+                            , '1'  // states_consent - yes
+                            , '1'  // states_opt_in - yes
+                        )
                         .check.interaction({
                             state: 'states_id_type',
                             reply: [
@@ -973,14 +979,15 @@ describe("app", function() {
             describe("if the user declines opting back in", function() {
                 it("should tell them they cannot complete registration", function() {
                     return tester
-                        .setup(function(api) {
-                            api.contacts.add({
-                                msisdn: '+27831112222',
-                            });
-                        })
                         .setup.user.addr('27831112222')
-                        .setup.user.state('states_opt_in')
-                        .input('2')
+                        .inputs(
+                            {session_event: 'new'}
+                            , '4'  // states_language - english
+                            , '1'  // states_register_info - register
+                            , '1'  // states_suspect_pregnancy - yes
+                            , '1'  // states_consent - yes
+                            , '2'  // states_opt_in - no
+                        )
                         .check.interaction({
                             state: 'states_stay_out',
                             reply: [(
@@ -1003,14 +1010,16 @@ describe("app", function() {
             describe("if the user selects Main Menu", function() {
                 it("should take them back through states_start", function() {
                     return tester
-                        .setup(function(api) {
-                            api.contacts.add({
-                                msisdn: '+27831112222',
-                            });
-                        })
                         .setup.user.addr('27831112222')
-                        .setup.user.state('states_stay_out')
-                        .input('1')
+                        .inputs(
+                            {session_event: 'new'}
+                            , '4'  // states_language - english
+                            , '1'  // states_register_info - register
+                            , '1'  // states_suspect_pregnancy - yes
+                            , '1'  // states_consent - yes
+                            , '2'  // states_opt_in - no
+                            , '1'  // states_stay_out - main menu
+                        )
                         .check.interaction({
                             state: 'states_language',
                             reply: [
@@ -1036,8 +1045,14 @@ describe("app", function() {
             it("should set their id type and ask for their id number", function() {
                 return tester
                     .setup.user.addr('27001')
-                    .setup.user.state('states_id_type')
-                    .input('1')
+                    .inputs(
+                        {session_event: 'new'}
+                        , '4'  // states_language - english
+                        , '1'  // states_register_info - register
+                        , '1'  // states_suspect_pregnancy - yes
+                        , '1'  // states_consent - yes
+                        , '1'  // states_opt_in - yes
+                    )
                     .check.interaction({
                         state: 'states_sa_id',
                         reply: 'Please enter your SA ID number:'
@@ -1053,23 +1068,17 @@ describe("app", function() {
         describe("after the user enters their ID number after '50", function() {
             it("should set their ID no, extract their DOB, thank them and exit", function() {
                 return tester
-                    .setup(function(api) {
-                        api.contacts.add({
-                            msisdn: '+27001',
-                            extra : {
-                                language_choice: 'en',
-                                suspect_pregnancy: 'yes',
-                                id_type: 'sa_id',
-                                ussd_sessions: '1',
-                                consent: 'true'
-                            },
-                            key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
-                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
-                        });
-                    })
                     .setup.user.addr('27001')
-                    .setup.user.state('states_sa_id')
-                    .input('5101015009088')
+                    .inputs(
+                        {session_event: 'new'}
+                        , '4'  // states_language - english
+                        , '1'  // states_register_info - register
+                        , '1'  // states_suspect_pregnancy - yes
+                        , '1'  // states_consent - yes
+                        , '1'  // states_opt_in - yes
+                        , '1'  // states_id_type - sa id
+                        , '5101015009088'  // states_sa_id
+                    )
                     .check.interaction({
                         state: 'states_end_success',
                         reply: ('Congratulations on your pregnancy. You will now get free SMSs about MomConnect. You can register for the full set of FREE helpful messages at a clinic.')
@@ -1090,23 +1099,17 @@ describe("app", function() {
         describe("after the user enters their ID number after '50 (test 2)", function() {
             it("should set their ID no, extract their DOB, thank them and exit", function() {
                 return tester
-                    .setup(function(api) {
-                        api.contacts.add({
-                            msisdn: '+27001',
-                            extra : {
-                                language_choice: 'en',
-                                suspect_pregnancy: 'yes',
-                                id_type: 'sa_id',
-                                ussd_sessions: '1',
-                                consent: 'true'
-                            },
-                            key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
-                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
-                        });
-                    })
                     .setup.user.addr('27001')
-                    .setup.user.state('states_sa_id')
-                    .input('5101025009086')
+                    .inputs(
+                        {session_event: 'new'}
+                        , '4'  // states_language - english
+                        , '1'  // states_register_info - register
+                        , '1'  // states_suspect_pregnancy - yes
+                        , '1'  // states_consent - yes
+                        , '1'  // states_opt_in - yes
+                        , '1'  // states_id_type - sa id
+                        , '5101025009086' // states_sa_id
+                    )
                     .check.interaction({
                         state: 'states_end_success',
                         reply: ('Congratulations on your pregnancy. You will now get free SMSs about MomConnect. You can register for the full set of FREE helpful messages at a clinic.')
@@ -1127,23 +1130,17 @@ describe("app", function() {
         describe("after the user enters their ID number before '50", function() {
             it("should set their ID no, extract their DOB", function() {
                 return tester
-                    .setup(function(api) {
-                        api.contacts.add({
-                            msisdn: '+27001',
-                            extra : {
-                                language_choice: 'en',
-                                suspect_pregnancy: 'yes',
-                                id_type: 'sa_id',
-                                ussd_sessions: '1',
-                                consent: 'true'
-                            },
-                            key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
-                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
-                        });
-                    })
                     .setup.user.addr('27001')
-                    .setup.user.state('states_sa_id')
-                    .input('2012315678097')
+                    .inputs(
+                        {session_event: 'new'}
+                        , '4'  // states_language - english
+                        , '1'  // states_register_info - register
+                        , '1'  // states_suspect_pregnancy - yes
+                        , '1'  // states_consent - yes
+                        , '1'  // states_opt_in - yes
+                        , '1'  // states_id_type - sa id
+                        , '2012315678097' // states_sa_id
+                    )
                     .check(function(api) {
                         var contact = api.contacts.store[0];
                         assert.equal(contact.extra.sa_id, '2012315678097');
@@ -1157,23 +1154,17 @@ describe("app", function() {
         describe("after the user enters their ID number on '50", function() {
             it("should set their ID no, extract their DOB", function() {
                 return tester
-                    .setup(function(api) {
-                        api.contacts.add({
-                            msisdn: '+27001',
-                            extra : {
-                                language_choice: 'en',
-                                suspect_pregnancy: 'yes',
-                                id_type: 'sa_id',
-                                ussd_sessions: '1',
-                                consent: 'true'
-                            },
-                            key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
-                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
-                        });
-                    })
                     .setup.user.addr('27001')
-                    .setup.user.state('states_sa_id')
-                    .input('5002285000007')
+                    .inputs(
+                        {session_event: 'new'}
+                        , '4'  // states_language - english
+                        , '1'  // states_register_info - register
+                        , '1'  // states_suspect_pregnancy - yes
+                        , '1'  // states_consent - yes
+                        , '1'  // states_opt_in - yes
+                        , '1'  // states_id_type - sa id
+                        , '5002285000007' // states_sa_id
+                    )
                     .check(function(api) {
                         var contact = api.contacts.store[0];
                         assert.equal(contact.extra.sa_id, '5002285000007');
@@ -1188,8 +1179,16 @@ describe("app", function() {
             it("should not save their id, ask them to try again", function() {
                 return tester
                     .setup.user.addr('27001')
-                    .setup.user.state('states_sa_id')
-                    .input('1234015009087')
+                    .inputs(
+                        {session_event: 'new'}
+                        , '4'  // states_language - english
+                        , '1'  // states_register_info - register
+                        , '1'  // states_suspect_pregnancy - yes
+                        , '1'  // states_consent - yes
+                        , '1'  // states_opt_in - yes
+                        , '1'  // states_id_type - sa id
+                        , '1234015009087' // states_sa_id
+                    )
                     .check.interaction({
                         state: 'states_sa_id',
                         reply: 'Sorry, your ID number did not validate. ' +
@@ -1208,8 +1207,14 @@ describe("app", function() {
             it("should save their id type & ask for their country of origin", function() {
                 return tester
                     .setup.user.addr('27001')
-                    .setup.user.state('states_id_type')
-                    .input('2')
+                    .inputs(
+                        {session_event: 'new'}
+                        , '4'  // states_language - english
+                        , '1'  // states_register_info - register
+                        , '1'  // states_suspect_pregnancy - yes
+                        , '1'  // states_consent - yes
+                        , '2'  // states_id_type - passport
+                    )
                     .check.interaction({
                         state: 'states_passport_origin',
                         reply: ['What is the country of origin of the ' +
@@ -1235,8 +1240,15 @@ describe("app", function() {
             it("should set their country & ask for their passport number", function() {
                 return tester
                     .setup.user.addr('27001')
-                    .setup.user.state('states_passport_origin')
-                    .input('1')
+                    .inputs(
+                        {session_event: 'new'}
+                        , '4'  // states_language - english
+                        , '1'  // states_register_info - register
+                        , '1'  // states_suspect_pregnancy - yes
+                        , '1'  // states_consent - yes
+                        , '2'  // states_id_type - passport
+                        , '1'  // states_passport_origin - Zimbabwe
+                    )
                     .check.interaction({
                         state: 'states_passport_no',
                         reply: 'Please enter your Passport number:'
@@ -1252,24 +1264,17 @@ describe("app", function() {
         describe("after the user enters their passport number", function() {
             it("should set their passport number, thank them and exit", function() {
                 return tester
-                    .setup(function(api) {
-                        api.contacts.add({
-                            msisdn: '+27001',
-                            extra : {
-                                language_choice: 'en',
-                                suspect_pregnancy: 'yes',
-                                id_type: 'passport',
-                                passport_origin: 'zw',
-                                ussd_sessions: '1',
-                                consent: 'true'
-                            },
-                            key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
-                            user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
-                        });
-                    })
                     .setup.user.addr('27001')
-                    .setup.user.state('states_passport_no')
-                    .input('12345')
+                    .inputs(
+                        {session_event: 'new'}
+                        , '4'  // states_language - english
+                        , '1'  // states_register_info - register
+                        , '1'  // states_suspect_pregnancy - yes
+                        , '1'  // states_consent - yes
+                        , '2'  // states_id_type - passport
+                        , '1'  // states_passport_origin - Zimbabwe
+                        , '12345'  // states_passport_no
+                    )
                     .check.interaction({
                         state: 'states_end_success',
                         reply: ('Congratulations on your pregnancy. You will now get free SMSs about MomConnect. You can register for the full set of FREE helpful messages at a clinic.')
@@ -1287,8 +1292,16 @@ describe("app", function() {
             it("should ask for their passport number again", function() {
                 return tester
                     .setup.user.addr('270001')
-                    .setup.user.state('states_passport_no')
-                    .input('algeria 1234')
+                    .inputs(
+                        {session_event: 'new'}
+                        , '4'  // states_language - english
+                        , '1'  // states_register_info - register
+                        , '1'  // states_suspect_pregnancy - yes
+                        , '1'  // states_consent - yes
+                        , '2'  // states_id_type - passport
+                        , '1'  // states_passport_origin - Zimbabwe
+                        , 'algeria 1234'  // states_passport_no
+                    )
                     .check.interaction({
                         state: 'states_passport_no',
                         reply: ('There was an error in your entry. Please ' +
@@ -1302,8 +1315,16 @@ describe("app", function() {
             it("should ask for their passport number again", function() {
                 return tester
                     .setup.user.addr('270001')
-                    .setup.user.state('states_passport_no')
-                    .input('1234')
+                    .inputs(
+                        {session_event: 'new'}
+                        , '4'  // states_language - english
+                        , '1'  // states_register_info - register
+                        , '1'  // states_suspect_pregnancy - yes
+                        , '1'  // states_consent - yes
+                        , '2'  // states_id_type - passport
+                        , '1'  // states_passport_origin - Zimbabwe
+                        , '1234'  // states_passport_no
+                    )
                     .check.interaction({
                         state: 'states_passport_no',
                         reply: ('There was an error in your entry. Please ' +
@@ -1317,8 +1338,14 @@ describe("app", function() {
             it("should set id type, ask for their birth year", function() {
                 return tester
                     .setup.user.addr('27001')
-                    .setup.user.state('states_id_type')
-                    .input('3')
+                    .inputs(
+                        {session_event: 'new'}
+                        , '4'  // states_language - english
+                        , '1'  // states_register_info - register
+                        , '1'  // states_suspect_pregnancy - yes
+                        , '1'  // states_consent - yes
+                        , '3'  // states_id_type - none
+                    )
                     .check.interaction({
                         state: 'states_birth_year',
                         reply: ('Since you don\'t have an ID or passport, ' +
@@ -1338,8 +1365,15 @@ describe("app", function() {
             it("should ask for their birth month", function() {
                 return tester
                     .setup.user.addr('27001')
-                    .setup.user.state('states_birth_year')
-                    .input('1981')
+                    .inputs(
+                        {session_event: 'new'}
+                        , '4'  // states_language - english
+                        , '1'  // states_register_info - register
+                        , '1'  // states_suspect_pregnancy - yes
+                        , '1'  // states_consent - yes
+                        , '3'  // states_id_type - none
+                        , '1981'  // states_birth_year
+                    )
                     .check.interaction({
                         state: 'states_birth_month',
                         reply: ['Please enter the month that you were born.',
@@ -1369,8 +1403,15 @@ describe("app", function() {
             it("should not save birth year, ask for their birth year again", function() {
                 return tester
                     .setup.user.addr('27001')
-                    .setup.user.state('states_birth_year')
-                    .input('Nineteen Eighty One')
+                    .inputs(
+                        {session_event: 'new'}
+                        , '4'  // states_language - english
+                        , '1'  // states_register_info - register
+                        , '1'  // states_suspect_pregnancy - yes
+                        , '1'  // states_consent - yes
+                        , '3'  // states_id_type - none
+                        , 'Nineteen Eighty One'  // states_birth_year
+                    )
                     .check.interaction({
                         state: 'states_birth_year',
                         reply: ('There was an error in your entry. Please ' +
@@ -1387,8 +1428,15 @@ describe("app", function() {
             it("too young - should ask for their birth year again", function() {
                 return tester
                     .setup.user.addr('27001')
-                    .setup.user.state('states_birth_year')
-                    .input('2013')
+                    .inputs(
+                        {session_event: 'new'}
+                        , '4'  // states_language - english
+                        , '1'  // states_register_info - register
+                        , '1'  // states_suspect_pregnancy - yes
+                        , '1'  // states_consent - yes
+                        , '3'  // states_id_type - none
+                        , '2013'  // states_birth_year
+                    )
                     .check.interaction({
                         state: 'states_birth_year',
                         reply: 'There was an error in your entry. Please ' +
@@ -1403,8 +1451,16 @@ describe("app", function() {
             it("should set their birth year, ask for their birth day", function() {
                 return tester
                     .setup.user.addr('27001')
-                    .setup.user.state('states_birth_month')
-                    .input('1')
+                    .inputs(
+                        {session_event: 'new'}
+                        , '4'  // states_language - english
+                        , '1'  // states_register_info - register
+                        , '1'  // states_suspect_pregnancy - yes
+                        , '1'  // states_consent - yes
+                        , '3'  // states_id_type - none
+                        , '1981'  // states_birth_year
+                        , '1'  // states_birth_month - jan
+                    )
                     .check.interaction({
                         state: 'states_birth_day',
                         reply: ('Please enter the day that you were born ' +
@@ -1426,12 +1482,17 @@ describe("app", function() {
                 it("should go to error state, ask them to continue", function() {
                     return tester
                         .setup.user.addr('270001')
-                        .setup.user.answers({
-                            'states_birth_year': '1981',
-                            'states_birth_month': '02'
-                        })
-                        .setup.user.state('states_birth_day')
-                        .input('29')
+                        .inputs(
+                            {session_event: 'new'}
+                            , '4'  // states_language - english
+                            , '1'  // states_register_info - register
+                            , '1'  // states_suspect_pregnancy - yes
+                            , '1'  // states_consent - yes
+                            , '3'  // states_id_type - none
+                            , '1981'  // states_birth_year
+                            , '2'  // states_birth_month - feb
+                            , '29'  // states_birth_day
+                        )
                         .check.interaction({
                             state: 'states_invalid_dob',
                             reply: [
@@ -1446,12 +1507,18 @@ describe("app", function() {
                 it("should take them back to birth year if they continue", function() {
                     return tester
                         .setup.user.addr('270001')
-                        .setup.user.answers({
-                            'states_birth_year': '1981',
-                            'states_birth_month': '02'
-                        })
-                        .setup.user.state('states_birth_day')
-                        .inputs('29', '1')
+                        .inputs(
+                            {session_event: 'new'}
+                            , '4'  // states_language - english
+                            , '1'  // states_register_info - register
+                            , '1'  // states_suspect_pregnancy - yes
+                            , '1'  // states_consent - yes
+                            , '3'  // states_id_type - none
+                            , '1981'  // states_birth_year
+                            , '2'  // states_birth_month - feb
+                            , '29'  // states_birth_day
+                            , '1'  // states_invalid_dob - continue
+                        )
                         .check.interaction({
                             state: 'states_birth_year',
                             reply: 'Since you don\'t have an ID or passport, ' +
@@ -1466,8 +1533,17 @@ describe("app", function() {
                 it("should not save birth day, ask them their birth day again", function() {
                     return tester
                         .setup.user.addr('27001')
-                        .setup.user.state('states_birth_day')
-                        .input('fourteen')
+                        .inputs(
+                            {session_event: 'new'}
+                            , '4'  // states_language - english
+                            , '1'  // states_register_info - register
+                            , '1'  // states_suspect_pregnancy - yes
+                            , '1'  // states_consent - yes
+                            , '3'  // states_id_type - none
+                            , '1981'  // states_birth_year
+                            , '2'  // states_birth_month - feb
+                            , 'fourteen'  // states_birth_day
+                        )
                         .check.interaction({
                             state: 'states_birth_day',
                             reply: ('There was an error in your entry. Please ' +
@@ -1489,44 +1565,40 @@ describe("app", function() {
                             api.contacts.add({
                                 msisdn: '+27001',
                                 extra : {
-                                    language_choice: 'en',
-                                    suspect_pregnancy: 'yes',
-                                    id_type: 'passport',
-                                    passport_origin: 'zw',
-                                    passport_no: '12345',
                                     ussd_sessions: '5',
-                                    consent: 'true'
                                 },
                                 key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
                                 user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
                             });
                         })
                         .setup.user.addr('27001')
-                        .setup.user.answers({
-                            'states_birth_year': '1981',
-                            'states_birth_month': '01'
-                        })
-                        .setup.user.state('states_birth_day')
-                        .input('1')
+                        .inputs(
+                            {session_event: 'new'}
+                            , '4'  // states_language - english
+                            , '1'  // states_register_info - register
+                            , '1'  // states_suspect_pregnancy - yes
+                            , '1'  // states_consent - yes
+                            , '2'  // states_id_type - passport
+                            , '1'  // states_passport_origin - Zimbabwe
+                            , '12345' // states_passport_no
+                        )
                         .check.interaction({
                             state: 'states_end_success',
                             reply: ('Congratulations on your pregnancy. You will now get free SMSs about MomConnect. You can register for the full set of FREE helpful messages at a clinic.')
                         })
                         .check(function(api) {
                             var contact = api.contacts.store[0];
-                            assert.equal(contact.extra.birth_day, '01');
-                            assert.equal(contact.extra.dob, '1981-01-01');
                             assert.equal(contact.extra.ussd_sessions, '0');
                             assert.equal(contact.extra.last_stage, 'states_end_success');
-                            assert.equal(contact.extra.metric_sessions_to_register, '5');
+                            assert.equal(contact.extra.metric_sessions_to_register, '6');
                             assert.equal(contact.extra.is_registered, 'true');
                             assert.equal(contact.extra.is_registered_by, 'personal');
                         })
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
-                            assert.deepEqual(metrics['test.personal.avg.sessions_to_register'].values, [5]);
-                            assert.deepEqual(metrics['test.personal.percent_incomplete_registrations'].values, [25]);
-                            assert.deepEqual(metrics['test.personal.percent_complete_registrations'].values, [75]);
+                            assert.deepEqual(metrics['test.personal.avg.sessions_to_register'].values, [6]);
+                            assert.deepEqual(metrics['test.personal.percent_incomplete_registrations'].values, [60, 40]);
+                            assert.deepEqual(metrics['test.personal.percent_complete_registrations'].values, [40, 60]);
                         })
                         .check(function(api) {
                             var kv_store = api.kv.store;
@@ -1565,9 +1637,11 @@ describe("app", function() {
                                 });
                             })
                             .setup.user.addr('273444')
-                            .setup.user.state('states_language')
-                            .input('1')
-                            .input.session_event('close')
+                            .inputs(
+                                {session_event: 'new'}
+                                , '1'  // states_language - zulu
+                                , {session_event: 'close'}
+                            )
                             .check(function(api) {
                                 var smses = _.where(api.outbound.store, {
                                     endpoint: 'sms'
@@ -1587,9 +1661,11 @@ describe("app", function() {
                                 });
                             })
                             .setup.user.addr('273323')
-                            .setup.user.state('states_language')
-                            .input(1)
-                            .input.session_event('close')
+                            .inputs(
+                                {session_event: 'new'}
+                                , '1'  // states_language - zulu
+                                , {session_event: 'close'}
+                            )
                             .check(function(api) {
                                 var smses = _.where(api.outbound.store, {
                                     endpoint: 'sms'
@@ -1617,9 +1693,11 @@ describe("app", function() {
                             });
                         })
                         .setup.user.addr('273444')
-                        .setup.user.state('states_faq_topics')
-                        .input('1')
-                        .input.session_event('close')
+                        .inputs(
+                            {session_event: 'new'}
+                            , '1'  // states_language - english
+                            , '2'  // states_register_info - faq
+                        )
                         .check(function(api) {
                             var smses = _.where(api.outbound.store, {
                                 endpoint: 'sms'
@@ -1646,7 +1724,10 @@ describe("app", function() {
                         });
                     })
                     .setup.user.addr('27001')
-                    .inputs(null, '1')
+                    .inputs(
+                        {session_event: 'new'}
+                        , '1'  // states_registered_full
+                    )
                     .check.interaction({
                         state: 'states_faq_topics',
                         reply: [
@@ -1677,7 +1758,10 @@ describe("app", function() {
                         });
                     })
                     .setup.user.addr('27001')
-                    .inputs(null, '1')
+                    .inputs(
+                        {session_event: 'new'}
+                        , '1'  // states_registered_full
+                    )
                     .check.interaction({
                         state: 'states_faq_topics',
                         reply: [
@@ -1698,7 +1782,11 @@ describe("app", function() {
             it("should ask to choose topic", function() {
                 return tester
                     .setup.user.addr('27001')
-                    .inputs(null, '1', '2')
+                    .inputs(
+                        {session_event: 'new'}
+                        , '1'  // states_language - english
+                        , '2'  // states_register_info - info
+                    )
                     .check.interaction({
                         state: 'states_faq_topics',
                         reply: [

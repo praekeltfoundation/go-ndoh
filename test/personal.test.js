@@ -348,8 +348,6 @@ describe("app", function() {
                         .inputs(
                             {session_event: 'new'}
                         )
-                        // .setup.user.state('states_faq_topics')
-                        // .inputs('1', null)
                         .check.interaction({
                             state: 'states_registered_full',
                             reply: [

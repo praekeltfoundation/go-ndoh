@@ -536,14 +536,14 @@ describe("app", function() {
                         });
                     })
                     .setup.user.addr('27001')
-                    .setup.user.answers({
-                        'question_1_friendliness': 'very-satisfied',
-                        'question_2_waiting_times_feel': 'very-satisfied',
-                        'question_3_waiting_times_length': 'less-than-an-hour',
-                        'question_4_cleanliness': 'very-satisfied',
-                        'question_5_privacy': 'very-satisfied'
-                    })
-                    .setup.user.state('log_servicerating_send_sms')
+                    .inputs(
+                        {session_event: 'new'}
+                        , '1' // question_1_friendliness - very satisfied
+                        , '1' // question_2_waiting_times_feel - very satisfied
+                        , '1' // question_3_waiting_times_length - less than hour
+                        , '1' // question_4_cleanliness - very satisfied
+                        , '1' // question_5_privacy - very satisfied
+                    )
                     .check(function(api) {
                         var smses = _.where(api.outbound.store, {
                             endpoint: 'sms'

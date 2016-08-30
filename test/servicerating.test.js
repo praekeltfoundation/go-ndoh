@@ -234,7 +234,9 @@ describe("app", function() {
                                 }
                             });
                         })
-                        .start()
+                        .input(
+                            {session_event: 'start'}
+                        )
                         .check.interaction({
                             state: 'question_1_friendliness',
                             reply: [

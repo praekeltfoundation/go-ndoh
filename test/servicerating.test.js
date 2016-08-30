@@ -267,7 +267,9 @@ describe("app", function() {
                                 }
                             });
                         })
-                        .inputs({session_event: 'new'})
+                        .input(
+                            {session_event: 'new'}
+                        )
                         .check.interaction({
                             state: 'end_thanks_revisit',
                             reply: [
@@ -295,7 +297,10 @@ describe("app", function() {
                         });
                     })
                     .setup.user.addr('27001')
-                    .inputs({session_event: 'new'}, '1')
+                    .inputs(
+                        {session_event: 'new'}
+                        , '1' // question_1_friendliness - very satisfied
+                    )
                     .check.interaction({
                         state: 'question_2_waiting_times_feel',
                         reply: [
@@ -323,7 +328,11 @@ describe("app", function() {
                         });
                     })
                     .setup.user.addr('27001')
-                    .inputs({session_event: 'new'}, '1', '1')
+                    .inputs(
+                        {session_event: 'new'}
+                        , '1' // question_1_friendliness - very satisfied
+                        , '1' // question_2_waiting_times_feel - very satisfied
+                    )
                     .check.interaction({
                         state: 'question_3_waiting_times_length',
                         reply: [
@@ -351,7 +360,12 @@ describe("app", function() {
                         });
                     })
                     .setup.user.addr('27001')
-                    .inputs({session_event: 'new'}, '1', '1', '1')
+                    .inputs(
+                        {session_event: 'new'}
+                        , '1' // question_1_friendliness - very satisfied
+                        , '1' // question_2_waiting_times_feel - very satisfied
+                        , '1' // question_3_waiting_times_length - less than hour
+                    )
                     .check.interaction({
                         state: 'question_4_cleanliness',
                         reply: [
@@ -379,7 +393,13 @@ describe("app", function() {
                         });
                     })
                     .setup.user.addr('27001')
-                    .inputs({session_event: 'new'}, '1', '1', '1', '1')
+                    .inputs(
+                        {session_event: 'new'}
+                        , '1' // question_1_friendliness - very satisfied
+                        , '1' // question_2_waiting_times_feel - very satisfied
+                        , '1' // question_3_waiting_times_length - less than hour
+                        , '1' // question_4_cleanliness - very satisfied
+                    )
                     .check.interaction({
                         state: 'question_5_privacy',
                         reply: [
@@ -411,7 +431,14 @@ describe("app", function() {
                         });
                     })
                     .setup.user.addr('27001')
-                    .inputs({session_event: 'new'}, '1', '1', '1', '1', '1')
+                    .inputs(
+                        {session_event: 'new'}
+                        , '1' // question_1_friendliness - very satisfied
+                        , '1' // question_2_waiting_times_feel - very satisfied
+                        , '1' // question_3_waiting_times_length - less than hour
+                        , '1' // question_4_cleanliness - very satisfied
+                        , '1' // question_5_privacy - very satisfied
+                    )
                     .check.interaction({
                         state: 'end_thanks',
                         reply: [
@@ -438,7 +465,14 @@ describe("app", function() {
                         });
                     })
                     .setup.user.addr('27001')
-                    .inputs({session_event: 'new'}, '1', '1', '1', '1', '1')
+                    .inputs(
+                        {session_event: 'new'}
+                        , '1' // question_1_friendliness - very satisfied
+                        , '1' // question_2_waiting_times_feel - very satisfied
+                        , '1' // question_3_waiting_times_length - less than hour
+                        , '1' // question_4_cleanliness - very satisfied
+                        , '1' // question_5_privacy - very satisfied
+                    )
                     .check(function(api) {
                         var contact = _.find(api.contacts.store, {
                           msisdn: '+27001'
@@ -464,7 +498,14 @@ describe("app", function() {
                         });
                     })
                     .setup.user.addr('27001')
-                    .inputs({session_event: 'new'}, '1', '1', '1', '1', '1')
+                    .inputs(
+                        {session_event: 'new'}
+                        , '1' // question_1_friendliness - very satisfied
+                        , '1' // question_2_waiting_times_feel - very satisfied
+                        , '1' // question_3_waiting_times_length - less than hour
+                        , '1' // question_4_cleanliness - very satisfied
+                        , '1' // question_5_privacy - very satisfied
+                    )
                     .check(function(api) {
                         var smses = _.where(api.outbound.store, {
                             endpoint: 'sms'
@@ -535,7 +576,15 @@ describe("app", function() {
                         });
                     })
                     .setup.user.addr('27001')
-                    .inputs({session_event: 'new'}, '1', '1', '1', '1', '1', {session_event: 'new'})
+                    .inputs(
+                        {session_event: 'new'}
+                        , '1' // question_1_friendliness - very satisfied
+                        , '1' // question_2_waiting_times_feel - very satisfied
+                        , '1' // question_3_waiting_times_length - less than hour
+                        , '1' // question_4_cleanliness - very satisfied
+                        , '1' // question_5_privacy - very satisfied
+                        , {session_event: 'new'}
+                    )
                     .check.interaction({
                         state: 'end_thanks_revisit',
                         reply: [
@@ -561,7 +610,9 @@ describe("app", function() {
                         });
                     })
                     .setup.user.addr('27001')
-                    .inputs({session_event: 'new'})
+                    .input(
+                        {session_event: 'new'}
+                    )
                     .check.interaction({
                         state: 'end_thanks_revisit',
                         reply: [

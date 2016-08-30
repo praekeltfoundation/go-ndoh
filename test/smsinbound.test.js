@@ -171,7 +171,7 @@ describe("app", function() {
                                 user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
                             });
                         })
-                        .inputs('start')
+                        .input('start')
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
                             assert.deepEqual(metrics['test.smsinbound.sum.unique_users'].values, [1]);
@@ -193,7 +193,7 @@ describe("app", function() {
                             });
                         })
                         .setup.user.addr('27001')
-                        .inputs('baby')
+                        .input('baby')
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
                             // should increment the number of baby SMSs metric
@@ -224,7 +224,7 @@ describe("app", function() {
                             });
                         })
                         .setup.user.addr('27001')
-                        .inputs('STOP')
+                        .input('STOP')
                         .check(function(api) {
                             var metrics = api.metrics.stores.test_metric_store;
                             // should NOT inc total subscriptions metric
@@ -285,7 +285,7 @@ describe("app", function() {
                             testing_today: 'April 4, 2014 09:07:07 GMT+0200 (SAST)'
                         })
                         .setup.user.addr('27001')
-                        .inputs('DONUTS')
+                        .input('DONUTS')
                         .check.interaction({
                             state: 'states_default',
                             reply:
@@ -314,7 +314,7 @@ describe("app", function() {
                             testing_today: 'April 4, 2014 07:07:07  GMT+0200 (SAST)'
                         })
                         .setup.user.addr('27001')
-                        .inputs('DONUTS')
+                        .input('DONUTS')
                         .check.interaction({
                             state: 'states_default',
                             reply:
@@ -344,7 +344,7 @@ describe("app", function() {
                             testing_today: 'April 5, 2014 09:07:07  GMT+0200 (SAST)'
                         })
                         .setup.user.addr('27001')
-                        .inputs('DONUTS')
+                        .input('DONUTS')
                         .check.interaction({
                             state: 'states_default',
                             reply:
@@ -374,7 +374,7 @@ describe("app", function() {
                             testing_today: 'August 10, 2015 09:07:07  GMT+0200 (SAST)'
                         })
                         .setup.user.addr('27001')
-                        .inputs('DONUTS')
+                        .input('DONUTS')
                         .check.interaction({
                             state: 'states_default',
                             reply:
@@ -402,7 +402,7 @@ describe("app", function() {
                         });
                     })
                     .setup.user.addr('27001')
-                    .inputs('*134*12345# rate')
+                    .input('*134*12345# rate')
                     .check.interaction({
                         state: 'states_dial_not_sms',
                         reply:
@@ -428,7 +428,7 @@ describe("app", function() {
                         });
                     })
                     .setup.user.addr('27001')
-                    .inputs('"stop" in the name of love')
+                    .input('"stop" in the name of love')
                     .check.interaction({
                         state: 'states_opt_out',
                         reply:
@@ -455,7 +455,7 @@ describe("app", function() {
                         });
                     })
                     .setup.user.addr('27001')
-                    .inputs('END')
+                    .input('END')
                     .check.interaction({
                         state: 'states_opt_out',
                         reply:
@@ -482,7 +482,7 @@ describe("app", function() {
                         });
                     })
                     .setup.user.addr('27001')
-                    .inputs('CANCEL')
+                    .input('CANCEL')
                     .check.interaction({
                         state: 'states_opt_out',
                         reply:
@@ -509,7 +509,7 @@ describe("app", function() {
                         });
                     })
                     .setup.user.addr('27001')
-                    .inputs('UNSUBSCRIBE')
+                    .input('UNSUBSCRIBE')
                     .check.interaction({
                         state: 'states_opt_out',
                         reply:
@@ -536,7 +536,7 @@ describe("app", function() {
                         });
                     })
                     .setup.user.addr('27001')
-                    .inputs('QUIT')
+                    .input('QUIT')
                     .check.interaction({
                         state: 'states_opt_out',
                         reply:
@@ -563,7 +563,7 @@ describe("app", function() {
                         });
                     })
                     .setup.user.addr('27001')
-                    .inputs('BLOCK')
+                    .input('BLOCK')
                     .check.interaction({
                         state: 'states_opt_out',
                         reply:
@@ -593,7 +593,7 @@ describe("app", function() {
                         });
                     })
                     .setup.user.addr('27001')
-                    .inputs('"START"')
+                    .input('"START"')
                     .check.interaction({
                         state: 'states_opt_in',
                         reply:
@@ -622,7 +622,7 @@ describe("app", function() {
                         });
                     })
                     .setup.user.addr('27001')
-                    .inputs('baBy has been born, bub')
+                    .input('baBy has been born, bub')
                     .check.interaction({
                         state: 'states_baby',
                         reply:
@@ -653,7 +653,7 @@ describe("app", function() {
                         });
                     })
                     .setup.user.addr('27001')
-                    .inputs('usana has been born, bub')
+                    .input('usana has been born, bub')
                     .check.interaction({
                         state: 'states_baby',
                         reply:
@@ -675,7 +675,7 @@ describe("app", function() {
                         });
                     })
                     .setup.user.addr('27001')
-                    .inputs('sana has been born, bub')
+                    .input('sana has been born, bub')
                     .check.interaction({
                         state: 'states_baby',
                         reply:
@@ -697,7 +697,7 @@ describe("app", function() {
                         });
                     })
                     .setup.user.addr('27001')
-                    .inputs('baba has been born, bub')
+                    .input('baba has been born, bub')
                     .check.interaction({
                         state: 'states_baby',
                         reply:
@@ -719,7 +719,7 @@ describe("app", function() {
                         });
                     })
                     .setup.user.addr('27001')
-                    .inputs('babby has been born, bub')
+                    .input('babby has been born, bub')
                     .check.interaction({
                         state: 'states_baby',
                         reply:
@@ -741,7 +741,7 @@ describe("app", function() {
                         });
                     })
                     .setup.user.addr('27001')
-                    .inputs('lesea has been born, bub')
+                    .input('lesea has been born, bub')
                     .check.interaction({
                         state: 'states_baby',
                         reply:
@@ -763,7 +763,7 @@ describe("app", function() {
                         });
                     })
                     .setup.user.addr('27001')
-                    .inputs('bby has been born, bub')
+                    .input('bby has been born, bub')
                     .check.interaction({
                         state: 'states_baby',
                         reply:
@@ -785,7 +785,7 @@ describe("app", function() {
                         });
                     })
                     .setup.user.addr('27001')
-                    .inputs('babya has been born, bub')
+                    .input('babya has been born, bub')
                     .check.interaction({
                         state: 'states_baby',
                         reply:

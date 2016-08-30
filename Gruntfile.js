@@ -207,7 +207,7 @@ module.exports = function (grunt) {
             options: {
                 reporter: 'spec'
             },
-            test_clinic: {
+            /*test_clinic: {
                 src: ['<%= paths.test.clinic %>']
             },
             test_chw: {
@@ -215,11 +215,11 @@ module.exports = function (grunt) {
             },
             test_personal: {
                 src: ['<%= paths.test.personal %>']
-            },
+            },*/
             test_optout: {
                 src: ['<%= paths.test.optout %>']
             },
-            test_smsinbound: {
+            /*test_smsinbound: {
                 src: ['<%= paths.test.smsinbound %>']
             },
             test_servicerating: {
@@ -233,7 +233,7 @@ module.exports = function (grunt) {
             },
             test_session_length_helper: {
                 src: ['<%= paths.test.session_length_helper %>']
-            },
+            },*/
         }
     });
 

@@ -172,7 +172,11 @@ describe("app", function() {
                     it("should fire multiple metrics", function() {
                         return tester
                             .setup.user.addr('27001')
-                            .inputs({session_event: "new"}, '1', '1')
+                            .inputs(
+                                {session_event: "new"}
+                                , '1' // state_start - miscarriage
+                                , '1' // states_subscribe_option - yes
+                            )
                             .check(function(api) {
                                 var metrics = api.metrics.stores.test_metric_store;
                                 // should inc total subscriptions metric
@@ -223,7 +227,11 @@ describe("app", function() {
                     it("should fire multiple metrics", function() {
                         return tester
                             .setup.user.addr('27001')
-                            .inputs({session_event: "new"}, '1', '2')
+                            .inputs(
+                                {session_event: "new"}
+                                , '1' // state_start - miscarriage
+                                , '2' // states_subscribe_option - no
+                            )
                             .check(function(api) {
                                 var metrics = api.metrics.stores.test_metric_store;
                                 // should NOT inc total subscriptions metric
@@ -259,7 +267,10 @@ describe("app", function() {
                     it("should fire multiple metrics", function() {
                         return tester
                             .setup.user.addr('27001')
-                            .inputs({session_event: "new"}, '4')
+                            .inputs(
+                                {session_event: "new"}
+                                , '4' // state_start - messages not useful
+                            )
                             .check(function(api) {
                                 var metrics = api.metrics.stores.test_metric_store;
                                 // should NOT inc total subscriptions metric
@@ -297,7 +308,11 @@ describe("app", function() {
                     it("should increase total subscriptions metric", function() {
                         return tester
                             .setup.user.addr('27831112222')
-                            .inputs('start', '1', '1')
+                            .inputs(
+                                {session_event: "new"}
+                                , '1' // state_start - miscarriage
+                                , '1' // states_subscribe_option - yes
+                            )
                             .check(function(api) {
                                 var metrics = api.metrics.stores.test_metric_store;
                                 // inc total subscriptions metric
@@ -332,7 +347,11 @@ describe("app", function() {
                     it("should not fire any metrics", function() {
                         return tester
                             .setup.user.addr('27831112222')
-                            .inputs({session_event: "new"}, '1', '2')
+                            .inputs(
+                                {session_event: "new"}
+                                , '1' // state_start - miscarriage
+                                , '2' // states_subscribe_option - no
+                            )
                             .check(function(api) {
                                 var metrics = api.metrics.stores.test_metric_store;
                                 // should NOT inc any metrics
@@ -350,7 +369,10 @@ describe("app", function() {
                     it("should not fire any metrics", function() {
                         return tester
                             .setup.user.addr('27831112222')
-                            .inputs({session_event: "new"}, '4')
+                            .inputs(
+                                {session_event: "new"}
+                                , '4' // state_start - messages not useful
+                            )
                             .check(function(api) {
                                 var metrics = api.metrics.stores.test_metric_store;
                                 // should NOT inc any metrics
@@ -372,7 +394,11 @@ describe("app", function() {
                     it("should fire multiple metrics", function() {
                         return tester
                             .setup.user.addr('27831113333')
-                            .inputs({session_event: "new"}, '1', '1')
+                            .inputs(
+                                {session_event: "new"}
+                                , '1' // state_start - miscarriage
+                                , '1' // states_subscribe_option - yes
+                            )
                             .check(function(api) {
                                 var metrics = api.metrics.stores.test_metric_store;
                                 // should inc total subscriptions metric
@@ -423,7 +449,11 @@ describe("app", function() {
                     it("should fire multiple metrics", function() {
                         return tester
                             .setup.user.addr('27831113333')
-                            .inputs({session_event: "new"}, '1', '2')
+                            .inputs(
+                                {session_event: "new"}
+                                , '1' // state_start - miscarriage
+                                , '2' // states_subscribe_option - no
+                            )
                             .check(function(api) {
                                 var metrics = api.metrics.stores.test_metric_store;
                                 // should NOT inc total subscriptions metric
@@ -459,7 +489,10 @@ describe("app", function() {
                     it("should fire multiple metrics", function() {
                         return tester
                             .setup.user.addr('27831113333')
-                            .inputs({session_event: "new"}, '4')
+                            .inputs(
+                                {session_event: "new"}
+                                , '4' // state_start - messages not useful
+                            )
                             .check(function(api) {
                                 var metrics = api.metrics.stores.test_metric_store;
                                 // should NOT inc total subscriptions metric
@@ -500,7 +533,9 @@ describe("app", function() {
                     return tester
                         .setup.char_limit(160)  // limit first state chars
                         .setup.user.addr('27001')
-                        .inputs({session_event: "new"})
+                        .input(
+                            {session_event: "new"}
+                        )
                         .check.interaction({
                             state: 'states_start',
                             reply: [
@@ -521,7 +556,9 @@ describe("app", function() {
                 it("should ask for the reason they are opting out", function() {
                     return tester
                         .setup.user.addr('27831112222')
-                        .inputs({session_event: "new"})
+                        .input(
+                            {session_event: "new"}
+                        )
                         .check.interaction({
                             state: 'states_start',
                             reply: [
@@ -545,7 +582,10 @@ describe("app", function() {
                 return tester
                     .setup.char_limit(160)  // limit first state chars
                     .setup.user.addr('27001')
-                    .inputs({session_event: "new"}, '1')
+                    .inputs(
+                        {session_event: "new"}
+                        , '1' // states_start - miscarriage
+                    )
                     .check.interaction({
                         state: 'states_subscribe_option',
                         reply: [
@@ -565,7 +605,10 @@ describe("app", function() {
                 return tester
                     .setup.char_limit(160)  // limit first state chars
                     .setup.user.addr('27001')
-                    .inputs({session_event: "new"}, '4')
+                    .inputs(
+                        {session_event: "new"}
+                        , '4' // state_start - messages not useful
+                    )
                     .check.interaction({
                         state: 'states_end_no',
                         reply: ('Thank you. You will no longer receive ' +
@@ -579,7 +622,10 @@ describe("app", function() {
             it("should save their optout reason against their contact", function() {
                 return tester
                     .setup.user.addr('27001')
-                    .inputs({session_event: "new"}, '4')
+                    .inputs(
+                        {session_event: "new"}
+                        , '4' // state_start - messages not useful
+                    )
                     .check(function(api) {
                         var contact = api.contacts.store[0];
                         assert.equal(contact.extra.opt_out_reason, 'not_useful');
@@ -607,7 +653,11 @@ describe("app", function() {
                         });
                     })
                     .setup.user.addr('27001')
-                    .inputs({session_event: "new"}, '1', '2')
+                    .inputs(
+                        {session_event: "new"}
+                        , '1' // state_start - miscarriage
+                        , '2' // states_subscribe_option - no
+                    )
                     .check.interaction({
                         state: 'states_end_no',
                         reply: ('Thank you. You will no longer receive ' +
@@ -636,7 +686,11 @@ describe("app", function() {
                         });
                     })
                     .setup.user.addr('27001')
-                    .inputs({session_event: "new"}, '1', '2')
+                    .inputs(
+                        {session_event: "new"}
+                        , '1' // state_start - miscarriage
+                        , '2' // states_subscribe_option - no
+                    )
                     .check(function(api) {
                         var contact = api.contacts.store[0];
                         assert.equal(contact.extra.opt_out_reason, 'miscarriage');
@@ -651,7 +705,11 @@ describe("app", function() {
                 it("should unsubscribe from other lines, subscribe them and exit", function() {
                     return tester
                         .setup.user.addr('27001')
-                        .inputs({session_event: "new"}, '1', '1')
+                        .inputs(
+                            {session_event: "new"}
+                            , '1' // state_start - miscarriage
+                            , '1' // states_subscribe_option - yes
+                        )
                         .check.interaction({
                             state: 'states_end_yes',
                             reply: ('Thank you. You will receive support messages ' +
@@ -672,7 +730,11 @@ describe("app", function() {
                    "messages", function() {
                     return tester
                         .setup.user.addr('27001')
-                        .inputs({session_event: "new"}, '1', '1')
+                        .inputs(
+                            {session_event: "new"}
+                            , '1' // state_start - miscarriage
+                            , '1' // states_subscribe_option - yes
+                        )
                         .check(function(api) {
                             var contact = _.find(api.contacts.store, {
                               msisdn: '+27001'
@@ -687,7 +749,11 @@ describe("app", function() {
                 it("should subscribe them and exit", function() {
                     return tester
                         .setup.user.addr('27831112222')
-                        .inputs({session_event: "new"}, '1', '1')
+                        .inputs(
+                            {session_event: "new"}
+                            , '1' // state_start - miscarriage
+                            , '1' // states_subscribe_option - yes
+                        )
                         .check.interaction({
                             state: 'states_end_yes',
                             reply: ('Thank you. You will receive support messages ' +
@@ -708,7 +774,11 @@ describe("app", function() {
                    "messages", function() {
                     return tester
                         .setup.user.addr('27831112222')
-                        .inputs({session_event: "new"}, '1', '1')
+                        .inputs(
+                            {session_event: "new"}
+                            , '1' // state_start - miscarriage
+                            , '1' // states_subscribe_option - yes
+                        )
                         .check(function(api) {
                             var contact = _.find(api.contacts.store, { msisdn: '+27831112222' });
                             assert.equal(contact.extra.opt_out_reason, '');

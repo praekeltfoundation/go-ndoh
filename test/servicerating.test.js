@@ -235,7 +235,7 @@ describe("app", function() {
                             });
                         })
                         .input(
-                            {session_event: 'start'}
+                            {session_event: 'new'}
                         )
                         .check.interaction({
                             state: 'question_1_friendliness',

@@ -52,6 +52,7 @@ describe("app", function() {
                     name: 'personal',
                     testing: 'true',
                     testing_today: 'April 4, 2014 07:07:07',
+                    migration_flag: true,
                     env: 'test',
                     metric_store: 'test_metric_store',
                     endpoints: {
@@ -71,6 +72,10 @@ describe("app", function() {
                     },
                     control_v2: {
                         url: 'http://ndoh-control/api/v2/',
+                        api_token: 'test_token'
+                    },
+                    identity_store: {
+                        url: 'http://identity-store/api/v1',
                         api_token: 'test_token'
                     },
                     subscription: {
@@ -805,6 +810,7 @@ describe("app", function() {
                         , '4'  // states_language - english
                         , '1'  // states_register_info - register
                         , '1'  // states_suspect_pregnancy - yes
+                        , '1'  // states_migration - continue
                     )
                     .check.interaction({
                         state: 'states_consent',
@@ -826,6 +832,7 @@ describe("app", function() {
                         , '4'  // states_language - english
                         , '1'  // states_register_info - register
                         , '1'  // states_suspect_pregnancy - yes
+                        , '1'  // states_migration - continue
                         , '2'  // states_consent - no
                     )
                     .check.interaction({
@@ -897,6 +904,7 @@ describe("app", function() {
                             , '4'  // states_language - english
                             , '1'  // states_register_info - register
                             , '1'  // states_suspect_pregnancy - yes
+                            , '1'  // states_migration - continue
                             , '1'  // states_consent - yes
                         )
                         .check.interaction({
@@ -926,6 +934,7 @@ describe("app", function() {
                             , '4'  // states_language - english
                             , '1'  // states_register_info - register
                             , '1'  // states_suspect_pregnancy - yes
+                            , '1'  // states_migration - continue
                             , '1'  // states_consent - yes
                         )
                         .check.interaction({
@@ -956,6 +965,7 @@ describe("app", function() {
                             , '4'  // states_language - english
                             , '1'  // states_register_info - register
                             , '1'  // states_suspect_pregnancy - yes
+                            , '1'  // states_migration - continue
                             , '1'  // states_consent - yes
                             , '1'  // states_opt_in - yes
                         )
@@ -985,6 +995,7 @@ describe("app", function() {
                             , '4'  // states_language - english
                             , '1'  // states_register_info - register
                             , '1'  // states_suspect_pregnancy - yes
+                            , '1'  // states_migration - continue
                             , '1'  // states_consent - yes
                             , '2'  // states_opt_in - no
                         )
@@ -1016,6 +1027,7 @@ describe("app", function() {
                             , '4'  // states_language - english
                             , '1'  // states_register_info - register
                             , '1'  // states_suspect_pregnancy - yes
+                            , '1'  // states_migration - continue
                             , '1'  // states_consent - yes
                             , '2'  // states_opt_in - no
                             , '1'  // states_stay_out - main menu
@@ -1050,6 +1062,7 @@ describe("app", function() {
                         , '4'  // states_language - english
                         , '1'  // states_register_info - register
                         , '1'  // states_suspect_pregnancy - yes
+                        , '1'  // states_migration - continue
                         , '1'  // states_consent - yes
                         , '1'  // states_opt_in - yes
                     )
@@ -1074,6 +1087,7 @@ describe("app", function() {
                         , '4'  // states_language - english
                         , '1'  // states_register_info - register
                         , '1'  // states_suspect_pregnancy - yes
+                        , '1'  // states_migration - continue
                         , '1'  // states_consent - yes
                         , '1'  // states_opt_in - yes
                         , '1'  // states_id_type - sa id
@@ -1105,6 +1119,7 @@ describe("app", function() {
                         , '4'  // states_language - english
                         , '1'  // states_register_info - register
                         , '1'  // states_suspect_pregnancy - yes
+                        , '1'  // states_migration - continue
                         , '1'  // states_consent - yes
                         , '1'  // states_opt_in - yes
                         , '1'  // states_id_type - sa id
@@ -1136,6 +1151,7 @@ describe("app", function() {
                         , '4'  // states_language - english
                         , '1'  // states_register_info - register
                         , '1'  // states_suspect_pregnancy - yes
+                        , '1'  // states_migration - continue
                         , '1'  // states_consent - yes
                         , '1'  // states_opt_in - yes
                         , '1'  // states_id_type - sa id
@@ -1160,6 +1176,7 @@ describe("app", function() {
                         , '4'  // states_language - english
                         , '1'  // states_register_info - register
                         , '1'  // states_suspect_pregnancy - yes
+                        , '1'  // states_migration - continue
                         , '1'  // states_consent - yes
                         , '1'  // states_opt_in - yes
                         , '1'  // states_id_type - sa id
@@ -1184,6 +1201,7 @@ describe("app", function() {
                         , '4'  // states_language - english
                         , '1'  // states_register_info - register
                         , '1'  // states_suspect_pregnancy - yes
+                        , '1'  // states_migration - continue
                         , '1'  // states_consent - yes
                         , '1'  // states_opt_in - yes
                         , '1'  // states_id_type - sa id
@@ -1212,6 +1230,7 @@ describe("app", function() {
                         , '4'  // states_language - english
                         , '1'  // states_register_info - register
                         , '1'  // states_suspect_pregnancy - yes
+                        , '1'  // states_migration - continue
                         , '1'  // states_consent - yes
                         , '2'  // states_id_type - passport
                     )
@@ -1245,6 +1264,7 @@ describe("app", function() {
                         , '4'  // states_language - english
                         , '1'  // states_register_info - register
                         , '1'  // states_suspect_pregnancy - yes
+                        , '1'  // states_migration - continue
                         , '1'  // states_consent - yes
                         , '2'  // states_id_type - passport
                         , '1'  // states_passport_origin - Zimbabwe
@@ -1270,6 +1290,7 @@ describe("app", function() {
                         , '4'  // states_language - english
                         , '1'  // states_register_info - register
                         , '1'  // states_suspect_pregnancy - yes
+                        , '1'  // states_migration - continue
                         , '1'  // states_consent - yes
                         , '2'  // states_id_type - passport
                         , '1'  // states_passport_origin - Zimbabwe
@@ -1297,6 +1318,7 @@ describe("app", function() {
                         , '4'  // states_language - english
                         , '1'  // states_register_info - register
                         , '1'  // states_suspect_pregnancy - yes
+                        , '1'  // states_migration - continue
                         , '1'  // states_consent - yes
                         , '2'  // states_id_type - passport
                         , '1'  // states_passport_origin - Zimbabwe
@@ -1320,6 +1342,7 @@ describe("app", function() {
                         , '4'  // states_language - english
                         , '1'  // states_register_info - register
                         , '1'  // states_suspect_pregnancy - yes
+                        , '1'  // states_migration - continue
                         , '1'  // states_consent - yes
                         , '2'  // states_id_type - passport
                         , '1'  // states_passport_origin - Zimbabwe
@@ -1343,6 +1366,7 @@ describe("app", function() {
                         , '4'  // states_language - english
                         , '1'  // states_register_info - register
                         , '1'  // states_suspect_pregnancy - yes
+                        , '1'  // states_migration - continue
                         , '1'  // states_consent - yes
                         , '3'  // states_id_type - none
                     )
@@ -1370,6 +1394,7 @@ describe("app", function() {
                         , '4'  // states_language - english
                         , '1'  // states_register_info - register
                         , '1'  // states_suspect_pregnancy - yes
+                        , '1'  // states_migration - continue
                         , '1'  // states_consent - yes
                         , '3'  // states_id_type - none
                         , '1981'  // states_birth_year
@@ -1408,6 +1433,7 @@ describe("app", function() {
                         , '4'  // states_language - english
                         , '1'  // states_register_info - register
                         , '1'  // states_suspect_pregnancy - yes
+                        , '1'  // states_migration - continue
                         , '1'  // states_consent - yes
                         , '3'  // states_id_type - none
                         , 'Nineteen Eighty One'  // states_birth_year
@@ -1433,6 +1459,7 @@ describe("app", function() {
                         , '4'  // states_language - english
                         , '1'  // states_register_info - register
                         , '1'  // states_suspect_pregnancy - yes
+                        , '1'  // states_migration - continue
                         , '1'  // states_consent - yes
                         , '3'  // states_id_type - none
                         , '2013'  // states_birth_year
@@ -1456,6 +1483,7 @@ describe("app", function() {
                         , '4'  // states_language - english
                         , '1'  // states_register_info - register
                         , '1'  // states_suspect_pregnancy - yes
+                        , '1'  // states_migration - continue
                         , '1'  // states_consent - yes
                         , '3'  // states_id_type - none
                         , '1981'  // states_birth_year
@@ -1487,6 +1515,7 @@ describe("app", function() {
                             , '4'  // states_language - english
                             , '1'  // states_register_info - register
                             , '1'  // states_suspect_pregnancy - yes
+                            , '1'  // states_migration - continue
                             , '1'  // states_consent - yes
                             , '3'  // states_id_type - none
                             , '1981'  // states_birth_year
@@ -1512,6 +1541,7 @@ describe("app", function() {
                             , '4'  // states_language - english
                             , '1'  // states_register_info - register
                             , '1'  // states_suspect_pregnancy - yes
+                            , '1'  // states_migration - continue
                             , '1'  // states_consent - yes
                             , '3'  // states_id_type - none
                             , '1981'  // states_birth_year
@@ -1538,6 +1568,7 @@ describe("app", function() {
                             , '4'  // states_language - english
                             , '1'  // states_register_info - register
                             , '1'  // states_suspect_pregnancy - yes
+                            , '1'  // states_migration - continue
                             , '1'  // states_consent - yes
                             , '3'  // states_id_type - none
                             , '1981'  // states_birth_year
@@ -1577,6 +1608,7 @@ describe("app", function() {
                             , '4'  // states_language - english
                             , '1'  // states_register_info - register
                             , '1'  // states_suspect_pregnancy - yes
+                            , '1'  // states_migration - continue
                             , '1'  // states_consent - yes
                             , '2'  // states_id_type - passport
                             , '1'  // states_passport_origin - Zimbabwe
@@ -2213,6 +2245,7 @@ describe("app", function() {
                     testing: 'true',
                     env: 'test',
                     metric_store: 'test_metric_store',
+                    migration_flag: true,
                     endpoints: {
                         "sms": {"delivery_class": "sms"}
                     },
@@ -2230,6 +2263,10 @@ describe("app", function() {
                     },
                     control_v2: {
                         url: 'http://ndoh-control/api/v2/',
+                        api_token: 'test_token'
+                    },
+                    identity_store: {
+                        url: 'http://identity-store/api/v1',
                         api_token: 'test_token'
                     },
                     subscription: {
@@ -2344,6 +2381,7 @@ describe("app", function() {
                             {session_event: 'new'}  // states_start
                             , '4'  // states_language
                             , '1'  // states_suspect_pregnancy - yes
+                            , '1'  // states_migration - continue
                         )
                         // check navigation
                         .check.interaction({
@@ -2365,6 +2403,7 @@ describe("app", function() {
                             {session_event: 'new'}  // states_start
                             , '4'  // states_language
                             , '1'  // states_suspect_pregnancy
+                            , '1'  // states_migration - continue
                             , '2'  // states_consent - no
                         )
                         .check.interaction({
@@ -2415,6 +2454,7 @@ describe("app", function() {
                         .inputs(
                             {session_event: 'new'}  // states_start
                             , '4'  // states_language
+                            , '1'  // states_migration - continue
                             , '1'  // states_consent - yes
                             , '1'  // states_suspect_pregnancy
                         )
@@ -2615,6 +2655,7 @@ describe("app", function() {
                         .inputs(
                             {session_event: 'new'}  // states_start
                             , '1'  // states_suspect_pregnancy - yes
+                            , '1'  // states_migration - continue
                         )
                         // check navigation
                         .check.interaction({
@@ -2647,6 +2688,7 @@ describe("app", function() {
                         .inputs(
                             {session_event: 'new'}  // states_start
                             , '1'  // states_suspect_pregnancy
+                            , '1'  // states_migration - continue
                             , '2'  // states_consent - no
                         )
                         .check.interaction({

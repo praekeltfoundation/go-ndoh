@@ -45,6 +45,7 @@ describe("app", function() {
                     metric_store: 'test_metric_store',
                     testing: 'true',
                     testing_today: 'April 4, 2014 07:07:07',
+                    migration_flag: true,
                     endpoints: {
                         "sms": {"delivery_class": "sms"}
                     },
@@ -62,6 +63,10 @@ describe("app", function() {
                     },
                     control_v2: {
                         url: 'http://ndoh-control/api/v2/',
+                        api_token: 'test_token'
+                    },
+                    identity_store: {
+                        url: 'http://identity-store/api/v1',
                         api_token: 'test_token'
                     },
                     subscription: {
@@ -606,6 +611,7 @@ describe("app", function() {
                         .inputs(
                             {session_event: 'new'}  // dial in
                             , '1'  // state_start - yes
+                            , '1'  // state_migration - Continue
                         )
                         .check.interaction({
                             state: 'states_consent',
@@ -630,6 +636,7 @@ describe("app", function() {
                         .inputs(
                             {session_event: 'new'}  // dial in
                             , '1'  // state_start - yes
+                            , '1'  // state_migration - Continue
                             , '1'  // state_consent - yes
                         )
                         .check.interaction({
@@ -660,6 +667,7 @@ describe("app", function() {
                         .inputs(
                             {session_event: 'new'}  // dial in
                             , '1'  // state_start - yes
+                            , '1'  // state_migration - Continue
                             , '2'  // state_consent - no
                         )
                         .check.interaction({
@@ -711,6 +719,7 @@ describe("app", function() {
                             {session_event: 'new'}  // dial in
                             , '1'  // state_start - yes
                             , '1'  // state_opt_in - yes
+                            , '1'  // state_migration -- Continue
                         )
                         .check.interaction({
                             state: 'states_consent',
@@ -740,6 +749,7 @@ describe("app", function() {
                             {session_event: 'new'}  // dial in
                             , '1'  // state_start - yes
                             , '1'  // state_opt_in
+                            , '1'  // state_migration - Continue
                             , '1'  // state_consent - yes
                         )
                         .check.interaction({
@@ -772,6 +782,7 @@ describe("app", function() {
                             {session_event: 'new'}  // dial in
                             , '1'  // state_start - yes
                             , '1'  // state_opt_in
+                            , '1'  // state_migration - Continue
                             , '2'  // state_consent - no
                         )
                         .check.interaction({
@@ -894,6 +905,7 @@ describe("app", function() {
                             {session_event: 'new'}  // dial in
                             , '2'  // state_start - no
                             , '0821234567'  // states_mobile_no
+                            , '1'  // state_migration - Continue
                         )
                         .check.interaction({
                             state: 'states_consent',
@@ -918,6 +930,7 @@ describe("app", function() {
                             {session_event: 'new'}  // dial in
                             , '2'  // state_start - no
                             , '0821234567'  // states_mobile_no
+                            , '1'  // state_migration - Continue
                             , '1'  // state_consent - yes
                         )
                         .check.interaction({
@@ -945,6 +958,7 @@ describe("app", function() {
                             {session_event: 'new'}  // dial in
                             , '2'  // state_start - no
                             , '0821234567'  // states_mobile_no
+                            , '1'  // state_migration - Continue
                             , '2'  // state_consent - no
                         )
                         .check.interaction({
@@ -1015,6 +1029,7 @@ describe("app", function() {
                             , '2'  // state_start - no
                             , '0831112222'  // states_mobile_no
                             , '1'  // state_opt_in - yes
+                            , '1'  // state_migration - Continue
                         )
                         .check.interaction({
                             state: 'states_consent',
@@ -1053,6 +1068,7 @@ describe("app", function() {
                             , '2'  // state_start - no
                             , '0831112222'  // states_mobile_no
                             , '1'  // state_opt_in - yes
+                            , '1'  // state_migration - Continue
                             , '1'  // state_consent - yes
                         )
                         .check.interaction({
@@ -1088,6 +1104,7 @@ describe("app", function() {
                             , '2'  // state_start - no
                             , '0831112222'  // states_mobile_no
                             , '1'  // state_opt_in - yes
+                            , '1'  // state_migration - Continue
                             , '2'  // state_consent - no
                         )
                         .check.interaction({
@@ -1187,6 +1204,7 @@ describe("app", function() {
                         .inputs(
                             {session_event: 'new'}  // dial in
                             , '1'  // state_start - yes
+                            , '1'  // state_migration - Continue
                             , '1'  // state_consent - yes
                             , '1'  // states_id_type - sa id
                         )
@@ -1234,6 +1252,7 @@ describe("app", function() {
                             {session_event: 'new'}  // dial in
                             , '2'  // state_start - no
                             , '0821234567' // states_mobile_no
+                            , '1'  // state_migration - Continue
                             , '1'  // state_consent - yes
                             , '1'  // states_id_type - sa id
                         )
@@ -1266,6 +1285,7 @@ describe("app", function() {
                     .inputs(
                         {session_event: 'new'}  // dial in
                         , '1'  // state_start - yes
+                        , '1'  // state_migration - Continue
                         , '1'  // state_consent - yes
                         , '1'  // state_id_type - sa id
                         , '5101015009088'  // states_sa_id
@@ -1303,6 +1323,7 @@ describe("app", function() {
                     .inputs(
                         {session_event: 'new'}  // dial in
                         , '1'  // state_start - yes
+                        , '1'  // state_migration - Continue
                         , '1'  // state_consent - yes
                         , '1'  // state_id_type - sa id
                         , '2012315678097'  // states_sa_id
@@ -1325,6 +1346,7 @@ describe("app", function() {
                     .inputs(
                         {session_event: 'new'}  // dial in
                         , '1'  // state_start - yes
+                        , '1'  // state_migration - Continue
                         , '1'  // state_consent - yes
                         , '1'  // state_id_type - sa id
                         , '5002285000007'  // states_sa_id
@@ -1347,6 +1369,7 @@ describe("app", function() {
                     .inputs(
                         {session_event: 'new'}  // dial in
                         , '1'  // state_start - yes
+                        , '1'  // state_migration - Continue
                         , '1'  // state_consent - yes
                         , '1'  // state_id_type - sa id
                         , '1234015009087'  // states_sa_id
@@ -1373,6 +1396,7 @@ describe("app", function() {
                     .inputs(
                         {session_event: 'new'}  // dial in
                         , '1'  // state_start - yes
+                        , '1'  // state_migration - Continue
                         , '1'  // state_consent - yes
                         , '2'  // state_id_type - passport
                     )
@@ -1406,6 +1430,7 @@ describe("app", function() {
                     .inputs(
                         {session_event: 'new'}  // dial in
                         , '1'  // state_start - yes
+                        , '1'  // state_migration - Continue
                         , '1'  // state_consent - yes
                         , '2'  // state_id_type - passport
                         , '1'  // states_passport_origin
@@ -1431,6 +1456,7 @@ describe("app", function() {
                     .inputs(
                         {session_event: 'new'}  // dial in
                         , '1'  // state_start - yes
+                        , '1'  // state_migration - Continue
                         , '1'  // state_consent - yes
                         , '2'  // state_id_type - passport
                         , '1'  // states_passport_origin
@@ -1465,6 +1491,7 @@ describe("app", function() {
                     .inputs(
                         {session_event: 'new'}  // dial in
                         , '1'  // state_start - yes
+                        , '1'  // state_migration - Continue
                         , '1'  // state_consent - yes
                         , '2'  // state_id_type - passport
                         , '1'  // states_passport_origin
@@ -1486,6 +1513,7 @@ describe("app", function() {
                     .inputs(
                         {session_event: 'new'}  // dial in
                         , '1'  // state_start - yes
+                        , '1'  // state_migration - Continue
                         , '1'  // state_consent - yes
                         , '2'  // state_id_type - passport
                         , '1'  // states_passport_origin
@@ -1507,6 +1535,7 @@ describe("app", function() {
                     .inputs(
                         {session_event: 'new'}  // dial in
                         , '1'  // state_start - yes
+                        , '1'  // state_migration - Continue
                         , '1'  // state_consent - yes
                         , '3'  // state_id_type - none
                     )
@@ -1532,6 +1561,7 @@ describe("app", function() {
                     .inputs(
                         {session_event: 'new'}  // dial in
                         , '1'  // state_start - yes
+                        , '1'  // state_migration - Continue
                         , '1'  // state_consent - yes
                         , '3'  // state_id_type - none
                         , 'Nineteen Eighty One'  // states_birth_year
@@ -1551,6 +1581,7 @@ describe("app", function() {
                     .inputs(
                         {session_event: 'new'}  // dial in
                         , '1'  // state_start - yes
+                        , '1'  // state_migration - Continue
                         , '1'  // state_consent - yes
                         , '3'  // state_id_type - none
                         , '2013'  // states_birth_year
@@ -1572,6 +1603,7 @@ describe("app", function() {
                     .inputs(
                         {session_event: 'new'}  // dial in
                         , '1'  // state_start - yes
+                        , '1'  // state_migration - Continue
                         , '1'  // state_consent - yes
                         , '3'  // state_id_type - none
                         , '1981'  // states_birth_year
@@ -1610,6 +1642,7 @@ describe("app", function() {
                     .inputs(
                         {session_event: 'new'}  // dial in
                         , '1'  // state_start - yes
+                        , '1'  // state_migration - Continue
                         , '1'  // state_consent - yes
                         , '3'  // state_id_type - none
                         , '1981'  // states_birth_year
@@ -1642,6 +1675,7 @@ describe("app", function() {
                         .inputs(
                             {session_event: 'new'}  // dial in
                             , '1'  // state_start - yes
+                            , '1'  // state_migration - Continue
                             , '1'  // state_consent - yes
                             , '3'  // state_id_type - none
                             , '1981'  // states_birth_year
@@ -1678,6 +1712,7 @@ describe("app", function() {
                         .inputs(
                             {session_event: 'new'}  // dial in
                             , '1'  // state_start - yes
+                            , '1'  // state_migration - Continue
                             , '1'  // state_consent - yes
                             , '3'  // state_id_type - none
                             , '1981'  // states_birth_year
@@ -1701,6 +1736,7 @@ describe("app", function() {
                         .inputs(
                             {session_event: 'new'}  // dial in
                             , '1'  // state_start - yes
+                            , '1'  // state_migration - Continue
                             , '1'  // state_consent - yes
                             , '3'  // state_id_type - none
                             , '1981'  // states_birth_year
@@ -1724,6 +1760,7 @@ describe("app", function() {
                         .inputs(
                             {session_event: 'new'}  // dial in
                             , '1'  // state_start - yes
+                            , '1'  // state_migration - Continue
                             , '1'  // state_consent - yes
                             , '3'  // state_id_type - none
                             , '1981'  // states_birth_year
@@ -1749,6 +1786,7 @@ describe("app", function() {
                         .inputs(
                             {session_event: 'new'}  // dial in
                             , '1'  // state_start - yes
+                            , '1'  // state_migration - Continue
                             , '1'  // state_consent - yes
                             , '1'  // state_id_type - sa id
                             , '5101015009088'  // states_sa_id
@@ -1778,6 +1816,7 @@ describe("app", function() {
                         .inputs(
                             {session_event: 'new'}  // dial in
                             , '1'  // state_start - yes
+                            , '1'  // state_migration - Continue
                             , '1'  // state_consent - yes
                             , '1'  // state_id_type - sa id
                             , '5101015009088'  // states_sa_id
@@ -1813,6 +1852,7 @@ describe("app", function() {
                             {session_event: 'new'}  // dial in
                             , '2'  // state_start - no
                             , '0821234567' // states_mobile_no
+                            , '1'  // state_migration - Continue
                             , '1'  // state_consent - yes
                             , '2'  // state_id_type - passport
                             , '1'  // states_passport_origin - Zimbabwe
@@ -1837,7 +1877,9 @@ describe("app", function() {
                             assert.equal(contact_user.extra.ussd_sessions, '0');
                             assert.equal(contact_user.extra.working_on, '');
                             assert.equal(contact_mom.extra.last_state, 'states_end_success');
-                            assert.equal(contact_user.extra.last_state, 'states_consent');
+                            // NOTE:  this was states_consent before because that's where states_start
+                            //        would return to on completion, this is now states_migration
+                            assert.equal(contact_user.extra.last_state, 'states_migration');
                             assert.equal(contact_mom.extra.metric_sessions_to_register, '6');
                             assert.equal(contact_user.extra.no_registrations, '1');
                             assert.equal(contact_mom.extra.no_registrations, undefined);
@@ -1863,6 +1905,7 @@ describe("app", function() {
                             {session_event: 'new'}  // dial in
                             , '2'  // state_start - no
                             , '0821234567' // states_mobile_no
+                            , '1'  // state_migration - Continue
                             , '1'  // state_consent - yes
                             , '2'  // state_id_type - passport
                             , '1'  // states_passport_origin - Zimbabwe

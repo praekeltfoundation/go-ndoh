@@ -169,7 +169,8 @@ go.app = function() {
                             .then(function(opted_out) {
                                 return {
                                     true: 'states_opt_in',
-                                    false: 'states_consent',
+                                    // NOTE: this was `states_consent` before the migration
+                                    false: 'states_migration',
                                 } [opted_out];
                             });
                     } else {
@@ -195,7 +196,8 @@ go.app = function() {
                         return go.utils
                             .opt_in(self.im, self.contact)
                             .then(function() {
-                                return 'states_consent';
+                                // NOTE: this was `states_consent` before the migration
+                                return 'states_migration';
                             });
                     } else {
                         if (!_.isUndefined(self.user.extra.working_on)) {
@@ -255,11 +257,41 @@ go.app = function() {
                                 .then(function(opted_out) {
                                     return {
                                         true: 'states_opt_in',
-                                        false: 'states_consent',
+
+                                        // NOTE: this was `states_consent` before the migration
+                                        false: 'states_migration',
                                     } [opted_out];
                                 });
                         });
                 }
+            });
+        });
+
+
+        self.add('states_migration', function (name) {
+          // NOTE: only go through this if the migration flag is set
+          if(!self.im.config.migration_flag) {
+            return 'states_consent';
+          }
+
+          return go.utils
+            .is_migrated_user(
+                self.im, go.utils.normalize_msisdn(self.contact.msisdn, '27'))
+            .then(function (is_migrated) {
+              if(is_migrated) {
+                return self.states.create('states_consent');
+              } else {
+                return new ChoiceState(name, {
+                  question: $(
+                    "MomConnect is busy with an upgrade and some feature may not " +
+                    "be available to you. Reply STOP to opt-out via SMS. To change " +
+                    "to baby messaging try again next week."),
+                  choices: [
+                    new Choice('continue', $('Continue')),
+                  ],
+                  next: 'states_consent'
+                });
+              }
             });
         });
 

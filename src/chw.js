@@ -169,7 +169,8 @@ go.app = function() {
                             .then(function(opted_out) {
                                 return {
                                     true: 'states_opt_in',
-                                    false: 'states_consent',
+                                    // NOTE: this was `states_consent` before the migration
+                                    false: 'states_migration',
                                 } [opted_out];
                             });
                     } else {
@@ -195,7 +196,8 @@ go.app = function() {
                         return go.utils
                             .opt_in(self.im, self.contact)
                             .then(function() {
-                                return 'states_consent';
+                                // NOTE: this was `states_consent` before the migration
+                                return 'states_migration';
                             });
                     } else {
                         if (!_.isUndefined(self.user.extra.working_on)) {
@@ -255,12 +257,29 @@ go.app = function() {
                                 .then(function(opted_out) {
                                     return {
                                         true: 'states_opt_in',
-                                        false: 'states_consent',
+
+                                        // NOTE: this was `states_consent` before the migration
+                                        false: 'states_migration',
                                     } [opted_out];
                                 });
                         });
                 }
             });
+        });
+
+        self.add('states_migration', function (name) {
+          return new ChoiceState(name, {
+            question: $(
+              'Hello! MomConnect is busy with an upgrade to the system. ' +
+              'While this is in progress some features may temporarily ' +
+              'not be available to you. Opting out via SMS will always work ' +
+              'but opting out via USSD or transition to baby messaging will ' +
+              'need to be retried again next week.'),
+            choices: [
+              new Choice('continue', $('Continue')),
+            ],
+            next: 'states_consent'
+          });
         });
 
         self.add('states_consent', function(name) {

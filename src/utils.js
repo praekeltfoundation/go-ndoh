@@ -679,7 +679,7 @@ go.utils = {
       return http
         .get(im.config.identity_store.url + '/identities/search/', {
           params: {
-            'details__addresses__msisdn': '+27001',
+            'details__addresses__msisdn': msisdn,
           }
         })
         .then(function (response) {

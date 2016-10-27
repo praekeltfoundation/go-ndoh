@@ -6,12 +6,46 @@ var moment = require('moment');
 var vumigo = require('vumigo_v02');
 var Q = require('q');
 var Choice = vumigo.states.Choice;
+var ChoiceState = vumigo.states.ChoiceState;
 var HttpApi = vumigo.http.api.HttpApi;
 var JsonApi = vumigo.http.api.JsonApi;
 
 // override moment default century switch at '68 with '49
 moment.parseTwoDigitYear = function (input) {
     return +input + (+input > 49 ? 1900 : 2000);
+};
+
+go.migration = {
+  make_migration_state: function (app, next_state) {
+    return (function(app) {
+      return function (name) {
+      // NOTE: only go through this if the migration flag is set
+      if(!app.im.config.migration_flag) {
+        return next_state;
+      }
+
+      return go.utils
+        .is_migrated_user(
+            app.im, go.utils.normalize_msisdn(app.contact.msisdn, '27'))
+        .then(function (is_migrated) {
+          if(is_migrated) {
+            return app.states.create(next_state);
+          } else {
+            return new ChoiceState(name, {
+              question: app.$(
+                "MomConnect is busy with an upgrade and some feature may not " +
+                "be available to you. Reply STOP to opt-out via SMS. To change " +
+                "to baby messaging try again next week."),
+              choices: [
+                new Choice('continue', app.$('Continue')),
+              ],
+              next: next_state
+            });
+          }
+        });
+      };
+    })(app);
+  }
 };
 
 go.utils = {
@@ -1728,33 +1762,8 @@ go.app = function() {
             });
         });
 
-
-        self.add('states_migration', function (name) {
-          // NOTE: only go through this if the migration flag is set
-          if(!self.im.config.migration_flag) {
-            return 'states_consent';
-          }
-
-          return go.utils
-            .is_migrated_user(
-                self.im, go.utils.normalize_msisdn(self.contact.msisdn, '27'))
-            .then(function (is_migrated) {
-              if(is_migrated) {
-                return self.states.create('states_consent');
-              } else {
-                return new ChoiceState(name, {
-                  question: $(
-                    "MomConnect is busy with an upgrade and some feature may not " +
-                    "be available to you. Reply STOP to opt-out via SMS. To change " +
-                    "to baby messaging try again next week."),
-                  choices: [
-                    new Choice('continue', $('Continue')),
-                  ],
-                  next: 'states_consent'
-                });
-              }
-            });
-        });
+        self.add('states_migration',
+          go.migration.make_migration_state(self, 'states_consent'));
 
         self.add('states_consent', function(name) {
             return new ChoiceState(name, {

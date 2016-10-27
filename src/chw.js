@@ -267,33 +267,8 @@ go.app = function() {
             });
         });
 
-
-        self.add('states_migration', function (name) {
-          // NOTE: only go through this if the migration flag is set
-          if(!self.im.config.migration_flag) {
-            return 'states_consent';
-          }
-
-          return go.utils
-            .is_migrated_user(
-                self.im, go.utils.normalize_msisdn(self.contact.msisdn, '27'))
-            .then(function (is_migrated) {
-              if(is_migrated) {
-                return self.states.create('states_consent');
-              } else {
-                return new ChoiceState(name, {
-                  question: $(
-                    "MomConnect is busy with an upgrade and some feature may not " +
-                    "be available to you. Reply STOP to opt-out via SMS. To change " +
-                    "to baby messaging try again next week."),
-                  choices: [
-                    new Choice('continue', $('Continue')),
-                  ],
-                  next: 'states_consent'
-                });
-              }
-            });
-        });
+        self.add('states_migration',
+          go.migration.make_migration_state(self, 'states_consent'));
 
         self.add('states_consent', function(name) {
             return new ChoiceState(name, {

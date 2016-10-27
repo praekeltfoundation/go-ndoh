@@ -75,6 +75,7 @@ describe("app", function() {
                     metric_store: 'test_metric_store',
                     testing: 'true',
                     testing_today: 'April 4, 2014 07:07:07',
+                    migration_flag: true,
                     endpoints: {
                         "sms": {"delivery_class": "sms"}
                     },
@@ -95,6 +96,10 @@ describe("app", function() {
                     },
                     control_v2: {
                         url: 'http://ndoh-control/api/v2/',
+                        api_token: 'test_token'
+                    },
+                    identity_store: {
+                        url: 'http://identity-store/api/v1',
                         api_token: 'test_token'
                     },
                     subscription: {
@@ -192,6 +197,7 @@ describe("app", function() {
                     .inputs(
                         {session_event: 'start'},
                         '1',        // states_start - yes
+                        '1',        // states_migration - continue
                         '1',        // state_consent - yes
                         '123456',    // states_clinic_code - 123456
                         '2',        // states_due_date_month - 05
@@ -240,6 +246,7 @@ describe("app", function() {
                         {session_event: 'start'},
                         '2',        // states_start - no
                         '0821234567', // states_mobile_no - +27821234567
+                        '1',        // states_migration - continue
                         '1',        // states_consent - yes
                         '123456',    // states_clinic_code - 123456
                         '2',        // states_due_date_month - 05
@@ -361,6 +368,7 @@ describe("app", function() {
                         .inputs(
                             {session_event: 'new'}  // dial in
                             , '1'  // states_start
+                            , '1'  // states_migration - continue
                             , '1'  // states_consent
                             , '123456'  // states_clinic_code
                         )
@@ -382,6 +390,7 @@ describe("app", function() {
                         .inputs(
                             {session_event: 'new'}  // dial in
                             , '1'  // states_start
+                            , '1'  // states_migration - continue
                             , '1'  // states_consent
                             , '123456'  // states_clinic_code
                             , {session_event: 'close'}  // states_due_date_month
@@ -404,6 +413,7 @@ describe("app", function() {
                         .inputs(
                             {session_event: 'new'}  // dial in
                             , '1'  // states_start
+                            , '1'  // states_migration - continue
                             , '1'  // states_consent
                             , '123456'  // states_clinic_code
                             , {session_event: 'close'}  // states_due_date_month
@@ -427,6 +437,7 @@ describe("app", function() {
                         .inputs(
                             {session_event: 'new'}  // dial in
                             , '1'  // states_start
+                            , '1'  // states_migration - continue
                             , '1'  // states_consent
                             , '123456'  // states_clinic_code
                             , {session_event: 'new'}  // redial
@@ -449,6 +460,7 @@ describe("app", function() {
                         .inputs(
                             {session_event: 'new'}  // dial in
                             , '1'  // states_start
+                            , '1'  // states_migration - continue
                             , '1'  // states_consent
                             , '123456'  // states_clinic_code
                             , {session_event: 'close'}  // states_due_date_month
@@ -473,6 +485,7 @@ describe("app", function() {
                         .inputs(
                             {session_event: 'new'}  // dial in
                             , '1'  // states_start
+                            , '1'  // states_migration - continue
                             , '1'  // states_consent
                             , '123456'  // states_clinic_code
                             , {session_event: 'close'}  // states_due_date_month
@@ -497,6 +510,7 @@ describe("app", function() {
                         .inputs(
                             {session_event: 'new'}  // dial in
                             , '1'  // states_start
+                            , '1'  // states_migration - continue
                             , '1'  // states_consent
                             , '123456'  // states_clinic_code
                             , {session_event: 'close'}  // states_due_date_month
@@ -755,6 +769,7 @@ describe("app", function() {
                         .inputs(
                             {session_event: 'new'}  // dial in
                             , '1'  // states_start - yes
+                            , '1'  // states_migration - continue
                         )
                         .check.interaction({
                             state: 'states_consent',
@@ -779,6 +794,7 @@ describe("app", function() {
                         .inputs(
                             {session_event: 'new'}  // dial in
                             , '1'  // states_start - yes
+                            , '1'  // states_migration - continue
                             , '1'  // states_consent - yes
                         )
                         .check.interaction({
@@ -800,6 +816,7 @@ describe("app", function() {
                         .inputs(
                             {session_event: 'new'}  // dial in
                             , '1'  // states_start - yes
+                            , '1'  // states_migration - continue
                             , '2'  // states_consent - no
                         )
                         .check.interaction({
@@ -851,6 +868,7 @@ describe("app", function() {
                             {session_event: 'new'}  // dial in
                             , '1'  // states_start - yes
                             , '1'  // states_opt_in - yes
+                            , '1'  // states_migration - continue
                         )
                         .check.interaction({
                             state: 'states_consent',
@@ -876,6 +894,7 @@ describe("app", function() {
                             {session_event: 'new'}  // dial in
                             , '1'  // states_start - yes
                             , '1'  // states_opt_in - yes
+                            , '1'  // states_migration - continue
                             , '1'  // states_consent - yes
                         )
                         .check.interaction({
@@ -902,6 +921,7 @@ describe("app", function() {
                             {session_event: 'new'}  // dial in
                             , '1'  // states_start - yes
                             , '1'  // states_opt_in - yes
+                            , '1'  // states_migration - continue
                             , '2'  // states_consent - no
                         )
                         .check.interaction({
@@ -1024,6 +1044,7 @@ describe("app", function() {
                             {session_event: 'new'}  // dial in
                             , '2'  // states_start - no
                             , '0821234567'  // states_mobile_no
+                            , '1'  // states_migration - continue
                         )
                         .check.interaction({
                             state: 'states_consent',
@@ -1039,7 +1060,7 @@ describe("app", function() {
                             var contact = api.contacts.store[0];
                             assert.equal(contact.extra.working_on, "+27821234567");
                             assert.equal(contact.extra.is_registered, undefined);
-                            assert.equal(contact.extra.last_stage, 'states_consent');
+                            assert.equal(contact.extra.last_stage, 'states_migration');
                         })
                         .run();
                 });
@@ -1050,6 +1071,7 @@ describe("app", function() {
                             {session_event: 'new'}  // dial in
                             , '2'  // states_start - no
                             , '0821234567'  // states_mobile_no
+                            , '1'  // states_migration - continue
                             , '1'  // states_consent - yes
                         )
                         .check.interaction({
@@ -1064,7 +1086,7 @@ describe("app", function() {
                             });
                             assert.equal(contact.extra.working_on, "+27821234567");
                             assert.equal(contact.extra.is_registered, undefined);
-                            assert.equal(contact.extra.last_stage, 'states_consent');
+                            assert.equal(contact.extra.last_stage, 'states_migration');
                             contact = _.find(api.contacts.store, {
                               msisdn: '+27821234567'
                             });
@@ -1079,6 +1101,7 @@ describe("app", function() {
                             {session_event: 'new'}  // dial in
                             , '2'  // states_start - no
                             , '0821234567'  // states_mobile_no
+                            , '1'  // states_migration - continue
                             , '2'  // states_consent - no
                         )
                         .check.interaction({
@@ -1126,6 +1149,7 @@ describe("app", function() {
                             , '2'  // states_start - no
                             , '0831112222'  // states_mobile_no
                             , '1'  // states_opt_in
+                            , '1'  // states_migration - continue
                         )
                         .check.interaction({
                             state: 'states_consent',
@@ -1151,6 +1175,7 @@ describe("app", function() {
                             , '2'  // states_start - no
                             , '0831112222'  // states_mobile_no
                             , '1'  // states_opt_in
+                            , '1'  // states_migration - continue
                             , '1'  // states_consent - yes
                         )
                         .check.interaction({
@@ -1229,6 +1254,7 @@ describe("app", function() {
                         .inputs(
                             {session_event: 'new'}  // dial in
                             , '1'  // states_start - yes
+                            , '1'  // states_migration - continue
                             , '1'  // states_consent - yes
                             , '888888'  // states_clinic_code
                         )
@@ -1250,6 +1276,7 @@ describe("app", function() {
                             {session_event: 'new'}  // dial in
                             , '2'  // states_start - no
                             , '0821234567'  // states_mobile_no
+                            , '1'  // states_migration - continue
                             , '1'  // states_consent - yes
                             , '123456'  // states_clinic_code
                         )
@@ -1293,6 +1320,7 @@ describe("app", function() {
                         .inputs(
                             {session_event: 'new'}  // dial in
                             , '1'  // states_start - yes
+                            , '1'  // states_migration - continue
                             , '1'  // states_consent - yes
                             , '234567'  // states_clinic_code
                         )
@@ -1334,6 +1362,7 @@ describe("app", function() {
                         .inputs(
                             {session_event: 'new'}  // dial in
                             , '1'  // states_start - yes
+                            , '1'  // states_migration - continue
                             , '1'  // states_consent - yes
                             , '234567'  // states_clinic_code
                             , '2'  // states_due_date_month - may
@@ -1363,6 +1392,7 @@ describe("app", function() {
                         .inputs(
                             {session_event: 'new'}  // dial in
                             , '1'  // states_start - yes
+                            , '1'  // states_migration - continue
                             , '1'  // states_consent - yes
                             , '234567'  // states_clinic_code
                             , '2'  // states_due_date_month - may
@@ -1387,6 +1417,7 @@ describe("app", function() {
                         .inputs(
                             {session_event: 'new'}  // dial in
                             , '1'  // states_start - yes
+                            , '1'  // states_migration - continue
                             , '1'  // states_consent - yes
                             , '234567'  // states_clinic_code
                             , '8'  // states_due_date_month - nov
@@ -1409,6 +1440,7 @@ describe("app", function() {
                         .inputs(
                             {session_event: 'new'}  // dial in
                             , '1'  // states_start - yes
+                            , '1'  // states_migration - continue
                             , '1'  // states_consent - yes
                             , '234567'  // states_clinic_code
                             , '8'  // states_due_date_month - may
@@ -1442,6 +1474,7 @@ describe("app", function() {
                         .inputs(
                             {session_event: 'new'}  // dial in
                             , '1'  // states_start - yes
+                            , '1'  // states_migration - continue
                             , '1'  // states_consent - yes
                             , '234567'  // states_clinic_code
                             , '8'  // states_due_date_month - may
@@ -1475,6 +1508,7 @@ describe("app", function() {
                     .inputs(
                         {session_event: 'new'}  // dial in
                         , '1'  // states_start - yes
+                        , '1'  // states_migration - continue
                         , '1'  // states_consent - yes
                         , '234567'  // states_clinic_code
                         , '8'  // states_due_date_month - may
@@ -1504,6 +1538,7 @@ describe("app", function() {
                     .inputs(
                         {session_event: 'new'}  // dial in
                         , '1'  // states_start - yes
+                        , '1'  // states_migration - continue
                         , '1'  // states_consent - yes
                         , '234567'  // states_clinic_code
                         , '8'  // states_due_date_month - may
@@ -1544,6 +1579,7 @@ describe("app", function() {
                     .inputs(
                         {session_event: 'new'}  // dial in
                         , '1'  // states_start - yes
+                        , '1'  // states_migration - continue
                         , '1'  // states_consent - yes
                         , '234567'  // states_clinic_code
                         , '8'  // states_due_date_month - may
@@ -1569,6 +1605,7 @@ describe("app", function() {
                     .inputs(
                         {session_event: 'new'}  // dial in
                         , '1'  // states_start - yes
+                        , '1'  // states_migration - continue
                         , '1'  // states_consent - yes
                         , '234567'  // states_clinic_code
                         , '8'  // states_due_date_month - may
@@ -1594,6 +1631,7 @@ describe("app", function() {
                     .inputs(
                         {session_event: 'new'}  // dial in
                         , '1'  // states_start - yes
+                        , '1'  // states_migration - continue
                         , '1'  // states_consent - yes
                         , '234567'  // states_clinic_code
                         , '8'  // states_due_date_month - may
@@ -1623,6 +1661,7 @@ describe("app", function() {
                     .inputs(
                         {session_event: 'new'}  // dial in
                         , '1'  // states_start - yes
+                        , '1'  // states_migration - continue
                         , '1'  // states_consent - yes
                         , '234567'  // states_clinic_code
                         , '8'  // states_due_date_month - may
@@ -1652,6 +1691,7 @@ describe("app", function() {
                     .inputs(
                         {session_event: 'new'}  // dial in
                         , '1'  // states_start - yes
+                        , '1'  // states_migration - continue
                         , '1'  // states_consent - yes
                         , '234567'  // states_clinic_code
                         , '8'  // states_due_date_month - may
@@ -1688,6 +1728,7 @@ describe("app", function() {
                     .inputs(
                         {session_event: 'new'}  // dial in
                         , '1'  // states_start - yes
+                        , '1'  // states_migration - continue
                         , '1'  // states_consent - yes
                         , '234567'  // states_clinic_code
                         , '8'  // states_due_date_month - may
@@ -1716,6 +1757,7 @@ describe("app", function() {
                     .inputs(
                         {session_event: 'new'}  // dial in
                         , '1'  // states_start - yes
+                        , '1'  // states_migration - continue
                         , '1'  // states_consent - yes
                         , '234567'  // states_clinic_code
                         , '8'  // states_due_date_month - may
@@ -1753,6 +1795,7 @@ describe("app", function() {
                     .inputs(
                         {session_event: 'new'}  // dial in
                         , '1'  // states_start - yes
+                        , '1'  // states_migration - continue
                         , '1'  // states_consent - yes
                         , '234567'  // states_clinic_code
                         , '8'  // states_due_date_month - may
@@ -1777,6 +1820,7 @@ describe("app", function() {
                     .inputs(
                         {session_event: 'new'}  // dial in
                         , '1'  // states_start - yes
+                        , '1'  // states_migration - continue
                         , '1'  // states_consent - yes
                         , '234567'  // states_clinic_code
                         , '8'  // states_due_date_month - may
@@ -1801,6 +1845,7 @@ describe("app", function() {
                     .inputs(
                         {session_event: 'new'}  // dial in
                         , '1'  // states_start - yes
+                        , '1'  // states_migration - continue
                         , '1'  // states_consent - yes
                         , '234567'  // states_clinic_code
                         , '8'  // states_due_date_month - may
@@ -1829,6 +1874,7 @@ describe("app", function() {
                     .inputs(
                         {session_event: 'new'}  // dial in
                         , '1'  // states_start - yes
+                        , '1'  // states_migration - continue
                         , '1'  // states_consent - yes
                         , '234567'  // states_clinic_code
                         , '8'  // states_due_date_month - may
@@ -1851,6 +1897,7 @@ describe("app", function() {
                     .inputs(
                         {session_event: 'new'}  // dial in
                         , '1'  // states_start - yes
+                        , '1'  // states_migration - continue
                         , '1'  // states_consent - yes
                         , '234567'  // states_clinic_code
                         , '8'  // states_due_date_month - may
@@ -1875,6 +1922,7 @@ describe("app", function() {
                     .inputs(
                         {session_event: 'new'}  // dial in
                         , '1'  // states_start - yes
+                        , '1'  // states_migration - continue
                         , '1'  // states_consent - yes
                         , '234567'  // states_clinic_code
                         , '8'  // states_due_date_month - may
@@ -1916,6 +1964,7 @@ describe("app", function() {
                     .inputs(
                         {session_event: 'new'}  // dial in
                         , '1'  // states_start - yes
+                        , '1'  // states_migration - continue
                         , '1'  // states_consent - yes
                         , '234567'  // states_clinic_code
                         , '8'  // states_due_date_month - may
@@ -1946,6 +1995,7 @@ describe("app", function() {
                     .inputs(
                         {session_event: 'new'}  // dial in
                         , '1'  // states_start - yes
+                        , '1'  // states_migration - continue
                         , '1'  // states_consent - yes
                         , '234567'  // states_clinic_code
                         , '8'  // states_due_date_month - may
@@ -1981,6 +2031,7 @@ describe("app", function() {
                         .inputs(
                             {session_event: 'new'}  // dial in
                             , '1'  // states_start - yes
+                            , '1'  // states_migration - continue
                             , '1'  // states_consent - yes
                             , '234567'  // states_clinic_code
                             , '8'  // states_due_date_month - may
@@ -2007,6 +2058,7 @@ describe("app", function() {
                         .inputs(
                             {session_event: 'new'}  // dial in
                             , '1'  // states_start - yes
+                            , '1'  // states_migration - continue
                             , '1'  // states_consent - yes
                             , '234567'  // states_clinic_code
                             , '8'  // states_due_date_month - may
@@ -2033,6 +2085,7 @@ describe("app", function() {
                         .inputs(
                             {session_event: 'new'}  // dial in
                             , '1'  // states_start - yes
+                            , '1'  // states_migration - continue
                             , '1'  // states_consent - yes
                             , '234567'  // states_clinic_code
                             , '8'  // states_due_date_month - may
@@ -2059,6 +2112,7 @@ describe("app", function() {
                         .inputs(
                             {session_event: 'new'}  // dial in
                             , '1'  // states_start - yes
+                            , '1'  // states_migration - continue
                             , '1'  // states_consent - yes
                             , '234567'  // states_clinic_code
                             , '8'  // states_due_date_month - may
@@ -2100,6 +2154,7 @@ describe("app", function() {
                         .inputs(
                             {session_event: 'new'}  // dial in
                             , '1'  // states_start - yes
+                            , '1'  // states_migration - continue
                             , '1'  // states_consent - yes
                             , '234567'  // states_clinic_code
                             , '8'  // states_due_date_month - may
@@ -2134,6 +2189,7 @@ describe("app", function() {
                         .inputs(
                             {session_event: 'new'}  // dial in
                             , '1'  // states_start - yes
+                            , '1'  // states_migration - continue
                             , '1'  // states_consent - yes
                             , '234567'  // states_clinic_code
                             , '8'  // states_due_date_month - may
@@ -2173,6 +2229,7 @@ describe("app", function() {
                             {session_event: 'new'}  // dial in
                             , '2'  // states_start - no
                             , '0821234567'  // states_mobile_no
+                            , '1'  // states_migration - continue
                             , '1'  // states_consent - yes
                             , '123456'  // states_clinic_code
                             , '2'  // states_due_date_month - may
@@ -2232,6 +2289,7 @@ describe("app", function() {
                         .inputs(
                             {session_event: 'new'}  // dial in
                             , '1'  // states_start - yes
+                            , '1'  // states_migration - continue
                             , '1'  // states_consent - yes
                             , '123456'  // states_clinic_code
                             , '2'  // states_due_date_month - may
@@ -2298,6 +2356,7 @@ describe("app", function() {
                         .inputs(
                             {session_event: 'new'}  // dial in
                             , '1'  // states_start - yes
+                            , '1'  // states_migration - continue
                             , '1'  // states_consent - yes
                             , '123456'  // states_clinic_code
                             , '2'  // states_due_date_month - may

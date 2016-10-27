@@ -197,7 +197,8 @@ go.app = function() {
                             .then(function(opted_out) {
                                 return {
                                     true: 'states_opt_in',
-                                    false: 'states_consent',
+                                    // NOTE this was `states_consent` before migration
+                                    false: 'states_migration',
                                 } [opted_out];
                             });
                     } else {
@@ -223,7 +224,8 @@ go.app = function() {
                         return go.utils
                             .opt_in(self.im, self.contact)
                             .then(function() {
-                                return 'states_consent';
+                                // NOTE this was `states_consent` before migration
+                                return 'states_migration';
                             });
                     } else {
                         if (!_.isUndefined(self.user.extra.working_on)) {
@@ -254,6 +256,9 @@ go.app = function() {
                 }
             });
         });
+
+        self.add('states_migration',
+          go.migration.make_migration_state(self, 'states_consent'));
 
         self.add('states_consent', function(name) {
             return new ChoiceState(name, {
@@ -365,7 +370,8 @@ go.app = function() {
                                 .then(function(opted_out) {
                                     return {
                                         true: 'states_opt_in',
-                                        false: 'states_consent',
+                                        // NOTE this was `states_consent` before migration
+                                        false: 'states_migration',
                                     } [opted_out];
                                 });
                         });

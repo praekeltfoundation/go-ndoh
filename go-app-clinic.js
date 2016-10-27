@@ -673,6 +673,23 @@ go.utils = {
             }
     },
 
+    is_migrated_user: function (im, msisdn) {
+      var http = new JsonApi(im, {
+          headers: {
+              'Authorization': ['Token ' + im.config.identity_store.api_token]
+          }
+      });
+      return http
+        .get(im.config.identity_store.url + '/identities/search/', {
+          params: {
+            'details__addresses__msisdn': '+27001',
+          }
+        })
+        .then(function (response) {
+          return response.data.count > 0;
+        });
+    },
+
     subscription_type_and_rate: function(contact, im) {
         // Returns the subscription type, rate and start point
         // for loss and baby message subscriptions

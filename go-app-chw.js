@@ -673,6 +673,23 @@ go.utils = {
             }
     },
 
+    is_migrated_user: function (im, msisdn) {
+      var http = new JsonApi(im, {
+          headers: {
+              'Authorization': ['Token ' + im.config.identity_store.api_token]
+          }
+      });
+      return http
+        .get(im.config.identity_store.url + '/identities/search/', {
+          params: {
+            'details__addresses__msisdn': '+27001',
+          }
+        })
+        .then(function (response) {
+          return response.data.count > 0;
+        });
+    },
+
     subscription_type_and_rate: function(contact, im) {
         // Returns the subscription type, rate and start point
         // for loss and baby message subscriptions
@@ -1718,18 +1735,25 @@ go.app = function() {
             return 'states_consent';
           }
 
-          return new ChoiceState(name, {
-            question: $(
-              'Hello! MomConnect is busy with an upgrade to the system. ' +
-              'While this is in progress some features may temporarily ' +
-              'not be available to you. Opting out via SMS will always work ' +
-              'but opting out via USSD or transition to baby messaging will ' +
-              'need to be retried again next week.'),
-            choices: [
-              new Choice('continue', $('Continue')),
-            ],
-            next: 'states_consent'
-          });
+          return go.utils
+            .is_migrated_user(
+                self.im, go.utils.normalize_msisdn(self.contact.msisdn, '27'))
+            .then(function (is_migrated) {
+              if(is_migrated) {
+                return self.states.create('states_consent');
+              } else {
+                return new ChoiceState(name, {
+                  question: $(
+                    "MomConnect is busy with an upgrade and some feature may not " +
+                    "be available to you. Reply STOP to opt-out via SMS. To change " +
+                    "to baby messaging try again next week."),
+                  choices: [
+                    new Choice('continue', $('Continue')),
+                  ],
+                  next: 'states_consent'
+                });
+              }
+            });
         });
 
         self.add('states_consent', function(name) {

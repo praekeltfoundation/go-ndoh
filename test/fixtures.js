@@ -957,6 +957,30 @@ module.exports = function() {
             }
         }
     },
+// Identity store checks
+    // Check if the mother's already been migrated or not
+    {
+        "repeatable": true,
+        "request": {
+            "method": "GET",
+            "params": {
+                "details__addresses__msisdn": "+27001"
+            },
+            'headers': {
+                'Authorization': ['Token test_token']
+            },
+            "url": "http://identity-store/api/v1/identities/search/"
+        },
+        "response": {
+            "code": 200,
+            "data": {
+                "count": 0,
+                "next": null,
+                "previous": null,
+                "results": []
+            }
+        }
+    },
 
 // POST Vumi Registrations
     // Vumi registration post - clinic 1

@@ -65,6 +65,10 @@ describe("app", function() {
                         url: 'http://ndoh-control/api/v2/',
                         api_token: 'test_token'
                     },
+                    identity_store: {
+                        url: 'http://identity-store/api/v1',
+                        api_token: 'test_token'
+                    },
                     subscription: {
                         standard: 1,
                         later: 2,

@@ -403,6 +403,9 @@ go.app = function() {
             });
         });
 
+        self.add('states_migration',
+          go.migration.make_migration_state(self, 'states_consent'));
+
         self.add('states_consent', function(name) {
             return new ChoiceState(name, {
                 question: $('To register we need to collect, store & use your' +
@@ -470,7 +473,8 @@ go.app = function() {
                         .save(self.contact)
                         .then(function() {
                             if (choice.value === 'yes') {
-                                return 'states_consent';
+                                // NOTE: this was `states_consent` before migration
+                                return 'states_migration';
                             } else {
                                 return 'states_end_not_pregnant';
                             }

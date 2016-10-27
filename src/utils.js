@@ -30,9 +30,9 @@ go.migration = {
           } else {
             return new ChoiceState(name, {
               question: app.$(
-                "MomConnect is busy with an upgrade and some feature may not " +
-                "be available to you. Reply STOP to opt-out via SMS. To change " +
-                "to baby messaging try again next week."),
+                "MomConnect is doing maintenance so some features may be " +
+                "unavailable. Reply STOP to opt-out via SMS. To change to" +
+                " baby messaging try again next week."),
               choices: [
                 new Choice('continue', app.$('Continue')),
               ],

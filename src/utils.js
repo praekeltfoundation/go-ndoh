@@ -18,7 +18,7 @@ go.migration = {
       return function (name) {
       // NOTE: only go through this if the migration flag is set
       if(!app.im.config.migration_flag) {
-        return next_state;
+        return app.states.create(next_state);
       }
 
       return go.utils

@@ -1711,7 +1711,13 @@ go.app = function() {
             });
         });
 
+
         self.add('states_migration', function (name) {
+          // NOTE: only go through this if the migration flag is set
+          if(!self.im.config.migration_flag) {
+            return 'states_consent';
+          }
+
           return new ChoiceState(name, {
             question: $(
               'Hello! MomConnect is busy with an upgrade to the system. ' +

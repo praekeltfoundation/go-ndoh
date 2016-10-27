@@ -45,6 +45,7 @@ describe("app", function() {
                     metric_store: 'test_metric_store',
                     testing: 'true',
                     testing_today: 'April 4, 2014 07:07:07',
+                    migration_flag: true,
                     endpoints: {
                         "sms": {"delivery_class": "sms"}
                     },

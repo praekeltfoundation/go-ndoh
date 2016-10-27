@@ -267,14 +267,18 @@ go.app = function() {
             });
         });
 
+
         self.add('states_migration', function (name) {
+          // NOTE: only go through this if the migration flag is set
+          if(!self.im.config.migration_flag) {
+            return 'states_consent';
+          }
+
           return new ChoiceState(name, {
             question: $(
-              'Hello! MomConnect is busy with an upgrade to the system. ' +
-              'While this is in progress some features may temporarily ' +
-              'not be available to you. Opting out via SMS will always work ' +
-              'but opting out via USSD or transition to baby messaging will ' +
-              'need to be retried again next week.'),
+              "MomConnect is busy with an upgrade and some feature may not " +
+              "be available to you. Reply STOP to opt-out via SMS. To change " +
+              "to baby messaging try again next week."),
             choices: [
               new Choice('continue', $('Continue')),
             ],
